@@ -11,11 +11,11 @@ import { trpc } from "../utils/trpc";
 const Home: NextPage = () => {
   const hello = trpc.useQuery(["getUserById", "1655557703221"]);
   if (!hello.data) {
-    return <div>Loading...</div>;
+    return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
   }
   return (
     <div>
-      <p className="m-16 font-bold bg-red-400">{hello.data.name}</p>
+      <p className="m-16 font-bold bg-red-400 text-6xl">{hello.data.name}</p>
     </div>
   );
 };
