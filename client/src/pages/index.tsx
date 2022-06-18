@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   }
   return (
     <div>
-      <p>{hello.data.name}</p>
+      <p className="m-16 font-bold bg-red-400">{hello.data.name}</p>
     </div>
   );
 };
