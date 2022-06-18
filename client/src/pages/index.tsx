@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["getUserById", "1655541798180"]);
+  const hello = trpc.useQuery(["getUserById", "1655557703221"]);
   if (!hello.data) {
     return <div>Loading...</div>;
   }

@@ -1,9 +1,15 @@
 import { withTRPC } from "@trpc/next";
 import { AppType } from "next/dist/shared/lib/utils";
 import { AppRouter } from "../../../server/src/router";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Component {...pageProps} />
+      <ReactQueryDevtools />
+    </>
+  );
 };
 
 export default withTRPC<AppRouter>({
