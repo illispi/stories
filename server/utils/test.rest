@@ -1,0 +1,15 @@
+POST http://localhost:4000/trpc/createUser
+content-type: application/json
+
+{
+    "bio": "Boring dude",
+    "name": "Thomas3"
+}
+
+
+###
+GET http://localhost:4000/trpc/getUserById
+content-type: text/plain; charset=utf-8
+//authorization: _e5_bv3vwnaZr4t7azr7W
+
+"1655539355428"
