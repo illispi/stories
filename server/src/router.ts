@@ -2,7 +2,6 @@ import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { db } from "./index";
 
-
 // async function demo() {
 //   const { id } = await db
 //     .insertInto("person")
