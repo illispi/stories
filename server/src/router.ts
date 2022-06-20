@@ -31,28 +31,16 @@ import { db } from "./index";
 // type InsertablePerson = Insertable<PersonTable>;
 // type UpdateablePerson = Updateable<PersonTable>;
 
-type User = {
-  id: string;
-  name: string;
-  bio?: string;
-};
-
-const users: Record<string, User> = {};
-
 export const appRouter = trpc
   .router()
   .query("getUserById", {
-    input: z.null(),
-    async resolve() {
-      console.log(db);
-
+    input: z.number(),
+    resolve: async ({ input }) => {
       const { first_name } = await db
-        .insertInto("person")
-        .values({ first_name: "Jennifer", gender: "female" })
-        .returning("first_name")
+        .selectFrom("person")
+        .select("first_name")
+        .where("id", "=", input)
         .executeTakeFirstOrThrow();
-
-      console.log(first_name);
 
       return first_name;
     },
@@ -60,14 +48,17 @@ export const appRouter = trpc
   .mutation("createUser", {
     // validate input with Zod
     input: z.object({
-      name: z.string().min(3),
-      bio: z.string().max(142).optional(),
+      firstName: z.string().min(3),
+      gender: z.enum(["female", "male", "other"]),
     }),
-    async resolve({ input }) {
-      const id = Date.now().toString();
-      const user: User = { id, ...input };
-      users[user.id] = user;
-      return user;
+    resolve: async ({ input }) => {
+      const { first_name } = await db
+        .insertInto("person")
+        .values({ first_name: input.firstName, gender: input.gender })
+        .returning("first_name")
+        .executeTakeFirstOrThrow();
+
+      return first_name;
     },
   });
 

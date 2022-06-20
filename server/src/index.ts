@@ -41,6 +41,8 @@ export const db = new Kysely<Database>({
   }),
 });
 
+//NOTE is this the smart place to do it, does it only execute once?
+
 (async () => {
   try {
     await server.listen(4000);
