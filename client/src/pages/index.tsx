@@ -8,14 +8,68 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
 
+type Gender = "male" | "female" | "other";
+
 const Home: NextPage = () => {
+  const utils = trpc.useContext();
+  const [name, setName] = useState();
+  const [gender, setGender] = useState<Gender>("male");
+
   const hello = trpc.useQuery(["getUserById", null]);
-  if (!hello.data) {
-    return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
-  }
+  // if (!hello.data) {
+  //   return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
+  // }
+
+  const createUser = trpc.useMutation("createUser");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    createUser.mutate(
+      { firstName: name, gender: gender },
+      { onSuccess: () => utils.invalidateQueries() }
+    );
+  };
+
+  const onRadioChange = (event) => {
+    event.preventDefault();
+    setGender(event.target.value);
+  };
+
   return (
     <div>
-      <p className="m-16 font-bold bg-red-400 text-6xl">{hello.data}</p>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Enter your name:
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <div onChange={onRadioChange}>
+          <label>
+            Gender:
+            <input
+              type="radio"
+              name="gender"
+              value="male"
+              id="male"
+              defaultChecked
+            ></input>
+            <label htmlFor="male">male</label>
+            <input
+              type="radio"
+              name="gender"
+              value="female"
+              id="female"
+            ></input>
+            <label htmlFor="female">female</label>
+            <input type="radio" name="gender" value="other" id="other"></input>
+            <label htmlFor="other">other</label>
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };
