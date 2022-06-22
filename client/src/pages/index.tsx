@@ -15,7 +15,10 @@ const Home: NextPage = () => {
   const [name, setName] = useState();
   const [gender, setGender] = useState<Gender>("male");
 
-  const hello = trpc.useQuery(["getUserById", null]);
+  const allUsers = trpc.useQuery(["getAllUsers"]);
+
+  //NOTE loading state
+
   // if (!hello.data) {
   //   return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
   // }
@@ -29,7 +32,6 @@ const Home: NextPage = () => {
       { onSuccess: () => utils.invalidateQueries() }
     );
   };
-
   const onRadioChange = (event) => {
     event.preventDefault();
     setGender(event.target.value);
@@ -37,6 +39,11 @@ const Home: NextPage = () => {
 
   return (
     <div>
+      <div>
+        {allUsers.data?.map((firstName) => (
+          <li key={firstName.first_name}>{firstName.first_name}</li>
+        )) ?? <p>No users found</p>}
+      </div>
       <form onSubmit={handleSubmit}>
         <label>
           Enter your name:

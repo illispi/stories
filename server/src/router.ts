@@ -45,6 +45,16 @@ export const appRouter = trpc
       return first_name;
     },
   })
+  .query("getAllUsers", {
+    resolve: async () => {
+      const allUsers = await db
+        .selectFrom("person")
+        .select("first_name")
+        .execute();
+
+      return allUsers;
+    },
+  })
   .mutation("createUser", {
     // validate input with Zod
     input: z.object({
