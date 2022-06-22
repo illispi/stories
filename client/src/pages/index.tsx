@@ -12,12 +12,12 @@ type Gender = "male" | "female" | "other";
 
 const Home: NextPage = () => {
   const utils = trpc.useContext();
-  const [name, setName] = useState();
+  const [name, setName] = useState("");
   const [gender, setGender] = useState<Gender>("male");
 
   const allUsers = trpc.useQuery(["getAllUsers"]);
 
-  //NOTE loading state
+  //TODO loading state, ssr is true so might not be necessary
 
   // if (!hello.data) {
   //   return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
@@ -25,23 +25,27 @@ const Home: NextPage = () => {
 
   const createUser = trpc.useMutation("createUser");
 
+  //TODO dont invalidate every query, but select one to invalidate
+
   const handleSubmit = (event) => {
     event.preventDefault();
     createUser.mutate(
       { firstName: name, gender: gender },
       { onSuccess: () => utils.invalidateQueries() }
     );
+    setName("");
   };
   const onRadioChange = (event) => {
-    event.preventDefault();
     setGender(event.target.value);
+    //NOTE below updates too slow, but it works in practice
+    console.log(gender);
   };
 
   return (
     <div>
       <div>
-        {allUsers.data?.map((firstName) => (
-          <li key={firstName.first_name}>{firstName.first_name}</li>
+        {allUsers.data?.map((firstName, i) => (
+          <li key={`${firstName.first_name}${i}`}>{firstName.first_name}</li>
         )) ?? <p>No users found</p>}
       </div>
       <form onSubmit={handleSubmit}>
@@ -53,15 +57,16 @@ const Home: NextPage = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </label>
-        <div onChange={onRadioChange}>
-          <label>
-            Gender:
+        <label>
+          Gender:
+          <div>
             <input
               type="radio"
               name="gender"
               value="male"
               id="male"
-              defaultChecked
+              onChange={onRadioChange}
+              checked={gender === "male"}
             ></input>
             <label htmlFor="male">male</label>
             <input
@@ -69,12 +74,21 @@ const Home: NextPage = () => {
               name="gender"
               value="female"
               id="female"
+              onChange={onRadioChange}
+              checked={gender === "female"}
             ></input>
             <label htmlFor="female">female</label>
-            <input type="radio" name="gender" value="other" id="other"></input>
+            <input
+              type="radio"
+              name="gender"
+              value="other"
+              id="other"
+              onChange={onRadioChange}
+              checked={gender === "other"}
+            ></input>
             <label htmlFor="other">other</label>
-          </label>
-        </div>
+          </div>
+        </label>
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -82,3 +96,5 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+//TODO monorepo for input for trpc backend and frontend, shared zod types.
