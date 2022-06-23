@@ -60,6 +60,7 @@ importers:
       pg: ^8.7.3
       pino-pretty: ^8.0.0
       zod: ^3.17.3
+      zod-types: '*'
     dependencies:
       '@fastify/cors': 7.0.0
       '@trpc/server': 9.25.3
@@ -68,11 +69,21 @@ importers:
       kysely: 0.19.3
       pg: 8.7.3
       zod: 3.17.3
+      zod-types: link:../../packages/zod-types
     devDependencies:
       '@types/pg': 8.6.5
       concurrently: 7.2.2
       nodemon: 2.0.16
       pino-pretty: 8.1.0
+
+  packages/zod-types:
+    specifiers:
+      typescript: 4.7.3
+      zod: ^3.17.3
+    dependencies:
+      zod: 3.17.3
+    devDependencies:
+      typescript: 4.7.3
 
 packages:
 

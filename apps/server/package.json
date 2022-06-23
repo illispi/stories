@@ -18,7 +18,8 @@
     "fastify": "^3.29.0",
     "kysely": "^0.19.3",
     "pg": "^8.7.3",
-    "zod": "^3.17.3"
+    "zod": "^3.17.3",
+    "zod-types": "*"
   },
   "devDependencies": {
     "@types/pg": "^8.6.5",
