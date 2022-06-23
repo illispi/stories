@@ -17,6 +17,7 @@ const server = fastify({
   },
 });
 
+
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: { router: appRouter, createContext },

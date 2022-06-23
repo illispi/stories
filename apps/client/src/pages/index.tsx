@@ -9,7 +9,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
 import type { createUserType } from "zod-types";
 
-
 const Home: NextPage = () => {
   const utils = trpc.useContext();
   const [name, setName] = useState("");
@@ -43,7 +42,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <div>
+      <div className=" justify-center items-center flex-col ">
         {allUsers.data?.map((firstName, i) => (
           <li key={`${firstName.first_name}${i}`}>{firstName.first_name}</li>
         )) ?? <p>No users found</p>}
@@ -96,4 +95,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
