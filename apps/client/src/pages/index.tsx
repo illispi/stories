@@ -7,13 +7,13 @@ import React from "react";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
+import type { createUserType } from "zod-types";
 
-type Gender = "male" | "female" | "other";
 
 const Home: NextPage = () => {
   const utils = trpc.useContext();
   const [name, setName] = useState("");
-  const [gender, setGender] = useState<Gender>("male");
+  const [gender, setGender] = useState<createUserType["gender"]>("male");
 
   const allUsers = trpc.useQuery(["getAllUsers"]);
 
@@ -97,4 +97,3 @@ const Home: NextPage = () => {
 
 export default Home;
 
-//TODO monorepo for input for trpc backend and frontend, shared zod types.

@@ -5,4 +5,4 @@ export const createUser = z.object({
   gender: z.enum(["female", "male", "other"]),
 });
 
-export type createUserType = z.infer<typeof createUser>;
+export type CreateUserType = z.infer<typeof createUser>;
