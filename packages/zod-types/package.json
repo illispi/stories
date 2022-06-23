@@ -1,12 +1,17 @@
 {
   "name": "zod-types",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
-  "main": "./types.ts",
-  "types": "./types.ts",
+  "main": "./dist/types.js",
+  "types": "./dist/types.d.ts",
+  "source": "./src/types.ts",
+  "private": true,
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsc -w",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
