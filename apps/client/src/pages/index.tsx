@@ -42,7 +42,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <div className=" justify-center items-center flex-col ">
+      <div className=" flex-col items-center justify-center">
         {allUsers.data?.map((firstName, i) => (
           <li key={`${firstName.first_name}${i}`}>{firstName.first_name}</li>
         )) ?? <p>No users found</p>}
