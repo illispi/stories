@@ -7,6 +7,9 @@ import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import { Database } from "./db/dbTypes";
 import * as dotenv from "dotenv";
+import { DB } from "kysely-codegen";
+
+
 
 dotenv.config();
 
@@ -16,7 +19,6 @@ const server = fastify({
     prettyPrint: true,
   },
 });
-
 
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
