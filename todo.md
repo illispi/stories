@@ -1,3 +1,3 @@
 check the best have node dev for typescript projects.
 
-see if you have tailwind prettier enabled
+Allow mobile by enabling local network cors for it and nextjs trpc ip address
