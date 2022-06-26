@@ -54,6 +54,11 @@
 
 # **Convert to relative**
 
+1. ## **Q.** What kind of person were before illness?
+   - 19. ## **Q.** Did your personality change after illness?
+   - yes or no
+       1.  ## **Q.** How did it change?
+
 23. ## **Q.** What is your life situation?
    - Single select
    - unemployed

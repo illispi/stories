@@ -16,9 +16,7 @@
         - few months
         - more than 6 months
 
-5. ## **Q.** What
-
-6. ## **Q.** Were you hosptilized for your first psychosis?
+5. ## **Q.** Were you hosptilized for your first psychosis?
     - yes or no
       - if(yes):
 
@@ -37,20 +35,19 @@
 
                      2. ## **Q.** Were you satisfied with **after** hospitilization care?
                          - yes or no
-                     3. ## **Q.** Why or why not?
 
 
-7. ## **Q.**  How many times have you had major psychosis?
+6. ## **Q.**  How many times have you had major psychosis?
    - range, once, twice etc.
 
-8.  ## **Q.** Did you have prodromal symptoms before you got first psychosis?
+7.  ## **Q.** Did you have prodromal symptoms before you got first psychosis?
     - yes or no
 
     - if(yes)
 
       1. ## **Q.** What kind of prodromal symptoms did you have?
 
-9.  ## **Q.**  What kind of symptoms did you have on first psychosis?
+8.  ## **Q.**  What kind of symptoms did you have on first psychosis?
    - Multiple selections: 
       - hallucinations 
       - delusions
@@ -104,11 +101,11 @@
    - yes or no
 
 17. ## **Q.** Did/Do you have suicidal thoughts?
-   - yes or no
+    - yes or no
 
     - if(yes)
-     1. ## **Q.** Do you have attempted suicide?
-        - yes or no
+      1. ## **Q.** Do you have attempted suicide?
+      - yes or no
 
 18. ## **Q.** Do you have negative symptoms (apathy etc.)?
    - yes or no
@@ -124,7 +121,12 @@
      1. ## **Q.** What kind of cogntive decline symptoms
          - Multiselect, see medical descriptions
 
-20. ## **Q.** What other things you have that help you against illness other than APs.?
+1. ## **Q.** What kind of person were before illness?
+   - 19. ## **Q.** Did your personality change after illness?
+   - yes or no
+       1.  ## **Q.** How did it change?
+
+2.  ## **Q.** What other things you have that help you against illness other than APs. (working out)?
    - Free form field or select nothing.
 
 21. ## **Q.** What do you think is the worst thing about schizohrenia in itself?
