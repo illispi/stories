@@ -13,7 +13,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("personal_questions")
     .addColumn("answer_personal_id", "serial", (col) => col.primaryKey())
-    .addColumn("user_id", "integer", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.references("user.user_id").onDelete("cascade").notNull()
     )
     .addColumn(
@@ -91,10 +91,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("side_effs_sexual", "boolean")
     .addColumn("quitting", "boolean", (col) => col.notNull())
     .addColumn("quitting_why", "text", (col) =>
-      col.check(
-        sql`quitting_why in ('side effects', 'felt normal', 'affordability')
-         NOT (quitting AND quitting_why IS NULL)`
-      )
+      col
+        .check(
+          sql`quitting_why in ('side effects', 'felt normal', 'affordability')`
+        )
+        .check(sql` NOT (quitting AND quitting_why IS NULL)`)
     )
     .addColumn("quitting_what_happened", "text", (col) =>
       col.check(sql`NOT (quitting AND quitting_what_happened IS NULL)`)

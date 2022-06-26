@@ -7,17 +7,18 @@ import {
   PostgresDialect,
   FileMigrationProvider,
 } from "kysely";
-import { Database } from "./dbTypes";
+// import { Database } from "./dbTypes";
 import * as dotenv from "dotenv";
 
 dotenv.config();
 
 async function migrateToLatest() {
-  const db = new Kysely<Database>({
+  const db = new Kysely<any>({
+    //TOOD replace any with Database types
     dialect: new PostgresDialect({
       pool: new Pool({
         host: "127.0.0.1",
-        database: "kysely_test",
+        database: "stories_dev",
         password: process.env.PSQL_PASSWORD,
         user: "postgres",
         port: 5432,
