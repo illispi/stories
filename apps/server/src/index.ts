@@ -5,17 +5,19 @@ import { appRouter } from "./router";
 import fastifycors from "@fastify/cors";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
-import { Database } from "./db/dbTypes";
+import { DB } from "./db/dbTypes";
 import * as dotenv from "dotenv";
-// import { DB } from "kysely-codegen";
+import connectRedis from "connect-redis";
+import Redis from "ioredis";
+import fastifySession from "@fastify/session";
+import fastifyCookie from "@fastify/cookie";
+import { __prod__ } from "./constants";
 
 dotenv.config();
 
 const server = fastify({
   maxParamLength: 5000,
-  logger: {
-    prettyPrint: true,
-  },
+  logger: true,
 });
 
 server.register(fastifyTRPCPlugin, {
@@ -23,13 +25,35 @@ server.register(fastifyTRPCPlugin, {
   trpcOptions: { router: appRouter, createContext },
 });
 
+//NOTE httponly is on by default, https need secure: true
+
+server.register(fastifyCookie, { secret: process.env.COOKIE_SECRET });
+
+const RedisStore = connectRedis(fastifySession as any);
+const redisClient = new Redis(Number(process.env.REDIS_PORT));
+
+server.register(fastifySession, {
+  store: new RedisStore({
+    client: redisClient as any,
+  }) as any,
+  saveUninitialized: false,
+  cookieName: "sessionUuid",
+  secret: process.env.REDIS_SECRET,
+  cookie: {
+    sameSite: "lax",
+    httpOnly: true,
+    secure: __prod__,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days)
+  },
+} as any);
+
 server.register(fastifycors, {
   origin: [`http://127.0.0.1:3000`],
   credentials: true,
 });
 
 // You'd create one of these when you start your app.
-export const db = new Kysely<Database>({
+export const db = new Kysely<DB>({
   // Use MysqlDialect for MySQL and SqliteDialect for SQLite.
   dialect: new PostgresDialect({
     pool: new Pool({

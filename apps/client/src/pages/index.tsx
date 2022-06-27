@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState<createUserType["gender"]>("male");
 
-  const allUsers = trpc.useQuery(["getAllUsers"]);
+  const allUsers = trpc.useQuery(["getAllUsersIds"]);
 
   //TODO loading state, ssr is true so might not be necessary
 
@@ -28,10 +28,7 @@ const Home: NextPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    createUser.mutate(
-      { firstName: name, gender: gender },
-      { onSuccess: () => utils.invalidateQueries() }
-    );
+    createUser.mutate(null, { onSuccess: () => utils.invalidateQueries() });
     setName("");
   };
   const onRadioChange = (event) => {
@@ -43,8 +40,8 @@ const Home: NextPage = () => {
   return (
     <div>
       <div className=" flex-col items-center justify-center">
-        {allUsers.data?.map((firstName, i) => (
-          <li key={`${firstName.first_name}${i}`}>{firstName.first_name}</li>
+        {allUsers.data?.map((allUserData, i) => (
+          <li key={`${allUserData.user_id}${i}`}>{allUserData.user_id}</li>
         )) ?? <p>No users found</p>}
       </div>
       <form onSubmit={handleSubmit}>

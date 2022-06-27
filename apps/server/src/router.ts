@@ -1,42 +1,30 @@
 import * as trpc from "@trpc/server";
-import { z } from "zod";
+// import { z } from "zod";
 import { db } from "./index";
-import { createUser } from "zod-types";
+// import { createUser } from "zod-types";
+// import { sql } from "kysely";
 
 export const appRouter = trpc
   .router()
-  .query("getUserById", {
-    input: z.number(),
-    resolve: async ({ input }) => {
-      const { first_name } = await db
-        .selectFrom("person")
-        .select("first_name")
-        .where("id", "=", input)
+  .mutation("createUser", {
+    resolve: async () => {
+      const { user_id } = await db
+        .insertInto("user")
+        // .values(sql`values ()`)
+        .returning("user_id")
         .executeTakeFirstOrThrow();
 
-      return first_name;
+      return user_id;
     },
   })
-  .query("getAllUsers", {
+  .query("getAllUsersIds", {
     resolve: async () => {
-      const allUsers = await db
-        .selectFrom("person")
-        .select("first_name")
+      const allUsersIds = await db
+        .selectFrom("user")
+        .select("user_id")
         .execute();
 
-      return allUsers;
-    },
-  })
-  .mutation("createUser", {
-    input: createUser,
-    resolve: async ({ input }) => {
-      const { first_name } = await db
-        .insertInto("person")
-        .values({ first_name: input.firstName, gender: input.gender })
-        .returning("first_name")
-        .executeTakeFirstOrThrow();
-
-      return first_name;
+      return allUsersIds;
     },
   });
 
