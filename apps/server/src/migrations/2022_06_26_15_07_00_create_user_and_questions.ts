@@ -16,7 +16,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn(
       "user_id",
       "uuid",
-      (col) => col.references("user.user_id").onDelete("cascade").notNull() //NOTE this should work alas this is child table
+      (col) =>
+        col.references("user.user_id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
     )
     .addColumn(
       "gender",
@@ -233,6 +234,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 
   //TODO add indexes
+  //TODO how do i enforce 1 to 1 relationship for the personal?
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

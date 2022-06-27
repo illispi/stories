@@ -38,7 +38,7 @@ async function migrateToLatest(dir: string[]) {
   });
 
   const { error, results } =
-    dir === []
+    dir[0] === "down"
       ? await migrator.migrateDown()
       : await migrator.migrateToLatest();
 
