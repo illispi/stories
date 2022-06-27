@@ -47,6 +47,7 @@ server.register(fastifySession, {
   },
 } as any);
 
+
 server.register(fastifycors, {
   origin: [`http://127.0.0.1:3000`],
   credentials: true,
@@ -58,7 +59,7 @@ export const db = new Kysely<DB>({
   dialect: new PostgresDialect({
     pool: new Pool({
       host: "127.0.0.1",
-      database: "kysely_test",
+      database: "stories_dev",
       password: process.env.PSQL_PASSWORD,
       user: "postgres",
       port: 5432,

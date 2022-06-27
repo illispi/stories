@@ -3,7 +3,7 @@ import { Context } from "./context";
 // import { z } from "zod";
 import { db } from "./index";
 // import { createUser } from "zod-types";
-// import { sql } from "kysely";
+import { sql } from "kysely";
 
 export const appRouter = trpc
   .router<Context>()
@@ -33,13 +33,13 @@ export const appRouter = trpc
       if (!ctx.user.id) {
         const { user_id } = await db
           .insertInto("user")
-          .values()
+          .values({ user_id: sql`DEFAULT` })
           .returning("user_id")
           .executeTakeFirstOrThrow();
 
         ctx.req.session.id = user_id;
 
-        return "There should be cookies";
+        return "There should now be cookies";
       }
       return "There already should be cookie";
     },

@@ -22,7 +22,7 @@ export default withTRPC<AppRouter>({
      */
     const url = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/api/trpc`
-      : "http://localhost:4000/trpc";
+      : "http://127.0.0.1:4000/trpc";
 
     return {
       url,
