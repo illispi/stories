@@ -13,8 +13,10 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("personal_questions")
     .addColumn("answer_personal_id", "serial", (col) => col.primaryKey())
-    .addColumn("user_id", "uuid", (col) =>
-      col.references("user.user_id").onDelete("cascade").notNull()
+    .addColumn(
+      "user_id",
+      "uuid",
+      (col) => col.references("user.user_id").onDelete("cascade").notNull() //NOTE this should work alas this is child table
     )
     .addColumn(
       "gender",
@@ -158,9 +160,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("life_disability", "boolean")
     .addColumn("life_employed", "boolean")
     .addColumn("life_student", "boolean")
-    .addColumn("partner", "boolean")
-    .addColumn("friends", "boolean")
-    .addColumn("children", "boolean")
+    .addColumn("partner", "boolean", (col) => col.notNull())
+    .addColumn("friends", "boolean", (col) => col.notNull())
+    .addColumn("children", "boolean", (col) => col.notNull())
     .addColumn("goals_changed", "boolean", (col) => col.notNull())
     .addColumn("goals_after", "text", (col) =>
       col.check(sql`NOT (goals_changed AND goals_after IS NULL)`)
@@ -185,6 +187,48 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.check(
         sql`NOT (not_have_schizophrenia AND not_have_schizophrenia_description IS NULL)`
       )
+    )
+    .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
+    .execute();
+
+  await db.schema
+    .createTable("their_questions")
+    .addColumn("answer_their_id", "serial", (col) => col.primaryKey())
+    .addColumn("user_id", "uuid", (col) =>
+      col.references("user.user_id").onDelete("cascade").notNull()
+    )
+    .addColumn("relation", "text", (col) =>
+      col.check(sql`relation in ('relative, 'friend', 'acquintance'`)
+    )
+    .addColumn(
+      "gender",
+      "text",
+      (col) => col.notNull().check(sql`gender in ('male', 'female', 'other')`) //NOTE check if this actually works first thing.
+    )
+    .addColumn("age_of_onset", "integer", (col) => col.notNull())
+    .addColumn("treatment", "text")
+    .addColumn("symptoms_before_onset", "text")
+    .addColumn("symptoms_during_psychosis", "text")
+    .addColumn("med_efficacy", "boolean")
+    .addColumn("side_effects", "text")
+    .addColumn("quitting", "boolean")
+    .addColumn("smoking", "boolean")
+    .addColumn("negative_symptoms", "text")
+    .addColumn("personality_before", "text", (col) => col.notNull())
+    .addColumn("personality_changed", "boolean", (col) => col.notNull())
+    .addColumn("personality_after", "text", (col) =>
+      col.check(sql`NOT (personality_changed AND personality_after IS NULL)`)
+    )
+    .addColumn("life_unemployed", "boolean") //NOTE ask fore suggestion if this is the best idea for example own table
+    .addColumn("life_disability", "boolean")
+    .addColumn("life_employed", "boolean")
+    .addColumn("life_student", "boolean")
+    .addColumn("partner", "boolean") //NOTE can be null because might not know
+    .addColumn("friends", "boolean")
+    .addColumn("children", "boolean")
+    .addColumn("goals_changed", "boolean", (col) => col.notNull())
+    .addColumn("goals_after", "text", (col) =>
+      col.check(sql`NOT (goals_changed AND goals_after IS NULL)`)
     )
     .execute();
 
