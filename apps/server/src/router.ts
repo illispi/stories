@@ -33,6 +33,7 @@ export const appRouter = trpc
       if (!ctx.user.id) {
         const { user_id } = await db
           .insertInto("user")
+          .values()
           .returning("user_id")
           .executeTakeFirstOrThrow();
 

@@ -22,13 +22,13 @@ const Home: NextPage = () => {
   //   return <div className="m-16 font-bold bg-red-400 text-6xl">Loading...</div>;
   // }
 
-  const createUser = trpc.useMutation("createUser");
+  const createCookie = trpc.useMutation("createCookie");
 
   //TODO dont invalidate every query, but select one to invalidate
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    createUser.mutate(null, { onSuccess: () => utils.invalidateQueries() });
+    createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() });
     setName("");
   };
   const onRadioChange = (event) => {
