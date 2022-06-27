@@ -143,6 +143,49 @@ export async function up(db: Kysely<any>): Promise<void> {
         sql`NOT (cognitive_symptoms AND cognitive_symptoms_description IS NULL)`
       )
     )
+    .addColumn("personality_before", "text", (col) => col.notNull())
+    .addColumn("personality_changed", "boolean", (col) => col.notNull())
+    .addColumn("personality_after", "text", (col) =>
+      col.check(sql`NOT (personality_changed AND personality_after IS NULL)`)
+    )
+    .addColumn("other_help", "text")
+    .addColumn("worst_symptom", "text", (col) =>
+      col.check(
+        sql`worst_symptom in ('negative symptoms, 'positive symptoms', 'cognitive symptoms'`
+      )
+    )
+    .addColumn("life_unemployed", "boolean") //NOTE ask fore suggestion if this is the best idea for example own table
+    .addColumn("life_disability", "boolean")
+    .addColumn("life_employed", "boolean")
+    .addColumn("life_student", "boolean")
+    .addColumn("partner", "boolean")
+    .addColumn("friends", "boolean")
+    .addColumn("children", "boolean")
+    .addColumn("goals_changed", "boolean", (col) => col.notNull())
+    .addColumn("goals_after", "text", (col) =>
+      col.check(sql`NOT (goals_changed AND goals_after IS NULL)`)
+    )
+    .addColumn("told_family", "boolean")
+    .addColumn("told_nobody", "boolean")
+    .addColumn("told_friends", "boolean")
+    .addColumn("told_if_asked", "boolean")
+    .addColumn("told_employer", "boolean")
+    .addColumn("responded_to_telling", "text", (col) =>
+      col.check(sql`NOT (told_nobody AND responded_to_telling IS NULL)`)
+    )
+    .addColumn("life_satisfaction", "boolean", (col) => col.notNull())
+    .addColumn("life_satisfaction_description", "text", (col) =>
+      col.check(
+        sql`NOT (life_satisfaction AND life_satisfaction_description IS NULL)`
+      )
+    )
+    .addColumn("what_others_should_know", "text")
+    .addColumn("not_have_schizophrenia", "boolean", (col) => col.notNull())
+    .addColumn("not_have_schizophrenia_description", "text", (col) =>
+      col.check(
+        sql`NOT (not_have_schizophrenia AND not_have_schizophrenia_description IS NULL)`
+      )
+    )
     .execute();
 
   //TODO add indexes

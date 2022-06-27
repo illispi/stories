@@ -131,13 +131,8 @@
 
 21. ## **Q.** What do you think is the worst thing about schizohrenia in itself?
    - single select, negative symptoms, positive symptoms, cognitive symptoms
-       1. ## **Q.** describe the worst symptom.
 
-22. ## **Q.** Did/Do you have other mental ilnessess?
-   - Multi select:
-   - Anxiety, depression, Bipolar, autism, alcoholism, drug addiction etc.
-
-23. ## **Q.** What is your life situation?
+22. ## **Q.** What is your life situation?
    - Single select
    - unemployed
    - disability 
