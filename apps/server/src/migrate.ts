@@ -12,9 +12,11 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-async function migrateToLatest() {
+async function migrateToLatest(dir: string[]) {
+  console.log(dir);
+
   const db = new Kysely<any>({
-    //TOOD replace any with Database types
+    //TODO replace any with Database types
     dialect: new PostgresDialect({
       pool: new Pool({
         host: "127.0.0.1",
@@ -35,7 +37,10 @@ async function migrateToLatest() {
     }),
   });
 
-  const { error, results } = await migrator.migrateToLatest();
+  const { error, results } =
+    dir === []
+      ? await migrator.migrateDown()
+      : await migrator.migrateToLatest();
 
   results?.forEach((it) => {
     if (it.status === "Success") {
@@ -54,4 +59,4 @@ async function migrateToLatest() {
   await db.destroy();
 }
 
-migrateToLatest();
+migrateToLatest(process.argv.slice(2));

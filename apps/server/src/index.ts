@@ -48,6 +48,7 @@ export const db = new Kysely<Database>({
   try {
     await server.listen(4000);
   } catch (err) {
+    db.destroy(); //NOTE this destroys connction to db
     server.log.error(err);
     process.exit(1);
   }

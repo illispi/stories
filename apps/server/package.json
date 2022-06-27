@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate:latest": "node ./dist/migrate.js",
+    "migrate:down": "node ./dist/migrate.js down",
     "dev": "tsc-watch --onSuccess \"node ./dist/index.js\""
   },
   "keywords": [],
