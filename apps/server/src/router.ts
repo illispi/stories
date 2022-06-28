@@ -10,7 +10,8 @@ export const appRouter = trpc
   .mutation("addPersonalAnswers", {
     input: personalQuestions,
 
-    resolve: async () => {
+    resolve: async ({ input }) => {
+ 
       const { user_id } = await db
         .insertInto("user")
         // .values(sql`values ()`)

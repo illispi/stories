@@ -72,7 +72,7 @@ export async function up(db: Kysely<any>): Promise<void> {
           sql`NOT (prodromal_symptoms AND describe_prodromal_symptoms IS NULL) `
         ) //NOTE this IS NULL might be opposite
     )
-    .addColumn("symptoms_hallucinations", "boolean")
+    .addColumn("symptoms_hallucinations", "boolean") //BUG might need notNull()
     .addColumn("symptoms_delusions", "boolean")
     .addColumn("symptoms_paranoia", "boolean")
     .addColumn("symptoms_disorganized", "boolean")
