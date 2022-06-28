@@ -2,7 +2,7 @@ import * as trpc from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
 import { db } from "./index";
-import { personalQuestions } from "zod-types/types";
+import { personalQuestions } from "zod-types";
 import { sql } from "kysely";
 
 export const appRouter = trpc

@@ -31,16 +31,29 @@ export const hospiAfterCareDescribe = z.object({
   hospiAfterCareDescribe: z.string(),
 });
 
-export const personalQuestions = gender
-  .merge(currentAge)
-  .merge(ageOfOnset)
-  .merge(lengthOfPsychosis)
-  .merge(hospiOnFirst)
-  .merge(hospiVoluntarily)
-  .merge(hospiSatisfaction)
-  .merge(hospiDescribe)
-  .merge(hospiCareAfter)
-  .merge(hospiAfterCareDescribe);
+// export const personalQuestions = gender
+//   .merge(currentAge)
+//   .merge(ageOfOnset)
+//   .merge(lengthOfPsychosis)
+//   .merge(hospiOnFirst)
+//   .merge(hospiVoluntarily)
+//   .merge(hospiSatisfaction)
+//   .merge(hospiDescribe)
+//   .merge(hospiCareAfter)
+//   .merge(hospiAfterCareDescribe);
+
+export const personalQuestions = z.object({
+  gender: z.enum(["female", "male", "other"]),
+  currentAge: z.number().int(),
+  ageOfOnset: z.number().int(),
+  lengthOfPsychosis: z.enum(["few weeks", "few months", "more than 6 months"]),
+  hospiOnFirst: z.boolean(),
+  hospiVoluntarily: z.boolean(),
+  hospiSatisfaction: z.boolean(),
+  hospiDescribe: z.string(),
+  hospiCareAfter: z.boolean(),
+  hospiAfterCareDescribe: z.string(),
+});
 
 export type genderType = z.infer<typeof gender>;
 export type currentAgeType = z.infer<typeof currentAge>;
