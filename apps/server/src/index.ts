@@ -49,7 +49,7 @@ server.register(fastifySession, {
 server.register(fastifycors, {
   origin: [`http://127.0.0.1:3000`, "http://localhost:3000"],
   credentials: true,
-  exposedHeaders: ["set-cookie"],
+  // exposedHeaders: ["set-cookie"],
 });
 
 // You'd create one of these when you start your app.
@@ -70,15 +70,6 @@ server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: { router: appRouter, createContext },
 });
-
-// server.get("/test", (request, reply) => {
-//   request.session.id = "test";
-//   reply
-//     .setCookie("foo", "foo", {
-//       path: "/",
-//     })
-//     .send({ hello: "world" });
-// });
 
 //NOTE is this the smart place to do it, does it only execute once?
 

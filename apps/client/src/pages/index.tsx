@@ -30,9 +30,6 @@ const Home: NextPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() });
-    axios
-      .get("http://127.0.0.1:4000/test", { withCredentials: true })
-      .then((response) => console.log(response));
     setName("");
   };
   const onRadioChange = (event) => {
