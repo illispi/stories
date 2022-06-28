@@ -4,6 +4,7 @@ import { AppRouter } from "../../../server/src/router";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
+import { getFetch } from "@trpc/client";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -20,12 +21,12 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
-    const url = process.env.VERCEL_URL
+    const urlBase = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/api/trpc`
       : "http://127.0.0.1:4000/trpc";
 
     return {
-      url,
+      urlBase,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
@@ -40,9 +41,14 @@ export default withTRPC<AppRouter>({
         }
         return {};
       },
-      // fetch: fetch(new Request("http://127.0.0.1:4000/"), {
-      //   credentials: "include",
-      // }),
+      fetch: async (url, opts) => {
+        const fetch = getFetch();
+
+        return fetch(`${urlBase}/${url}`.replace("undefined/", ""), {
+          ...opts,
+          credentials: "include",
+        });
+      },
     };
   },
   /**

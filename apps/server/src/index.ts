@@ -71,14 +71,14 @@ server.register(fastifyTRPCPlugin, {
   trpcOptions: { router: appRouter, createContext },
 });
 
-server.get("/test", (request, reply) => {
-  request.session.id = "test";
-  reply
-    .setCookie("foo", "foo", {
-      path: "/",
-    })
-    .send({ hello: "world" });
-});
+// server.get("/test", (request, reply) => {
+//   request.session.id = "test";
+//   reply
+//     .setCookie("foo", "foo", {
+//       path: "/",
+//     })
+//     .send({ hello: "world" });
+// });
 
 //NOTE is this the smart place to do it, does it only execute once?
 
