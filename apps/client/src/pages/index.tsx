@@ -8,6 +8,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
 import type { createUserType } from "zod-types";
+import axios from "axios";
 
 const Home: NextPage = () => {
   const utils = trpc.useContext();
@@ -29,6 +30,9 @@ const Home: NextPage = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() });
+    axios
+      .get("http://127.0.0.1:4000/test", { withCredentials: true })
+      .then((response) => console.log(response));
     setName("");
   };
   const onRadioChange = (event) => {

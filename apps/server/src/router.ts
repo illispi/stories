@@ -30,7 +30,7 @@ export const appRouter = trpc
   })
   .mutation("createCookie", {
     resolve: async ({ ctx }) => {
-      if (!ctx.user.id) {
+      if (!ctx.req.session.id) {
         const { user_id } = await db
           .insertInto("user")
           .values({ user_id: sql`DEFAULT` })
