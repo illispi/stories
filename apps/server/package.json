@@ -34,6 +34,7 @@
     "concurrently": "^7.2.1",
     "kysely-codegen": "^0.2.4",
     "nodemon": "^2.0.16",
-    "pino-pretty": "^8.0.0"
+    "pino-pretty": "^8.0.0",
+    "ts-to-zod": "^1.11.0"
   }
 }
