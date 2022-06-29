@@ -13,7 +13,7 @@ import fastifyCookie from "@fastify/cookie";
 import { __prod__ } from "./constants";
 import connectRedis from "connect-redis";
 import Redis from "ioredis";
-// import fs from "fs";
+import fs from "fs";
 import os from "os";
 
 dotenv.config();
@@ -35,16 +35,16 @@ for (const name of Object.keys(nets)) {
 const key = Object.keys(results);
 const ip = results[key[0]][0];
 
-console.log("available at localnetwork ", `http://${ip}`);
+// console.log("available at localnetwork ", `http://${ip}`);
 
-//NOTE i dont think i need below
 
-// fs.writeFile("../../client/.env.local", `IP_DEV=${ip}`, (err) => {
-//   if (err) {
-//     return console.log(err);
-//   }
-//   console.log(".env.local was saved!");
-// });
+
+fs.writeFile("../client/.env.local", `IP_DEV=${ip}`, (err) => {
+  if (err) {
+    return console.log(err);
+  }
+  console.log(".env.local was saved!");
+});
 
 const server = fastify({
   maxParamLength: 5000,

@@ -38,11 +38,6 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <div className=" flex-col items-center justify-center">
-        {allUsers.data?.map((allUserData, i) => (
-          <li key={`${allUserData.user_id}${i}`}>{allUserData.user_id}</li>
-        )) ?? <p>No users found</p>}
-      </div>
       <form onSubmit={handleSubmit}>
         <label>
           Enter your name:
