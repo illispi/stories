@@ -15,8 +15,6 @@ const Home: NextPage = () => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState<createUserType["gender"]>("male");
 
-  const allUsers = trpc.useQuery(["getAllUsersIds"]);
-
   //TODO loading state, ssr is true so might not be necessary
 
   // if (!hello.data) {
