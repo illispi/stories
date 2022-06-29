@@ -2,34 +2,50 @@ import * as trpc from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
 import { db } from "./index";
-import { personalQuestionsSchema } from "zod-types";
+import { personalQuestionsSchema, theirQuestionsSchema } from "zod-types";
 import { sql } from "kysely";
 
 export const appRouter = trpc
   .router<Context>()
   .mutation("addPersonalAnswers", {
     input: personalQuestionsSchema,
-    //NOTE if user sends null fields input doesnt accept them
 
-    resolve: async ({ input, ctx }) => {      
- 
-      const { user_id } = await db
-        .insertInto("personal_questions")
-        .values({...input})
-        .returning("user_id")
-        .executeTakeFirstOrThrow();
+    resolve: async ({ input, ctx }) => {
+      if (ctx.req.session.id) {
+        const insertion = await db
+          .insertInto("personal_questions")
+          .values({ ...input, user_id: ctx.req.session.id }) //BUG what if session.if is null or otherwise wrong.
+          .execute();
 
-      return user_id;
+        if (insertion) {
+          //BUG what insertion returns if no success
+          return "Added, waiting for approval";
+        }
+
+        return "failed to add for approval";
+      }
+
+      return "No session found";
     },
   })
-  .query("getAllUsersIds", {
-    resolve: async () => {
-      const allUsersIds = await db
-        .selectFrom("user")
-        .select("user_id")
-        .execute();
+  .mutation("addTheirAnswers", {
+    input: theirQuestionsSchema,
+    resolve: async ({ input, ctx }) => {
+      if (ctx.req.session.id) {
+        const insertion = await db
+          .insertInto("their_questions")
+          .values({ ...input, user_id: ctx.req.session.id }) //BUG what if session.if is null or otherwise wrong.
+          .execute();
 
-      return allUsersIds;
+        if (insertion) {
+          //BUG what insertion returns if no success
+          return "Added, waiting for approval";
+        }
+
+        return "failed to add for approval";
+      }
+
+      return "No session found";
     },
   })
   .mutation("createCookie", {
@@ -51,3 +67,16 @@ export const appRouter = trpc
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+//NOTE old example how to select all
+
+// .query("getAllUsersIds", {
+//   resolve: async () => {
+//     const allUsersIds = await db
+//       .selectFrom("user")
+//       .select("user_id")
+//       .execute();
+
+//     return allUsersIds;
+//   },
+// })
