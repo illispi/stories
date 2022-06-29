@@ -13,8 +13,38 @@ import fastifyCookie from "@fastify/cookie";
 import { __prod__ } from "./constants";
 import connectRedis from "connect-redis";
 import Redis from "ioredis";
+// import fs from "fs";
+import os from "os";
 
 dotenv.config();
+
+const nets = os.networkInterfaces();
+const results = Object.create(null);
+
+for (const name of Object.keys(nets)) {
+  for (const net of nets[name]!) {
+    if (net.family === "IPv4" && !net.internal) {
+      if (!results[name]) {
+        results[name] = [];
+      }
+      results[name].push(net.address);
+    }
+  }
+}
+
+const key = Object.keys(results);
+const ip = results[key[0]][0];
+
+console.log("available at localnetwork ", `http://${ip}`);
+
+//NOTE i dont think i need below
+
+// fs.writeFile("../../client/.env.local", `IP_DEV=${ip}`, (err) => {
+//   if (err) {
+//     return console.log(err);
+//   }
+//   console.log(".env.local was saved!");
+// });
 
 const server = fastify({
   maxParamLength: 5000,
@@ -47,7 +77,11 @@ server.register(fastifySession, {
 } as any);
 
 server.register(fastifycors, {
-  origin: [`http://127.0.0.1:3000`, "http://localhost:3000"],
+  origin: [
+    `http://127.0.0.1:3000`,
+    "http://localhost:3000",
+    `http://${ip}:3000`,
+  ],
   credentials: true,
   // exposedHeaders: ["set-cookie"],
 });
@@ -75,7 +109,7 @@ server.register(fastifyTRPCPlugin, {
 
 (async () => {
   try {
-    await server.listen({ port: 4000 });
+    await server.listen({ port: 4000, host: "0.0.0.0" });
   } catch (err) {
     db.destroy(); //NOTE this destroys connction to db
     //NOTE might need to close on succesful exit
