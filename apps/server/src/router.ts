@@ -2,19 +2,20 @@ import * as trpc from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
 import { db } from "./index";
-import { personalQuestions } from "zod-types";
+import { personalQuestionsSchema } from "zod-types";
 import { sql } from "kysely";
 
 export const appRouter = trpc
   .router<Context>()
   .mutation("addPersonalAnswers", {
-    input: personalQuestions,
+    input: personalQuestionsSchema,
+    //NOTE if user sends null fields input doesnt accept them
 
-    resolve: async ({ input }) => {
+    resolve: async ({ input, ctx }) => {      
  
       const { user_id } = await db
-        .insertInto("user")
-        // .values(sql`values ()`)
+        .insertInto("personal_questions")
+        .values({...input})
         .returning("user_id")
         .executeTakeFirstOrThrow();
 

@@ -153,9 +153,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("other_help", "text")
     .addColumn("worst_symptom", "text", (col) =>
-      col.check(
-        sql`worst_symptom in ('negative symptoms', 'positive symptoms', 'cognitive symptoms')`
-      )
+      col
+        .check(
+          sql`worst_symptom in ('negative symptoms', 'positive symptoms', 'cognitive symptoms')`
+        )
+        .notNull()
     )
     .addColumn("life_unemployed", "boolean") //NOTE ask fore suggestion if this is the best idea for example own table
     .addColumn("life_disability", "boolean")
@@ -199,7 +201,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.references("user.user_id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
-      col.check(sql`relation in ('relative', 'friend', 'acquintance')`)
+      col.check(sql`relation in ('relative', 'friend', 'acquintance')`).notNull()
     )
     .addColumn(
       "gender",
@@ -242,6 +244,5 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("their_questions").execute();
   await db.schema.dropTable("user").execute();
 }
-
 
 //NOTE if you added to column name_enum, you could spot them easily in zod schemas.
