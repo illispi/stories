@@ -37,8 +37,6 @@ const ip = results[key[0]][0];
 
 // console.log("available at localnetwork ", `http://${ip}`);
 
-
-
 fs.writeFile("../client/.env.local", `IP_DEV=${ip}`, (err) => {
   if (err) {
     return console.log(err);
@@ -112,7 +110,7 @@ server.register(fastifyTRPCPlugin, {
     await server.listen({ port: 4000, host: "0.0.0.0" });
   } catch (err) {
     db.destroy(); //NOTE this destroys connction to db
-    //NOTE might need to close on succesful exit
+    //TODO might need to close on succesful exit SIGINIT
     server.log.error(err);
     process.exit(1);
   }

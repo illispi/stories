@@ -6,7 +6,6 @@ import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import { getFetch } from "@trpc/client";
 
-
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
@@ -24,8 +23,7 @@ export default withTRPC<AppRouter>({
      */
     const urlBase = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/api/trpc`
-      : `http://${process.env.IP_DEV}/trpc`;
-
+      : `http://${process.env.IP_DEV}:4000/trpc`;
 
     return {
       urlBase,
