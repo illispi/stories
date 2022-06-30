@@ -10,7 +10,7 @@ const PersonalQuestions = () => {
       question="What is your gender"
       questionType="selection"
       question_db="gender"
-      selections={["Male", "Female", "Other"]}
+      selGender={["female", "male", "other"]}
     ></UnitQuestion>
   );
 };
