@@ -10,6 +10,7 @@ importers:
 
   apps/client:
     specifiers:
+      '@hookform/resolvers': ^2.9.3
       '@trpc/client': ^9.24.0
       '@trpc/next': ^9.24.0
       '@trpc/react': ^9.24.0
@@ -31,8 +32,10 @@ importers:
       react-query: ^3.39.1
       tailwindcss: ^3.1.3
       typescript: 4.7.3
+      zod: ^3.17.3
       zod-types: '*'
     dependencies:
+      '@hookform/resolvers': 2.9.3_react-hook-form@7.33.0
       '@trpc/client': 9.25.3_@trpc+server@9.25.3
       '@trpc/next': 9.25.3_jzelg6ngsy7hxywokhnb67zsxq
       '@trpc/react': 9.25.3_ub67m26lhncw2csxgbgk2dkbcm
@@ -43,6 +46,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-hook-form: 7.33.0_react@18.1.0
       react-query: 3.39.1_ef5jwxihqo6n7gxfmzogljlgcm
+      zod: 3.17.3
       zod-types: link:../../packages/zod-types
     devDependencies:
       '@types/node': 17.0.40
@@ -205,6 +209,14 @@ packages:
       fastify-plugin: 3.0.1
       safe-stable-stringify: 2.3.1
       uid-safe: 2.1.5
+    dev: false
+
+  /@hookform/resolvers/2.9.3_react-hook-form@7.33.0:
+    resolution: {integrity: sha512-Eqc/qgjq0VX/TU0a5D2O+yR/kAKflnjaVlYFC1wI2qBm/sgjKTXxv27ijLwHUoHPIF+MUkB/VuQqHJ5DcmbCww==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.33.0_react@18.1.0
     dev: false
 
   /@humanwhocodes/config-array/0.9.5:

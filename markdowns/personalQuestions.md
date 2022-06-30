@@ -3,7 +3,7 @@
       - male, female, other
 
 2. ## **Q.** How old are you?
-    - every 5 years
+    - number
 
 
 3. ## **Q.** What age were you for your first psychosis?

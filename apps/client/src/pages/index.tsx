@@ -8,6 +8,7 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
 import type { createUserType } from "zod-types";
+import Link from "next/link";
 import axios from "axios";
 
 const Home: NextPage = () => {
@@ -38,6 +39,9 @@ const Home: NextPage = () => {
 
   return (
     <div>
+      <Link href="/personalQuestions">
+        <a>Personal questions</a>
+      </Link>
       <form onSubmit={handleSubmit}>
         <label>
           Enter your name:

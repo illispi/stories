@@ -63,7 +63,9 @@ export const personalQuestionsSchema = z.object({
   quitting: z.boolean(),
   quitting_regret: z.boolean().nullable(),
   quitting_what_happened: z.string().nullable(),
-  quitting_why: z.enum(["side effects", "felt normal", "affordability"]).nullable(),
+  quitting_why: z
+    .enum(["side effects", "felt normal", "affordability"])
+    .nullable(),
   responded_to_telling: z.string().nullable(),
   side_effs_dizziness: z.boolean().nullable(),
   side_effs_movement_effects: z.boolean().nullable(),
@@ -72,12 +74,14 @@ export const personalQuestionsSchema = z.object({
   side_effs_tardive: z.boolean().nullable(),
   side_effs_weight_gain: z.boolean().nullable(),
   smoking: z.boolean(),
-  smoking_amount: z.enum([
-    "20 a day",
-    "10 a day",
-    "less than 10 a day",
-    "more than pack a day",
-  ]).nullable(),
+  smoking_amount: z
+    .enum([
+      "20 a day",
+      "10 a day",
+      "less than 10 a day",
+      "more than pack a day",
+    ])
+    .nullable(),
   suicidal_thoughts: z.boolean(),
   suicide_attempts: z.boolean().nullable(),
   symptoms_delusions: z.boolean().nullable(),
@@ -98,7 +102,7 @@ export const personalQuestionsSchema = z.object({
     "negative symptoms",
     "positive symptoms",
     "cognitive symptoms",
-  ])
+  ]),
 });
 
 export const theirQuestionsSchema = z.object({
@@ -140,3 +144,6 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
+
+export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
+export type theirQuestions = z.infer<typeof theirQuestionsSchema>;
