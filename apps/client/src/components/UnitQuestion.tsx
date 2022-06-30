@@ -35,9 +35,9 @@ export const UnitQuestion: React.FC<{
         {props.selections?.map((v) => (
           <button
             key={`key${props.question_db}${v}`}
-            onClick={() => handleSubmit(v)}
+            onClick={() => handleSubmit(v.toLowerCase())}
           >
-            Male
+            {v}
           </button>
         ))}
       </div>
