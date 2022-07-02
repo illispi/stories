@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 
 //NOTE might need yes or no selection
@@ -6,6 +6,8 @@ import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 type QuestionType = "selection" | "integer" | "text" | "yesOrNo";
 
 export const UnitQuestion: React.FC<{
+  setNav: React.Dispatch<React.SetStateAction<number>>;
+  nav: number;
   question: string;
   question_db: keyof PersonalQuestions;
   questionType: QuestionType;
@@ -15,16 +17,20 @@ export const UnitQuestion: React.FC<{
   selQuitWhy?: PersonalQuestions["quitting_why"][];
   selSmokeAmount?: PersonalQuestions["smoking_amount"][];
   selWorstSymp?: PersonalQuestions["worst_symptom"][];
-}> = (props) => {
+}> = ({ nav, setNav, ...props }) => {
   //NOTE Do i need to validate?s
+  //NOTE localstorage can only store strings, so numbers etc. have to be converted.
 
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+
 
   const handleSubmit = (value: string | null | number) => {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(props.question_db, serializedValue);
+      setNav((nav) => nav + 1);
     } catch (err) {
       console.log(err);
       return undefined;
@@ -41,9 +47,7 @@ export const UnitQuestion: React.FC<{
     if (validateInt(value)) {
       handleSubmit(value);
       setError(null);
-    }
-    else{
-
+    } else {
       setError("Please provide whole numbers only");
     }
   };
