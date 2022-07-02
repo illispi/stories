@@ -17,20 +17,20 @@ export const UnitQuestion: React.FC<{
   selQuitWhy?: PersonalQuestions["quitting_why"][];
   selSmokeAmount?: PersonalQuestions["smoking_amount"][];
   selWorstSymp?: PersonalQuestions["worst_symptom"][];
-}> = ({ nav, setNav, ...props }) => {
+  setDirection: React.Dispatch<React.SetStateAction<number>>;
+}> = ({ nav, setNav, setDirection, ...props }) => {
   //NOTE Do i need to validate?s
   //NOTE localstorage can only store strings, so numbers etc. have to be converted.
 
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-
-
   const handleSubmit = (value: string | null | number) => {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(props.question_db, serializedValue);
-      setNav((nav) => nav + 1);
+      setNav(() => nav + 1);
+      setDirection(1);
     } catch (err) {
       console.log(err);
       return undefined;
