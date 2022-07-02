@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 
 //NOTE might need yes or no selection
@@ -16,15 +16,35 @@ export const UnitQuestion: React.FC<{
   selSmokeAmount?: PersonalQuestions["smoking_amount"][];
   selWorstSymp?: PersonalQuestions["worst_symptom"][];
 }> = (props) => {
-  //NOTE Do i need to validate?
+  //NOTE Do i need to validate?s
 
-  const handleSubmit = (value: string | null) => {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = (value: string | null | number) => {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(props.question_db, serializedValue);
     } catch (err) {
       console.log(err);
       return undefined;
+    }
+  };
+
+  const validateInt = (value: string) => {
+    return /^(0|[1-9]\d*)$/.test(value);
+  };
+
+  const handleNumber = (e) => {
+    e.preventDefault();
+    //TODO cant be too old validation
+    if (validateInt(value)) {
+      handleSubmit(value);
+      setError(null);
+    }
+    else{
+
+      setError("Please provide whole numbers only");
     }
   };
 
@@ -46,7 +66,7 @@ export const UnitQuestion: React.FC<{
 
     return (
       <div>
-        <h3>{props.question}</h3>
+        <label>{props.question}</label>
         {selection.map((v) => (
           <button
             key={`key${props.question_db}${v}`}
@@ -59,7 +79,21 @@ export const UnitQuestion: React.FC<{
     );
   }
   if (props.questionType === "integer") {
-    return <h2>wip</h2>;
+    return (
+      <div>
+        <form onSubmit={handleNumber}>
+          <label htmlFor="int">{props.question}</label>
+          <input
+            id="int"
+            type="tel"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          ></input>
+          <button type="submit">Next</button>
+        </form>
+        {error && <p>{error}</p>}
+      </div>
+    );
   }
   if (props.questionType === "text") {
     return <h2>wip</h2>;
