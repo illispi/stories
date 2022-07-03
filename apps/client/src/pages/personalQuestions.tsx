@@ -102,16 +102,11 @@ const PersonalQuestions = () => {
   const [direction, setDirection] = useState<number>(0);
 
   useEffect(() => {
-    const pageNav = parseInt(localStorage.getItem("nav") ?? "0");
+    const pageNav = parseInt(localStorage.getItem("nav") ?? "1");
     if (nav <= 0) {
-      setNav(1);
-      localStorage.setItem("nav", "1");
+      setNav(pageNav);
     } else {
-      if (pageNav > nav) {
-        setNav(pageNav);
-      } else {
-        localStorage.setItem("nav", nav.toString());
-      }
+      localStorage.setItem("nav", nav.toString());
     }
   }, [nav]);
 
