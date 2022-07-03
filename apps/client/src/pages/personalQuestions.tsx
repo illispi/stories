@@ -103,7 +103,7 @@ const Questions: React.FC<{
         className="fixed bottom-0"
         type="button"
         onClick={() => {
-          setNav(() => nav - 1);
+          setNav(() => (nav === 1 ? 1 : nav - 1));
           setDirection(-1);
         }}
       >

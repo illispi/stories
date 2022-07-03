@@ -37,7 +37,7 @@ const QuestionTransition: React.FC<{
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 2 }}
+          transition={{ duration: 1.2 }}
         >
           {children}
         </motion.div>
