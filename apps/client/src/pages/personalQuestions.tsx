@@ -9,6 +9,10 @@ import { UnitQuestion } from "../components/UnitQuestion";
 
 //TODO for selections find a way to remove duplicates and somehow get types to js.
 
+//NOTE is this the best way to center absolute children on fixed parent
+
+//TODO find a way to reduce repetition with animatePrescence
+
 const Questions: React.FC<{
   nav: number;
   setNav: React.Dispatch<React.SetStateAction<number>>;
@@ -25,7 +29,7 @@ const Questions: React.FC<{
           custom={direction}
         >
           {nav === 1 ? (
-            <QuestionTransition direction={direction} questionKey="gender">
+            <QuestionTransition direction={direction}>
               <UnitQuestion
                 setNav={setNav}
                 nav={nav}
@@ -39,61 +43,20 @@ const Questions: React.FC<{
           ) : null}
         </AnimatePresence>
 
-        {/* <QuestionTransition
-            direction={direction}
-            questionId="current_age"
-            isVisible={nav === 2 ? true : false}
-          >
-            <UnitQuestion
-              setNav={setNav}
-              nav={nav}
-              setDirection={setDirection}
-              question="How old are you"
-              questionType="integer"
-              question_db="current_age"
-            ></UnitQuestion>
-          </QuestionTransition> */}
         <AnimatePresence
           exitBeforeEnter={true}
           initial={false}
           custom={direction}
         >
           {nav === 2 ? (
-            <QuestionTransition
-              direction={direction}
-              questionKey="after_hospital_satisfaction"
-            >
+            <QuestionTransition direction={direction}>
               <UnitQuestion
                 setNav={setNav}
                 nav={nav}
                 setDirection={setDirection}
-                question="What is your gender?"
-                questionType="selection"
-                question_db="gender"
-                selGender={["female", "male", "other"]}
-              ></UnitQuestion>
-            </QuestionTransition>
-          ) : null}
-        </AnimatePresence>
-
-        <AnimatePresence
-          exitBeforeEnter={true}
-          initial={false}
-          custom={direction}
-        >
-          {nav === 3 ? (
-            <QuestionTransition
-              direction={direction}
-              questionKey="describe_prodromal_symptoms"
-            >
-              <UnitQuestion
-                setNav={setNav}
-                nav={nav}
-                setDirection={setDirection}
-                question="What is your gender?"
-                questionType="selection"
-                question_db="gender"
-                selGender={["female", "male", "other"]}
+                question="How old are you?"
+                questionType="integer"
+                question_db="current_age"
               ></UnitQuestion>
             </QuestionTransition>
           ) : null}

@@ -22,17 +22,16 @@ const variants = {
 };
 
 const QuestionTransition: React.FC<{
-  isVisible?: boolean;
-  questionKey: keyof PersonalQuestions;
+
   direction: number;
   children: React.ReactNode;
-}> = ({ children, isVisible, questionKey, direction }) => {
+}> = ({ children, direction }) => {
   return (
     <>
-      {true && (
+     
         <motion.div
           variants={variants}
-          key={`motion.nav${questionKey}`}
+        
           custom={direction}
           initial="enter"
           animate="center"
@@ -41,7 +40,7 @@ const QuestionTransition: React.FC<{
         >
           {children}
         </motion.div>
-      )}
+     
     </>
   );
 };

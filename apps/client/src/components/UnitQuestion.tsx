@@ -84,18 +84,20 @@ export const UnitQuestion: React.FC<{
   }
   if (props.questionType === "integer") {
     return (
-      <div>
+      <div className="absolute flex w-80 translate-x-[-10rem] flex-col items-center justify-center">
         <form onSubmit={handleNumber}>
-          <label htmlFor="int">{props.question}</label>
-          <input
-            id="int"
-            type="tel"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          ></input>
-          <button type="submit">Next</button>
+          <div className="flex flex-col items-center justify-center">
+            <label htmlFor="int">{props.question}</label>
+            <input
+              id="int"
+              type="tel"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            ></input>
+            <button type="submit">Next</button>
+            {error && <p>{error}</p>}
+          </div>
         </form>
-        {error && <p>{error}</p>}
       </div>
     );
   }
