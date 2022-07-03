@@ -107,7 +107,11 @@ const PersonalQuestions = () => {
       setNav(1);
       localStorage.setItem("nav", "1");
     } else {
-      localStorage.setItem("nav", nav.toString());
+      if (pageNav > nav) {
+        setNav(pageNav);
+      } else {
+        localStorage.setItem("nav", nav.toString());
+      }
     }
   }, [nav]);
 
