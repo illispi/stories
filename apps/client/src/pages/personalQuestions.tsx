@@ -22,7 +22,7 @@ const Questions: React.FC<{
   return (
     <div>
       {nav === 0 ? <h2>loading...</h2> : null}
-      <motion.div className="fixed left-1/2 flex h-36 translate-x-2/4 flex-row">
+      <motion.div className="fixed left-1/2 top-1/2 flex translate-x-1/2 translate-y-1/2 flex-row items-center justify-center">
         <AnimatePresence
           exitBeforeEnter={true}
           initial={false}
@@ -90,7 +90,7 @@ const PersonalQuestions = () => {
   }, [nav]);
 
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex h-screen w-screen items-center justify-center">
       <Questions
         nav={nav}
         setNav={setNav}
