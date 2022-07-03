@@ -69,7 +69,7 @@ export const UnitQuestion: React.FC<{
     }
 
     return (
-      <div>
+      <div className="absolute flex w-80 translate-x-[-10rem] flex-col items-center justify-center">
         <label>{props.question}</label>
         {selection.map((v) => (
           <button

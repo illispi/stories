@@ -17,18 +17,20 @@ const Questions: React.FC<{
 }> = ({ nav, setNav, setDirection, direction }) => {
   return (
     <div>
-      {/* <MyComponent isVisible={nav % 2 === 0 ? true : false}></MyComponent> */}
-      <motion.div className="flex flex-row">
-        {nav === 0 ? <h2>loading...</h2> : null}
-
-        <AnimatePresence initial={false} custom={direction}>
+      {nav === 0 ? <h2>loading...</h2> : null}
+      <motion.div className="fixed left-1/2 flex h-36 translate-x-2/4 flex-row">
+        <AnimatePresence
+          exitBeforeEnter={true}
+          initial={false}
+          custom={direction}
+        >
           {nav === 1 ? (
             <QuestionTransition direction={direction} questionKey="gender">
               <UnitQuestion
                 setNav={setNav}
                 nav={nav}
                 setDirection={setDirection}
-                question="What is your gender"
+                question="What is your gender?"
                 questionType="selection"
                 question_db="gender"
                 selGender={["female", "male", "other"]}
@@ -51,7 +53,11 @@ const Questions: React.FC<{
               question_db="current_age"
             ></UnitQuestion>
           </QuestionTransition> */}
-        <AnimatePresence initial={false} custom={direction}>
+        <AnimatePresence
+          exitBeforeEnter={true}
+          initial={false}
+          custom={direction}
+        >
           {nav === 2 ? (
             <QuestionTransition
               direction={direction}
@@ -61,7 +67,7 @@ const Questions: React.FC<{
                 setNav={setNav}
                 nav={nav}
                 setDirection={setDirection}
-                question="What is your gender"
+                question="What is your gender?"
                 questionType="selection"
                 question_db="gender"
                 selGender={["female", "male", "other"]}
@@ -70,7 +76,11 @@ const Questions: React.FC<{
           ) : null}
         </AnimatePresence>
 
-        <AnimatePresence initial={false} custom={direction}>
+        <AnimatePresence
+          exitBeforeEnter={true}
+          initial={false}
+          custom={direction}
+        >
           {nav === 3 ? (
             <QuestionTransition
               direction={direction}
@@ -80,7 +90,7 @@ const Questions: React.FC<{
                 setNav={setNav}
                 nav={nav}
                 setDirection={setDirection}
-                question="What is your gender"
+                question="What is your gender?"
                 questionType="selection"
                 question_db="gender"
                 selGender={["female", "male", "other"]}
@@ -90,6 +100,8 @@ const Questions: React.FC<{
         </AnimatePresence>
       </motion.div>
       <button
+        className="fixed bottom-0"
+        type="button"
         onClick={() => {
           setNav(() => nav - 1);
           setDirection(-1);
@@ -108,7 +120,7 @@ const PersonalQuestions = () => {
   useEffect(() => {
     const pageNav = parseInt(localStorage.getItem("nav") ?? "1");
     if (nav <= 0) {
-      setNav(pageNav);
+      setNav(pageNav === 0 ? 1 : pageNav);
     } else {
       localStorage.setItem("nav", nav.toString());
     }
