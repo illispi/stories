@@ -17,27 +17,27 @@ const Questions: React.FC<{
 }> = ({ nav, setNav, setDirection, direction }) => {
   return (
     <div>
-      <AnimatePresence exitBeforeEnter initial={false} custom={direction}>
-        <motion.div className="flex w-80 flex-row">
-          {nav === 0 ? <h2>loading...</h2> : null}
+      {/* <MyComponent isVisible={nav % 2 === 0 ? true : false}></MyComponent> */}
+      <motion.div className="flex flex-row">
+        {nav === 0 ? <h2>loading...</h2> : null}
 
-          <QuestionTransition
-            direction={direction}
-            questionId="gender"
-            isVisible={nav === 1 ? true : false}
-          >
-            <UnitQuestion
-              setNav={setNav}
-              nav={nav}
-              setDirection={setDirection}
-              question="What is your gender"
-              questionType="selection"
-              question_db="gender"
-              selGender={["female", "male", "other"]}
-            ></UnitQuestion>
-          </QuestionTransition>
+        <AnimatePresence initial={false} custom={direction}>
+          {nav === 1 ? (
+            <QuestionTransition direction={direction} questionKey="gender">
+              <UnitQuestion
+                setNav={setNav}
+                nav={nav}
+                setDirection={setDirection}
+                question="What is your gender"
+                questionType="selection"
+                question_db="gender"
+                selGender={["female", "male", "other"]}
+              ></UnitQuestion>
+            </QuestionTransition>
+          ) : null}
+        </AnimatePresence>
 
-          {/* <QuestionTransition
+        {/* <QuestionTransition
             direction={direction}
             questionId="current_age"
             isVisible={nav === 2 ? true : false}
@@ -51,40 +51,44 @@ const Questions: React.FC<{
               question_db="current_age"
             ></UnitQuestion>
           </QuestionTransition> */}
+        <AnimatePresence initial={false} custom={direction}>
+          {nav === 2 ? (
+            <QuestionTransition
+              direction={direction}
+              questionKey="after_hospital_satisfaction"
+            >
+              <UnitQuestion
+                setNav={setNav}
+                nav={nav}
+                setDirection={setDirection}
+                question="What is your gender"
+                questionType="selection"
+                question_db="gender"
+                selGender={["female", "male", "other"]}
+              ></UnitQuestion>
+            </QuestionTransition>
+          ) : null}
+        </AnimatePresence>
 
-          <QuestionTransition
-            direction={direction}
-            questionId="after_hospital_satisfaction"
-            isVisible={nav === 2 ? true : false}
-          >
-            <UnitQuestion
-              setNav={setNav}
-              nav={nav}
-              setDirection={setDirection}
-              question="What is your gender"
-              questionType="selection"
-              question_db="gender"
-              selGender={["female", "male", "other"]}
-            ></UnitQuestion>
-          </QuestionTransition>
-
-          <QuestionTransition
-            direction={direction}
-            questionId="describe_prodromal_symptoms"
-            isVisible={nav === 3 ? true : false}
-          >
-            <UnitQuestion
-              setNav={setNav}
-              nav={nav}
-              setDirection={setDirection}
-              question="What is your gender"
-              questionType="selection"
-              question_db="gender"
-              selGender={["female", "male", "other"]}
-            ></UnitQuestion>
-          </QuestionTransition>
-        </motion.div>
-      </AnimatePresence>
+        <AnimatePresence initial={false} custom={direction}>
+          {nav === 3 ? (
+            <QuestionTransition
+              direction={direction}
+              questionKey="describe_prodromal_symptoms"
+            >
+              <UnitQuestion
+                setNav={setNav}
+                nav={nav}
+                setDirection={setDirection}
+                question="What is your gender"
+                questionType="selection"
+                question_db="gender"
+                selGender={["female", "male", "other"]}
+              ></UnitQuestion>
+            </QuestionTransition>
+          ) : null}
+        </AnimatePresence>
+      </motion.div>
       <button
         onClick={() => {
           setNav(() => nav - 1);
