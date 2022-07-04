@@ -25,13 +25,14 @@ const QuestionTransition: React.FC<{
 
   direction: number;
   children: React.ReactNode;
-}> = ({ children, direction }) => {
+  key: string
+}> = ({ children, direction, key }) => {
   return (
     <>
      
         <motion.div
           variants={variants}
-        
+          key={key}
           custom={direction}
           initial="enter"
           animate="center"

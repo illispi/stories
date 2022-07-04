@@ -23,13 +23,9 @@ const Questions: React.FC<{
     <div>
       {nav === 0 ? <h2>loading...</h2> : null}
       <motion.div className="fixed left-1/2 top-1/2 flex translate-x-1/2 translate-y-1/2 flex-row items-center justify-center">
-        <AnimatePresence
-          exitBeforeEnter={true}
-          initial={false}
-          custom={direction}
-        >
+        <AnimatePresence initial={false} custom={direction}>
           {nav === 1 ? (
-            <QuestionTransition direction={direction}>
+            <QuestionTransition key="1" direction={direction}>
               <UnitQuestion
                 setNav={setNav}
                 nav={nav}
@@ -41,15 +37,9 @@ const Questions: React.FC<{
               ></UnitQuestion>
             </QuestionTransition>
           ) : null}
-        </AnimatePresence>
 
-        <AnimatePresence
-          exitBeforeEnter={true}
-          initial={false}
-          custom={direction}
-        >
           {nav === 2 ? (
-            <QuestionTransition direction={direction}>
+            <QuestionTransition key="2" direction={direction}>
               <UnitQuestion
                 setNav={setNav}
                 nav={nav}
