@@ -5,12 +5,18 @@ import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 
 type QuestionType = "selection" | "integer" | "text" | "yesOrNo";
 
-const Absolute: React.FC<{
+const Box: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+  question: string;
+}> = ({ children, question }) => {
   return (
-    <div className="absolute flex h-80 w-80 translate-x-[-50%] translate-y-[-25%] flex-col items-center justify-start">
-      {children}
+    <div className="absolute flex h-80 w-72 translate-x-[-50%] translate-y-[-50%] flex-col items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500">
+      <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
+        <label className="text-xl">{question}</label>
+      </div>
+      <div className="flex flex-grow items-center justify-center">
+        {children}
+      </div>
     </div>
   );
 };
@@ -79,8 +85,7 @@ export const UnitQuestion: React.FC<{
     }
 
     return (
-      <Absolute>
-        <label className="mb-16">{props.question}</label>
+      <Box question={props.question}>
         {selection.map((v) => (
           <button
             key={`key${props.question_db}${v}`}
@@ -89,17 +94,14 @@ export const UnitQuestion: React.FC<{
             {v}
           </button>
         ))}
-      </Absolute>
+      </Box>
     );
   }
   if (props.questionType === "integer") {
     return (
-      <Absolute>
+      <Box question={props.question}>
         <form onSubmit={handleNumber}>
           <div className="flex flex-col items-center justify-start">
-            <label className="mb-16" htmlFor="int">
-              {props.question}
-            </label>
             <input
               id="int"
               type="tel"
@@ -110,7 +112,7 @@ export const UnitQuestion: React.FC<{
             {error && <p>{error}</p>}
           </div>
         </form>
-      </Absolute>
+      </Box>
     );
   }
   if (props.questionType === "text") {
