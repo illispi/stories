@@ -27,7 +27,7 @@ const QuestionTransition: React.FC<{
 }> = ({ children, direction }) => {
   return (
     <motion.div
-      className="absolute left-0 right-0 flex h-80 w-72 flex-col items-center justify-start
+      className="mw-8 absolute left-0 right-0 flex h-80 w-72 flex-col items-center justify-start
          overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
       variants={variants}
       custom={direction}
