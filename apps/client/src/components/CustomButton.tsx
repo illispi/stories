@@ -18,11 +18,11 @@ const CustomButton = ({
     <button
       type={type === undefined ? "button" : type}
       {...rest}
-      className={`rounded-full font-semibold
-       text-white transition-all active:scale-110 sm:hover:scale-110  ${className} ${
+      className={`rounded-full p-3 font-semibold text-white
+       transition-all active:scale-110 sm:hover:scale-110  ${className} ${
         colors
           ? colors
-          : "bg-myMarine active:bg-[#4aa071] sm:hover:bg-[#4aa071]"
+          : "bg-[#2c8f59] active:bg-[#4aa071] sm:hover:bg-[#4aa071]"
       } `}
     >
       {children}

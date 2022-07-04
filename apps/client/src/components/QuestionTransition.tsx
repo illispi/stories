@@ -26,18 +26,18 @@ const QuestionTransition: React.FC<{
   children: React.ReactNode;
 }> = ({ children, direction }) => {
   return (
-    <>
-      <motion.div
-        variants={variants}
-        custom={direction}
-        initial="enter"
-        animate="center"
-        exit="exit"
-        transition={{ duration: 1.2 }}
-      >
-        {children}
-      </motion.div>
-    </>
+    <motion.div
+      className="absolute left-0 right-0 flex h-80 w-72 flex-col items-center justify-start
+         overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
+      variants={variants}
+      custom={direction}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      transition={{ duration: 1.2 }}
+    >
+      {children}
+    </motion.div>
   );
 };
 

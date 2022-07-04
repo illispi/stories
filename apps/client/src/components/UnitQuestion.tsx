@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
+import CustomButton from "./CustomButton";
 
 //NOTE might need yes or no selection
 
@@ -10,7 +11,7 @@ const Box: React.FC<{
   question: string;
 }> = ({ children, question }) => {
   return (
-    <div className="absolute flex h-80 w-72 translate-x-[-50%] translate-y-[-50%] flex-col items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500">
+    <div>
       <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
         <label className="text-xl">{question}</label>
       </div>
@@ -86,14 +87,18 @@ export const UnitQuestion: React.FC<{
 
     return (
       <Box question={props.question}>
-        {selection.map((v) => (
-          <button
-            key={`key${props.question_db}${v}`}
-            onClick={() => handleSubmit(v)}
-          >
-            {v}
-          </button>
-        ))}
+        <div className="flex flex-col items-center justify-center">
+          {selection.map((v) => (
+            <div key={`keyDiv${props.question_db}${v}`} className="m-2">
+              <CustomButton
+                key={`key${props.question_db}${v}`}
+                onClick={() => handleSubmit(v)}
+              >
+                {v}
+              </CustomButton>
+            </div>
+          ))}
+        </div>
       </Box>
     );
   }
@@ -108,7 +113,7 @@ export const UnitQuestion: React.FC<{
               value={value}
               onChange={(e) => setValue(e.target.value)}
             ></input>
-            <button type="submit">Next</button>
+            <CustomButton type="submit">Next</CustomButton>
             {error && <p>{error}</p>}
           </div>
         </form>

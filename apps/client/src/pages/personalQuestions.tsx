@@ -1,6 +1,7 @@
 import { dir } from "console";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import CustomButton from "../components/CustomButton";
 import QuestionTransition from "../components/QuestionTransition";
 // import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 import { UnitQuestion } from "../components/UnitQuestion";
@@ -20,48 +21,39 @@ const Questions: React.FC<{
   direction: number;
 }> = ({ nav, setNav, setDirection, direction }) => {
   return (
-    <div>
+    <>
       {nav === 0 ? <h2>loading...</h2> : null}
-      <motion.div className="fixed left-1/2 top-1/2 flex translate-x-1/2 translate-y-1/2 flex-row items-center justify-center">
-        <AnimatePresence initial={false} custom={direction}>
-          {nav === 1 ? (
-            <QuestionTransition key="1" direction={direction}>
-              <UnitQuestion
-                setNav={setNav}
-                nav={nav}
-                setDirection={setDirection}
-                question="What is your gender?"
-                questionType="selection"
-                question_db="gender"
-                selGender={["female", "male", "other"]}
-              ></UnitQuestion>
-            </QuestionTransition>
-          ) : null}
+      {/* <motion.div className="relative flex h-screen flex-row items-center justify-center"> */}
+      <AnimatePresence initial={false} custom={direction}>
+        {nav === 1 ? (
+          <QuestionTransition key="1" direction={direction}>
+            <UnitQuestion
+              setNav={setNav}
+              nav={nav}
+              setDirection={setDirection}
+              question="What is your gender?"
+              questionType="selection"
+              question_db="gender"
+              selGender={["female", "male", "other"]}
+            ></UnitQuestion>
+          </QuestionTransition>
+        ) : null}
 
-          {nav === 2 ? (
-            <QuestionTransition key="2" direction={direction}>
-              <UnitQuestion
-                setNav={setNav}
-                nav={nav}
-                setDirection={setDirection}
-                question="How old are you?"
-                questionType="integer"
-                question_db="current_age"
-              ></UnitQuestion>
-            </QuestionTransition>
-          ) : null}
-        </AnimatePresence>
-      </motion.div>
-      <button
-        type="button"
-        onClick={() => {
-          setNav(() => (nav === 1 ? 1 : nav - 1));
-          setDirection(-1);
-        }}
-      >
-        back
-      </button>
-    </div>
+        {nav === 2 ? (
+          <QuestionTransition key="2" direction={direction}>
+            <UnitQuestion
+              setNav={setNav}
+              nav={nav}
+              setDirection={setDirection}
+              question="How old are you?"
+              questionType="integer"
+              question_db="current_age"
+            ></UnitQuestion>
+          </QuestionTransition>
+        ) : null}
+      </AnimatePresence>
+      {/* </motion.div> */}
+    </>
   );
 };
 
@@ -79,13 +71,25 @@ const PersonalQuestions = () => {
   }, [nav]);
 
   return (
-    <div className="flex h-screen w-screen items-end justify-center">
+    <div className=" relative flex h-screen w-screen flex-col items-center justify-center">
       <Questions
         nav={nav}
         setNav={setNav}
         setDirection={setDirection}
         direction={direction}
       ></Questions>
+      <div className="fixed bottom-0">
+        <CustomButton
+          type="button"
+          onClick={() => {
+            setNav(() => (nav === 1 ? 1 : nav - 1));
+            setDirection(-1);
+          }}
+        >
+          Previous
+        </CustomButton>
+        <div className="mb-6"></div>
+      </div>
     </div>
   );
 };
