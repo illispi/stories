@@ -22,26 +22,21 @@ const variants = {
 };
 
 const QuestionTransition: React.FC<{
-
   direction: number;
   children: React.ReactNode;
-  key: string
-}> = ({ children, direction, key }) => {
+}> = ({ children, direction }) => {
   return (
     <>
-     
-        <motion.div
-          variants={variants}
-          key={key}
-          custom={direction}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 1.2 }}
-        >
-          {children}
-        </motion.div>
-     
+      <motion.div
+        variants={variants}
+        custom={direction}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{ duration: 1.2 }}
+      >
+        {children}
+      </motion.div>
     </>
   );
 };
