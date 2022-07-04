@@ -1,4 +1,3 @@
-import { dir } from "console";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
@@ -20,6 +19,56 @@ const q = [
     questionType: "selection",
     question_db: "gender",
     selGender: ["female", "male", "other"],
+  },
+
+  {
+    question: "How old are you?",
+    questionType: "integer",
+    question_db: "current_age",
+  },
+];
+
+const Box: React.FC<{
+  children: React.ReactNode;
+  question: string;
+}> = ({ children, question }) => {
+  return (
+    <div>
+      <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
+        <label className="text-xl">{question}</label>
+      </div>
+      <div className="flex flex-grow items-center justify-center">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const variants = {
+  enter: (direction: number) => {
+    return {
+      x: direction > 0 ? 300 : -300,
+      opacity: 0,
+    };
+  },
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => {
+    return {
+      x: direction < 0 ? 300 : -300,
+      opacity: 0,
+    };
+  },
+};
+
+const questions = [
+  {
+    question: "What is your gender?",
+    questionType: "selection",
+    question_db: "gender",
+    selections: ["female", "male", "other"],
   },
 
   {
@@ -61,7 +110,6 @@ const Questions: React.FC<{
 
 const PersonalQuestions = () => {
   const [nav, setNav] = useState<number>(0);
-  const [direction, setDirection] = useState<number>(0);
 
   useEffect(() => {
     const pageNav = parseInt(localStorage.getItem("nav") ?? "1");
