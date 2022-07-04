@@ -15,26 +15,28 @@ const variants = {
   },
   exit: (direction: number) => {
     return {
-      x: direction < 0 ? 300 : -300,
       opacity: 0,
+      x: direction < 0 ? 300 : -300,
     };
   },
 };
 
 const QuestionTransition: React.FC<{
   direction: number;
+  nav:number;
   children: React.ReactNode;
-}> = ({ children, direction }) => {
+}> = ({ children, direction,nav }) => {
   return (
     <motion.div
-      className="absolute left-0 right-0 flex h-80 w-72 flex-col items-center justify-start
-         overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
-      variants={variants}
-      custom={direction}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 1.2 }}
+    className="absolute w-72"
+    key={nav}
+    custom={direction}
+    variants={variants}
+    initial="enter"
+    animate="center"
+    exit="exit"
+    transition={{ duration: 1.2 }}
+     
     >
       {children}
     </motion.div>

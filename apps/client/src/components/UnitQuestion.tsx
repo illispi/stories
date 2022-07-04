@@ -4,15 +4,16 @@ import CustomButton from "./CustomButton";
 
 //NOTE might need yes or no selection
 
-type QuestionType = "selection" | "integer" | "text" | "yesOrNo";
+export type QuestionType = "selection" | "integer" | "text" | "yesOrNo";
 
 const Box: React.FC<{
   children: React.ReactNode;
   question: string;
 }> = ({ children, question }) => {
   return (
-    <div>
-      <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
+    <div className="flex h-80  w-full flex-col items-center justify-start
+    rounded-3xl bg-white shadow-xl shadow-slate-500 ">
+      <div className="relative flex h-16 w-full items-center justify-center bg-blue-300 ">
         <label className="text-xl">{question}</label>
       </div>
       <div className="flex flex-grow items-center justify-center">
@@ -111,6 +112,7 @@ export const UnitQuestion: React.FC<{
               id="int"
               type="tel"
               value={value}
+              className="border"
               onChange={(e) => setValue(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
