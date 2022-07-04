@@ -1,4 +1,3 @@
-import { dir } from "console";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
