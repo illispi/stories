@@ -35,7 +35,7 @@ const Questions: React.FC<{
   setDirection: React.Dispatch<React.SetStateAction<number>>;
   direction: number;
 }> = ({ nav, setNav, setDirection, direction }) => {
-  console.log({ nav });
+
   return (
     <>
       {nav === 0 ? (
