@@ -9,7 +9,7 @@ const Absolute: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   return (
-    <div className="absolute flex w-80 translate-x-[-50%] translate-y-[-50%] flex-col items-center justify-center">
+    <div className="absolute flex h-80 w-80 translate-x-[-50%] translate-y-[-25%] flex-col items-center justify-start">
       {children}
     </div>
   );
@@ -80,7 +80,7 @@ export const UnitQuestion: React.FC<{
 
     return (
       <Absolute>
-        <label className="mb-8">{props.question}</label>
+        <label className="mb-16">{props.question}</label>
         {selection.map((v) => (
           <button
             key={`key${props.question_db}${v}`}
@@ -96,8 +96,8 @@ export const UnitQuestion: React.FC<{
     return (
       <Absolute>
         <form onSubmit={handleNumber}>
-          <div className="flex flex-col items-center justify-center">
-            <label className="mb-8" htmlFor="int">
+          <div className="flex flex-col items-center justify-start">
+            <label className="mb-16" htmlFor="int">
               {props.question}
             </label>
             <input

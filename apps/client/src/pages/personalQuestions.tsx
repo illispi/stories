@@ -63,7 +63,6 @@ const Questions: React.FC<{
         </AnimatePresence>
       </motion.div>
       <button
-        className="fixed bottom-0"
         type="button"
         onClick={() => {
           setNav(() => (nav === 1 ? 1 : nav - 1));
@@ -90,7 +89,7 @@ const PersonalQuestions = () => {
   }, [nav]);
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
+    <div className="flex h-screen w-screen items-end justify-center">
       <Questions
         nav={nav}
         setNav={setNav}
