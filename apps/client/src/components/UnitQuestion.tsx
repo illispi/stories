@@ -65,7 +65,7 @@ export const UnitQuestion: React.FC<{
   if (questionType === "selection") {
     return (
       <Box question={question}>
-        <div className="flex flex-col items-center justify-end">
+        <div className="flex flex-col items-center justify-end ">
           {selections!.map((v) => (
             <div key={`keyDiv${questionDB}${v}`} className="m-2">
               <CustomButton

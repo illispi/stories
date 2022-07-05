@@ -45,6 +45,21 @@ const questions: QuestionPersonal[] = [
     questionDB: "length_of_psychosis",
     selections: ["few weeks", "few months", "more than 6 months"],
   },
+  {
+    question: "What medication do you use?",
+    questionType: "selection",
+    questionDB: "current_med",
+    selections: [
+      "risperidone (Risperdal)",
+      "quetiapine (Seroquel)",
+      "olanzapine (Zyprexa)",
+      "ziprasidone (Zeldox)",
+      "paliperidone (Invega)",
+      "aripiprazole (Abilify)",
+      "clozapine (Clozaril)",
+      "other",
+    ],
+  },
 ];
 
 //NOTE just copy selections from migrations, unless it becomes too long for box
