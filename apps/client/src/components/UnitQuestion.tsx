@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
+import React, { useContext, useState } from "react";
+import { PersonalQuestions } from "zod-types";
+import { paginationContext, QuestionPersonal } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
 
 //NOTE might need yes or no selection
-
-type QuestionType = "selection" | "integer" | "text" | "yesOrNo";
 
 const Box: React.FC<{
   children: React.ReactNode;
@@ -23,21 +22,13 @@ const Box: React.FC<{
 };
 
 export const UnitQuestion: React.FC<{
-  setNav: React.Dispatch<React.SetStateAction<number>>;
-  nav: number;
-  question: string;
-  question_db: keyof PersonalQuestions;
-  questionType: QuestionType;
-  selGender?: PersonalQuestions["gender"][];
-  selCurrentMed?: PersonalQuestions["current_med"][];
-  selPsychoLenght?: PersonalQuestions["length_of_psychosis"][];
-  selQuitWhy?: PersonalQuestions["quitting_why"][];
-  selSmokeAmount?: PersonalQuestions["smoking_amount"][];
-  selWorstSymp?: PersonalQuestions["worst_symptom"][];
-  setDirection: React.Dispatch<React.SetStateAction<number>>;
-}> = ({ nav, setNav, setDirection, ...props }) => {
+  content: QuestionPersonal;
+}> = ({ content }) => {
   //NOTE Do i need to validate?s
   //NOTE localstorage can only store strings, so numbers etc. have to be converted.
+
+  const { question, questionDB, questionType, selections } = content;
+  const {paginate} = useContext(paginationContext)
 
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -45,9 +36,8 @@ export const UnitQuestion: React.FC<{
   const handleSubmit = (value: string | null | number) => {
     try {
       const serializedValue = JSON.stringify(value);
-      localStorage.setItem(props.question_db, serializedValue);
-      setNav(() => nav + 1);
-      setDirection(1);
+      localStorage.setItem(questionDB, serializedValue);
+      paginate(1);
     } catch (err) {
       console.log(err);
       return undefined;
@@ -69,29 +59,14 @@ export const UnitQuestion: React.FC<{
     }
   };
 
-  if (props.questionType === "selection") {
-    const arr = [
-      props.selCurrentMed,
-      props.selGender,
-      props.selPsychoLenght,
-      props.selQuitWhy,
-      props.selSmokeAmount,
-      props.selWorstSymp,
-    ];
-
-    const selection = arr.find((v) => v !== undefined);
-
-    if (!selection) {
-      return null;
-    }
-
+  if (questionType === "selection") {
     return (
-      <Box question={props.question}>
+      <Box question={question}>
         <div className="flex flex-col items-center justify-center">
-          {selection.map((v) => (
-            <div key={`keyDiv${props.question_db}${v}`} className="m-2">
+          {selections.map((v) => (
+            <div key={`keyDiv${questionDB}${v}`} className="m-2">
               <CustomButton
-                key={`key${props.question_db}${v}`}
+                key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
               >
                 {v}
@@ -102,9 +77,9 @@ export const UnitQuestion: React.FC<{
       </Box>
     );
   }
-  if (props.questionType === "integer") {
+  if (questionType === "integer") {
     return (
-      <Box question={props.question}>
+      <Box question={question}>
         <form onSubmit={handleNumber}>
           <div className="flex flex-col items-center justify-start">
             <input
@@ -120,10 +95,10 @@ export const UnitQuestion: React.FC<{
       </Box>
     );
   }
-  if (props.questionType === "text") {
+  if (questionType === "text") {
     return <h2>wip</h2>;
   }
-  if (props.questionType === "yesOrNo") {
+  if (questionType === "yesOrNo") {
     return <h2>wip</h2>;
   }
 
