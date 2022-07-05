@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
 import { PersonalQuestions } from "zod-types";
-import { paginationContext, QuestionPersonal } from "../pages/personalQuestions";
+import {
+  paginationContext,
+  QuestionPersonal,
+} from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
 
 //NOTE might need yes or no selection
@@ -10,11 +13,11 @@ const Box: React.FC<{
   question: string;
 }> = ({ children, question }) => {
   return (
-    <div>
+    <div className="flex flex-grow flex-col">
       <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
-        <label className="text-lg">{question}</label>
+        <label className="font-semibold">{question}</label>
       </div>
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow flex-col items-center justify-end">
         {children}
       </div>
     </div>
@@ -28,7 +31,7 @@ export const UnitQuestion: React.FC<{
   //NOTE localstorage can only store strings, so numbers etc. have to be converted.
 
   const { question, questionDB, questionType, selections } = content;
-  const {paginate} = useContext(paginationContext)
+  const { paginate } = useContext(paginationContext);
 
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +65,7 @@ export const UnitQuestion: React.FC<{
   if (questionType === "selection") {
     return (
       <Box question={question}>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-end">
           {selections!.map((v) => (
             <div key={`keyDiv${questionDB}${v}`} className="m-2">
               <CustomButton
@@ -81,7 +84,7 @@ export const UnitQuestion: React.FC<{
     return (
       <Box question={question}>
         <form onSubmit={handleNumber}>
-          <div className="flex flex-col items-center justify-start">
+          <div className="flex flex-col items-center justify-end">
             <input
               id="int"
               type="tel"
