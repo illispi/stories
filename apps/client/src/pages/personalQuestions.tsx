@@ -19,7 +19,7 @@ export interface QuestionPersonal {
   question: string;
   questionType: "selection" | "integer" | "text" | "yesOrNo";
   questionDB: keyof PersonalQuestions;
-  selections: string[];
+  selections?: string[];
 }
 
 const questions: QuestionPersonal[] = [
@@ -33,7 +33,17 @@ const questions: QuestionPersonal[] = [
     question: "How old are you?",
     questionType: "integer",
     questionDB: "current_age",
-    selections: ["female", "male", "other"],
+  },
+  {
+    question: "What age were you on first psychosis?",
+    questionType: "integer",
+    questionDB: "age_of_onset",
+  },
+  {
+    question: "How long did the first psychosis last",
+    questionType: "selection",
+    questionDB: "length_of_psychosis",
+    selections: ["few weeks", "few months", "more than 6 months"],
   },
 ];
 
@@ -42,18 +52,18 @@ const questions: QuestionPersonal[] = [
 const Questions: React.FC<{}> = ({}) => {
   const { direction, page, paginate } = useContext(paginationContext);
 
-  console.log(page);
-
   return (
     <>
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <AnimatePresence initial={false} custom={direction}>
-          <QuestionTransition key={page} direction={direction}>
-            <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
-          </QuestionTransition>
-        </AnimatePresence>
+        <div className="fixed left-1/2 top-1/2 flex translate-x-1/2 translate-y-1/2 flex-row items-center justify-center">
+          <AnimatePresence custom={direction}>
+            <QuestionTransition key={page} direction={direction}>
+              <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
+            </QuestionTransition>
+          </AnimatePresence>
+        </div>
       )}
     </>
   );
@@ -82,7 +92,7 @@ const PersonalQuestions = () => {
 
   return (
     <paginationContext.Provider value={{ page, direction, paginate }}>
-      <div className=" relative flex h-screen w-screen flex-col items-center justify-center">
+      <div className="flex h-screen flex-col items-center justify-center">
         <Questions></Questions>
         <div className="fixed bottom-0">
           <CustomButton

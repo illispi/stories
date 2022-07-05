@@ -12,7 +12,7 @@ const Box: React.FC<{
   return (
     <div>
       <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
-        <label className="text-xl">{question}</label>
+        <label className="text-lg">{question}</label>
       </div>
       <div className="flex flex-grow items-center justify-center">
         {children}
@@ -63,7 +63,7 @@ export const UnitQuestion: React.FC<{
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-center">
-          {selections.map((v) => (
+          {selections!.map((v) => (
             <div key={`keyDiv${questionDB}${v}`} className="m-2">
               <CustomButton
                 key={`key${questionDB}${v}`}
