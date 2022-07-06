@@ -17,7 +17,7 @@ import { PersonalQuestions } from "zod-types";
 
 export interface QuestionPersonal {
   question: string;
-  questionType: "selection" | "integer" | "text" | "yesOrNo";
+  questionType: "selection" | "integer" | "text" | "yesOrNo" | "multiSelect";
   questionDB: keyof PersonalQuestions;
   selections?: string[];
 }
@@ -46,7 +46,63 @@ const questions: QuestionPersonal[] = [
     selections: ["few weeks", "few months", "more than 6 months"],
   },
   {
-    question: "What medication do you use?",
+    question: "Were you hospitalized on your first psychosis?",
+    questionType: "yesOrNo",
+    questionDB: "hospitalized_on_first",
+  },
+  {
+    question: "Were you satisfied with hospital care?",
+    questionType: "yesOrNo",
+    questionDB: "hospital_satisfaction",
+  },
+  {
+    question: "Were you hospitalized voluntarily?",
+    questionType: "yesOrNo",
+    questionDB: "hospitalized_voluntarily",
+  },
+  {
+    question: "Could you describe your time in hospital?",
+    questionType: "text",
+    questionDB: "describe_hospital",
+  },
+  {
+    question: "Did you recieve care after hospitalization?",
+    questionType: "yesOrNo",
+    questionDB: "care_after_hospital",
+  },
+  {
+    question: "What kind of care after hospitalization?",
+    questionType: "text",
+    questionDB: "what_kind_of_care_after",
+  },
+  {
+    question: "Were you satisfied with after hospitalization care?",
+    questionType: "yesOrNo",
+    questionDB: "after_hospital_satisfaction",
+  },
+  {
+    question: "How many times have you had major psychosis?",
+    questionType: "integer",
+    questionDB: "psychosis_how_many",
+  },
+  {
+    question: "Did you have prodromal symptoms before you got first psychosis?",
+    questionType: "yesOrNo",
+    questionDB: "prodromal_symptoms",
+  },
+  {
+    question: "What kind of prodromal symptoms did you have?",
+    questionType: "text",
+    questionDB: "describe_prodromal_symptoms",
+  },
+  {
+    question: "What kind of symptoms did you have on first psychosis?",
+    questionType: "multiSelect",
+    questionDB: "symptoms_hallucinations",
+  },
+
+  {
+    question: "What primary medication do you use?",
     questionType: "selection",
     questionDB: "current_med",
     selections: [
@@ -60,6 +116,34 @@ const questions: QuestionPersonal[] = [
       "other",
     ],
   },
+  {
+    question: "Did the antipsychotics help to your positive symptoms?",
+    questionType: "yesOrNo",
+    questionDB: "efficacy_of_med",
+  },
+  {
+    question: "What kind of side effects have the meds had on you?",
+    questionType: "multiSelect",
+    questionDB: "side_effs_dizziness",
+  },
+  {
+    question: "Have you quit your anti-psychotics?",
+    questionType: "yesOrNo",
+    questionDB: "quitting",
+  },
+  {
+    question: "Why did you quit your medications?",
+    questionType: "selection",
+    questionDB: "quitting_why",
+    selections: 
+  },
+  {
+    question: "Why did you quit your medications?",
+    questionType: "selection",
+    questionDB: "quitting_what_happened",
+  },
+
+
 ];
 
 //NOTE just copy selections from migrations, unless it becomes too long for box
