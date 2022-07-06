@@ -113,7 +113,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("smoking", "boolean", (col) => col.notNull())
     .addColumn("smoking_amount", "text", (col) =>
       col.check(
-        sql`smoking_amount in ('20 a day', '10 a day', 'less than 10 a day', 'more than pack a day')`
+        sql`smoking_amount in ('20 a day', '10 a day', 'less than 10 a day', 'more than pack a day', 'less than 10 a week')`
       )
     )
     .addColumn("cannabis", "boolean", (col) => col.notNull())
@@ -159,10 +159,13 @@ export async function up(db: Kysely<any>): Promise<void> {
         )
         .notNull()
     )
-    .addColumn("life_unemployed", "boolean") //NOTE ask fore suggestion if this is the best idea for example own table
-    .addColumn("life_disability", "boolean")
-    .addColumn("life_employed", "boolean")
-    .addColumn("life_student", "boolean")
+    .addColumn("life_situation", "text", (col) =>
+      col
+        .check(
+          sql`life_situation in ('unemployed', 'disability', 'employed', 'student')`
+        )
+        .notNull()
+    )
     .addColumn("partner", "boolean", (col) => col.notNull())
     .addColumn("friends", "boolean", (col) => col.notNull())
     .addColumn("children", "boolean", (col) => col.notNull())
@@ -201,7 +204,9 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.references("user.user_id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
-      col.check(sql`relation in ('relative', 'friend', 'acquintance')`).notNull()
+      col
+        .check(sql`relation in ('relative', 'friend', 'acquintance')`)
+        .notNull()
     )
     .addColumn(
       "gender",

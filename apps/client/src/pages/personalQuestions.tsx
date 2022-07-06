@@ -20,6 +20,7 @@ export interface QuestionPersonal {
   questionType: "selection" | "integer" | "text" | "yesOrNo" | "multiSelect";
   questionDB: keyof PersonalQuestions;
   selections?: string[];
+  multiselect?: string[][];
 }
 
 const questions: QuestionPersonal[] = [
@@ -99,6 +100,12 @@ const questions: QuestionPersonal[] = [
     question: "What kind of symptoms did you have on first psychosis?",
     questionType: "multiSelect",
     questionDB: "symptoms_hallucinations",
+    multiselect: [
+      ["symptoms_hallucinations", "Hallucinations"],
+      ["symptoms_delusions", "Delusions"],
+      ["symptoms_paranoia", "Paranoia"],
+      ["symptoms_disorganized", "Disorganized speech"],
+    ],
   },
 
   {
@@ -125,6 +132,14 @@ const questions: QuestionPersonal[] = [
     question: "What kind of side effects have the meds had on you?",
     questionType: "multiSelect",
     questionDB: "side_effs_dizziness",
+    multiselect: [
+      ["side_effs_movement_effects", "Slow movements"],
+      ["side_effs_dizziness", "Dizziness"],
+      ["side_effs_weight_gain", "Weight gain"],
+      ["side_effs_sedation", "Sedation"],
+      ["side_effs_tardive", "Tardive dyskinesia"],
+      ["side_effs_sexual", "Sexual problems"],
+    ],
   },
   {
     question: "Have you quit your anti-psychotics?",
@@ -135,15 +150,196 @@ const questions: QuestionPersonal[] = [
     question: "Why did you quit your medications?",
     questionType: "selection",
     questionDB: "quitting_why",
-    selections: 
+    selections: ["side effects", "felt normal", "affordability"],
   },
   {
     question: "Why did you quit your medications?",
-    questionType: "selection",
+    questionType: "text",
     questionDB: "quitting_what_happened",
   },
+  {
+    question: "Do you regret quitting meds?",
+    questionType: "yesOrNo",
+    questionDB: "quitting_regret",
+  },
+  {
+    question: "Have you gained weight due to meds?",
+    questionType: "yesOrNo",
+    questionDB: "gained_weight",
+  },
+  {
+    question: "How much have you gained?",
+    questionType: "integer",
+    questionDB: "weight_amount",
+  },
+  {
+    question: "Have you gained weight due to meds?",
+    questionType: "yesOrNo",
+    questionDB: "gained_weight",
+  },
+  {
+    question: "Do you smoke tobacco?",
+    questionType: "selection",
+    questionDB: "smoking",
+    selections: [
+      "more than pack a day",
+      "20 a day",
+      "10 a day",
+      "less than 10 a day",
+      "less than 10 a week",
+    ],
+  },
 
+  {
+    question: "Have you used cannabis?",
+    questionType: "yesOrNo",
+    questionDB: "cannabis",
+  },
+  {
+    question: "Have you had suicidal thoughts?",
+    questionType: "yesOrNo",
+    questionDB: "suicidal_thoughts",
+  },
+  {
+    question: "Have you attempted suicide?",
+    questionType: "yesOrNo",
+    questionDB: "suicide_attempts",
+  },
+  {
+    question: "Do you have negative symptoms?",
+    questionType: "yesOrNo",
+    questionDB: "negative_symptoms",
+  },
 
+  {
+    question: "What kind of negative symptoms?",
+    questionType: "multiSelect",
+    questionDB: "flat_expressions",
+    multiselect: [
+      ["flat_expressions", "flat expressions"],
+      ["poverty_of_speech", "Poverty of speech"],
+      ["anhedonia", "No pleasure"],
+      ["no_interest_socially", "No socialization"],
+      ["apathy", "Apathy"],
+      ["lack_of_motivation", "Lack of motivation"],
+    ],
+  },
+
+  {
+    question: "Do you think you have cognitive decline?",
+    questionType: "yesOrNo",
+    questionDB: "cognitive_symptoms",
+  },
+  {
+    question: "What kind of cognitive decline?",
+    questionType: "text",
+    questionDB: "cognitive_symptoms_description",
+  },
+  {
+    question: "What kind of personality you were before illness?",
+    questionType: "text",
+    questionDB: "personality_before",
+  },
+  {
+    question: "Did your personality change after illness?",
+    questionType: "text",
+    questionDB: "personality_changed",
+  },
+
+  {
+    question: "How did your personality change?",
+    questionType: "text",
+    questionDB: "personality_after",
+  },
+  {
+    question: "What helps your illness other than meds?",
+    questionType: "text",
+    questionDB: "other_help",
+  },
+  {
+    question: "What is the worst symptom of schizophrenia for you?",
+    questionType: "selection",
+    questionDB: "worst_symptom",
+    selections: [
+      "negative symptoms",
+      "positive symptoms",
+      "cognitive symptoms",
+    ],
+  },
+  {
+    question: "What is your life situation?",
+    questionType: "selection",
+    questionDB: "life_situation",
+    selections: ["unemployed", "disability", "employed", "student"],
+  },
+  {
+    question: "Do you have a parter?",
+    questionType: "yesOrNo",
+    questionDB: "partner",
+  },
+  {
+    question: "Do you have friends?",
+    questionType: "yesOrNo",
+    questionDB: "friends",
+  },
+  {
+    question: "Do you have children?",
+    questionType: "yesOrNo",
+    questionDB: "children",
+  },
+  {
+    question: "Did the goals of your life change after getting ill?",
+    questionType: "yesOrNo",
+    questionDB: "goals_changed",
+  },
+  {
+    question: "How did your life goals change?",
+    questionType: "text",
+    questionDB: "goals_after",
+  },
+  {
+    question: "Have you told anybody you have schizophrenia?",
+    questionType: "multiSelect",
+    questionDB: "told_family",
+    multiselect: [
+      ["told_nobody", "Nobody"],
+      ["told_family", "Family"],
+      ["told_friends", "Friends"],
+      ["told_employer", "Employer"],
+      ["told_if_asked", "If asked"],
+    ],
+  },
+  {
+    question: "How did they responded to you having schizophrenia?",
+    questionType: "text",
+    questionDB: "responded_to_telling",
+  },
+  {
+    question: "Are you satisfied with life?",
+    questionType: "yesOrNo",
+    questionDB: "life_satisfaction",
+  },
+  {
+    question: "Why or why not are you satisfied with life",
+    questionType: "yesOrNo",
+    questionDB: "life_satisfaction_description",
+  },
+  {
+    question: "What do you wish peoplek knew about schizophrenia?",
+    questionType: "text",
+    questionDB: "what_others_should_know",
+  },
+  {
+    question:
+      "If you could have chosen not to have schizophrenia, would you have",
+    questionType: "yesOrNo",
+    questionDB: "not_have_schizophrenia",
+  },
+  {
+    question: "Why or why not?",
+    questionType: "yesOrNo",
+    questionDB: "not_have_schizophrenia_description",
+  },
 ];
 
 //NOTE just copy selections from migrations, unless it becomes too long for box
