@@ -1,5 +1,6 @@
 import { dir } from "console";
 import { AnimatePresence, motion } from "framer-motion";
+import Head from "next/head";
 import React, { useContext, useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import QuestionTransition from "../components/QuestionTransition";
@@ -26,7 +27,7 @@ const Questions: React.FC<{}> = ({}) => {
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <div className="fixed left-1/2 top-1/2 flex translate-x-1/2 translate-y-1/2 flex-row items-center justify-center">
+        <div className="relative z-0 flex h-96 w-auto flex-col items-center justify-center">
           <AnimatePresence custom={direction}>
             <QuestionTransition key={page} direction={direction}>
               <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
@@ -60,25 +61,33 @@ const PersonalQuestions = () => {
   }, [page]);
 
   return (
-    <paginationContext.Provider value={{ page, direction, paginate }}>
-      <div className="flex h-screen flex-col items-center justify-center">
-        <Questions></Questions>
-        <div className="fixed top-0 mt-4">
-          {/* TODO you have have skip multiple back as well */}
-          <CustomButton
-            type="button"
-            onClick={() => {
-              if (page >= 0) {
-                paginate(-1);
-              }
-            }}
-          >
-            Previous
-          </CustomButton>
-          <div className="mb-6"></div>
+    <div>
+      <Head>
+        <title>Questionare</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+      </Head>
+      <paginationContext.Provider value={{ page, direction, paginate }}>
+        <div className="flex flex-col items-center justify-center">
+          <div className="my-4">
+            {/* TODO you have have skip multiple back as well */}
+            <CustomButton
+              type="button"
+              onClick={() => {
+                if (page >= 0) {
+                  paginate(-1);
+                }
+              }}
+            >
+              Previous
+            </CustomButton>
+          </div>
+          <Questions></Questions>
         </div>
-      </div>
-    </paginationContext.Provider>
+      </paginationContext.Provider>
+    </div>
   );
 };
 
