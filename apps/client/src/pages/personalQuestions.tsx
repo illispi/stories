@@ -63,7 +63,8 @@ const PersonalQuestions = () => {
     <paginationContext.Provider value={{ page, direction, paginate }}>
       <div className="flex h-screen flex-col items-center justify-center">
         <Questions></Questions>
-        <div className="fixed bottom-0">
+        <div className="fixed top-0 mt-4">
+          {/* TODO you have have skip multiple back as well */}
           <CustomButton
             type="button"
             onClick={() => {

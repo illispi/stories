@@ -10,11 +10,11 @@ const Box: React.FC<{
   question: string;
 }> = ({ children, question }) => {
   return (
-    <div className="flex flex-grow flex-col">
-      <div className="relative flex h-16 w-80 items-center justify-center bg-blue-300 ">
-        <label className="font-semibold">{question}</label>
+    <div className="flex flex-grow flex-col ">
+      <div className="relative flex h-24 w-80 items-center justify-center bg-blue-300 p-8 ">
+        <label className=" text-center font-semibold">{question}</label>
       </div>
-      <div className="flex flex-grow flex-col items-center justify-end">
+      <div className="flex flex-grow flex-col items-center justify-end overflow-y-auto">
         {children}
       </div>
     </div>
@@ -37,11 +37,12 @@ export const UnitQuestion: React.FC<{
   const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
   const handleMultiSubmit = (values: string[] | null) => {
-    if (!values) {
+    if (values?.length === 0) {
       setError("Please select at least one option");
     } else {
       setError(null);
       try {
+        //TODO clear all values on previous gesture
         values?.forEach((e) => localStorage.setItem(e, "true"));
 
         paginate(1);
@@ -160,7 +161,8 @@ export const UnitQuestion: React.FC<{
                 false,
                 skip
                   ? questions.findIndex((e) => e.questionDB === skip) -
-                      questions.findIndex((e) => e.questionDB === questionDB) -1
+                      questions.findIndex((e) => e.questionDB === questionDB) -
+                      1
                   : undefined
               )
             }

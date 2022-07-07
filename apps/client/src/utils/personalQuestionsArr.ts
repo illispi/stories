@@ -27,7 +27,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "age_of_onset",
   },
   {
-    question: "How long did the first psychosis last",
+    question: "How long did the first psychosis last?",
     questionType: "selection",
     questionDB: "length_of_psychosis",
     selections: ["few weeks", "few months", "more than 6 months"],
