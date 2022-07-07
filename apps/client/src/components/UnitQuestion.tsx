@@ -34,7 +34,7 @@ export const UnitQuestion: React.FC<{
   const [number, setNumber] = useState("");
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [multiSelections, setMultiSelections] = useState<string[] | null>(null);
+  const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
   const handleMultiSubmit = (values: string[] | null) => {
     if (!values) {
@@ -83,7 +83,7 @@ export const UnitQuestion: React.FC<{
   };
 
   const handleText = (e) => {
-    e.prevenDefault();
+    e.preventDefault();
     if (text.length < 1000) {
       handleSubmit(text);
       setError(null);
@@ -139,7 +139,7 @@ export const UnitQuestion: React.FC<{
             <input
               id="int"
               type="text"
-              value={number}
+              value={text}
               onChange={(e) => setText(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
@@ -160,7 +160,7 @@ export const UnitQuestion: React.FC<{
                 false,
                 skip
                   ? questions.findIndex((e) => e.questionDB === skip) -
-                      questions.findIndex((e) => e.questionDB === questionDB)
+                      questions.findIndex((e) => e.questionDB === questionDB) -1
                   : undefined
               )
             }

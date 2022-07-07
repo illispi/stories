@@ -5,8 +5,8 @@ import CustomButton from "../components/CustomButton";
 import QuestionTransition from "../components/QuestionTransition";
 // import { personalQuestionsSchema, PersonalQuestions } from "zod-types";
 import { UnitQuestion } from "../components/UnitQuestion";
-import { PersonalQuestions } from "zod-types";
-import {questions} from '../utils/personalQuestionsArr'
+
+import { questions } from "../utils/personalQuestionsArr";
 
 //TODO indiviual things are saved to local storage and then you combine them and send to server
 
@@ -15,8 +15,6 @@ import {questions} from '../utils/personalQuestionsArr'
 //NOTE is this the best way to center absolute children on fixed parent
 
 //TODO find a way to reduce repetition with animatePrescence
-
-
 
 //NOTE just copy selections from migrations, unless it becomes too long for box
 
