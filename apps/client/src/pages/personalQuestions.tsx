@@ -21,6 +21,7 @@ export interface QuestionPersonal {
   questionDB: keyof PersonalQuestions;
   selections?: string[];
   multiselect?: string[][];
+  skip?: keyof PersonalQuestions;
 }
 
 const questions: QuestionPersonal[] = [
@@ -50,6 +51,7 @@ const questions: QuestionPersonal[] = [
     question: "Were you hospitalized on your first psychosis?",
     questionType: "yesOrNo",
     questionDB: "hospitalized_on_first",
+    skip: "psychosis_how_many"
   },
   {
     question: "Were you satisfied with hospital care?",
@@ -70,6 +72,7 @@ const questions: QuestionPersonal[] = [
     question: "Did you recieve care after hospitalization?",
     questionType: "yesOrNo",
     questionDB: "care_after_hospital",
+    skip: "psychosis_how_many"
   },
   {
     question: "What kind of care after hospitalization?",
@@ -90,6 +93,7 @@ const questions: QuestionPersonal[] = [
     question: "Did you have prodromal symptoms before you got first psychosis?",
     questionType: "yesOrNo",
     questionDB: "prodromal_symptoms",
+    skip: "symptoms_hallucinations"
   },
   {
     question: "What kind of prodromal symptoms did you have?",
@@ -145,6 +149,7 @@ const questions: QuestionPersonal[] = [
     question: "Have you quit your anti-psychotics?",
     questionType: "yesOrNo",
     questionDB: "quitting",
+    skip: "gained_weight"
   },
   {
     question: "Why did you quit your medications?",
@@ -166,6 +171,7 @@ const questions: QuestionPersonal[] = [
     question: "Have you gained weight due to meds?",
     questionType: "yesOrNo",
     questionDB: "gained_weight",
+    skip: "smoking"
   },
   {
     question: "How much have you gained?",
@@ -173,14 +179,16 @@ const questions: QuestionPersonal[] = [
     questionDB: "weight_amount",
   },
   {
-    question: "Have you gained weight due to meds?",
-    questionType: "yesOrNo",
-    questionDB: "gained_weight",
-  },
-  {
     question: "Do you smoke tobacco?",
-    questionType: "selection",
+    questionType: "yesOrNo",
     questionDB: "smoking",
+    skip: "cannabis"
+  },
+
+  {
+    question: "How much do you smoke",
+    questionType: "selection",
+    questionDB: "smoking_amount",
     selections: [
       "more than pack a day",
       "20 a day",
@@ -199,6 +207,7 @@ const questions: QuestionPersonal[] = [
     question: "Have you had suicidal thoughts?",
     questionType: "yesOrNo",
     questionDB: "suicidal_thoughts",
+    skip: "negative_symptoms"
   },
   {
     question: "Have you attempted suicide?",
@@ -209,6 +218,7 @@ const questions: QuestionPersonal[] = [
     question: "Do you have negative symptoms?",
     questionType: "yesOrNo",
     questionDB: "negative_symptoms",
+    skip: "cognitive_symptoms"
   },
 
   {
@@ -229,6 +239,7 @@ const questions: QuestionPersonal[] = [
     question: "Do you think you have cognitive decline?",
     questionType: "yesOrNo",
     questionDB: "cognitive_symptoms",
+    skip: "personality_before"
   },
   {
     question: "What kind of cognitive decline?",
@@ -242,8 +253,9 @@ const questions: QuestionPersonal[] = [
   },
   {
     question: "Did your personality change after illness?",
-    questionType: "text",
+    questionType: "yesOrNo",
     questionDB: "personality_changed",
+    skip: "other_help"
   },
 
   {
@@ -291,6 +303,7 @@ const questions: QuestionPersonal[] = [
     question: "Did the goals of your life change after getting ill?",
     questionType: "yesOrNo",
     questionDB: "goals_changed",
+    skip: "told_family"
   },
   {
     question: "How did your life goals change?",
@@ -318,6 +331,7 @@ const questions: QuestionPersonal[] = [
     question: "Are you satisfied with life?",
     questionType: "yesOrNo",
     questionDB: "life_satisfaction",
+    skip: "what_others_should_know"
   },
   {
     question: "Why or why not are you satisfied with life",
@@ -325,7 +339,7 @@ const questions: QuestionPersonal[] = [
     questionDB: "life_satisfaction_description",
   },
   {
-    question: "What do you wish peoplek knew about schizophrenia?",
+    question: "What do you wish people knew about schizophrenia?",
     questionType: "text",
     questionDB: "what_others_should_know",
   },
