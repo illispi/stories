@@ -27,7 +27,7 @@ const Questions: React.FC<{}> = ({}) => {
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <div className="relative z-0 flex h-96 w-auto flex-col items-center justify-center">
+        <div className="relative z-0 flex h-[29rem] max-w-xs flex-col items-center justify-center">
           <AnimatePresence custom={direction}>
             <QuestionTransition key={page} direction={direction}>
               <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
