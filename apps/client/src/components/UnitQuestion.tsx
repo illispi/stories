@@ -1,10 +1,7 @@
 import React, { useContext, useState } from "react";
-import { PersonalQuestions } from "zod-types";
-import {
-  paginationContext,
-  QuestionPersonal,
-} from "../pages/personalQuestions";
+import { paginationContext } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
+import { QuestionPersonal, questions } from "../utils/personalQuestionsArr";
 
 //NOTE might need yes or no selection
 
@@ -30,17 +27,40 @@ export const UnitQuestion: React.FC<{
   //NOTE Do i need to validate?s
   //NOTE localstorage can only store strings, so numbers etc. have to be converted.
 
-  const { question, questionDB, questionType, selections } = content;
+  const { question, questionDB, questionType, selections, multiSelect, skip } =
+    content;
   const { paginate } = useContext(paginationContext);
 
-  const [value, setValue] = useState("");
+  const [number, setNumber] = useState("");
+  const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [multiSelections, setMultiSelections] = useState<string[] | null>(null);
 
-  const handleSubmit = (value: string | null | number) => {
+  const handleMultiSubmit = (values: string[] | null) => {
+    if (!values) {
+      setError("Please select at least one option");
+    } else {
+      setError(null);
+      try {
+        values?.forEach((e) => localStorage.setItem(e, "true"));
+
+        paginate(1);
+      } catch (err) {
+        console.log(err);
+        return undefined;
+      }
+    }
+  };
+
+  const handleSubmit = (
+    value: string | null | number | boolean,
+    skip?: number
+  ) => {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(questionDB, serializedValue);
-      paginate(1);
+
+      paginate(1 + (skip ? skip : 0));
     } catch (err) {
       console.log(err);
       return undefined;
@@ -54,11 +74,24 @@ export const UnitQuestion: React.FC<{
   const handleNumber = (e) => {
     e.preventDefault();
     //TODO cant be too old validation
-    if (validateInt(value)) {
-      handleSubmit(value);
+    if (validateInt(number)) {
+      handleSubmit(number);
       setError(null);
     } else {
       setError("Please provide whole numbers only");
+    }
+  };
+
+  const handleText = (e) => {
+    e.prevenDefault();
+    if (text.length < 1000) {
+      handleSubmit(text);
+      setError(null);
+    }
+    if (text.length >= 1000) {
+      setError("Maximum allowed character amount is 1000");
+    } else {
+      setError("Please provide some text");
     }
   };
 
@@ -88,8 +121,8 @@ export const UnitQuestion: React.FC<{
             <input
               id="int"
               type="tel"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
             {error && <p>{error}</p>}
@@ -99,10 +132,66 @@ export const UnitQuestion: React.FC<{
     );
   }
   if (questionType === "text") {
-    return <h2>wip</h2>;
+    return (
+      <Box question={question}>
+        <form onSubmit={handleText}>
+          <div className="flex flex-col items-center justify-end">
+            <input
+              id="int"
+              type="text"
+              value={number}
+              onChange={(e) => setText(e.target.value)}
+            ></input>
+            <CustomButton type="submit">Next</CustomButton>
+            {error && <p>{error}</p>}
+          </div>
+        </form>
+      </Box>
+    );
   }
   if (questionType === "yesOrNo") {
-    return <h2>wip</h2>;
+    return (
+      <Box question={question}>
+        <div className="flex flex-col items-center justify-end ">
+          <CustomButton onClick={() => handleSubmit(true)}>Yes</CustomButton>
+          <CustomButton
+            onClick={() =>
+              handleSubmit(
+                false,
+                skip
+                  ? questions.findIndex((e) => e.questionDB === skip) -
+                      questions.findIndex((e) => e.questionDB === questionDB)
+                  : undefined
+              )
+            }
+          >
+            No
+          </CustomButton>
+        </div>
+      </Box>
+    );
+  }
+
+  if (questionType === "multiSelect") {
+    return (
+      <Box question={question}>
+        <div className="flex flex-col items-center justify-end ">
+          {error ?? <p>{error}</p>}
+          {multiSelect!.map((v) => (
+            <CustomButton
+              key={`key${questionDB}${v}`}
+              className="m-2"
+              onClick={() => setMultiSelections(multiSelections!.concat(v[0]))}
+            >
+              {v[1]}
+            </CustomButton>
+          ))}
+          <CustomButton onClick={() => handleMultiSubmit(multiSelections)}>
+            Next
+          </CustomButton>
+        </div>
+      </Box>
+    );
   }
 
   return null;
