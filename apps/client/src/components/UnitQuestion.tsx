@@ -52,7 +52,7 @@ export const UnitQuestion: React.FC<{
   }
 
   const [number, setNumber] = useState(valueOfLS !== "" ? valueOfLS : "");
-  const [text, setText] = useState("");
+  const [text, setText] = useState(valueOfLS !== "" ? valueOfLS : "");
   const [error, setError] = useState<string | null>(null);
   const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
@@ -110,7 +110,7 @@ export const UnitQuestion: React.FC<{
 
   const handleText = (e) => {
     e.preventDefault();
-    if (text.length < 1000) {
+    if (text.length < 1000 && text.length !== 0) {
       handleSubmit(text);
       setError(null);
     }
