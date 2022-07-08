@@ -32,17 +32,30 @@ export const UnitQuestion: React.FC<{
   const { question, questionDB, questionType, selections, multiSelect, skip } =
     content;
   const { paginate } = useContext(paginationContext);
-
-  const [number, setNumber] = useState("");
-  const [text, setText] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [multiSelections, setMultiSelections] = useState<string[]>([]);
-
-  //NOTE does this need to be inside useEffect?
+  //BUG does this need to be inside useEffect?
   const allLsKeyValues = questions.map((e) => [
     e.questionDB,
     localStorage.getItem(e.questionDB),
   ]);
+
+  const keyValueExists = allLsKeyValues.find((e) => e[0] === questionDB);
+  let valueOfLS: string;
+  if (keyValueExists) {
+    if (keyValueExists[1]) {
+      valueOfLS = keyValueExists[1].replace(/['"]+/g, "");
+    } else {
+      valueOfLS = "";
+    }
+  } else {
+
+    //NOTE maybe should also accept null, see number useState
+    valueOfLS = "";
+  }
+
+  const [number, setNumber] = useState(valueOfLS !== "" ? valueOfLS : "");
+  const [text, setText] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
   const handleMultiSubmit = (values: string[] | null) => {
     if (values?.length === 0) {
@@ -110,14 +123,6 @@ export const UnitQuestion: React.FC<{
   };
 
   if (questionType === "selection") {
-    const keyValueExists = allLsKeyValues.find((e) => e[0] === questionDB);
-    let valueOfLS: string;
-    if (keyValueExists) {
-      if (keyValueExists[1]) {
-        valueOfLS = keyValueExists[1].replace(/['"]+/g, "");
-      }
-    }
-
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
