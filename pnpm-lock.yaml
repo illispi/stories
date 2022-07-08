@@ -31,6 +31,7 @@ importers:
       react-dom: 18.1.0
       react-hook-form: ^7.33.0
       react-query: ^3.39.1
+      tailwind-merge: ^1.3.0
       tailwindcss: ^3.1.3
       typescript: 4.7.3
       zod: ^3.17.3
@@ -48,6 +49,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-hook-form: 7.33.0_react@18.1.0
       react-query: 3.39.1_ef5jwxihqo6n7gxfmzogljlgcm
+      tailwind-merge: 1.3.0
       zod: 3.17.3
       zod-types: link:../../packages/zod-types
     devDependencies:
@@ -2315,6 +2317,10 @@ packages:
       function-bind: 1.1.1
     dev: true
 
+  /hashlru/2.3.0:
+    resolution: {integrity: sha512-0cMsjjIC8I+D3M44pOQdsy0OHXGLVz6Z0beRuufhKa0KfaD2wGwAev6jILzXsd3/vpnNQJmWyZtIILqM1N+n5A==}
+    dev: false
+
   /help-me/4.0.1:
     resolution: {integrity: sha512-PLv01Z+OhEPKj2QPYB4kjoCUkopYNPUK3EROlaPIf5bib752fZ+VCvGDAoA+FXo/OwCyLEA4D2e0mX8+Zhcplw==}
     dependencies:
@@ -3984,6 +3990,12 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /tailwind-merge/1.3.0:
+    resolution: {integrity: sha512-M+DC6DO5eypc3/iOt/oTuqUH68Ip+XCu/Afybg9/ATxUX6KMPk4UGU4z4EMx08BMOBL+iOL93+hx3Jxpb9qNGw==}
+    dependencies:
+      hashlru: 2.3.0
+    dev: false
 
   /tailwindcss/3.1.4:
     resolution: {integrity: sha512-NrxbFV4tYsga/hpWbRyUfIaBrNMXDxx5BsHgBS4v5tlyjf+sDsgBg5m9OxjrXIqAS/uR9kicxLKP+bEHI7BSeQ==}
