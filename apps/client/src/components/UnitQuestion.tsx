@@ -10,12 +10,14 @@ const Box: React.FC<{
   question: string;
 }> = ({ children, question }) => {
   return (
-    <div className="flex flex-grow flex-col ">
-      <div className="relative flex h-24 w-80 items-center justify-center bg-blue-300 p-8 ">
+    <div className="flex flex-grow flex-col">
+      <div className="flex h-24 w-80 items-center justify-center bg-blue-300 p-8 ">
         <label className=" text-center font-semibold">{question}</label>
       </div>
-      <div className="flex flex-grow flex-col items-center justify-end overflow-y-auto">
-        {children}
+      <div className="relative flex flex-grow flex-col items-center justify-start overflow-hidden overflow-y-auto">
+        <div className="absolute my-2 flex w-72 flex-col items-center justify-end ">
+          {children}
+        </div>
       </div>
     </div>
   );
