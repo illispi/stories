@@ -38,6 +38,12 @@ export const UnitQuestion: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
+  //NOTE does this need to be inside useEffect?
+  const allLsKeyValues = questions.map((e) => [
+    e.questionDB,
+    localStorage.getItem(e.questionDB),
+  ]);
+
   const handleMultiSubmit = (values: string[] | null) => {
     if (values?.length === 0) {
       setError("Please select at least one option");
@@ -112,6 +118,11 @@ export const UnitQuestion: React.FC<{
               <CustomButton
                 key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
+                className={
+                  v === allLsKeyValues.find((e) => e[0] === questionDB)[1].replace(/['"]+/g, '')
+                    ? `bg-green-500`
+                    : ""
+                }
               >
                 {v}
               </CustomButton>
