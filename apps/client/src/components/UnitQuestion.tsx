@@ -47,7 +47,6 @@ export const UnitQuestion: React.FC<{
       valueOfLS = "";
     }
   } else {
-
     //NOTE maybe should also accept null, see number useState
     valueOfLS = "";
   }
@@ -180,9 +179,15 @@ export const UnitQuestion: React.FC<{
   if (questionType === "yesOrNo") {
     return (
       <Box question={question}>
-        <div className="flex flex-col items-center justify-end ">
-          <CustomButton onClick={() => handleSubmit(true, 0)}>Yes</CustomButton>
+        <div className="flex items-center justify-end ">
           <CustomButton
+            className={valueOfLS === "true" ? "bg-red-500" : ""}
+            onClick={() => handleSubmit(true, 0)}
+          >
+            Yes
+          </CustomButton>
+          <CustomButton
+            className={valueOfLS === "false" ? "bg-red-500" : ""}
             onClick={() =>
               handleSubmit(
                 false,
