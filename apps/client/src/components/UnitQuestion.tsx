@@ -57,13 +57,18 @@ export const UnitQuestion: React.FC<{
 
   const handleSubmit = (
     value: string | null | number | boolean,
-    skip?: number
+    skipAmount?: number
   ) => {
     try {
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(questionDB, serializedValue);
+      if (skipAmount !== 0) {
+        localStorage.setItem(`from_${skip}`, `${skipAmount}`);
+      } else {
+        localStorage.removeItem(`from_${skip}`);
+      }
 
-      paginate(1 + (skip ? skip : 0));
+      paginate(1 + (skipAmount ? skipAmount : 0));
     } catch (err) {
       console.log(err);
       return undefined;
@@ -156,7 +161,7 @@ export const UnitQuestion: React.FC<{
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
-          <CustomButton onClick={() => handleSubmit(true)}>Yes</CustomButton>
+          <CustomButton onClick={() => handleSubmit(true, 0)}>Yes</CustomButton>
           <CustomButton
             onClick={() =>
               handleSubmit(

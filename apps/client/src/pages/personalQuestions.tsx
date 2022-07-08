@@ -1,6 +1,7 @@
 import { dir } from "console";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
+import { parse } from "path";
 import React, { useContext, useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import QuestionTransition from "../components/QuestionTransition";
@@ -74,7 +75,11 @@ const PersonalQuestions = () => {
               type="button"
               onClick={() => {
                 if (page >= 0) {
-                  paginate(-1);
+                  const skipAmount = localStorage.getItem(
+                    `from_${questions[page].questionDB}`
+                  );
+
+                  paginate(skipAmount ? -1 - parseInt(skipAmount) : -1);
                 }
               }}
             >
