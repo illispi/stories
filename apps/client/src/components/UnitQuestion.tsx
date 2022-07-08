@@ -110,6 +110,14 @@ export const UnitQuestion: React.FC<{
   };
 
   if (questionType === "selection") {
+    const keyValueExists = allLsKeyValues.find((e) => e[0] === questionDB);
+    let valueOfLS: string;
+    if (keyValueExists) {
+      if (keyValueExists[1]) {
+        valueOfLS = keyValueExists[1].replace(/['"]+/g, "");
+      }
+    }
+
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
@@ -118,16 +126,7 @@ export const UnitQuestion: React.FC<{
               <CustomButton
                 key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
-                className={
-                  v ===
-                  (allLsKeyValues.find((e) => e[0] === questionDB)[1]
-                    ? allLsKeyValues
-                        .find((e) => e[0] === questionDB)[1]
-                        .replace(/['"]+/g, "")
-                    : "")
-                    ? `bg-green-500`
-                    : ""
-                }
+                className={v === valueOfLS ? `bg-green-500` : ""}
               >
                 {v}
               </CustomButton>
