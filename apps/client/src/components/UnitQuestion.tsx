@@ -119,7 +119,12 @@ export const UnitQuestion: React.FC<{
                 key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
                 className={
-                  v === allLsKeyValues.find((e) => e[0] === questionDB)[1].replace(/['"]+/g, '')
+                  v ===
+                  (allLsKeyValues.find((e) => e[0] === questionDB)[1]
+                    ? allLsKeyValues
+                        .find((e) => e[0] === questionDB)[1]
+                        .replace(/['"]+/g, "")
+                    : "")
                     ? `bg-green-500`
                     : ""
                 }
