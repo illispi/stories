@@ -60,12 +60,17 @@ export const UnitQuestion: React.FC<{
         .map((e) => e[0]) ?? null
   );
 
-  console.log(multiSelect);
+  const [yesOrNO, setYesOrNO] = useState(() =>
+    valueOfLS !== "" ? valueOfLS : ""
+  );
+  const [selection, setSelection] = useState(() =>
+    valueOfLS !== "" ? valueOfLS : ""
+  );
 
   //BUG in the above maybe you should parse before compare?
 
   const handleMultiSubmit = (values: string[] | null) => {
-    console.log(values);
+
 
     if (values?.length === 0) {
       setError("Please select at least one option");
@@ -89,6 +94,8 @@ export const UnitQuestion: React.FC<{
     skipAmount?: number
   ) => {
     try {
+      setSelection(value);
+      setYesOrNO(value);
       const serializedValue = JSON.stringify(value);
       localStorage.setItem(questionDB, serializedValue);
       if (skipAmount !== 0) {
@@ -141,7 +148,7 @@ export const UnitQuestion: React.FC<{
               <CustomButton
                 key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
-                className={v === valueOfLS ? `bg-green-500` : ""}
+                className={v === selection ? `bg-green-500` : ""}
               >
                 {v}
               </CustomButton>
@@ -193,13 +200,13 @@ export const UnitQuestion: React.FC<{
         <div className="flex items-center justify-end ">
           <CustomButton
             // TODO might better to use state of yesOrNO instead of valueOfLS
-            className={valueOfLS === true ? "bg-green-500" : ""}
+            className={yesOrNO === true ? "bg-green-500" : ""}
             onClick={() => handleSubmit(true, 0)}
           >
             Yes
           </CustomButton>
           <CustomButton
-            className={valueOfLS === false ? "bg-green-500" : ""}
+            className={yesOrNO === false ? "bg-green-500" : ""}
             onClick={() =>
               handleSubmit(
                 false,
