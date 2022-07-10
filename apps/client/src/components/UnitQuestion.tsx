@@ -53,7 +53,11 @@ export const UnitQuestion: React.FC<{
   );
   const [text, setText] = useState(() => (valueOfLS !== "" ? valueOfLS : ""));
   const [error, setError] = useState<string | null>(null);
-  const [multiSelections, setMultiSelections] = useState<string[]>([]);
+  const [multiSelections, setMultiSelections] = useState<string[] | null>(
+    () =>
+      multiSelect?.map((e) => JSON.parse(localStorage.getItem(e[0]) ?? '""')) ??
+      null
+  );
 
   const handleMultiSubmit = (values: string[] | null) => {
     if (values?.length === 0) {
@@ -62,6 +66,7 @@ export const UnitQuestion: React.FC<{
       setError(null);
       try {
         //TODO clear all values on previous gesture
+        multiSelect?.forEach((e) => localStorage.removeItem(e[0]));
         values?.forEach((e) => localStorage.setItem(e, "true"));
 
         paginate(1);
@@ -214,11 +219,17 @@ export const UnitQuestion: React.FC<{
             <CustomButton
               key={`key${questionDB}${v}`}
               className={
-                allLsKeyValues.find((d) => v[0] === d.key)?.value === true
+                allLsKeyValues.find((d) => d.key === v[0])?.value === true
                   ? "bg-green-500"
                   : ""
               }
-              onClick={() => setMultiSelections(multiSelections!.concat(v[0]))}
+              onClick={() =>
+                setMultiSelections(() =>
+                  multiSelections?.find((e) => e === v[0])
+                    ? multiSelections.filter((e) => e !== v[0])
+                    : multiSelections!.concat(v[0])
+                )
+              }
             >
               {v[1]}
             </CustomButton>
