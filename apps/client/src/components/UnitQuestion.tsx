@@ -55,11 +55,16 @@ export const UnitQuestion: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [multiSelections, setMultiSelections] = useState<string[] | null>(
     () =>
-      multiSelect?.map((e) => JSON.parse(localStorage.getItem(e[0]) ?? '""')) ??
-      null
+      multiSelect
+        ?.map((e) => e[0])
+        .filter((e) => localStorage.getItem(e[0]) === "true") ?? null
   );
 
+  //BUG in the above maybe you should parse before compare?
+
   const handleMultiSubmit = (values: string[] | null) => {
+    console.log(values);
+
     if (values?.length === 0) {
       setError("Please select at least one option");
     } else {
