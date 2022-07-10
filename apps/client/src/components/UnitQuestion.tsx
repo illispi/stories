@@ -70,8 +70,6 @@ export const UnitQuestion: React.FC<{
   //BUG in the above maybe you should parse before compare?
 
   const handleMultiSubmit = (values: string[] | null) => {
-
-
     if (values?.length === 0) {
       setError("Please select at least one option");
     } else {
@@ -148,7 +146,11 @@ export const UnitQuestion: React.FC<{
               <CustomButton
                 key={`key${questionDB}${v}`}
                 onClick={() => handleSubmit(v)}
-                className={v === selection ? `bg-green-500` : ""}
+                className={
+                  v === selection
+                    ? `bg-green-500 hover:bg-green-600 active:bg-green-600`
+                    : ""
+                }
               >
                 {v}
               </CustomButton>
@@ -200,13 +202,21 @@ export const UnitQuestion: React.FC<{
         <div className="flex items-center justify-end ">
           <CustomButton
             // TODO might better to use state of yesOrNO instead of valueOfLS
-            className={yesOrNO === true ? "bg-green-500" : ""}
+            className={
+              yesOrNO === true
+                ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                : ""
+            }
             onClick={() => handleSubmit(true, 0)}
           >
             Yes
           </CustomButton>
           <CustomButton
-            className={yesOrNO === false ? "bg-green-500" : ""}
+            className={
+              yesOrNO === false
+                ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                : ""
+            }
             onClick={() =>
               handleSubmit(
                 false,
@@ -228,7 +238,6 @@ export const UnitQuestion: React.FC<{
   if (questionType === "multiSelect") {
     return (
       <Box question={question}>
-        {console.log(multiSelections)}
 
         <div className="flex flex-col items-center justify-end ">
           {error ?? <p>{error}</p>}
@@ -236,7 +245,9 @@ export const UnitQuestion: React.FC<{
             <CustomButton
               key={`key${questionDB}${v}`}
               className={
-                multiSelections?.find((e) => e === v[0]) ? "bg-green-500" : ""
+                multiSelections?.find((e) => e === v[0])
+                  ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                  : ""
               }
               onClick={() =>
                 setMultiSelections(() =>
