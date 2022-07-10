@@ -23,6 +23,11 @@ const Box: React.FC<{
   );
 };
 
+interface KeysValues {
+  key: QuestionPersonal["questionDB"];
+  value: string;
+}
+
 export const UnitQuestion: React.FC<{
   content: QuestionPersonal;
 }> = ({ content }) => {
@@ -33,26 +38,20 @@ export const UnitQuestion: React.FC<{
     content;
   const { paginate } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
-  const allLsKeyValues = questions.map((e) => [
-    e.questionDB,
-    localStorage.getItem(e.questionDB),
-  ]);
+  const allLsKeyValues: KeysValues[] = questions.map((e) =>
+    Object.create({
+      key: e.questionDB,
+      value: localStorage.getItem(e.questionDB),
+    })
+  );
 
-  const keyValueExists = allLsKeyValues.find((e) => e[0] === questionDB);
-  let valueOfLS: string;
-  if (keyValueExists) {
-    if (keyValueExists[1]) {
-      valueOfLS = keyValueExists[1].replace(/['"]+/g, "");
-    } else {
-      valueOfLS = "";
-    }
-  } else {
-    //NOTE maybe should also accept null, see number useState
-    valueOfLS = "";
-  }
+  const keyValueExists = allLsKeyValues.find((e) => e.key === questionDB);
+  const valueOfLS = keyValueExists ? JSON.parse(keyValueExists.value) : "";
 
-  const [number, setNumber] = useState(valueOfLS !== "" ? valueOfLS : "");
-  const [text, setText] = useState(valueOfLS !== "" ? valueOfLS : "");
+  const [number, setNumber] = useState(() =>
+    valueOfLS !== "" ? valueOfLS : ""
+  );
+  const [text, setText] = useState(() => (valueOfLS !== "" ? valueOfLS : ""));
   const [error, setError] = useState<string | null>(null);
   const [multiSelections, setMultiSelections] = useState<string[]>([]);
 
@@ -181,13 +180,13 @@ export const UnitQuestion: React.FC<{
       <Box question={question}>
         <div className="flex items-center justify-end ">
           <CustomButton
-            className={valueOfLS === "true" ? "bg-red-500" : ""}
+            className={valueOfLS === true ? "bg-red-500" : ""}
             onClick={() => handleSubmit(true, 0)}
           >
             Yes
           </CustomButton>
           <CustomButton
-            className={valueOfLS === "false" ? "bg-red-500" : ""}
+            className={valueOfLS === false ? "bg-red-500" : ""}
             onClick={() =>
               handleSubmit(
                 false,
