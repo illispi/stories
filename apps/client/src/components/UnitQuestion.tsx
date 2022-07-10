@@ -41,12 +41,12 @@ export const UnitQuestion: React.FC<{
   const allLsKeyValues: KeysValues[] = questions.map((e) =>
     Object.create({
       key: e.questionDB,
-      value: localStorage.getItem(e.questionDB),
+      value: JSON.parse(localStorage.getItem(e.questionDB) ?? '""'),
     })
   );
 
-  const keyValueExists = allLsKeyValues.find((e) => e.key === questionDB);
-  const valueOfLS = keyValueExists ? JSON.parse(keyValueExists.value) : "";
+  const valueOfLS =
+    allLsKeyValues.find((e) => e.key === questionDB)?.value ?? "";
 
   const [number, setNumber] = useState(() =>
     valueOfLS !== "" ? valueOfLS : ""
@@ -96,7 +96,7 @@ export const UnitQuestion: React.FC<{
     return /^(0|[1-9]\d*)$/.test(value);
   };
 
-  const handleNumber = (e) => {
+  const handleNumber = (e: React.FormEvent) => {
     e.preventDefault();
     //TODO cant be too old validation
     if (validateInt(number)) {
@@ -107,7 +107,7 @@ export const UnitQuestion: React.FC<{
     }
   };
 
-  const handleText = (e) => {
+  const handleText = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.length < 1000 && text.length !== 0) {
       handleSubmit(text);
@@ -180,13 +180,13 @@ export const UnitQuestion: React.FC<{
       <Box question={question}>
         <div className="flex items-center justify-end ">
           <CustomButton
-            className={valueOfLS === true ? "bg-red-500" : ""}
+            className={valueOfLS === true ? "bg-green-500" : ""}
             onClick={() => handleSubmit(true, 0)}
           >
             Yes
           </CustomButton>
           <CustomButton
-            className={valueOfLS === false ? "bg-red-500" : ""}
+            className={valueOfLS === false ? "bg-green-500" : ""}
             onClick={() =>
               handleSubmit(
                 false,
@@ -213,7 +213,11 @@ export const UnitQuestion: React.FC<{
           {multiSelect!.map((v) => (
             <CustomButton
               key={`key${questionDB}${v}`}
-              className="m-2"
+              className={
+                allLsKeyValues.find((d) => v[0] === d.key)?.value === true
+                  ? "bg-green-500"
+                  : ""
+              }
               onClick={() => setMultiSelections(multiSelections!.concat(v[0]))}
             >
               {v[1]}
