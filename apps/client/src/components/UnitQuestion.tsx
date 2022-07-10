@@ -192,6 +192,7 @@ export const UnitQuestion: React.FC<{
       <Box question={question}>
         <div className="flex items-center justify-end ">
           <CustomButton
+            // TODO might better to use state of yesOrNO instead of valueOfLS
             className={valueOfLS === true ? "bg-green-500" : ""}
             onClick={() => handleSubmit(true, 0)}
           >
@@ -228,9 +229,7 @@ export const UnitQuestion: React.FC<{
             <CustomButton
               key={`key${questionDB}${v}`}
               className={
-                allLsKeyValues.find((d) => d.key === v[0])?.value === true
-                  ? "bg-green-500"
-                  : ""
+                multiSelections?.find((e) => e === v[0]) ? "bg-green-500" : ""
               }
               onClick={() =>
                 setMultiSelections(() =>
