@@ -56,9 +56,11 @@ export const UnitQuestion: React.FC<{
   const [multiSelections, setMultiSelections] = useState<string[] | null>(
     () =>
       multiSelect
-        ?.map((e) => e[0])
-        .filter((e) => localStorage.getItem(e[0]) === "true") ?? null
+        ?.filter((e) => localStorage.getItem(e[0]) === "true")
+        .map((e) => e[0]) ?? null
   );
+
+  console.log(multiSelect);
 
   //BUG in the above maybe you should parse before compare?
 
@@ -218,6 +220,8 @@ export const UnitQuestion: React.FC<{
   if (questionType === "multiSelect") {
     return (
       <Box question={question}>
+        {console.log(multiSelections)}
+
         <div className="flex flex-col items-center justify-end ">
           {error ?? <p>{error}</p>}
           {multiSelect!.map((v) => (
@@ -249,3 +253,5 @@ export const UnitQuestion: React.FC<{
 
   return null;
 };
+
+//NOTE consider adding all keys to question: {object} instead of individually to localstorage
