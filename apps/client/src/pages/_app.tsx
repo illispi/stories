@@ -10,7 +10,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
       <Component {...pageProps} />
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </>
   );
 };

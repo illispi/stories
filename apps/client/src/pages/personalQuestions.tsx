@@ -28,7 +28,7 @@ const Questions: React.FC<{}> = ({}) => {
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <div className="relative z-0 flex h-[33rem] max-w-xs flex-col items-center justify-center">
+        <div className="relative z-0 flex h-4/6 w-11/12 max-w-xs flex-col items-center justify-center">
           <AnimatePresence custom={direction}>
             <QuestionTransition key={page} direction={direction}>
               <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
@@ -88,7 +88,7 @@ const PersonalQuestions = () => {
           </div>
 
           <Questions></Questions>
-          <div className="mb-20"></div>
+          <div className="mb-10"></div>
         </div>
       </paginationContext.Provider>
     </div>
