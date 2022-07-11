@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { paginationContext } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
 import { QuestionPersonal, questions } from "../utils/personalQuestionsArr";
-import Error from './Error'
+import Error from "./Error";
 
 //NOTE might need yes or no selection
 
@@ -173,7 +173,7 @@ export const UnitQuestion: React.FC<{
               onChange={(e) => setNumber(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
-            {error && <Error message={error}/>}
+            {error && <Error message={error} />}
           </div>
         </form>
       </Box>
@@ -191,7 +191,7 @@ export const UnitQuestion: React.FC<{
               onChange={(e) => setText(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
-            {error && <Error message={error}/>}
+            {error && <Error message={error} />}
           </div>
         </form>
       </Box>
@@ -239,9 +239,8 @@ export const UnitQuestion: React.FC<{
   if (questionType === "multiSelect") {
     return (
       <Box question={question}>
-
         <div className="flex flex-col items-center justify-end ">
-          {error ?? <Error message={error}/>}
+          {error ?? <Error message={error} />}
           {multiSelect!.map((v) => (
             <CustomButton
               key={`key${questionDB}${v}`}
@@ -273,3 +272,4 @@ export const UnitQuestion: React.FC<{
 };
 
 //NOTE consider adding all keys to question: {object} instead of individually to localstorage
+//BUG You have to clear if you go back and skip some question for example smoking amount

@@ -20,6 +20,18 @@ import { questions } from "../utils/personalQuestionsArr";
 
 //NOTE just copy selections from migrations, unless it becomes too long for box
 
+const Counter = () => {
+  const { page } = useContext(paginationContext);
+
+  return (
+    <div className="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
+      <h3 className="p-6 text-lg font-semibold">{`${page + 1}/${
+        questions.length
+      }`}</h3>
+    </div>
+  );
+};
+
 const Questions: React.FC<{}> = ({}) => {
   const { direction, page, paginate } = useContext(paginationContext);
 
@@ -69,10 +81,12 @@ const PersonalQuestions = () => {
       </Head>
       <paginationContext.Provider value={{ page, direction, paginate }}>
         <div className="flex h-screen flex-col items-center justify-end">
-          <div className="h-40">
+          {/* BUG cant have hard coded widths */}
+          <div className="flex h-1/6 w-[320px] items-center justify-between p-2">
+            <Counter />
             <CustomButton
               type="button"
-              className="my-4"
+              className="my-4 max-h-12"
               onClick={() => {
                 if (page >= 0) {
                   const skipAmount = localStorage.getItem(
