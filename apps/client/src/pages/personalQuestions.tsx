@@ -28,7 +28,7 @@ const Questions: React.FC<{}> = ({}) => {
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <div className="relative z-0 flex h-[29rem] max-w-xs flex-col items-center justify-center">
+        <div className="relative z-0 flex h-[33rem] max-w-xs flex-col items-center justify-center">
           <AnimatePresence custom={direction}>
             <QuestionTransition key={page} direction={direction}>
               <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
@@ -68,11 +68,11 @@ const PersonalQuestions = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <paginationContext.Provider value={{ page, direction, paginate }}>
-        <div className="flex flex-col items-center justify-center">
-          <div className="my-4">
-            {/* TODO you have have skip multiple back as well */}
+        <div className="flex h-screen flex-col items-center justify-end">
+          <div className="h-40">
             <CustomButton
               type="button"
+              className="my-4"
               onClick={() => {
                 if (page >= 0) {
                   const skipAmount = localStorage.getItem(
@@ -86,7 +86,9 @@ const PersonalQuestions = () => {
               Previous
             </CustomButton>
           </div>
+
           <Questions></Questions>
+          <div className="mb-20"></div>
         </div>
       </paginationContext.Provider>
     </div>
