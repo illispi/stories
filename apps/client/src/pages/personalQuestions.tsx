@@ -25,9 +25,9 @@ const Counter = () => {
 
   return (
     <div className="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
-      <h3 className="p-6 text-lg font-semibold">{`${page + 1}/${
-        questions.length
-      }`}</h3>
+      <h3 className="p-6 text-lg font-semibold">{`${
+       Math.floor( ((page + 1) / questions.length) * 100)
+      }%`}</h3>
     </div>
   );
 };
