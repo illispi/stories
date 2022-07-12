@@ -5,10 +5,12 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import "tailwindcss/tailwind.css";
 import "../styles/globals.css";
 import { getFetch } from "@trpc/client";
+import NavBar from "../components/NavBar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
+      <NavBar></NavBar>
       <Component {...pageProps} />
       {/* <ReactQueryDevtools /> */}
     </>
