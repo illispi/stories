@@ -12,7 +12,7 @@ const Box: React.FC<{
 }> = ({ children, question }) => {
   return (
     <div className="flex flex-grow flex-col">
-      <div className="flex h-24 w-80 items-center justify-center bg-blue-300 p-8 ">
+      <div className="flex h-24 w-80 items-center justify-center bg-blue-300 p-8">
         <label className=" text-center font-semibold">{question}</label>
       </div>
       <div className="relative flex flex-grow flex-col items-center justify-start overflow-hidden overflow-y-auto">

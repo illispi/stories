@@ -333,7 +333,7 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question:
-      "If you could have chosen not to have schizophrenia, would you choose not to?",
+      "If you could have chosen not to have schizophrenia, would you have chosen not to?",
     questionType: "yesOrNo",
     questionDB: "not_have_schizophrenia",
   },
