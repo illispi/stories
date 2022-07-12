@@ -22,24 +22,24 @@ export const questions: QuestionPersonal[] = [
     questionDB: "current_age",
   },
   {
-    question: "What age were you on first psychosis?",
+    question: "What age were you when you first had a psychotic episode",
     questionType: "integer",
     questionDB: "age_of_onset",
   },
   {
-    question: "How long did the first psychosis last?",
+    question: "How long did the first psychotic episode last?",
     questionType: "selection",
     questionDB: "length_of_psychosis",
     selections: ["few weeks", "few months", "more than 6 months"],
   },
   {
-    question: "Were you hospitalized on your first psychosis?",
+    question: "Were you hospitalized on your first psychotic episode?",
     questionType: "yesOrNo",
     questionDB: "hospitalized_on_first",
     skip: "psychosis_how_many",
   },
   {
-    question: "Were you satisfied with hospital care?",
+    question: "Were you satisfied with the hospital care you received?",
     questionType: "yesOrNo",
     questionDB: "hospital_satisfaction",
   },
@@ -49,33 +49,35 @@ export const questions: QuestionPersonal[] = [
     questionDB: "hospitalized_voluntarily",
   },
   {
-    question: "Could you describe your time in hospital?",
+    question: "How would you describe your time in hospital?",
     questionType: "text",
     questionDB: "describe_hospital",
   },
   {
-    question: "Did you recieve care after hospitalization?",
+    question: "Did you recieve after care following hospitalization?",
     questionType: "yesOrNo",
     questionDB: "care_after_hospital",
     skip: "psychosis_how_many",
   },
   {
-    question: "What kind of care after hospitalization?",
+    question:
+      "What kind of after care did you receive following hospitalization?",
     questionType: "text",
     questionDB: "what_kind_of_care_after",
   },
   {
-    question: "Were you satisfied with after hospitalization care?",
+    question:
+      "Were you satisfied with the after care you received following hospitalization?",
     questionType: "yesOrNo",
     questionDB: "after_hospital_satisfaction",
   },
   {
-    question: "How many times have you had major psychosis?",
+    question: "How many times have you experienced major psychosis?",
     questionType: "integer",
     questionDB: "psychosis_how_many",
   },
   {
-    question: "Did you have prodromal symptoms before you got first psychosis?",
+    question: "Did you have prodromal symptoms before you experienced your first psychotic episode?",
     questionType: "yesOrNo",
     questionDB: "prodromal_symptoms",
     skip: "symptoms_hallucinations",
@@ -86,7 +88,8 @@ export const questions: QuestionPersonal[] = [
     questionDB: "describe_prodromal_symptoms",
   },
   {
-    question: "What kind of symptoms did you have on first psychosis?",
+    question:
+      "What kind of symptoms did you have with your first psychotic episode?",
     questionType: "multiSelect",
     questionDB: "symptoms_hallucinations",
     multiSelect: [
@@ -98,7 +101,7 @@ export const questions: QuestionPersonal[] = [
   },
 
   {
-    question: "What primary medication do you use?",
+    question: "What is the primary medication that you have used?",
     questionType: "selection",
     questionDB: "current_med",
     selections: [
@@ -113,12 +116,13 @@ export const questions: QuestionPersonal[] = [
     ],
   },
   {
-    question: "Did the antipsychotics help to your positive symptoms?",
+    question:
+      "Did the antipsychotic medication help with your positive symptoms?",
     questionType: "yesOrNo",
     questionDB: "efficacy_of_med",
   },
   {
-    question: "What kind of side effects have the meds had on you?",
+    question: "Did the antipsychotic medication cause any side effects?",
     questionType: "multiSelect",
     questionDB: "side_effs_dizziness",
     multiSelect: [
@@ -131,76 +135,75 @@ export const questions: QuestionPersonal[] = [
     ],
   },
   {
-    question: "Have you quit your anti-psychotics?",
+    question: "Have you stopped taking the antipsychotic medication?",
     questionType: "yesOrNo",
     questionDB: "quitting",
     skip: "gained_weight",
   },
   {
-    question: "Why did you quit your medications?",
+    question: "Why did you quit the medications?",
     questionType: "selection",
     questionDB: "quitting_why",
     selections: ["side effects", "felt normal", "affordability"],
   },
   {
-    question: "Did anything happen when quit medications?",
+    question: "Were there any consequences to quitting the medication?",
     questionType: "text",
     questionDB: "quitting_what_happened",
   },
   {
-    question: "Do you regret quitting meds?",
+    question: "Do you regret quitting the medication?",
     questionType: "yesOrNo",
     questionDB: "quitting_regret",
   },
   {
-    question: "Have you gained weight due to meds?",
+    question: "Did the medications cause you to gain weight?",
     questionType: "yesOrNo",
     questionDB: "gained_weight",
     skip: "smoking",
   },
   {
-    question: "How much have you gained?",
+    question: "How much weight did you gain?",
     questionType: "integer",
     questionDB: "weight_amount",
   },
   {
-    question: "Do you smoke tobacco?",
+    question: "Do you smoke cigarettes?",
     questionType: "yesOrNo",
     questionDB: "smoking",
     skip: "cannabis",
   },
 
   {
-    question: "How much do you smoke",
+    question: "How many cigarettes do you smoke?",
     questionType: "selection",
     questionDB: "smoking_amount",
     selections: [
-      "more than pack a day",
-      "20 a day",
       "10 a day",
-      "less than 10 a day",
-      "less than 10 a week",
+      "20 or more a day",
+      "Less than 10 a day",
+      "Less than 10 a week", //TODO update migrations for these
     ],
   },
 
   {
-    question: "Have you used cannabis?",
+    question: "Have you ever used cannabis?",
     questionType: "yesOrNo",
     questionDB: "cannabis",
   },
   {
-    question: "Have you had suicidal thoughts?",
+    question: "Have you ever had suicidal thoughts?",
     questionType: "yesOrNo",
     questionDB: "suicidal_thoughts",
     skip: "negative_symptoms",
   },
   {
-    question: "Have you attempted suicide?",
+    question: "Have you ever attempted suicide?",
     questionType: "yesOrNo",
     questionDB: "suicide_attempts",
   },
   {
-    question: "Do you have negative symptoms?",
+    question: "Do you have any negative symptoms?",
     questionType: "yesOrNo",
     questionDB: "negative_symptoms",
     skip: "cognitive_symptoms",
@@ -211,7 +214,7 @@ export const questions: QuestionPersonal[] = [
     questionType: "multiSelect",
     questionDB: "flat_expressions",
     multiSelect: [
-      ["flat_expressions", "flat expressions"],
+      ["flat_expressions", "Flat expressions"],
       ["poverty_of_speech", "Poverty of speech"],
       ["anhedonia", "No pleasure"],
       ["no_interest_socially", "No socialization"],
@@ -232,12 +235,12 @@ export const questions: QuestionPersonal[] = [
     questionDB: "cognitive_symptoms_description",
   },
   {
-    question: "What kind of personality you were before illness?",
+    question: "How would you describe your personality before psychosis?",
     questionType: "text",
     questionDB: "personality_before",
   },
   {
-    question: "Did your personality change after illness?",
+    question: "Did your personality change after psychosis?",
     questionType: "yesOrNo",
     questionDB: "personality_changed",
     skip: "other_help",
@@ -249,7 +252,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "personality_after",
   },
   {
-    question: "What helps your illness other than meds?",
+    question: "What helps your psychosis other than medication?",
     questionType: "text",
     questionDB: "other_help",
   },
@@ -264,18 +267,18 @@ export const questions: QuestionPersonal[] = [
     ],
   },
   {
-    question: "What is your life situation?",
+    question: "What is your current occupation?",
     questionType: "selection",
     questionDB: "life_situation",
-    selections: ["unemployed", "disability", "employed", "student"],
+    selections: ["unemployed", "employed", "self employed", "student", "other"], //TODO update db migrations for these
   },
   {
-    question: "Do you have a parter?",
+    question: "Are you currently in a relationship?",
     questionType: "yesOrNo",
     questionDB: "partner",
   },
   {
-    question: "Do you have friends?",
+    question: "Do you have any friends?",
     questionType: "yesOrNo",
     questionDB: "friends",
   },
@@ -285,7 +288,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "children",
   },
   {
-    question: "Did the goals of your life change after getting ill?",
+    question: "Did your life goals change after experiencing psychosis?",
     questionType: "yesOrNo",
     questionDB: "goals_changed",
     skip: "told_family",
@@ -304,11 +307,11 @@ export const questions: QuestionPersonal[] = [
       ["told_family", "Family"],
       ["told_friends", "Friends"],
       ["told_employer", "Employer"],
-      ["told_if_asked", "If asked"],
+      ["told_if_asked", "Only if asked"],
     ],
   },
   {
-    question: "How did they responded to you having schizophrenia?",
+    question: "How did they respond to you having schizophrenia?",
     questionType: "text",
     questionDB: "responded_to_telling",
   },
@@ -330,7 +333,7 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question:
-      "If you could have chosen not to have schizophrenia, would you have",
+      "If you could have chosen not to have schizophrenia, would you choose not to?",
     questionType: "yesOrNo",
     questionDB: "not_have_schizophrenia",
   },
