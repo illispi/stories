@@ -25,9 +25,9 @@ const Counter = () => {
 
   return (
     <div className="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
-      <h3 className="p-6 text-lg font-semibold">{`${
-       Math.floor( ((page + 1) / questions.length) * 100)
-      }%`}</h3>
+      <h3 className="p-6 text-lg font-semibold">{`${Math.floor(
+        ((page + 1) / questions.length) * 100
+      )}%`}</h3>
     </div>
   );
 };
@@ -40,7 +40,7 @@ const Questions: React.FC<{}> = ({}) => {
       {page < 0 ? (
         <h2>loading...</h2>
       ) : (
-        <div className="relative z-0 flex h-4/6 w-11/12 max-w-xs flex-col items-center justify-center">
+        <div className="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
           <AnimatePresence custom={direction}>
             <QuestionTransition key={page} direction={direction}>
               <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
@@ -80,9 +80,9 @@ const PersonalQuestions = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <paginationContext.Provider value={{ page, direction, paginate }}>
-        <div className="flex h-screen flex-col items-center justify-end">
+        <div className="flex h-screen flex-col items-center justify-start">
           {/* BUG cant have hard coded widths */}
-          <div className="flex h-1/6 w-[320px] items-center justify-between p-2">
+          <div className="flex h-1/6 w-[320px] items-end justify-between p-2">
             <Counter />
             <CustomButton
               type="button"

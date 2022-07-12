@@ -5,7 +5,7 @@ import { PersonalQuestions } from "zod-types";
 const variants = {
   enter: (direction: number) => {
     return {
-      x: direction > 0 ? 300 : -300,
+      x: direction > 0 ? 340 : -340,
       opacity: 0,
     };
   },
@@ -15,7 +15,7 @@ const variants = {
   },
   exit: (direction: number) => {
     return {
-      x: direction < 0 ? 300 : -300,
+      x: direction < 0 ? 340 : -340,
       opacity: 0,
     };
   },

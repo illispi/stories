@@ -173,7 +173,7 @@ export const UnitQuestion: React.FC<{
               onChange={(e) => setNumber(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
-            {error && <Error message={error} />}
+            <Error setError={setError} message={error} />
           </div>
         </form>
       </Box>
@@ -191,7 +191,7 @@ export const UnitQuestion: React.FC<{
               onChange={(e) => setText(e.target.value)}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
-            {error && <Error message={error} />}
+            <Error setError={setError} message={error} />
           </div>
         </form>
       </Box>
@@ -240,7 +240,7 @@ export const UnitQuestion: React.FC<{
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
-          {error ?? <Error message={error} />}
+          <Error setError={setError} message={error} />
           {multiSelect!.map((v) => (
             <CustomButton
               key={`key${questionDB}${v}`}
