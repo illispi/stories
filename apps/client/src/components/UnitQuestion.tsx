@@ -28,6 +28,9 @@ interface KeysValues {
   key: QuestionPersonal["questionDB"];
   value: string;
 }
+const firstLetterUpperCase = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 export const UnitQuestion: React.FC<{
   content: QuestionPersonal;
@@ -154,7 +157,7 @@ export const UnitQuestion: React.FC<{
                     : ""
                 }
               >
-                {v}
+                {firstLetterUpperCase(v)}
               </CustomButton>
             </div>
           ))}
