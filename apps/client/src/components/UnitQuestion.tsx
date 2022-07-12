@@ -170,7 +170,10 @@ export const UnitQuestion: React.FC<{
               id="int"
               type="tel"
               value={number}
-              onChange={(e) => setNumber(e.target.value)}
+              onChange={(e) => {
+                setNumber(e.target.value);
+                setError(null);
+              }}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
             <Error setError={setError} message={error} />
@@ -188,7 +191,10 @@ export const UnitQuestion: React.FC<{
               id="int"
               type="text"
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                setError(null);
+              }}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
             <Error setError={setError} message={error} />
@@ -249,13 +255,14 @@ export const UnitQuestion: React.FC<{
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
                   : ""
               }
-              onClick={() =>
+              onClick={() => {
                 setMultiSelections(() =>
                   multiSelections?.find((e) => e === v[0])
                     ? multiSelections.filter((e) => e !== v[0])
                     : multiSelections!.concat(v[0])
-                )
-              }
+                );
+                setError(null);
+              }}
             >
               {v[1]}
             </CustomButton>
