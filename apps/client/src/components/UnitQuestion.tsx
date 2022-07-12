@@ -130,11 +130,12 @@ export const UnitQuestion: React.FC<{
     if (text.length < 1000 && text.length !== 0) {
       handleSubmit(text);
       setError(null);
-    }
-    if (text.length >= 1000) {
-      setError("Maximum allowed character amount is 1000");
     } else {
-      setError("Please provide some text");
+      if (text.length >= 1000) {
+        setError("Maximum allowed character amount is 1000");
+      } else {
+        setError("Please provide some text");
+      }
     }
   };
 
@@ -185,6 +186,7 @@ export const UnitQuestion: React.FC<{
   if (questionType === "text") {
     return (
       <Box question={question}>
+        <Error setError={setError} message={error} />
         <form onSubmit={handleText}>
           <div className="flex flex-col items-center justify-end">
             <input
@@ -197,7 +199,6 @@ export const UnitQuestion: React.FC<{
               }}
             ></input>
             <CustomButton type="submit">Next</CustomButton>
-            <Error setError={setError} message={error} />
           </div>
         </form>
       </Box>
