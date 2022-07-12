@@ -108,7 +108,7 @@ export const questions: QuestionPersonal[] = [
       "ziprasidone (Zeldox)",
       "paliperidone (Invega)",
       "aripiprazole (Abilify)",
-      "clozapine (Clozaril)",
+      "clozapine (Clozaril)", //TODO add option for no medication or skip before this question
       "other",
     ],
   },
@@ -143,7 +143,7 @@ export const questions: QuestionPersonal[] = [
     selections: ["side effects", "felt normal", "affordability"],
   },
   {
-    question: "Why did you quit your medications?",
+    question: "Did anything happen when quit medications?",
     questionType: "text",
     questionDB: "quitting_what_happened",
   },
