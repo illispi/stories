@@ -1,6 +1,16 @@
 import Link from "next/link";
 import React, { useState } from "react";
 
+const Links = () => {
+  return (
+    <div className="hidden items-center justify-end lg:flex">
+      <Link href={"/statistics"}>
+        <a className="mx-2 text-xl font-semibold">Statistics</a>
+      </Link>
+    </div>
+  );
+};
+
 const Hamburger: React.FC<{
   menuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,6 +70,7 @@ const NavBar = () => {
         </a>
       </Link>
       <Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <Links></Links>
     </div>
   );
 };
