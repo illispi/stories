@@ -6,12 +6,12 @@ const Hamburger: React.FC<{
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ menuOpen, setMenuOpen }) => {
   return (
-    <div className="flex  lg:hidden">
+    <div className="flex items-center justify-center transition-transform active:scale-125 lg:hidden">
       <button onClick={() => setMenuOpen(!menuOpen)}>
         {!menuOpen ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-8 w-8"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -26,7 +26,7 @@ const Hamburger: React.FC<{
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-8 w-8"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -48,7 +48,7 @@ const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="sticky top-0 flex h-12 w-full items-center bg-gradient-to-b from-blue-200 to-blue-300">
+    <div className="sticky top-0 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
       <Link href={"/"}>
         <a className="mx-2 text-2xl font-semibold sm:hidden">
           Schizo... stories
