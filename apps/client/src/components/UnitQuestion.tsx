@@ -71,7 +71,9 @@ export const UnitQuestion: React.FC<{
     valueOfLS !== "" ? valueOfLS : ""
   );
 
-  const [metric, setMetric] = useState<boolean>(true);
+  const [metric, setMetric] = useState<boolean>(() =>
+    JSON.parse(localStorage.getItem("system") ?? '"true"')
+  );
 
   //BUG in the above maybe you should parse before compare?
 
@@ -98,12 +100,15 @@ export const UnitQuestion: React.FC<{
     skipAmount?: number
   ) => {
     try {
+      if (questionDB === "weight_amount") {
+        localStorage.setItem("system", JSON.stringify(metric));
+      }
       if (
         questionDB === "weight_amount" &&
         !metric &&
         typeof value === "string"
       ) {
-        value = parseInt(value) * 0.45359237;
+        value = Math.floor(parseInt(value) * 0.45359237);
       }
       setSelection(value);
       setYesOrNO(value);
