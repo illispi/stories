@@ -115,3 +115,6 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
+
+export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
+export type theirQuestions = z.infer<typeof theirQuestionsSchema>;

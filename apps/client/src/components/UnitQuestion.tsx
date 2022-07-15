@@ -71,6 +71,8 @@ export const UnitQuestion: React.FC<{
     valueOfLS !== "" ? valueOfLS : ""
   );
 
+  const [metric, setMetric] = useState<boolean>(true);
+
   //BUG in the above maybe you should parse before compare?
 
   const handleMultiSubmit = (values: string[] | null) => {
@@ -96,6 +98,13 @@ export const UnitQuestion: React.FC<{
     skipAmount?: number
   ) => {
     try {
+      if (
+        questionDB === "weight_amount" &&
+        !metric &&
+        typeof value === "string"
+      ) {
+        value = parseInt(value) * 0.45359237;
+      }
       setSelection(value);
       setYesOrNO(value);
       const serializedValue = JSON.stringify(value);
@@ -120,6 +129,7 @@ export const UnitQuestion: React.FC<{
   const handleNumber = (e: React.FormEvent) => {
     e.preventDefault();
     //TODO cant be too old validation
+
     if (validateInt(number)) {
       handleSubmit(number);
       setError(null);
@@ -166,6 +176,47 @@ export const UnitQuestion: React.FC<{
     );
   }
   if (questionType === "integer") {
+    if (questionDB === "weight_amount") {
+      return (
+        <Box question={question}>
+          <form onSubmit={handleNumber}>
+            <div className="flex flex-col items-center justify-end">
+              <input
+                id="int"
+                type="tel"
+                value={number}
+                onChange={(e) => {
+                  setNumber(e.target.value);
+                  setError(null);
+                }}
+              ></input>
+              <CustomButton
+                onClick={() => setMetric(false)}
+                className={
+                  !metric
+                    ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                    : ""
+                }
+              >
+                Imperial (lbs)
+              </CustomButton>
+              <CustomButton
+                onClick={() => setMetric(true)}
+                className={
+                  metric
+                    ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                    : ""
+                }
+              >
+                Metric (kg)
+              </CustomButton>
+              <CustomButton type="submit">Next</CustomButton>
+              <Error setError={setError} message={error} />
+            </div>
+          </form>
+        </Box>
+      );
+    }
     return (
       <Box question={question}>
         <form onSubmit={handleNumber}>
