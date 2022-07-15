@@ -1,5 +1,3 @@
-// import { Generated, ColumnType } from "kysely";
-
 export interface PersonalQuestions {
   after_hospital_satisfaction: boolean | null;
   age_of_onset: number;
@@ -75,7 +73,7 @@ export interface PersonalQuestions {
   weight_amount: number | null;
   what_kind_of_care_after: string | null;
   what_others_should_know: string | null;
-  worst_symptom: string | null;
+  worst_symptom: string;
 }
 
 export interface TheirQuestions {
@@ -97,7 +95,7 @@ export interface TheirQuestions {
   personality_before: string;
   personality_changed: boolean;
   quitting: boolean | null;
-  relation: string | null;
+  relation: string;
   side_effects: string | null;
   smoking: boolean | null;
   symptoms_before_onset: string | null;

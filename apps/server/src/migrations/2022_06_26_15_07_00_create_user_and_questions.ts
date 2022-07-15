@@ -116,7 +116,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         sql`smoking_amount in ('10 a day',
         '20 or more a day',
         'Less than 10 a day',
-        'Less than 10 a week',)`
+        'Less than 10 a week')`
       )
     )
     .addColumn("cannabis", "boolean", (col) => col.notNull())
@@ -230,7 +230,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("personality_after", "text", (col) =>
       col.check(sql`NOT (personality_changed AND personality_after IS NULL)`)
     )
-    .addColumn("life_unemployed", "boolean") //NOTE ask fore suggestion if this is the best idea for example own table
+    .addColumn("life_unemployed", "boolean") //TODO change to like in life_situation in personal questions
     .addColumn("life_disability", "boolean")
     .addColumn("life_employed", "boolean")
     .addColumn("life_student", "boolean")
