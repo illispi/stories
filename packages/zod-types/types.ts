@@ -14,40 +14,24 @@ export const personalQuestionsSchema = z.object({
   cognitive_symptoms_description: z.string().nullable(),
   created_at: z.number().nullable(),
   current_age: z.number(),
-  current_med: z.enum([
-    "risperidone (Risperdal)",
-    "quetiapine (Seroquel)",
-    "olanzapine (Zyprexa)",
-    "ziprasidone (Zeldox)",
-    "paliperidone (Invega)",
-    "aripiprazole (Abilify)",
-    "clozapine (Clozaril)",
-    "other",
-  ]),
+  current_med: z.string(),
   describe_hospital: z.string().nullable(),
   describe_prodromal_symptoms: z.string().nullable(),
   efficacy_of_med: z.boolean(),
   flat_expressions: z.boolean().nullable(),
   friends: z.boolean(),
   gained_weight: z.boolean(),
-  gender: z.enum(["male", "female", "other"]),
+  gender: z.string(),
   goals_after: z.string().nullable(),
   goals_changed: z.boolean(),
   hospital_satisfaction: z.boolean().nullable(),
   hospitalized_on_first: z.boolean(),
   hospitalized_voluntarily: z.boolean().nullable(),
   lack_of_motivation: z.boolean().nullable(),
-  length_of_psychosis: z.enum([
-    "few weeks",
-    "few months",
-    "more than 6 months",
-  ]),
-  life_disability: z.boolean().nullable(),
-  life_employed: z.boolean().nullable(),
+  length_of_psychosis: z.string(),
   life_satisfaction: z.boolean(),
   life_satisfaction_description: z.string().nullable(),
-  life_student: z.boolean().nullable(),
-  life_unemployed: z.boolean().nullable(),
+  life_situation: z.string(),
   negative_symptoms: z.boolean(),
   no_interest_socially: z.boolean().nullable(),
   not_have_schizophrenia: z.boolean(),
@@ -63,9 +47,7 @@ export const personalQuestionsSchema = z.object({
   quitting: z.boolean(),
   quitting_regret: z.boolean().nullable(),
   quitting_what_happened: z.string().nullable(),
-  quitting_why: z
-    .enum(["side effects", "felt normal", "affordability"])
-    .nullable(),
+  quitting_why: z.string().nullable(),
   responded_to_telling: z.string().nullable(),
   side_effs_dizziness: z.boolean().nullable(),
   side_effs_movement_effects: z.boolean().nullable(),
@@ -74,14 +56,7 @@ export const personalQuestionsSchema = z.object({
   side_effs_tardive: z.boolean().nullable(),
   side_effs_weight_gain: z.boolean().nullable(),
   smoking: z.boolean(),
-  smoking_amount: z
-    .enum([
-      "20 a day",
-      "10 a day",
-      "less than 10 a day",
-      "more than pack a day",
-    ])
-    .nullable(),
+  smoking_amount: z.string().nullable(),
   suicidal_thoughts: z.boolean(),
   suicide_attempts: z.boolean().nullable(),
   symptoms_delusions: z.boolean().nullable(),
@@ -98,11 +73,7 @@ export const personalQuestionsSchema = z.object({
   weight_amount: z.number().nullable(),
   what_kind_of_care_after: z.string().nullable(),
   what_others_should_know: z.string().nullable(),
-  worst_symptom: z.enum([
-    "negative symptoms",
-    "positive symptoms",
-    "cognitive symptoms",
-  ]),
+  worst_symptom: z.string(),
 });
 
 export const theirQuestionsSchema = z.object({
@@ -110,7 +81,7 @@ export const theirQuestionsSchema = z.object({
   answer_their_id: z.number(),
   children: z.boolean().nullable(),
   friends: z.boolean().nullable(),
-  gender: z.enum(["male", "female", "other"]),
+  gender: z.string(),
   goals_after: z.string().nullable(),
   goals_changed: z.boolean(),
   life_disability: z.boolean().nullable(),
@@ -124,7 +95,7 @@ export const theirQuestionsSchema = z.object({
   personality_before: z.string(),
   personality_changed: z.boolean(),
   quitting: z.boolean().nullable(),
-  relation: z.enum(["relative", "friend", "acquintance"]),
+  relation: z.string(),
   side_effects: z.string().nullable(),
   smoking: z.boolean().nullable(),
   symptoms_before_onset: z.string().nullable(),
@@ -144,6 +115,3 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
-
-export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
-export type theirQuestions = z.infer<typeof theirQuestionsSchema>;

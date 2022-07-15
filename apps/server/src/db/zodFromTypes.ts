@@ -29,12 +29,9 @@ export const personalQuestionsSchema = z.object({
   hospitalized_voluntarily: z.boolean().nullable(),
   lack_of_motivation: z.boolean().nullable(),
   length_of_psychosis: z.string(),
-  life_disability: z.boolean().nullable(),
-  life_employed: z.boolean().nullable(),
   life_satisfaction: z.boolean(),
   life_satisfaction_description: z.string().nullable(),
-  life_student: z.boolean().nullable(),
-  life_unemployed: z.boolean().nullable(),
+  life_situation: z.string(),
   negative_symptoms: z.boolean(),
   no_interest_socially: z.boolean().nullable(),
   not_have_schizophrenia: z.boolean(),
@@ -76,7 +73,7 @@ export const personalQuestionsSchema = z.object({
   weight_amount: z.number().nullable(),
   what_kind_of_care_after: z.string().nullable(),
   what_others_should_know: z.string().nullable(),
-  worst_symptom: z.string().nullable(),
+  worst_symptom: z.string(),
 });
 
 export const theirQuestionsSchema = z.object({
@@ -98,7 +95,7 @@ export const theirQuestionsSchema = z.object({
   personality_before: z.string(),
   personality_changed: z.boolean(),
   quitting: z.boolean().nullable(),
-  relation: z.string().nullable(),
+  relation: z.string(),
   side_effects: z.string().nullable(),
   smoking: z.boolean().nullable(),
   symptoms_before_onset: z.string().nullable(),
@@ -118,5 +115,3 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
-
-

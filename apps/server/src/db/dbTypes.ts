@@ -26,12 +26,9 @@ export interface PersonalQuestions {
   hospitalized_voluntarily: boolean | null;
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
-  life_disability: boolean | null;
-  life_employed: boolean | null;
   life_satisfaction: boolean;
   life_satisfaction_description: string | null;
-  life_student: boolean | null;
-  life_unemployed: boolean | null;
+  life_situation: string;
   negative_symptoms: boolean;
   no_interest_socially: boolean | null;
   not_have_schizophrenia: boolean;
