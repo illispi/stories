@@ -77,7 +77,8 @@ export const questions: QuestionPersonal[] = [
     questionDB: "psychosis_how_many",
   },
   {
-    question: "Did you have prodromal symptoms before you experienced your first psychotic episode?",
+    question:
+      "Did you have prodromal symptoms before you experienced your first psychotic episode?",
     questionType: "yesOrNo",
     questionDB: "prodromal_symptoms",
     skip: "symptoms_hallucinations",
@@ -111,8 +112,9 @@ export const questions: QuestionPersonal[] = [
       "ziprasidone (Zeldox)",
       "paliperidone (Invega)",
       "aripiprazole (Abilify)",
-      "clozapine (Clozaril)", //TODO add option for no medication or skip before this question
+      "clozapine (Clozaril)",
       "other",
+      "no medication",
     ],
   },
   {
@@ -182,7 +184,7 @@ export const questions: QuestionPersonal[] = [
       "10 a day",
       "20 or more a day",
       "Less than 10 a day",
-      "Less than 10 a week", //TODO update migrations for these
+      "Less than 10 a week",
     ],
   },
 
@@ -270,7 +272,14 @@ export const questions: QuestionPersonal[] = [
     question: "What is your current occupation?",
     questionType: "selection",
     questionDB: "life_situation",
-    selections: ["unemployed", "employed", "self employed", "student", "other"], //TODO update db migrations for these
+    selections: [
+      "unemployed",
+      "self employed",
+      "employed",
+      "disability",
+      "student",
+      "other",
+    ],
   },
   {
     question: "Are you currently in a relationship?",

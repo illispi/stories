@@ -72,14 +72,14 @@ export async function up(db: Kysely<any>): Promise<void> {
           sql`NOT (prodromal_symptoms AND describe_prodromal_symptoms IS NULL) `
         ) //NOTE this IS NULL might be opposite
     )
-    .addColumn("symptoms_hallucinations", "boolean") //BUG might need notNull()
+    .addColumn("symptoms_hallucinations", "boolean")
     .addColumn("symptoms_delusions", "boolean")
     .addColumn("symptoms_paranoia", "boolean")
     .addColumn("symptoms_disorganized", "boolean")
     .addColumn("current_med", "text", (col) =>
       col.notNull().check(
         sql`current_med in ('risperidone (Risperdal)', 'quetiapine (Seroquel)',
-           'olanzapine (Zyprexa)', 'ziprasidone (Zeldox)', 'paliperidone (Invega)', 'aripiprazole (Abilify)', 'clozapine (Clozaril)', 'other')`
+           'olanzapine (Zyprexa)', 'ziprasidone (Zeldox)', 'paliperidone (Invega)', 'aripiprazole (Abilify)', 'clozapine (Clozaril)', 'other', 'no medication')`
       )
     )
     .addColumn("efficacy_of_med", "boolean", (col) => col.notNull())
@@ -113,7 +113,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("smoking", "boolean", (col) => col.notNull())
     .addColumn("smoking_amount", "text", (col) =>
       col.check(
-        sql`smoking_amount in ('20 a day', '10 a day', 'less than 10 a day', 'more than pack a day', 'less than 10 a week')`
+        sql`smoking_amount in ('10 a day',
+        '20 or more a day',
+        'Less than 10 a day',
+        'Less than 10 a week',)`
       )
     )
     .addColumn("cannabis", "boolean", (col) => col.notNull())
@@ -162,7 +165,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("life_situation", "text", (col) =>
       col
         .check(
-          sql`life_situation in ('unemployed', 'disability', 'employed', 'student')`
+          sql`life_situation in ('unemployed', 'self employed', 'employed', 'disability', 'student', 'other')`
         )
         .notNull()
     )
