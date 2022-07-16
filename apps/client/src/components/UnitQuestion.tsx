@@ -91,7 +91,12 @@ export const UnitQuestion: React.FC<{
   //BUG in the above maybe you should parse before compare?
 
   const handleMultiSubmit = (values: {}[]) => {
-    if (values?.length === 0) {
+    console.log(values.filter((e) => e === false).length);
+
+    if (
+      values.filter((e) => e[Object.keys(e)[0]] === false).length ===
+      multiSelect?.map((e) => e[0]).length
+    ) {
       setError("Please select at least one option");
     } else {
       setError(null);
