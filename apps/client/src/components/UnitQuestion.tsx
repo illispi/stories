@@ -1,8 +1,12 @@
 import React, { useContext, useState } from "react";
 import { paginationContext } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
-import { QuestionPersonal, questions } from "../utils/personalQuestionsArr";
+import {
+  QuestionPersonal,
+  questions as questionsArr,
+} from "../utils/personalQuestionsArr";
 import Error from "./Error";
+import { PersonalQuestions } from "zod-types";
 
 //NOTE might need yes or no selection
 
@@ -42,7 +46,7 @@ export const UnitQuestion: React.FC<{
     content;
   const { paginate } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
-  const allLsKeyValues: KeysValues[] = questions.map((e) =>
+  const allLsKeyValues: KeysValues[] = questionsArr.map((e) =>
     Object.create({
       key: e.questionDB,
       value: JSON.parse(localStorage.getItem(e.questionDB) ?? '""'),
@@ -57,12 +61,30 @@ export const UnitQuestion: React.FC<{
   );
   const [text, setText] = useState(() => (valueOfLS !== "" ? valueOfLS : ""));
   const [error, setError] = useState<string | null>(null);
-  const [multiSelections, setMultiSelections] = useState<string[] | null>(
-    () =>
-      multiSelect
-        ?.filter((e) => localStorage.getItem(e[0]) === "true")
-        .map((e) => e[0]) ?? null
+  // const [multiSelections, setMultiSelections] = useState<string[] | null>(
+  //   () =>
+  //     multiSelect
+  //       ?.filter((e) => localStorage.getItem(e[0]) === "true")
+  //       .map((e) => e[0]) ?? null
+  // );
+
+  const questionsLs: PersonalQuestions = JSON.parse(
+    localStorage.getItem("personalQuestions") ?? "{}"
   );
+
+  const multiSelInit = () => {
+    const arrOfkeyValArr = Object.entries(questionsLs).filter((e) =>
+      multiSelect?.map((p) => p[0]).includes(e[0])
+    );
+    if(arrOfkeyValArr.length === 0){
+      return multiSelect?.map(e => Object.create({ e[0]: false }))
+    }
+    return arrOfkeyValArr.map(e => Object.create({ e[0]: e[1] }));
+
+
+  };
+
+  const [multiSelections, setMultiSelections] = useState(() => multiSelInit);
 
   const [yesOrNO, setYesOrNO] = useState(() =>
     valueOfLS !== "" ? valueOfLS : ""
@@ -83,9 +105,22 @@ export const UnitQuestion: React.FC<{
     } else {
       setError(null);
       try {
-        //TODO clear all values on previous gesture
-        multiSelect?.forEach((e) => localStorage.removeItem(e[0]));
-        values?.forEach((e) => localStorage.setItem(e, "true"));
+        //TODO clear all values on previous gesture, if skipping
+
+        const finalArray = multiSelect?.map((e) =>
+          Object.create({ e: values?.includes(e[0]) ? true : false })
+        );
+        if (!localStorage.getItem("personalQuestions")) {
+          localStorage.setItem("personalQuestions", JSON.stringify(finalArray));
+        } else {
+          const currentLs = JSON.parse(
+            localStorage.getItem("personalQuestions")
+          );
+          localStorage.setItem(
+            "personalQuestions",
+            JSON.stringify(currentLs.concat(finalArray))
+          );
+        }
 
         paginate(1);
       } catch (err) {
