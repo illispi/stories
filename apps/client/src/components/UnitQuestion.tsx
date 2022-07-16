@@ -36,6 +36,8 @@ const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+const LsName = "personalQuestions"
+
 export const UnitQuestion: React.FC<{
   content: QuestionPersonal;
 }> = ({ content }) => {
@@ -63,16 +65,26 @@ export const UnitQuestion: React.FC<{
   const [error, setError] = useState<string | null>(null);
 
   const questionsLs: PersonalQuestions = JSON.parse(
-    localStorage.getItem("personalQuestions") ?? "{}"
+    localStorage.getItem(LsName) ?? "{}"
   );
 
-  const multiSelInit = () => {
-    const arrOfkeyValArr = Object.entries(questionsLs).map((e) => e[1]);
+  const multiSelInit: () => {} = () => {
+    const selectionsObj = multiSelect
+      ?.map((e) => e[0])
+      .reduce(
+        (acc, curr) => (
+          curr in questionsLs && (acc[curr] = questionsLs[curr]), acc
+        ),
+        {}
+      );
 
-    if (arrOfkeyValArr.length === 0) {
-      return multiSelect?.map((e) => new Object({ [e[0]]: false }));
+    if (Object.keys(selectionsObj ? selectionsObj : {}).length === 0) {
+      return multiSelect?.reduce(
+        (acc, curr) => ((acc[curr[0]] = false), acc),
+        {}
+      );
     }
-    return arrOfkeyValArr;
+    return selectionsObj;
   };
 
   const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
@@ -90,11 +102,9 @@ export const UnitQuestion: React.FC<{
 
   //BUG in the above maybe you should parse before compare?
 
-  const handleMultiSubmit = (values: {}[]) => {
-    console.log(values.filter((e) => e === false).length);
-
+  const handleMultiSubmit = (values: {}) => {
     if (
-      values.filter((e) => e[Object.keys(e)[0]] === false).length ===
+      Object.keys(values).filter((e) => values[e] === false).length ===
       multiSelect?.map((e) => e[0]).length
     ) {
       setError("Please select at least one option");
@@ -103,7 +113,10 @@ export const UnitQuestion: React.FC<{
       try {
         //TODO clear all values on previous gesture, if skipping
 
-        localStorage.setItem("personalQuestions", JSON.stringify(values));
+        localStorage.setItem(
+          LsName,
+          JSON.stringify({ ...questionsLs, ...values })
+        );
 
         paginate(1);
       } catch (err) {
@@ -333,19 +346,15 @@ export const UnitQuestion: React.FC<{
             <CustomButton
               key={`key${questionDB}${v}`}
               className={
-                multiSelections?.find((e) => e[v[0]] === true)
+                multiSelections[v[0]] === true
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
                   : ""
               }
               onClick={() => {
                 setMultiSelections(() =>
-                  multiSelections?.find((e) => e[v[0]] === true)
-                    ? multiSelections
-                        ?.filter((e) => Object.keys(e)[0] !== v[0])
-                        .concat(new Object({ [v[0]]: false }))
-                    : multiSelections
-                        ?.filter((e) => Object.keys(e)[0] !== v[0])
-                        .concat(new Object({ [v[0]]: true }))
+                  multiSelections[v[0]] === true
+                    ? { ...multiSelections, [v[0]]: false }
+                    : { ...multiSelections, [v[0]]: true }
                 );
                 setError(null);
               }}
