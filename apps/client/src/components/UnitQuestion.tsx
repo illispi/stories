@@ -61,12 +61,6 @@ export const UnitQuestion: React.FC<{
   );
   const [text, setText] = useState(() => (valueOfLS !== "" ? valueOfLS : ""));
   const [error, setError] = useState<string | null>(null);
-  // const [multiSelections, setMultiSelections] = useState<string[] | null>(
-  //   () =>
-  //     multiSelect
-  //       ?.filter((e) => localStorage.getItem(e[0]) === "true")
-  //       .map((e) => e[0]) ?? null
-  // );
 
   const questionsLs: PersonalQuestions = JSON.parse(
     localStorage.getItem("personalQuestions") ?? "{}"
@@ -76,15 +70,13 @@ export const UnitQuestion: React.FC<{
     const arrOfkeyValArr = Object.entries(questionsLs).filter((e) =>
       multiSelect?.map((p) => p[0]).includes(e[0])
     );
-    if(arrOfkeyValArr.length === 0){
-      return multiSelect?.map(e => Object.create({ e[0]: false }))
+    if (arrOfkeyValArr.length === 0) {
+      return multiSelect?.map((e) => Object.create({ [e[0]]: false }));
     }
-    return arrOfkeyValArr.map(e => Object.create({ e[0]: e[1] }));
-
-
+    return arrOfkeyValArr.map((e) => Object.create({ [e[0]]: e[1] }));
   };
 
-  const [multiSelections, setMultiSelections] = useState(() => multiSelInit);
+  const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
 
   const [yesOrNO, setYesOrNO] = useState(() =>
     valueOfLS !== "" ? valueOfLS : ""
@@ -99,7 +91,7 @@ export const UnitQuestion: React.FC<{
 
   //BUG in the above maybe you should parse before compare?
 
-  const handleMultiSubmit = (values: string[] | null) => {
+  const handleMultiSubmit = (values: {}[]) => {
     if (values?.length === 0) {
       setError("Please select at least one option");
     } else {
@@ -346,15 +338,19 @@ export const UnitQuestion: React.FC<{
             <CustomButton
               key={`key${questionDB}${v}`}
               className={
-                multiSelections?.find((e) => e === v[0])
+                multiSelections?.find((e) => e[v[0]] === true)
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
                   : ""
               }
               onClick={() => {
                 setMultiSelections(() =>
-                  multiSelections?.find((e) => e === v[0])
-                    ? multiSelections.filter((e) => e !== v[0])
-                    : multiSelections!.concat(v[0])
+                  multiSelections?.find((e) => e[v[0]] === true)
+                    ? multiSelections
+                        ?.filter((e) => Object.keys(e)[0] !== v[0])
+                        .concat(Object.create({ [v[0]]: false }))
+                    : multiSelections
+                        ?.filter((e) => Object.keys(e)[0] !== v[0])
+                        .concat(Object.create({ [v[0]]: true }))
                 );
                 setError(null);
               }}
