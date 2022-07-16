@@ -67,17 +67,12 @@ export const UnitQuestion: React.FC<{
   );
 
   const multiSelInit = () => {
-    console.log(questionsLs);
-
-    const arrOfkeyValArr = Object.entries(questionsLs).filter((e) =>
-      multiSelect?.map((p) => p[0]).includes(e[0])
-    );
-    console.log(arrOfkeyValArr);
+    const arrOfkeyValArr = Object.entries(questionsLs).map((e) => e[1]);
 
     if (arrOfkeyValArr.length === 0) {
       return multiSelect?.map((e) => new Object({ [e[0]]: false }));
     }
-    return arrOfkeyValArr.map((e) => new Object({ [e[0]]: e[1] }));
+    return arrOfkeyValArr;
   };
 
   const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
