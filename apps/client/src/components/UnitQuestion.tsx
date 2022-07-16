@@ -67,13 +67,17 @@ export const UnitQuestion: React.FC<{
   );
 
   const multiSelInit = () => {
+    console.log(questionsLs);
+
     const arrOfkeyValArr = Object.entries(questionsLs).filter((e) =>
       multiSelect?.map((p) => p[0]).includes(e[0])
     );
+    console.log(arrOfkeyValArr);
+
     if (arrOfkeyValArr.length === 0) {
-      return multiSelect?.map((e) => Object.create({ [e[0]]: false }));
+      return multiSelect?.map((e) => new Object({ [e[0]]: false }));
     }
-    return arrOfkeyValArr.map((e) => Object.create({ [e[0]]: e[1] }));
+    return arrOfkeyValArr.map((e) => new Object({ [e[0]]: e[1] }));
   };
 
   const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
@@ -99,20 +103,7 @@ export const UnitQuestion: React.FC<{
       try {
         //TODO clear all values on previous gesture, if skipping
 
-        const finalArray = multiSelect?.map((e) =>
-          Object.create({ e: values?.includes(e[0]) ? true : false })
-        );
-        if (!localStorage.getItem("personalQuestions")) {
-          localStorage.setItem("personalQuestions", JSON.stringify(finalArray));
-        } else {
-          const currentLs = JSON.parse(
-            localStorage.getItem("personalQuestions")
-          );
-          localStorage.setItem(
-            "personalQuestions",
-            JSON.stringify(currentLs.concat(finalArray))
-          );
-        }
+        localStorage.setItem("personalQuestions", JSON.stringify(values));
 
         paginate(1);
       } catch (err) {
@@ -315,8 +306,10 @@ export const UnitQuestion: React.FC<{
               handleSubmit(
                 false,
                 skip
-                  ? questions.findIndex((e) => e.questionDB === skip) -
-                      questions.findIndex((e) => e.questionDB === questionDB) -
+                  ? questionsArr.findIndex((e) => e.questionDB === skip) -
+                      questionsArr.findIndex(
+                        (e) => e.questionDB === questionDB
+                      ) -
                       1
                   : undefined
               )
@@ -330,6 +323,8 @@ export const UnitQuestion: React.FC<{
   }
 
   if (questionType === "multiSelect") {
+    console.log(multiSelections);
+
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
@@ -347,10 +342,10 @@ export const UnitQuestion: React.FC<{
                   multiSelections?.find((e) => e[v[0]] === true)
                     ? multiSelections
                         ?.filter((e) => Object.keys(e)[0] !== v[0])
-                        .concat(Object.create({ [v[0]]: false }))
+                        .concat(new Object({ [v[0]]: false }))
                     : multiSelections
                         ?.filter((e) => Object.keys(e)[0] !== v[0])
-                        .concat(Object.create({ [v[0]]: true }))
+                        .concat(new Object({ [v[0]]: true }))
                 );
                 setError(null);
               }}
