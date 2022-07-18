@@ -127,8 +127,9 @@ export const UnitQuestion: React.FC<{
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
+   
       if (skipAmount !== 0) {
-        localStorage.setItem(`to_${skip}`, `${skipAmount}`);
+        localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
       } else {
         localStorage.removeItem(`to_${skip}`);
       }
@@ -356,3 +357,4 @@ export const UnitQuestion: React.FC<{
 //NOTE consider adding all keys to question: {object} instead of individually to localstorage
 //BUG You have to clear if you go back and skip some question for example smoking amount
 //NOTE see if you can fix these TS errors with utility types?
+//TODO clear all answers

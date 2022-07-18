@@ -69,7 +69,7 @@ const PersonalQuestions = () => {
     if (page < 0) {
       setPage([pageNav === 0 ? 0 : pageNav, 1]);
     } else {
-      localStorage.setItem("page", page.toString());
+      localStorage.setItem("page", JSON.stringify(page));
     }
   }, [page]);
 
@@ -90,7 +90,7 @@ const PersonalQuestions = () => {
               onClick={() => {
                 if (page >= 0) {
                   const skipAmount = localStorage.getItem(
-                    `from_${questions[page].questionDB}`
+                    `to_${questions[page].questionDB}`
                   );
 
                   paginate(skipAmount ? -1 - parseInt(skipAmount) : -1);
