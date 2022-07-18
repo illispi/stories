@@ -28,10 +28,6 @@ const Box: React.FC<{
   );
 };
 
-interface KeysValues {
-  key: QuestionPersonal["questionDB"];
-  value: string;
-}
 const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -123,7 +119,7 @@ export const UnitQuestion: React.FC<{
         !metric &&
         typeof value === "string"
       ) {
-        value = Math.floor(parseInt(value) * 0.45359237);
+        value = { [questionDB]: Math.floor(parseInt(value) * 0.45359237) };
       }
       setSelection(value[questionDB]);
       setYesOrNO(value[questionDB]);
@@ -132,9 +128,9 @@ export const UnitQuestion: React.FC<{
         JSON.stringify({ ...questionsLs, ...value })
       );
       if (skipAmount !== 0) {
-        localStorage.setItem(`from_${skip}`, `${skipAmount}`);
+        localStorage.setItem(`to_${skip}`, `${skipAmount}`);
       } else {
-        localStorage.removeItem(`from_${skip}`);
+        localStorage.removeItem(`to_${skip}`);
       }
 
       paginate(1 + (skipAmount ? skipAmount : 0));
