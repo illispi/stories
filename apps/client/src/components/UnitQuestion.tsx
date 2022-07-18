@@ -36,7 +36,7 @@ const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const LsName = "personalQuestions"
+const LsName = "personalQuestions";
 
 export const UnitQuestion: React.FC<{
   content: QuestionPersonal;
@@ -48,25 +48,12 @@ export const UnitQuestion: React.FC<{
     content;
   const { paginate } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
-  const allLsKeyValues: KeysValues[] = questionsArr.map((e) =>
-    Object.create({
-      key: e.questionDB,
-      value: JSON.parse(localStorage.getItem(e.questionDB) ?? '""'),
-    })
-  );
-
-  const valueOfLS =
-    allLsKeyValues.find((e) => e.key === questionDB)?.value ?? "";
-
-  const [number, setNumber] = useState(() =>
-    valueOfLS !== "" ? valueOfLS : ""
-  );
-  const [text, setText] = useState(() => (valueOfLS !== "" ? valueOfLS : ""));
-  const [error, setError] = useState<string | null>(null);
 
   const questionsLs: PersonalQuestions = JSON.parse(
     localStorage.getItem(LsName) ?? "{}"
   );
+
+  const valueOfLS = questionsLs[questionDB] ?? "";
 
   const multiSelInit: () => {} = () => {
     const selectionsObj = multiSelect
@@ -87,14 +74,14 @@ export const UnitQuestion: React.FC<{
     return selectionsObj;
   };
 
+  const [number, setNumber] = useState(() => valueOfLS);
+  const [text, setText] = useState(() => valueOfLS);
+  const [error, setError] = useState<string | null>(null);
+
   const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
 
-  const [yesOrNO, setYesOrNO] = useState(() =>
-    valueOfLS !== "" ? valueOfLS : ""
-  );
-  const [selection, setSelection] = useState(() =>
-    valueOfLS !== "" ? valueOfLS : ""
-  );
+  const [yesOrNO, setYesOrNO] = useState(() => valueOfLS);
+  const [selection, setSelection] = useState(() => valueOfLS);
 
   const [metric, setMetric] = useState<boolean>(() =>
     JSON.parse(localStorage.getItem("system") ?? '"true"')
@@ -126,10 +113,7 @@ export const UnitQuestion: React.FC<{
     }
   };
 
-  const handleSubmit = (
-    value: string | null | number | boolean,
-    skipAmount?: number
-  ) => {
+  const handleSubmit = (value: {}, skipAmount?: number) => {
     try {
       if (questionDB === "weight_amount") {
         localStorage.setItem("system", JSON.stringify(metric));
@@ -141,10 +125,12 @@ export const UnitQuestion: React.FC<{
       ) {
         value = Math.floor(parseInt(value) * 0.45359237);
       }
-      setSelection(value);
-      setYesOrNO(value);
-      const serializedValue = JSON.stringify(value);
-      localStorage.setItem(questionDB, serializedValue);
+      setSelection(value[questionDB]);
+      setYesOrNO(value[questionDB]);
+      localStorage.setItem(
+        LsName,
+        JSON.stringify({ ...questionsLs, ...value })
+      );
       if (skipAmount !== 0) {
         localStorage.setItem(`from_${skip}`, `${skipAmount}`);
       } else {
@@ -167,7 +153,7 @@ export const UnitQuestion: React.FC<{
     //TODO cant be too old validation
 
     if (validateInt(number)) {
-      handleSubmit(number);
+      handleSubmit({ [questionDB]: number });
       setError(null);
     } else {
       setError("Please provide whole numbers only");
@@ -177,7 +163,7 @@ export const UnitQuestion: React.FC<{
   const handleText = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.length < 1000 && text.length !== 0) {
-      handleSubmit(text);
+      handleSubmit({ [questionDB]: text });
       setError(null);
     } else {
       if (text.length >= 1000) {
@@ -196,7 +182,7 @@ export const UnitQuestion: React.FC<{
             <div key={`keyDiv${questionDB}${v}`} className="m-2">
               <CustomButton
                 key={`key${questionDB}${v}`}
-                onClick={() => handleSubmit(v)}
+                onClick={() => handleSubmit({ [questionDB]: v })}
                 className={
                   v === selection
                     ? `bg-green-500 hover:bg-green-600 active:bg-green-600`
@@ -305,7 +291,7 @@ export const UnitQuestion: React.FC<{
                 ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
                 : ""
             }
-            onClick={() => handleSubmit(true, 0)}
+            onClick={() => handleSubmit({ [questionDB]: true })}
           >
             Yes
           </CustomButton>
@@ -317,7 +303,7 @@ export const UnitQuestion: React.FC<{
             }
             onClick={() =>
               handleSubmit(
-                false,
+                { [questionDB]: false },
                 skip
                   ? questionsArr.findIndex((e) => e.questionDB === skip) -
                       questionsArr.findIndex(
@@ -336,8 +322,6 @@ export const UnitQuestion: React.FC<{
   }
 
   if (questionType === "multiSelect") {
-    console.log(multiSelections);
-
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
@@ -375,3 +359,4 @@ export const UnitQuestion: React.FC<{
 
 //NOTE consider adding all keys to question: {object} instead of individually to localstorage
 //BUG You have to clear if you go back and skip some question for example smoking amount
+//NOTE see if you can fix these TS errors with utility types?
