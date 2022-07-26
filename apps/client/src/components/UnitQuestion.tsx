@@ -184,9 +184,11 @@ export const UnitQuestion: React.FC<{
           questions.findIndex((e) => e.questionDB === key)
           ? (currentSkips[key] += 1)
           : currentSkips[key];
-        localStorage.setItem("skipIncrement", { ...currentSkips });
       });
 
+      console.log(currentSkips);
+
+      localStorage.setItem("skipIncrement", { ...currentSkips });
       paginate(1 + (skipAmount ? skipAmount : 0));
     } catch (err) {
       console.log(err);
