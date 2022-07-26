@@ -22,7 +22,7 @@ async function migrateToLatest(dir: string[]) {
         host: "127.0.0.1",
         database: "stories_dev",
         password: process.env.PSQL_PASSWORD,
-        user: "postgres",
+        user: process.env.PSQL_USERNAME,
         port: 5432,
       }),
     }),
