@@ -133,51 +133,72 @@ export const UnitQuestion: React.FC<{
         localStorage.getItem("skipIncrement") ?? "{}"
       );
 
-      if (
-        value[questionDB] === true &&
-        typeof value[questionDB] === "boolean"
-      ) {
-        localStorage.setItem(
-          `skipIncrement`,
-          JSON.stringify({ ...currentSkips, [questionDB]: 1 })
-        );
-      } else {
-        const itemsToRemove = localStorage.getItem(`skipIncrement`)
-          ? JSON.parse(localStorage.getItem(`skipIncrement`))
-          : null;
-
-        if (itemsToRemove[questionDB]) {
-          let curQuestionsObject = localStorage.getItem(LsName)
-            ? JSON.parse(localStorage.getItem(LsName))
-            : null;
-          const indexOfItem = questions.findIndex(
-            (e) => e.questionDB === questionDB
+      if (questionType === "yesOrNo") {
+        if (
+          value[questionDB] === true &&
+          typeof value[questionDB] === "boolean" &&
+          skip
+        ) {
+          localStorage.setItem(
+            `skipIncrement`,
+            JSON.stringify({ ...currentSkips, [questionDB]: 1 })
           );
-          curQuestionsObject = curQuestionsObject
-            ? questions
-                .slice(indexOfItem, indexOfItem + itemsToRemove)
-                .forEach((e) => delete curQuestionsObject[e.questionDB])
-            : curQuestionsObject;
+        } else {
+          const itemsToRemove = localStorage.getItem(`skipIncrement`)
+            ? JSON.parse(localStorage.getItem(`skipIncrement`))
+            : null;
 
-          localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
-          delete currentSkips[questionDB];
-          localStorage.setItem("skipIncrement", {...currentSkips});
+          if (itemsToRemove[questionDB]) {
+            let curQuestionsObject = localStorage.getItem(LsName)
+              ? JSON.parse(localStorage.getItem(LsName))
+              : null;
+            const indexOfItem = questions.findIndex(
+              (e) => e.questionDB === questionDB
+            );
+            curQuestionsObject = curQuestionsObject
+              ? questions
+                  .slice(indexOfItem, indexOfItem + itemsToRemove)
+                  .forEach((e) => delete curQuestionsObject[e.questionDB])
+              : curQuestionsObject;
+
+            localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
+            delete currentSkips[questionDB];
+            localStorage.setItem("skipIncrement", { ...currentSkips });
+          }
+        }
+
+        if (skipAmount !== 0) {
+          localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
+        } else {
+          localStorage.removeItem(`to_${skip}`);
         }
       }
-
-      Object.keys(currentSkips).forEach((key) =>
-        currentSkips[key] <=
+      console.log(
         questions.findIndex((e) => e.questionDB === questionDB) -
-          questions.findIndex((e) => e.skip === skip)
-          ? (currentSkips[key] = currentSkips[key] + 1)
-          : currentSkips[key]
+          questions.findIndex((e) => e.skip === questionDB),
+        "increment"
       );
 
-      if (skipAmount !== 0) {
-        localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
-      } else {
-        localStorage.removeItem(`to_${skip}`);
-      }
+      Object.keys(currentSkips).forEach((key) => {
+        console.log(
+          questions.findIndex((e) => e.questionDB === key) -
+            questions.findIndex(
+              (e) =>
+                e.questionDB ===
+                questions[questions.findIndex((e) => e.questionDB === key)].skip
+            )
+        );
+
+        currentSkips[key] <=
+        questions.findIndex((e) => e.questionDB === key) -
+          questions.findIndex(
+            (e) =>
+              e.questionDB ===
+              questions[questions.findIndex((e) => e.questionDB === key)].skip
+          )
+          ? (currentSkips[key] = currentSkips[key] + 1)
+          : currentSkips[key];
+      });
 
       paginate(1 + (skipAmount ? skipAmount : 0));
     } catch (err) {
