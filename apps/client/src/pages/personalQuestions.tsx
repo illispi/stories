@@ -93,7 +93,7 @@ const PersonalQuestions = () => {
                     `to_${questions[page].questionDB}`
                   );
 
-                  paginate(skipAmount ? -1 - parseInt(skipAmount) : -1);
+                  paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
                 }
               }}
             >

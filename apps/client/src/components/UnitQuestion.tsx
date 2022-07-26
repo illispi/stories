@@ -3,6 +3,7 @@ import { paginationContext } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
 import {
   QuestionPersonal,
+  questions,
   questions as questionsArr,
 } from "../utils/personalQuestionsArr";
 import Error from "./Error";
@@ -95,6 +96,7 @@ export const UnitQuestion: React.FC<{
       setError(null);
       try {
         //TODO clear all values on previous gesture, if skipping
+        //TODO remeber to refactor this as well to delete on skip no
 
         localStorage.setItem(
           LsName,
@@ -127,7 +129,50 @@ export const UnitQuestion: React.FC<{
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-   
+      const currentSkips = JSON.parse(
+        localStorage.getItem("skipIncrement") ?? "{}"
+      );
+
+      if (
+        value[questionDB] === true &&
+        typeof value[questionDB] === "boolean"
+      ) {
+        localStorage.setItem(
+          `skipIncrement`,
+          JSON.stringify({ ...currentSkips, [questionDB]: 1 })
+        );
+      } else {
+        const itemsToRemove = localStorage.getItem(`skipIncrement`)
+          ? JSON.parse(localStorage.getItem(`skipIncrement`))
+          : null;
+
+        if (itemsToRemove[questionDB]) {
+          let curQuestionsObject = localStorage.getItem(LsName)
+            ? JSON.parse(localStorage.getItem(LsName))
+            : null;
+          const indexOfItem = questions.findIndex(
+            (e) => e.questionDB === questionDB
+          );
+          curQuestionsObject = curQuestionsObject
+            ? questions
+                .slice(indexOfItem, indexOfItem + itemsToRemove)
+                .forEach((e) => delete curQuestionsObject[e.questionDB])
+            : curQuestionsObject;
+
+          localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
+          delete currentSkips[questionDB];
+          localStorage.setItem("skipIncrement", {...currentSkips});
+        }
+      }
+
+      Object.keys(currentSkips).forEach((key) =>
+        currentSkips[key] <=
+        questions.findIndex((e) => e.questionDB === questionDB) -
+          questions.findIndex((e) => e.skip === skip)
+          ? (currentSkips[key] = currentSkips[key] + 1)
+          : currentSkips[key]
+      );
+
       if (skipAmount !== 0) {
         localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
       } else {
