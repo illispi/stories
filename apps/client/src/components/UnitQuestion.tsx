@@ -173,31 +173,18 @@ export const UnitQuestion: React.FC<{
           localStorage.removeItem(`to_${skip}`);
         }
       }
-      console.log(
-        questions.findIndex((e) => e.questionDB === questionDB) -
-          questions.findIndex((e) => e.skip === questionDB),
-        "increment"
-      );
 
       Object.keys(currentSkips).forEach((key) => {
-        console.log(
-          questions.findIndex((e) => e.questionDB === key) -
-            questions.findIndex(
-              (e) =>
-                e.questionDB ===
-                questions[questions.findIndex((e) => e.questionDB === key)].skip
-            )
-        );
-
         currentSkips[key] <=
-        questions.findIndex((e) => e.questionDB === key) -
-          questions.findIndex(
-            (e) =>
-              e.questionDB ===
-              questions[questions.findIndex((e) => e.questionDB === key)].skip
-          )
-          ? (currentSkips[key] = currentSkips[key] + 1)
+        questions.findIndex(
+          (e) =>
+            e.questionDB ===
+            questions[questions.findIndex((e) => e.questionDB === key)].skip
+        ) -
+          questions.findIndex((e) => e.questionDB === key)
+          ? (currentSkips[key] += 1)
           : currentSkips[key];
+        localStorage.setItem("skipIncrement", { ...currentSkips });
       });
 
       paginate(1 + (skipAmount ? skipAmount : 0));
