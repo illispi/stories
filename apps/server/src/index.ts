@@ -55,7 +55,10 @@ server.register(fastifyCookie, { secret: process.env.COOKIE_SECRET });
 
 const RedisStore = connectRedis(fastifySession as any);
 
-const client = new Redis({ host: "localhost", port: 6379 });
+const client = new Redis({
+  host: "localhost",
+  port: parseInt(process.env.REDIS_PORT as string),
+});
 
 server.register(fastifyRedis, { client });
 
