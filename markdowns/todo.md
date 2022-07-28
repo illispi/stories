@@ -18,3 +18,4 @@ valuesAfterFirst + + + +
 Or does it need to stop before next skip?
    I dont think so just remove the biggest increment
 
+On Previous gesture should not increment
