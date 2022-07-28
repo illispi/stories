@@ -133,17 +133,13 @@ export const UnitQuestion: React.FC<{
         localStorage.getItem("skipIncrement") ?? "{}"
       );
 
-
       if (questionType === "yesOrNo") {
         if (
           value[questionDB] === true &&
           typeof value[questionDB] === "boolean" &&
           skip
         ) {
-          localStorage.setItem(
-            `skipIncrement`,
-            JSON.stringify({ ...currentSkips, [questionDB]: 1 })
-          );
+          currentSkips = { ...currentSkips, [questionDB]: -1 };
         } else {
           const itemsToRemove = localStorage.getItem(`skipIncrement`)
             ? JSON.parse(localStorage.getItem(`skipIncrement`))
