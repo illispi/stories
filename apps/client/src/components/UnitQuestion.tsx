@@ -129,9 +129,10 @@ export const UnitQuestion: React.FC<{
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      const currentSkips = JSON.parse(
+      let currentSkips = JSON.parse(
         localStorage.getItem("skipIncrement") ?? "{}"
       );
+
 
       if (questionType === "yesOrNo") {
         if (
@@ -174,21 +175,25 @@ export const UnitQuestion: React.FC<{
         }
       }
 
-      Object.keys(currentSkips).forEach((key) => {
-        currentSkips[key] <=
-        questions.findIndex(
-          (e) =>
-            e.questionDB ===
-            questions[questions.findIndex((e) => e.questionDB === key)].skip
-        ) -
-          questions.findIndex((e) => e.questionDB === key)
-          ? (currentSkips[key] += 1)
-          : currentSkips[key];
-      });
+      if (currentSkips && Object.keys(currentSkips).length !== 0) {
+        Object.keys(currentSkips).forEach((key) => {
+          currentSkips[key] <=
+          questions.findIndex(
+            (e) =>
+              e.questionDB ===
+              questions[questions.findIndex((e) => e.questionDB === key)].skip
+          ) -
+            questions.findIndex((e) => e.questionDB === key)
+            ? (currentSkips[key] += 1)
+            : currentSkips[key];
+        });
 
-      console.log(currentSkips);
+        localStorage.setItem(
+          "skipIncrement",
+          JSON.stringify({ ...currentSkips })
+        );
+      }
 
-      localStorage.setItem("skipIncrement", { ...currentSkips });
       paginate(1 + (skipAmount ? skipAmount : 0));
     } catch (err) {
       console.log(err);

@@ -16,4 +16,5 @@ valuesAfterFirst + + + +
     valuesAfterSecond + + 
 
 Or does it need to stop before next skip?
+   I dont think so just remove the biggest increment
 
