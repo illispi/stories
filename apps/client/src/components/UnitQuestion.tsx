@@ -3,7 +3,6 @@ import { paginationContext } from "../pages/personalQuestions";
 import CustomButton from "./CustomButton";
 import {
   QuestionPersonal,
-  questions,
   questions as questionsArr,
 } from "../utils/personalQuestionsArr";
 import Error from "./Error";
@@ -129,9 +128,9 @@ export const UnitQuestion: React.FC<{
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      let currentSkips = JSON.parse(
-        localStorage.getItem("skipIncrement") ?? "{}"
-      );
+      let junctions = localStorage.getItem("junctions")
+        ? JSON.parse(localStorage.getItem("junctions"))
+        : null;
 
       if (questionType === "yesOrNo") {
         if (
@@ -139,60 +138,48 @@ export const UnitQuestion: React.FC<{
           typeof value[questionDB] === "boolean" &&
           skip
         ) {
-          currentSkips = { ...currentSkips, [questionDB]: -1 };
+          junctions = {
+            ...junctions,
+            [questionDB]:
+              questionsArr.findIndex((e) => e.questionDB === skip) -
+              questionsArr.findIndex((e) => e.questionDB === questionDB) -
+              1,
+          };
+          localStorage.setItem("junctions", JSON.stringify(junctions));
         } else {
-          const itemsToRemove = localStorage.getItem(`skipIncrement`)
-            ? JSON.parse(localStorage.getItem(`skipIncrement`))
-            : null;
-
-          if (itemsToRemove[questionDB]) {
+          if (junctions[questionDB]) {
             let curQuestionsObject = localStorage.getItem(LsName)
               ? JSON.parse(localStorage.getItem(LsName))
               : null;
-            const indexOfItem = questions.findIndex(
+
+            const indexOfItem = questionsArr.findIndex(
               (e) => e.questionDB === questionDB
             );
-            curQuestionsObject = curQuestionsObject
-              ? questions
-                  .slice(indexOfItem, indexOfItem + itemsToRemove)
-                  .forEach((e) => delete curQuestionsObject[e.questionDB])
-              : curQuestionsObject;
+
+            const plusIndexes = junctions[questionDB];
+            questionsArr
+              .slice(indexOfItem, indexOfItem + plusIndexes)
+              .forEach((e) => {
+                e.questionDB !== questionDB
+                  ? delete curQuestionsObject[e.questionDB]
+                  : curQuestionsObject;
+                if (junctions[e.questionDB]) {
+                  delete junctions[e.questionDB];
+                }
+                console.log(curQuestionsObject);
+              });
 
             localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
-            delete currentSkips[questionDB];
-            localStorage.setItem("skipIncrement", { ...currentSkips });
+            delete junctions[questionDB];
+            localStorage.setItem("junctions", JSON.stringify(junctions));
           }
         }
 
-        if (skipAmount !== 0) {
+        if (skipAmount) {
           localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
         } else {
           localStorage.removeItem(`to_${skip}`);
         }
-      }
-
-      if (
-        currentSkips &&
-        Object.keys(currentSkips).length !== 0 &&
-        direction > 0
-      ) {
-        Object.keys(currentSkips).forEach((key) => {
-          currentSkips[key] <
-          questions.findIndex(
-            (e) =>
-              e.questionDB ===
-              questions[questions.findIndex((e) => e.questionDB === key)].skip
-          ) -
-            questions.findIndex((e) => e.questionDB === key) -
-            1
-            ? (currentSkips[key] += 1)
-            : currentSkips[key];
-        });
-
-        localStorage.setItem(
-          "skipIncrement",
-          JSON.stringify({ ...currentSkips })
-        );
       }
 
       paginate(1 + (skipAmount ? skipAmount : 0));
