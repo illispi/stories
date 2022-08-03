@@ -43,7 +43,7 @@ export const UnitQuestion: React.FC<{
 
   const { question, questionDB, questionType, selections, multiSelect, skip } =
     content;
-  const { paginate } = useContext(paginationContext);
+  const { paginate, direction } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
 
   const questionsLs: PersonalQuestions = JSON.parse(
@@ -171,15 +171,20 @@ export const UnitQuestion: React.FC<{
         }
       }
 
-      if (currentSkips && Object.keys(currentSkips).length !== 0) {
+      if (
+        currentSkips &&
+        Object.keys(currentSkips).length !== 0 &&
+        direction > 0
+      ) {
         Object.keys(currentSkips).forEach((key) => {
-          currentSkips[key] <=
+          currentSkips[key] <
           questions.findIndex(
             (e) =>
               e.questionDB ===
               questions[questions.findIndex((e) => e.questionDB === key)].skip
           ) -
-            questions.findIndex((e) => e.questionDB === key)
+            questions.findIndex((e) => e.questionDB === key) -
+            1
             ? (currentSkips[key] += 1)
             : currentSkips[key];
         });
