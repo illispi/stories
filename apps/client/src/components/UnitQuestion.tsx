@@ -147,7 +147,9 @@ export const UnitQuestion: React.FC<{
           };
           localStorage.setItem("junctions", JSON.stringify(junctions));
         } else {
-          if (junctions[questionDB]) {
+          console.log(junctions, skipAmount, value, "here");
+
+          if (junctions && junctions[questionDB]) {
             let curQuestionsObject = localStorage.getItem(LsName)
               ? JSON.parse(localStorage.getItem(LsName))
               : null;
@@ -160,13 +162,17 @@ export const UnitQuestion: React.FC<{
             questionsArr
               .slice(indexOfItem, indexOfItem + plusIndexes)
               .forEach((e) => {
+                if (e.multiSelect) {
+                  e.multiSelect.forEach((el) => {
+                    delete curQuestionsObject[el[0]];
+                  });
+                }
                 e.questionDB !== questionDB
                   ? delete curQuestionsObject[e.questionDB]
                   : curQuestionsObject;
                 if (junctions[e.questionDB]) {
                   delete junctions[e.questionDB];
                 }
-                console.log(curQuestionsObject);
               });
 
             localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
