@@ -9,7 +9,7 @@ import Error from "./Error";
 import { PersonalQuestions } from "zod-types";
 import { trpc } from "../utils/trpc";
 
-//NOTE might need yes or no selection
+//TODO Needs to put some of the fields like cognitive_symptoms_description as null
 
 const Box: React.FC<{
   children: React.ReactNode;
