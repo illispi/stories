@@ -63,6 +63,16 @@ export const UnitQuestion: React.FC<{
         questionsLs[e] = Number(questionsLs[e]);
       }
     });
+
+    const array2 = Object.keys(questionsLs);
+
+    questionsArr
+      .map((k) => k.questionDB)
+      .filter((j) => !array2?.includes(j))
+      .forEach((s) => {
+        questionsLs[s] = null;
+        console.log(s);
+      });
     sendResults.mutate(questionsLs);
   };
 
