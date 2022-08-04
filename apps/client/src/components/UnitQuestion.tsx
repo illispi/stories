@@ -142,8 +142,7 @@ export const UnitQuestion: React.FC<{
             ...junctions,
             [questionDB]:
               questionsArr.findIndex((e) => e.questionDB === skip) -
-              questionsArr.findIndex((e) => e.questionDB === questionDB) -
-              1,
+              questionsArr.findIndex((e) => e.questionDB === questionDB),
           };
           localStorage.setItem("junctions", JSON.stringify(junctions));
         } else {
@@ -162,8 +161,9 @@ export const UnitQuestion: React.FC<{
             questionsArr
               .slice(indexOfItem, indexOfItem + plusIndexes)
               .forEach((e) => {
-                if (e.multiSelect) {
-                  e.multiSelect.forEach((el) => {
+                console.log(e, indexOfItem, plusIndexes, "multiselect");
+                if (e.multiSelect?.length > 0) {
+                  e.multiSelect?.forEach((el) => {
                     delete curQuestionsObject[el[0]];
                   });
                 }
