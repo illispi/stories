@@ -83,9 +83,6 @@ export async function up(db: Kysely<any>): Promise<void> {
       )
     )
     .addColumn("efficacy_of_med", "boolean", (col) => col.notNull())
-    .addColumn("symptoms_that_remained", "text", (col) =>
-      col.check(sql`NOT (efficacy_of_med AND symptoms_that_remained IS NULL) `)
-    )
     .addColumn("side_effs_movement_effects", "boolean")
     .addColumn("side_effs_dizziness", "boolean")
     .addColumn("side_effs_weight_gain", "boolean")

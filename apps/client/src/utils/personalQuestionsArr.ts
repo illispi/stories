@@ -131,6 +131,8 @@ export const questions: QuestionPersonal[] = [
     questionType: "yesOrNo",
     questionDB: "efficacy_of_med",
   },
+
+  
   {
     question: "Did the antipsychotic medication cause any side effects?",
     questionType: "multiSelect",
