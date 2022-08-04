@@ -35,6 +35,14 @@ const Counter = () => {
 const Questions: React.FC<{}> = ({}) => {
   const { direction, page, paginate } = useContext(paginationContext);
 
+  if (page < 0) {
+    return <h2>loading...</h2>;
+  }
+
+  if (page === questions.length) {
+    return <h2>done</h2>;
+  }
+
   return (
     <>
       {page < 0 ? (

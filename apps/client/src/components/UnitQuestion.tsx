@@ -7,6 +7,7 @@ import {
 } from "../utils/personalQuestionsArr";
 import Error from "./Error";
 import { PersonalQuestions } from "zod-types";
+import { trpc } from "../utils/trpc";
 
 //NOTE might need yes or no selection
 
@@ -45,11 +46,25 @@ export const UnitQuestion: React.FC<{
   const { paginate, direction } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
 
-  const questionsLs: PersonalQuestions = JSON.parse(
+  let questionsLs: PersonalQuestions = JSON.parse(
     localStorage.getItem(LsName) ?? "{}"
   );
 
   const valueOfLS = questionsLs[questionDB] ?? "";
+
+  const sendResults = trpc.useMutation("addPersonalAnswers");
+
+  const submitResults = () => {
+    Object.keys(questionsLs).forEach((e) => {
+      if (
+        questionsArr.find((el) => el.questionDB === e)?.questionType ===
+        "integer"
+      ) {
+        questionsLs[e] = Number(questionsLs[e]);
+      }
+    });
+    sendResults.mutate(questionsLs);
+  };
 
   const multiSelInit: () => {} = () => {
     const selectionsObj = multiSelect
@@ -401,6 +416,14 @@ export const UnitQuestion: React.FC<{
             Next
           </CustomButton>
         </div>
+      </Box>
+    );
+  }
+
+  if (questionType === "submit") {
+    return (
+      <Box question={question}>
+        <CustomButton onClick={submitResults}>Submit</CustomButton>
       </Box>
     );
   }

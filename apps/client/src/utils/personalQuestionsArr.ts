@@ -1,9 +1,17 @@
 import { PersonalQuestions } from "zod-types";
 
+//NOTE making questionDB optional might not be the best idea
+
 export interface QuestionPersonal {
   question: string;
-  questionType: "selection" | "integer" | "text" | "yesOrNo" | "multiSelect";
-  questionDB: keyof PersonalQuestions;
+  questionType:
+    | "selection"
+    | "integer"
+    | "text"
+    | "yesOrNo"
+    | "multiSelect"
+    | "submit";
+  questionDB?: keyof PersonalQuestions;
   selections?: string[];
   multiSelect?: string[][];
   skip?: keyof PersonalQuestions;
@@ -254,7 +262,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "personality_after",
   },
   {
-    question: "What helps your psychosis other than medication?",
+    question: "What helps your symptoms other than medication?",
     questionType: "text",
     questionDB: "other_help",
   },
@@ -351,4 +359,6 @@ export const questions: QuestionPersonal[] = [
     questionType: "text",
     questionDB: "not_have_schizophrenia_description",
   },
+
+  { question: "Are you ready to submit", questionType: "submit" },
 ];
