@@ -16,6 +16,8 @@ import Redis from "ioredis";
 import fs from "fs";
 import os from "os";
 
+//TODO might need to import DB rather from zod-types
+
 dotenv.config();
 
 const nets = os.networkInterfaces();

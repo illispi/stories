@@ -197,6 +197,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
     .execute();
 
+  //TODO add modified_at and created_at and modified_at to these two schemas, also see from gallery web dev instructions
+
   await db.schema
     .createTable("their_questions")
     .addColumn("answer_their_id", "serial", (col) => col.primaryKey())

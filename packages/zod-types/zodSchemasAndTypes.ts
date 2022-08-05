@@ -12,7 +12,7 @@ export const personalQuestionsSchema = z.object({
   children: z.boolean(),
   cognitive_symptoms: z.boolean(),
   cognitive_symptoms_description: z.string().nullable(),
-  created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
+  //created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
   current_age: z.number(),
   current_med: z.string(),
   describe_hospital: z.string().nullable(),
@@ -68,7 +68,7 @@ export const personalQuestionsSchema = z.object({
   told_friends: z.boolean().nullable(),
   told_if_asked: z.boolean().nullable(),
   told_nobody: z.boolean().nullable(),
-  user_id: z.string(),
+  //user_id: z.string(),
   weight_amount: z.number().nullable(),
   what_kind_of_care_after: z.string().nullable(),
   what_others_should_know: z.string().nullable(),
@@ -114,7 +114,6 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
-
 
 export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
 export type theirQuestions = z.infer<typeof theirQuestionsSchema>;

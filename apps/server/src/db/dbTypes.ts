@@ -2,7 +2,7 @@ export interface PersonalQuestions {
   after_hospital_satisfaction: boolean | null;
   age_of_onset: number;
   anhedonia: boolean | null;
-  answer_personal_id: number;
+  //answer_personal_id: number;
   apathy: boolean | null;
   cannabis: boolean;
   care_after_hospital: boolean | null;
@@ -74,7 +74,7 @@ export interface PersonalQuestions {
 
 export interface TheirQuestions {
   age_of_onset: number;
-  answer_their_id: number;
+  //answer_their_id: number;
   children: boolean | null;
   friends: boolean | null;
   gender: string;

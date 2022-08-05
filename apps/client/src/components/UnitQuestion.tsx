@@ -65,16 +65,24 @@ export const UnitQuestion: React.FC<{
     });
 
     const array2 = Object.keys(questionsLs);
-
     questionsArr
       .map((k) => k.questionDB)
       .filter((j) => !array2?.includes(j))
       .forEach((s) => {
         questionsLs[s] = null;
-        console.log(s);
       });
+
+    questionsArr
+      .filter((e) => e.multiSelect)
+      .map((e) => e.multiSelect.map((el) => el[0]))
+      .flat()
+      .filter((j) => !array2?.includes(j))
+      .forEach((e) => (questionsLs[e] = false));
+
     sendResults.mutate(questionsLs);
   };
+
+  //NOTE see if you can use record utility type in multiSelInit
 
   const multiSelInit: () => {} = () => {
     const selectionsObj = multiSelect
