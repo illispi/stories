@@ -161,9 +161,8 @@ export const UnitQuestion: React.FC<{
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      let junctions = localStorage.getItem("junctions")
-        ? JSON.parse(localStorage.getItem("junctions"))
-        : null;
+      let junctions = localStorage.getItem("junctions");
+      junctions = junctions ? JSON.parse(junctions) : null;
 
       if (questionType === "yesOrNo") {
         if (
