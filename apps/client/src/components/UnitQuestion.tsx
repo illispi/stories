@@ -43,7 +43,7 @@ export const UnitQuestion: React.FC<{
 
   const { question, questionDB, questionType, selections, multiSelect, skip } =
     content;
-  const { paginate, direction } = useContext(paginationContext);
+  const { paginate } = useContext(paginationContext);
   //BUG does this need to be inside useEffect?
 
   let questionsLs: PersonalQuestions = JSON.parse(
@@ -55,28 +55,32 @@ export const UnitQuestion: React.FC<{
   const sendResults = trpc.useMutation("addPersonalAnswers");
 
   const submitResults = () => {
-    Object.keys(questionsLs).forEach((e) => {
-      if (
-        questionsArr.find((el) => el.questionDB === e)?.questionType ===
-        "integer"
-      ) {
-        questionsLs[e] = Number(questionsLs[e]);
+    (Object.keys(questionsLs) as Array<keyof typeof questionsLs>).forEach(
+      (e) => {
+        if (
+          questionsArr.find((el) => el.questionDB === e)?.questionType ===
+          "integer"
+        ) {
+          (questionsLs as unknown as Record<keyof PersonalQuestions, number>)[
+            e
+          ] = Number(questionsLs[e]); //NOTE is this as number really good practice?
+        }
       }
-    });
+    );
 
     const array2 = Object.keys(questionsLs);
     questionsArr
       .map((k) => k.questionDB)
       .filter((j) => !array2?.includes(j))
       .forEach((s) => {
-        questionsLs[s] = null;
+        (questionsLs[s] as null) = null;
       });
 
     questionsArr
       .filter((e) => e.multiSelect)
-      .map((e) => e.multiSelect.map((el) => el[0]))
+      .map((e) => e.multiSelect?.map((el) => el[0]))
       .flat()
-      .filter((j) => !array2?.includes(j))
+      .filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
       .forEach((e) => (questionsLs[e] = false));
 
     sendResults.mutate(questionsLs);
@@ -84,20 +88,20 @@ export const UnitQuestion: React.FC<{
 
   //NOTE see if you can use record utility type in multiSelInit
 
-  const multiSelInit: () => {} = () => {
-    const selectionsObj = multiSelect
+  const multiSelInit = () => {
+    const selectionsObj = (multiSelect as Array<[keyof PersonalQuestions]>)
       ?.map((e) => e[0])
       .reduce(
         (acc, curr) => (
-          curr in questionsLs && (acc[curr] = questionsLs[curr]), acc
+          curr in questionsLs && (acc[curr] = questionsLs[curr] as boolean), acc
         ),
-        {}
+        {} as Record<keyof PersonalQuestions, boolean>
       );
 
     if (Object.keys(selectionsObj ? selectionsObj : {}).length === 0) {
-      return multiSelect?.reduce(
+      return (multiSelect as Array<[keyof PersonalQuestions]>)?.reduce(
         (acc, curr) => ((acc[curr[0]] = false), acc),
-        {}
+        {} as Record<keyof PersonalQuestions, boolean>
       );
     }
     return selectionsObj;

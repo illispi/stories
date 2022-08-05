@@ -12,7 +12,6 @@ export const appRouter = trpc
     input: personalQuestionsSchema,
 
     resolve: async ({ input, ctx }) => {
-      console.log(ctx.req.session.id);
 
       if (ctx.req.session.id) {
         const insertion = await db

@@ -120,3 +120,4 @@ const PersonalQuestions = () => {
 export default PersonalQuestions;
 
 //BUG initially mobile site is too long and for example navbar is scrollable
+//TODO add cookie creation everywhere

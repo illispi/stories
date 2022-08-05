@@ -11,7 +11,7 @@ export interface QuestionPersonal {
     | "yesOrNo"
     | "multiSelect"
     | "submit";
-  questionDB?: keyof PersonalQuestions;
+  questionDB: keyof PersonalQuestions;
   selections?: string[];
   multiSelect?: string[][];
   skip?: keyof PersonalQuestions;
@@ -132,7 +132,6 @@ export const questions: QuestionPersonal[] = [
     questionDB: "efficacy_of_med",
   },
 
-  
   {
     question: "Did the antipsychotic medication cause any side effects?",
     questionType: "multiSelect",
@@ -362,5 +361,9 @@ export const questions: QuestionPersonal[] = [
     questionDB: "not_have_schizophrenia_description",
   },
 
-  { question: "Are you ready to submit", questionType: "submit" },
+  {
+    question: "Are you ready to submit",
+    questionType: "submit",
+    questionDB: "gender", //NOTE this is duplicate due, but its shouldnt cause issues
+  },
 ];
