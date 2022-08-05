@@ -9,7 +9,7 @@ export interface PersonalQuestions {
   children: boolean;
   cognitive_symptoms: boolean;
   cognitive_symptoms_description: string | null;
-  created_at: number | null;
+  created_at: number|string|Date | null;
   current_age: number;
   current_med: string;
   describe_hospital: string | null;
@@ -60,7 +60,6 @@ export interface PersonalQuestions {
   symptoms_disorganized: boolean | null;
   symptoms_hallucinations: boolean | null;
   symptoms_paranoia: boolean | null;
-  symptoms_that_remained: string | null;
   told_employer: boolean | null;
   told_family: boolean | null;
   told_friends: boolean | null;
@@ -102,8 +101,8 @@ export interface TheirQuestions {
 }
 
 export interface User {
-  created_at: number | null;
-  modified_at: number | null;
+  created_at: number|string|Date | null;
+  modified_at: number|string|Date | null;
   user_id: string;
 }
 

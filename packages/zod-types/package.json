@@ -1,10 +1,10 @@
 {
-  "name": "zod-types",
+  "name": "zod-types-and-schemas",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/types.js",
-  "types": "./dist/types.d.ts",
-  "source": "./src/types.ts",
+  "main": "./dist/zodSchemasAndTypes.js",
+  "types": "./dist/zodSchemasAndTypes.d.ts",
+  "source": "./src/zodSchemasAndTypes.ts",
   "private": true,
   "files": [
     "dist/**"

@@ -12,7 +12,7 @@ export const personalQuestionsSchema = z.object({
   children: z.boolean(),
   cognitive_symptoms: z.boolean(),
   cognitive_symptoms_description: z.string().nullable(),
-  //created_at: z.number().nullable(),
+  created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
   current_age: z.number(),
   current_med: z.string(),
   describe_hospital: z.string().nullable(),
@@ -63,13 +63,12 @@ export const personalQuestionsSchema = z.object({
   symptoms_disorganized: z.boolean().nullable(),
   symptoms_hallucinations: z.boolean().nullable(),
   symptoms_paranoia: z.boolean().nullable(),
-  symptoms_that_remained: z.string().nullable(),
   told_employer: z.boolean().nullable(),
   told_family: z.boolean().nullable(),
   told_friends: z.boolean().nullable(),
   told_if_asked: z.boolean().nullable(),
   told_nobody: z.boolean().nullable(),
-  // user_id: z.string(),
+  user_id: z.string(),
   weight_amount: z.number().nullable(),
   what_kind_of_care_after: z.string().nullable(),
   what_others_should_know: z.string().nullable(),
@@ -78,7 +77,7 @@ export const personalQuestionsSchema = z.object({
 
 export const theirQuestionsSchema = z.object({
   age_of_onset: z.number(),
-  answer_their_id: z.number(),
+  //answer_their_id: z.number(),
   children: z.boolean().nullable(),
   friends: z.boolean().nullable(),
   gender: z.string(),
@@ -105,8 +104,8 @@ export const theirQuestionsSchema = z.object({
 });
 
 export const userSchema = z.object({
-  created_at: z.number().nullable(),
-  modified_at: z.number().nullable(),
+  created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
+  modified_at: z.union([z.number(), z.string(), z.date()]).nullable(),
   user_id: z.string(),
 });
 
@@ -115,6 +114,7 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
+
 
 export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
 export type theirQuestions = z.infer<typeof theirQuestionsSchema>;
