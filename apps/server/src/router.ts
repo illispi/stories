@@ -12,6 +12,8 @@ export const appRouter = trpc
     input: personalQuestionsSchema,
 
     resolve: async ({ input, ctx }) => {
+      console.log(ctx.req.session.id);
+
       if (ctx.req.session.id) {
         const insertion = await db
           .insertInto("personal_questions")
@@ -19,7 +21,7 @@ export const appRouter = trpc
           .execute();
 
         if (insertion) {
-          //BUG what insertion returns if no success
+          //BUG what insertion returns no success
           return "Added, waiting for approval";
         }
 
