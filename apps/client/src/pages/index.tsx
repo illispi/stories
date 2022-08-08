@@ -7,14 +7,10 @@ import React from "react";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { trpc } from "../utils/trpc";
-import type { createUserType } from "zod-types";
 import Link from "next/link";
 import axios from "axios";
 
 const Home: NextPage = () => {
-  const utils = trpc.useContext();
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState<createUserType["gender"]>("male");
 
   //TODO loading state, ssr is true so might not be necessary
 
@@ -29,8 +25,7 @@ const Home: NextPage = () => {
     <div>
       <Link href="/personalQuestions">
         <a>Personal questions</a>
-      </Link>
-  
+      </Link>  
     </div>
   );
 };

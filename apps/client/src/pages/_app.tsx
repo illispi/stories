@@ -7,11 +7,12 @@ import "../styles/globals.css";
 import { getFetch } from "@trpc/client";
 import NavBar from "../components/NavBar";
 import { trpc } from "../utils/trpc";
+import { useEffect } from "react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const createCookie = trpc.useMutation("createCookie");
   useEffect(() => {
-    // createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() });
+    // createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() }); const utils = trpc.useContext();
     //NOTE just a example to invalidate queries if needed
     createCookie.mutate(null);
   }, []);

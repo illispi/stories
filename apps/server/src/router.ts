@@ -20,7 +20,7 @@ export const appRouter = trpc
           .execute();
 
         if (insertion) {
-          //BUG what insertion returns no success
+          //BUG what if insertion returns no success
           return "Added, waiting for approval";
         }
 
