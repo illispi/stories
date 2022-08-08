@@ -13,7 +13,7 @@ export interface QuestionPersonal {
     | "submit";
   questionDB: keyof PersonalQuestions;
   selections?: string[];
-  multiSelect?: string[][];
+  multiSelect?: [keyof PersonalQuestions, string][];
   skip?: keyof PersonalQuestions;
 }
 

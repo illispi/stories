@@ -55,13 +55,13 @@ export const UnitQuestion: React.FC<{
   const sendResults = trpc.useMutation("addPersonalAnswers");
 
   const submitResults = () => {
-    (Object.keys(questionsLs) as Array<keyof typeof questionsLs>).forEach(
+    (Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(
       (e) => {
         if (
           questionsArr.find((el) => el.questionDB === e)?.questionType ===
           "integer"
         ) {
-          (questionsLs as unknown as Record<keyof PersonalQuestions, number>)[
+          (questionsLs as unknown as Record<keyof PersonalQuestions, number>)[ //TODO this as unknown has to have something better
             e
           ] = Number(questionsLs[e]); //NOTE is this as number really good practice?
         }
@@ -81,7 +81,7 @@ export const UnitQuestion: React.FC<{
       .map((e) => e.multiSelect?.map((el) => el[0]))
       .flat()
       .filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
-      .forEach((e) => (questionsLs[e] = false));
+      .forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
     sendResults.mutate(questionsLs);
   };
@@ -89,7 +89,7 @@ export const UnitQuestion: React.FC<{
   //NOTE see if you can use record utility type in multiSelInit
 
   const multiSelInit = () => {
-    const selectionsObj = (multiSelect as Array<[keyof PersonalQuestions]>)
+    const selectionsObj = multiSelect
       ?.map((e) => e[0])
       .reduce(
         (acc, curr) => (
@@ -99,22 +99,24 @@ export const UnitQuestion: React.FC<{
       );
 
     if (Object.keys(selectionsObj ? selectionsObj : {}).length === 0) {
-      return (multiSelect as Array<[keyof PersonalQuestions]>)?.reduce(
+      const allFalse = multiSelect?.reduce(
         (acc, curr) => ((acc[curr[0]] = false), acc),
         {} as Record<keyof PersonalQuestions, boolean>
       );
+
+      return allFalse;
     }
     return selectionsObj;
   };
 
-  const [number, setNumber] = useState(() => valueOfLS);
-  const [text, setText] = useState(() => valueOfLS);
+  const [number, setNumber] = useState(() => valueOfLS as string);
+  const [text, setText] = useState(() => valueOfLS as string);
   const [error, setError] = useState<string | null>(null);
 
   const [multiSelections, setMultiSelections] = useState(() => multiSelInit());
 
-  const [yesOrNO, setYesOrNO] = useState(() => valueOfLS);
-  const [selection, setSelection] = useState(() => valueOfLS);
+  const [yesOrNO, setYesOrNO] = useState(() => valueOfLS as boolean);
+  const [selection, setSelection] = useState(() => valueOfLS as string);
 
   const [metric, setMetric] = useState<boolean>(() =>
     JSON.parse(localStorage.getItem("system") ?? '"true"')
@@ -122,10 +124,14 @@ export const UnitQuestion: React.FC<{
 
   //BUG in the above maybe you should parse before compare?
 
-  const handleMultiSubmit = (values: {}) => {
+  const handleMultiSubmit = (values: typeof multiSelections) => {
+    if (!values) {
+      return undefined; //TODO might need something better, this a null check
+    }
     if (
-      Object.keys(values).filter((e) => values[e] === false).length ===
-      multiSelect?.map((e) => e[0]).length
+      (Object.keys(values) as Array<keyof PersonalQuestions>).filter(
+        (e) => values[e] === false
+      ).length === multiSelect?.map((e) => e[0]).length
     ) {
       setError("Please select at least one option");
     } else {
@@ -147,7 +153,12 @@ export const UnitQuestion: React.FC<{
     }
   };
 
-  const handleSubmit = (value: {}, skipAmount?: number) => {
+  const handleSubmit = (
+    value: {
+      [Property in keyof PersonalQuestions]?: boolean | number | string;
+    },
+    skipAmount?: number
+  ) => {
     try {
       if (questionDB === "weight_amount") {
         localStorage.setItem("system", JSON.stringify(metric));
@@ -159,14 +170,16 @@ export const UnitQuestion: React.FC<{
       ) {
         value = { [questionDB]: Math.floor(parseInt(value) * 0.45359237) };
       }
-      setSelection(value[questionDB]);
-      setYesOrNO(value[questionDB]);
+      setSelection(value[questionDB] as string);
+      setYesOrNO(value[questionDB] as boolean);
       localStorage.setItem(
         LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      let junctions = localStorage.getItem("junctions");
-      junctions = junctions ? JSON.parse(junctions) : null;
+      const LsExistsJunctions = localStorage.getItem("junctions");
+      let junctions: Record<keyof PersonalQuestions, number> = LsExistsJunctions
+        ? JSON.parse(LsExistsJunctions)
+        : null;
 
       if (questionType === "yesOrNo") {
         if (
@@ -185,9 +198,8 @@ export const UnitQuestion: React.FC<{
           console.log(junctions, skipAmount, value, "here");
 
           if (junctions && junctions[questionDB]) {
-            let curQuestionsObject = localStorage.getItem(LsName)
-              ? JSON.parse(localStorage.getItem(LsName))
-              : null;
+            const LsTotal = localStorage.getItem(LsName);
+            let curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
 
             const indexOfItem = questionsArr.findIndex(
               (e) => e.questionDB === questionDB
@@ -197,8 +209,7 @@ export const UnitQuestion: React.FC<{
             questionsArr
               .slice(indexOfItem, indexOfItem + plusIndexes)
               .forEach((e) => {
-                console.log(e, indexOfItem, plusIndexes, "multiselect");
-                if (e.multiSelect?.length > 0) {
+                if (e.multiSelect && e.multiSelect?.length > 0) {
                   e.multiSelect?.forEach((el) => {
                     delete curQuestionsObject[el[0]];
                   });
@@ -409,6 +420,9 @@ export const UnitQuestion: React.FC<{
   }
 
   if (questionType === "multiSelect") {
+    if (!multiSelections) {
+      return <h2>No multiselections found!! error!</h2>;
+    }
     return (
       <Box question={question}>
         <div className="flex flex-col items-center justify-end ">
