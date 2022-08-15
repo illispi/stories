@@ -9,7 +9,7 @@ export interface PersonalQuestions {
   children: boolean;
   cognitive_symptoms: boolean;
   cognitive_symptoms_description: string | null;
-  created_at: number|string|Date | null;
+  created_at: number | string | Date | null;
   current_age: number;
   current_med: string;
   describe_hospital: string | null;
@@ -101,8 +101,8 @@ export interface TheirQuestions {
 }
 
 export interface User {
-  created_at: number|string|Date | null;
-  modified_at: number|string|Date | null;
+  created_at: number | string | Date | null;
+  modified_at: number | string | Date | null;
   user_id: string;
 }
 
@@ -111,3 +111,5 @@ export interface DB {
   their_questions: TheirQuestions;
   user: User;
 }
+
+//TODO you uncomment answer_personal_id but its returned anyways

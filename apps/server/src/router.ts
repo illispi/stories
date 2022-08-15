@@ -12,7 +12,6 @@ export const appRouter = trpc
     input: personalQuestionsSchema,
 
     resolve: async ({ input, ctx }) => {
-
       if (ctx.req.session.id) {
         const insertion = await db
           .insertInto("personal_questions")
@@ -64,6 +63,25 @@ export const appRouter = trpc
         return "Cookies added";
       }
       return "Cookies should exist already";
+    },
+  })
+  .query("personalStats", {
+    resolve: async () => {
+      const allPersonalStats = await db
+        .selectFrom("personal_questions")
+        .selectAll()
+        .execute();
+
+        //TODO create partial that removes parts of properties from object inside array
+
+      allPersonalStats.forEach((e) => {
+        delete e.user_id;
+        delete e.created_at;
+        delete e.created_at;
+        delete e.answer_personal_id
+      });
+
+      return allPersonalStats;
     },
   });
 
