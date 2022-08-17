@@ -1,7 +1,11 @@
 import type { NextPage } from "next";
 import { trpc } from "../utils/trpc";
-import React from "react";
+import React, { useState } from "react";
 import { PersonalQuestions } from "zod-types";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
@@ -14,14 +18,56 @@ const Item = ({ name, item }: { name: string; item: string | number }) => {
   );
 };
 
+const calcAverage = (arr: any, key: keyof PersonalQuestions) => {
+  return arr.data.reduce((a, b) => a + b[key], 0) / arr.data.length;
+};
+
+const calcGenderProportions = (data) => {
+  console.log(data, "here");
+
+  let genders = { male: 0, female: 0, other: 0 };
+  data?.forEach((e) => {
+    if (e.gender === "male") {
+      genders.male++;
+    }
+    if (e.gender === "female") {
+      genders.female++;
+    }
+    if (e.gender === "other") {
+      genders.other++;
+    }
+  });
+  return genders;
+};
+
 const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
 
-  const calcAverage = (
-    arr: typeof personalStats,
-    key: keyof PersonalQuestions
-  ) => {
-    return arr.data.reduce((a, b) => a + b[key], 0) / arr.data.length;
+  const [gender, setGender] = useState(
+    () => calcGenderProportions(personalStats.data) //TODO how do i import this type
+  );
+
+  console.log(gender);
+
+  const dataGender = {
+    labels: ["Male", "Female", "Other"],
+    datasets: [
+      {
+        label: "Gender proportions",
+        data: [gender.male, gender.female, gender.other],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
   };
 
   if (!personalStats.data) {
@@ -40,13 +86,11 @@ const Stats: NextPage = () => {
             item={`${personalStats.data.length}`}
           ></Item>
           <Item
-            name={"Gender proportions:"}
-            item={`${calcAverage(personalStats, "current_age")} years old`}
-          ></Item>
-          <Item
             name={"Average age of responses:"}
             item={`${calcAverage(personalStats, "current_age")} years old`}
           />
+          <h4 className="mb-2 text-center text-lg">Genders proportions:</h4>
+          <Doughnut data={dataGender} />
         </div>
       </div>
     </div>

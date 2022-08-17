@@ -20,6 +20,7 @@ importers:
       '@types/react-dom': 18.0.6
       autoprefixer: ^10.4.8
       axios: ^0.27.2
+      chart.js: ^3.9.1
       eslint: 8.21.0
       eslint-config-next: 12.2.4
       framer-motion: ^7.0.0
@@ -28,6 +29,7 @@ importers:
       prettier: ^2.7.1
       prettier-plugin-tailwindcss: ^0.1.13
       react: 18.2.0
+      react-chartjs-2: ^4.3.1
       react-dom: 18.2.0
       react-hook-form: ^7.34.0
       react-query: ^3.39.2
@@ -43,9 +45,11 @@ importers:
       '@trpc/react': 9.26.2_4zadt2mtfbx7275mbcwrjz2noe
       '@trpc/server': 9.26.2
       axios: 0.27.2
+      chart.js: 3.9.1
       framer-motion: 7.0.0_biqbaboplfbrettd7655fr4n2y
       next: 12.2.4_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
+      react-chartjs-2: 4.3.1_2unjvz6v6rskedwoxtmbfw2rje
       react-dom: 18.2.0_react@18.2.0
       react-hook-form: 7.34.0_react@18.2.0
       react-query: 3.39.2_biqbaboplfbrettd7655fr4n2y
@@ -1223,6 +1227,10 @@ packages:
   /chardet/0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
+
+  /chart.js/3.9.1:
+    resolution: {integrity: sha512-Ro2JbLmvg83gXF5F4sniaQ+lTbSv18E+TIf2cOeiH1Iqd2PGFOtem+DUufMZsCJwFE7ywPOpfXFBwRTGq7dh6w==}
+    dev: false
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
@@ -3452,6 +3460,16 @@ packages:
       minimist: 1.2.6
       strip-json-comments: 2.0.1
     dev: true
+
+  /react-chartjs-2/4.3.1_2unjvz6v6rskedwoxtmbfw2rje:
+    resolution: {integrity: sha512-5i3mjP6tU7QSn0jvb8I4hudTzHJqS8l00ORJnVwI2sYu0ihpj83Lv2YzfxunfxTZkscKvZu2F2w9LkwNBhj6xA==}
+    peerDependencies:
+      chart.js: ^3.5.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      chart.js: 3.9.1
+      react: 18.2.0
+    dev: false
 
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
