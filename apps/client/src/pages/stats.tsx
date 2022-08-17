@@ -2,10 +2,27 @@ import type { NextPage } from "next";
 import { trpc } from "../utils/trpc";
 import React, { useState } from "react";
 import { PersonalQuestions } from "zod-types";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LinearScale,
+  BarElement,
+  Title,
+  CategoryScale,
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+);
 
 const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
@@ -22,32 +39,88 @@ const calcAverage = (arr: any, key: keyof PersonalQuestions) => {
   return arr.data.reduce((a, b) => a + b[key], 0) / arr.data.length;
 };
 
-const calcGenderProportions = (data) => {
-  console.log(data, "here");
-
+const calcGenderShares = (data) => {
   let genders = { male: 0, female: 0, other: 0 };
   data?.forEach((e) => {
     if (e.gender === "male") {
       genders.male++;
-    }
-    if (e.gender === "female") {
+    } else if (e.gender === "female") {
       genders.female++;
-    }
-    if (e.gender === "other") {
+    } else if (e.gender === "other") {
       genders.other++;
     }
   });
   return genders;
 };
 
+const calcAgeOfResBrackets = (data) => {
+  let resBrackets = {
+    b09: 0,
+    b1015: 0,
+    b1620: 0,
+    b2125: 0,
+    b2630: 0,
+    b3135: 0,
+    b3680: 0,
+  };
+  data?.forEach((e) => {
+    if (e.current_age <= 10) {
+      resBrackets.b09++;
+    } else if (e.current_age >= 10 && e.current_age <= 15) {
+      resBrackets.b1015++;
+    } else if (e.current_age >= 16 && e.current_age <= 20) {
+      resBrackets.b1620++;
+    } else if (e.current_age >= 21 && e.current_age <= 25) {
+      resBrackets.b2125++;
+    } else if (e.current_age >= 26 && e.current_age <= 30) {
+      resBrackets.b2630++;
+    } else if (e.current_age >= 31 && e.current_age <= 35) {
+      resBrackets.b3135++;
+    } else if (e.current_age >= 36 && e.current_age <= 80) {
+      resBrackets.b3680++;
+    }
+  });
+  return resBrackets;
+};
+
 const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
 
+  //NOTE does this need to be state since I am not updating?
+
   const [gender, setGender] = useState(
-    () => calcGenderProportions(personalStats.data) //TODO how do i import this type
+    () => calcGenderShares(personalStats.data) //TODO how do i import this type
+  );
+  const [ageOfRes, setAgeOfRes] = useState(() =>
+    calcAgeOfResBrackets(personalStats.data)
   );
 
-  console.log(gender);
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Age of responses",
+      },
+    },
+  };
+
+  const labels = ["0-9", "10-15", "16-20", "21-25", "26-30", "31-35", "36-80"];
+
+  const ageOfResdata = {
+    labels,
+    datasets: [
+      {
+        label: "age of responses",
+        data: Object.keys(ageOfRes).map((e) => ageOfRes[e]),
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
 
   const dataGender = {
     labels: ["Male", "Female", "Other"],
@@ -74,6 +147,8 @@ const Stats: NextPage = () => {
     return <h2>Loading...</h2>;
   }
 
+  console.log(personalStats.data);
+
   return (
     <div className="mt-8 flex w-screen flex-col items-center justify-center">
       <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500">
@@ -89,8 +164,11 @@ const Stats: NextPage = () => {
             name={"Average age of responses:"}
             item={`${calcAverage(personalStats, "current_age")} years old`}
           />
-          <h4 className="mb-2 text-center text-lg">Genders proportions:</h4>
+          <h4 className="mb-2 text-center text-lg">Gender shares:</h4>
           <Doughnut data={dataGender} />
+          <div className="h-64">
+            <Bar data={ageOfResdata} options={options}></Bar>
+          </div>
         </div>
       </div>
     </div>
