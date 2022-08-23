@@ -85,6 +85,9 @@ const calcAgeOfResBrackets = (data) => {
 
 const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
+  const ageOfOnset = trpc.useQuery(["ageOfOnsetPsychosisByGender"]);
+
+  console.log(ageOfOnset.data);
 
   //NOTE does this need to be state since I am not updating?
 
@@ -104,12 +107,13 @@ const Stats: NextPage = () => {
       },
       title: {
         display: true,
-        text: "Age of responses",
       },
     },
   };
 
   const labels = ["0-9", "10-15", "16-20", "21-25", "26-30", "31-35", "36-80"];
+
+  //NOTE consider percentage instead of number of age of responses below:
 
   const ageOfResdata = {
     labels,
@@ -166,9 +170,36 @@ const Stats: NextPage = () => {
           />
           <h4 className="mb-2 text-center text-lg">Gender shares:</h4>
           <Doughnut data={dataGender} />
+          <h4 className="mb-2 text-center text-lg">Age of responses:</h4>
           <div className="h-64">
             <Bar data={ageOfResdata} options={options}></Bar>
           </div>
+
+          {/*NOTE I could make this check for null but i dont think its necessary */}
+          <Item
+            name={"Female onset average:"}
+            item={`${ageOfOnset.data?.femaleAverage} years`}
+          ></Item>
+          <Item
+            name={"Female onset median:"}
+            item={`${ageOfOnset.data?.femaleMedian} years`}
+          ></Item>
+          <Item
+            name={"Male onset average:"}
+            item={`${ageOfOnset.data?.maleAverage} years`}
+          ></Item>
+          <Item
+            name={"Male onset median:"}
+            item={`${ageOfOnset.data?.maleMedian} years`}
+          ></Item>
+          <Item
+            name={"Other onset average:"}
+            item={`${ageOfOnset.data?.otherAverage} years`}
+          ></Item>
+          <Item
+            name={"Other onset median:"}
+            item={`${ageOfOnset.data?.otherMedian} years`}
+          ></Item>
         </div>
       </div>
     </div>

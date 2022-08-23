@@ -72,16 +72,58 @@ export const appRouter = trpc
         .selectAll()
         .execute();
 
-        //TODO create partial that removes parts of properties from object inside array
+      //TODO create partial that removes parts of properties from object inside array
 
       allPersonalStats.forEach((e) => {
         delete e.user_id;
         delete e.created_at;
         delete e.created_at;
-        delete e.answer_personal_id
+        delete e.answer_personal_id;
       });
 
       return allPersonalStats;
+    },
+  })
+  .query("ageOfOnsetPsychosisByGender", {
+    resolve: async () => {
+      const maleAge = await db
+        .selectFrom("personal_questions")
+        .select(["age_of_onset"])
+        .where("gender", "=", "male")
+        .execute();
+
+      const femaleAge = await db
+        .selectFrom("personal_questions")
+        .select(["age_of_onset"])
+        .where("gender", "=", "female")
+        .execute();
+      const otherAge = await db
+        .selectFrom("personal_questions")
+        .select(["age_of_onset"])
+        .where("gender", "=", "other")
+        .execute();
+
+      const average = (obj: typeof maleAge) => {
+        return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
+      };
+      const median = (obj: typeof maleAge) => {
+        const arr = obj.map((e) => e.age_of_onset);
+        const sorted = arr.sort((a, b) => a - b);
+        return sorted[Math.floor(arr.length / 2)];
+      };
+
+      const result = {
+        maleAverage: average(maleAge),
+        femaleAverage: average(femaleAge),
+        otherAverage: average(otherAge),
+        maleMedian: median(maleAge),
+        femaleMedian: median(femaleAge),
+        otherMedian: median(otherAge),
+      };
+
+      console.log(result, "find here");
+
+      return result;
     },
   });
 
