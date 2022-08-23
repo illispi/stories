@@ -24,11 +24,13 @@ ChartJS.register(
   Title
 );
 
+//TODO show on press vertical bar chart for age of onset by gender?
+
 const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
     <div className="my-3 flex flex-col items-center justify-center">
       <p className="mb-2 text-center text-lg">{name} </p>
-      <p className="rounded-full  border-2 border-slate-400 p-4 text-center font-semibold">
+      <p className="rounded-full  border-2 border-slate-400 p-2 text-center font-semibold">
         {item}
       </p>
     </div>
