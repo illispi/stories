@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
 import CustomButton from "../components/CustomButton";
+import { AnimatePresence, motion } from "framer-motion";
 
 ChartJS.register(
   ArcElement,
@@ -128,6 +129,8 @@ const Stats: NextPage = () => {
   const [ageOfRes, setAgeOfRes] = useState(() =>
     calcAgeOfResBrackets(personalStats.data)
   );
+
+  const [byGenderPsyLength, setByGenderPsyLength] = useState(false);
 
   const options = {
     responsive: true,
@@ -279,22 +282,63 @@ const Stats: NextPage = () => {
           <div className="flex max-w-xs items-center justify-center">
             <Doughnut data={dataPsyLength} />
           </div>
-          <CustomButton>By gender</CustomButton>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut
-              data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
-            />
-          </div>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut
-              data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
-            />
-          </div>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut
-              data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
-            />
-          </div>
+          <CustomButton
+            onClick={() => {
+              setByGenderPsyLength(byGenderPsyLength ? false : true);
+
+              byGenderPsyLength
+                ? setTimeout(() => {
+                    window.scrollBy({
+                      top: -250,
+                      behavior: "smooth",
+                    });
+                  }, 100)
+                : setTimeout(() => {
+                    window.scrollBy({
+                      top: 250,
+                      behavior: "smooth",
+                    });
+                  }, 100);
+            }}
+          >
+            {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
+          </CustomButton>
+
+          <AnimatePresence>
+            {byGenderPsyLength && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <h4 className="m-2 text-center text-lg">
+                  First psychosis male:
+                </h4>
+                <div className="flex max-w-xs items-center justify-center">
+                  <Doughnut
+                    data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+                  />
+                </div>
+                <h4 className="m-2 text-center text-lg">
+                  First psychosis female:
+                </h4>
+                <div className="flex max-w-xs items-center justify-center">
+                  <Doughnut
+                    data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
+                  />
+                </div>
+                <h4 className="m-2 text-center text-lg">
+                  First psychosis other:
+                </h4>
+                <div className="flex max-w-xs items-center justify-center">
+                  <Doughnut
+                    data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
