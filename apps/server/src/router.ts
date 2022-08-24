@@ -121,6 +121,33 @@ export const appRouter = trpc
         otherMedian: median(otherAge),
       };
 
+      return result;
+    },
+  })
+  .query("PsyLengthByGender", {
+    resolve: async () => {
+      const maleSplit = await db
+        .selectFrom("personal_questions")
+        .select(["length_of_psychosis"])
+        .where("gender", "=", "male")
+        .execute();
+
+      const femaleSplit = await db
+        .selectFrom("personal_questions")
+        .select(["length_of_psychosis"])
+        .where("gender", "=", "female")
+        .execute();
+      const otherSplit = await db
+        .selectFrom("personal_questions")
+        .select(["length_of_psychosis"])
+        .where("gender", "=", "other")
+        .execute();
+
+      const result = {
+        maleSplit,
+        femaleSplit,
+        otherSplit,
+      };
 
       return result;
     },

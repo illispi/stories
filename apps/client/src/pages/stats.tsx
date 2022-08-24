@@ -13,6 +13,7 @@ import {
   CategoryScale,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+import CustomButton from "../components/CustomButton";
 
 ChartJS.register(
   ArcElement,
@@ -25,6 +26,35 @@ ChartJS.register(
 );
 
 //TODO show on press vertical bar chart for age of onset by gender?
+
+const psyLengthByGender = (data) => {
+  const dataPsyLength = {
+    labels: ["few weeks", "few months", "more than 6 months"],
+    datasets: [
+      {
+        label: "Gender shares",
+        data: [
+          data?.filter((e) => e.length_of_psychosis === "few weeks").length,
+          data?.filter((e) => e.length_of_psychosis === "few months").length,
+          data?.filter((e) => e.length_of_psychosis === "more than 6 months")
+            .length,
+        ],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+  return dataPsyLength;
+};
 
 const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
@@ -88,6 +118,7 @@ const calcAgeOfResBrackets = (data) => {
 const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
   const ageOfOnset = trpc.useQuery(["ageOfOnsetPsychosisByGender"]);
+  const psyLengthSplits = trpc.useQuery(["PsyLengthByGender"]);
 
   //NOTE does this need to be state since I am not updating?
 
@@ -104,9 +135,6 @@ const Stats: NextPage = () => {
     plugins: {
       legend: {
         position: "top" as const,
-      },
-      title: {
-        display: true,
       },
     },
   };
@@ -138,8 +166,39 @@ const Stats: NextPage = () => {
     labels: ["Male", "Female", "Other"],
     datasets: [
       {
-        label: "Gender proportions",
+        label: "Gender shares",
         data: [gender.male, gender.female, gender.other],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const dataPsyLength = {
+    labels: ["few weeks", "few months", "more than 6 months"],
+    datasets: [
+      {
+        label: "Gender shares",
+        data: [
+          personalStats.data?.filter(
+            (e) => e.length_of_psychosis === "few weeks"
+          ).length,
+          personalStats.data?.filter(
+            (e) => e.length_of_psychosis === "few months"
+          ).length,
+          personalStats.data?.filter(
+            (e) => e.length_of_psychosis === "more than 6 months"
+          ).length,
+        ],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -200,19 +259,41 @@ const Stats: NextPage = () => {
             name={"Average age of responses:"}
             item={`${calcAverage(personalStats, "current_age")} years old`}
           />
-          <h4 className="mb-2 text-center text-lg">Gender shares:</h4>
+          <h4 className="m-2 text-center text-lg">Gender shares:</h4>
           <div className="flex max-w-xs items-center justify-center">
             <Doughnut data={dataGender} />
           </div>
-          <h4 className="mb-2 text-center text-lg">Age of responses:</h4>
-          <div className="h-64">
+          <h4 className="m-2 text-center text-lg">Age of responses:</h4>
+          <div className="h-64 w-11/12">
             <Bar data={ageOfResdata} options={options}></Bar>
           </div>
 
           {/*NOTE I could make this check for null but i dont think its necessary */}
-          <h4 className="mb-2 text-center text-lg">Age of onset:</h4>
-          <div className="h-64">
+          <h4 className="m-2 text-center text-lg">Age of onset:</h4>
+          <div className="h-64 w-11/12">
             <Bar data={dataOnset} options={options}></Bar>
+          </div>
+          <h4 className="m-2 text-center text-lg">
+            Length of first psychosis:
+          </h4>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut data={dataPsyLength} />
+          </div>
+          <CustomButton>By gender</CustomButton>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut
+              data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+            />
+          </div>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut
+              data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
+            />
+          </div>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut
+              data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+            />
           </div>
         </div>
       </div>
