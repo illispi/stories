@@ -89,8 +89,6 @@ const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
   const ageOfOnset = trpc.useQuery(["ageOfOnsetPsychosisByGender"]);
 
-  console.log(ageOfOnset.data);
-
   //NOTE does this need to be state since I am not updating?
 
   const [gender, setGender] = useState(
@@ -113,12 +111,20 @@ const Stats: NextPage = () => {
     },
   };
 
-  const labels = ["0-9", "10-15", "16-20", "21-25", "26-30", "31-35", "36-80"];
+  const labelsAgeGroup = [
+    "0-9",
+    "10-15",
+    "16-20",
+    "21-25",
+    "26-30",
+    "31-35",
+    "36-80",
+  ];
 
   //NOTE consider percentage instead of number of age of responses below:
 
   const ageOfResdata = {
-    labels,
+    labels: labelsAgeGroup,
     datasets: [
       {
         label: "age of responses",
@@ -149,6 +155,30 @@ const Stats: NextPage = () => {
     ],
   };
 
+  const dataOnset = {
+    labels: ["Male", "Female", "Other"],
+    datasets: [
+      {
+        label: "Average",
+        data: [
+          ageOfOnset.data?.maleAverage,
+          ageOfOnset.data?.femaleAverage,
+          ageOfOnset.data?.otherAverage,
+        ],
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Median",
+        data: [
+          ageOfOnset.data?.maleMedian,
+          ageOfOnset.data?.femaleMedian,
+          ageOfOnset.data?.otherMedian,
+        ],
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+
   if (!personalStats.data) {
     return <h2>Loading...</h2>;
   }
@@ -157,11 +187,11 @@ const Stats: NextPage = () => {
 
   return (
     <div className="mt-8 flex w-screen flex-col items-center justify-center">
-      <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500">
+      <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
         <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
           <h1 className="text-center font-semibold">Personal Stats</h1>
         </div>
-        <div>
+        <div className="flex flex-col items-center justify-center">
           <Item
             name={"Total responses:"}
             item={`${personalStats.data.length}`}
@@ -171,37 +201,19 @@ const Stats: NextPage = () => {
             item={`${calcAverage(personalStats, "current_age")} years old`}
           />
           <h4 className="mb-2 text-center text-lg">Gender shares:</h4>
-          <Doughnut data={dataGender} />
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut data={dataGender} />
+          </div>
           <h4 className="mb-2 text-center text-lg">Age of responses:</h4>
           <div className="h-64">
             <Bar data={ageOfResdata} options={options}></Bar>
           </div>
 
           {/*NOTE I could make this check for null but i dont think its necessary */}
-          <Item
-            name={"Female onset average:"}
-            item={`${ageOfOnset.data?.femaleAverage} years`}
-          ></Item>
-          <Item
-            name={"Female onset median:"}
-            item={`${ageOfOnset.data?.femaleMedian} years`}
-          ></Item>
-          <Item
-            name={"Male onset average:"}
-            item={`${ageOfOnset.data?.maleAverage} years`}
-          ></Item>
-          <Item
-            name={"Male onset median:"}
-            item={`${ageOfOnset.data?.maleMedian} years`}
-          ></Item>
-          <Item
-            name={"Other onset average:"}
-            item={`${ageOfOnset.data?.otherAverage} years`}
-          ></Item>
-          <Item
-            name={"Other onset median:"}
-            item={`${ageOfOnset.data?.otherMedian} years`}
-          ></Item>
+          <h4 className="mb-2 text-center text-lg">Age of onset:</h4>
+          <div className="h-64">
+            <Bar data={dataOnset} options={options}></Bar>
+          </div>
         </div>
       </div>
     </div>

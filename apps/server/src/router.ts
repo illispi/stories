@@ -121,7 +121,6 @@ export const appRouter = trpc
         otherMedian: median(otherAge),
       };
 
-      console.log(result, "find here");
 
       return result;
     },
