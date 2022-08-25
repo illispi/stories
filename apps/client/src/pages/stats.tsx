@@ -15,6 +15,7 @@ import {
 import { Bar, Doughnut } from "react-chartjs-2";
 import CustomButton from "../components/CustomButton";
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 
 ChartJS.register(
   ArcElement,
@@ -26,7 +27,44 @@ ChartJS.register(
   Title
 );
 
-//TODO show on press vertical bar chart for age of onset by gender?
+const TextComponent = ({
+  data,
+  keyOfObject,
+  header,
+}: {
+  data: any;
+  keyOfObject: string;
+  header: string;
+}) => {
+  const arr = data.map((e) => e[keyOfObject]);
+
+  return (
+    <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
+      <h4 className="m-2 text-center text-lg">{header}</h4>
+      {arr.slice(0, 3).map((e, i) => (
+        <div
+          className="flex w-full max-w-xs flex-col items-center justify-center"
+          key={`${keyOfObject}_${i}_div`}
+        >
+          <h5 className="m-2 font-bold" key={`${keyOfObject}_${i}_h5`}>
+            {i + 1}.
+          </h5>
+          <p className="w-full" key={`${keyOfObject}_${i}`}>
+            {e}
+          </p>
+        </div>
+      ))}
+      <Link href={`/${keyOfObject}`}>
+        <a
+          className="m-2 rounded-full bg-blue-500 p-3 font-semibold
+      text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+        >
+          Show more
+        </a>
+      </Link>
+    </div>
+  );
+};
 
 const psyLengthByGender = (data) => {
   const dataPsyLength = {
@@ -217,6 +255,41 @@ const Stats: NextPage = () => {
     ],
   };
 
+  const dataHospitalizedFirst = {
+    labels: ["Yes", "No"],
+    datasets: [
+      {
+        label: "Hospitalization shares",
+        data: [
+          personalStats.data?.filter((e) => e.hospitalized_on_first === true)
+            .length,
+          personalStats.data?.filter((e) => e.hospitalized_on_first === false)
+            .length,
+        ],
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+  const dataHospitalsSatisfaction = {
+    labels: ["Yes", "No"],
+    datasets: [
+      {
+        label: "Hospitalization shares",
+        data: [
+          personalStats.data?.filter((e) => e.hospital_satisfaction === true)
+            .length,
+          personalStats.data?.filter((e) => e.hospital_satisfaction === false)
+            .length,
+        ],
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   const dataOnset = {
     labels: ["Male", "Female", "Other"],
     datasets: [
@@ -339,6 +412,23 @@ const Stats: NextPage = () => {
               </motion.div>
             )}
           </AnimatePresence>
+          <h4 className="m-2 text-center text-lg">
+            Hospitalized on first psychosis:
+          </h4>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut data={dataHospitalizedFirst} />
+          </div>
+          <h4 className="m-2 text-center text-lg">
+            Were satisfied with hospital care:
+          </h4>
+          <div className="flex max-w-xs items-center justify-center">
+            <Doughnut data={dataHospitalsSatisfaction} />
+          </div>
+          <TextComponent
+            data={personalStats.data}
+            keyOfObject={"describe_hospital"}
+            header={"hospital care description:"}
+          ></TextComponent>
         </div>
       </div>
     </div>
