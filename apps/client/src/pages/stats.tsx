@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
 import { trpc } from "../utils/trpc";
 import React, { useState } from "react";
 import { PersonalQuestions } from "zod-types";
@@ -16,6 +16,29 @@ import { Bar, Doughnut } from "react-chartjs-2";
 import CustomButton from "../components/CustomButton";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+
+import { createSSGHelpers } from "@trpc/react/ssg";
+import { createContext } from "../utils/createContext";
+import { appRouter } from "../../../server/src/router";
+
+
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = await createSSGHelpers({
+    router: appRouter,
+    ctx: await createContext(),
+  });
+
+  await ssg.fetchQuery("personalStats");
+  await ssg.fetchQuery("ageOfOnsetPsychosisByGender");
+  await ssg.fetchQuery("PsyLengthByGender");
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 1,
+  };
+};
 
 ChartJS.register(
   ArcElement,
