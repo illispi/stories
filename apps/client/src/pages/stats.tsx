@@ -21,10 +21,9 @@ import { createSSGHelpers } from "@trpc/react/ssg";
 import { createContext } from "../utils/createContext";
 import { appRouter } from "../../../server/src/router";
 
-
-export const getStaticProps: GetStaticProps = async () => {
+/* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
-    router: appRouter,
+    router: appRouter, //This app router is in fastify
     ctx: await createContext(),
   });
 
@@ -39,7 +38,7 @@ export const getStaticProps: GetStaticProps = async () => {
     revalidate: 1,
   };
 };
-
+ */
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -49,6 +48,25 @@ ChartJS.register(
   BarElement,
   Title
 );
+
+const DoughnutComponent = ({
+  data,
+  keyOfObject,
+  header,
+}: {
+  data: any;
+  keyOfObject?: string;
+  header: string;
+}) => {
+  return (
+    <>
+      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
+      <div className="flex max-w-xs items-center justify-center">
+        <Doughnut data={data} />
+      </div>
+    </>
+  );
+};
 
 const TextComponent = ({
   data,
@@ -358,10 +376,12 @@ const Stats: NextPage = () => {
             name={"Average age of responses:"}
             item={`${calcAverage(personalStats, "current_age")} years old`}
           />
-          <h4 className="m-2 text-center text-lg">Gender shares:</h4>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut data={dataGender} />
-          </div>
+
+          <DoughnutComponent
+            data={dataGender}
+            header={"Gender shares"}
+          ></DoughnutComponent>
+
           <h4 className="m-2 text-center text-lg">Age of responses:</h4>
           <div className="h-64 w-11/12">
             <Bar data={ageOfResdata} options={options}></Bar>
@@ -372,12 +392,11 @@ const Stats: NextPage = () => {
           <div className="h-64 w-11/12">
             <Bar data={dataOnset} options={options}></Bar>
           </div>
-          <h4 className="m-2 text-center text-lg">
-            Length of first psychosis:
-          </h4>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut data={dataPsyLength} />
-          </div>
+
+          <DoughnutComponent
+            data={dataPsyLength}
+            header={"Length of first psychosis"}
+          ></DoughnutComponent>
           <CustomButton
             onClick={() => {
               setByGenderPsyLength(byGenderPsyLength ? false : true);
@@ -408,45 +427,33 @@ const Stats: NextPage = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
               >
-                <h4 className="m-2 text-center text-lg">
-                  First psychosis male:
-                </h4>
-                <div className="flex max-w-xs items-center justify-center">
-                  <Doughnut
-                    data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
-                  />
-                </div>
-                <h4 className="m-2 text-center text-lg">
-                  First psychosis female:
-                </h4>
-                <div className="flex max-w-xs items-center justify-center">
-                  <Doughnut
-                    data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
-                  />
-                </div>
-                <h4 className="m-2 text-center text-lg">
-                  First psychosis other:
-                </h4>
-                <div className="flex max-w-xs items-center justify-center">
-                  <Doughnut
-                    data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
-                  />
-                </div>
+                <DoughnutComponent
+                  data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+                  header={"First psychosis male"}
+                ></DoughnutComponent>
+
+                <DoughnutComponent
+                  data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
+                  header={"First psychosis female"}
+                ></DoughnutComponent>
+
+                <DoughnutComponent
+                  data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+                  header={"First psychosis other"}
+                ></DoughnutComponent>
               </motion.div>
             )}
           </AnimatePresence>
-          <h4 className="m-2 text-center text-lg">
-            Hospitalized on first psychosis:
-          </h4>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut data={dataHospitalizedFirst} />
-          </div>
-          <h4 className="m-2 text-center text-lg">
-            Were satisfied with hospital care:
-          </h4>
-          <div className="flex max-w-xs items-center justify-center">
-            <Doughnut data={dataHospitalsSatisfaction} />
-          </div>
+
+          <DoughnutComponent
+            data={dataHospitalizedFirst}
+            header={"Hospitalized on first psychosis"}
+          ></DoughnutComponent>
+
+          <DoughnutComponent
+            data={dataHospitalsSatisfaction}
+            header={"Were satisfied with hospital care"}
+          ></DoughnutComponent>
           <TextComponent
             data={personalStats.data}
             keyOfObject={"describe_hospital"}
@@ -459,3 +466,5 @@ const Stats: NextPage = () => {
 };
 
 export default Stats;
+
+//TODO replace motion.div etc. with m.div, reduces bundlesize
