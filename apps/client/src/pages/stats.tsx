@@ -79,6 +79,8 @@ const TextComponent = ({
 }) => {
   const arr = data.map((e) => e[keyOfObject]);
 
+  //TODO show more doesnt currently take anywhere.
+
   return (
     <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
       <h4 className="m-2 text-center text-lg">{header}</h4>
@@ -244,6 +246,29 @@ const Stats: NextPage = () => {
     ],
   };
 
+  const YesOrNoData = (stat: Array<keyof typeof personalStats.data>) => {
+    return {
+      labels: ["Yes", "No"],
+      datasets: [
+        {
+          label: "Recieved post care",
+          data: [
+            personalStats.data?.filter((e) => e[stat] === true)
+              .length,
+            personalStats.data?.filter((e) => e[stat] === false)
+              .length,
+          ],
+          backgroundColor: [
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+          ],
+          borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+
   const dataGender = {
     labels: ["Male", "Female", "Other"],
     datasets: [
@@ -322,6 +347,24 @@ const Stats: NextPage = () => {
           personalStats.data?.filter((e) => e.hospital_satisfaction === true)
             .length,
           personalStats.data?.filter((e) => e.hospital_satisfaction === false)
+            .length,
+        ],
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const dataRecievedPostCare = {
+    labels: ["Yes", "No"],
+    datasets: [
+      {
+        label: "Recieved post care",
+        data: [
+          personalStats.data?.filter((e) => e.care_after_hospital === true)
+            .length,
+          personalStats.data?.filter((e) => e.care_after_hospital === false)
             .length,
         ],
         backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
@@ -457,8 +500,13 @@ const Stats: NextPage = () => {
           <TextComponent
             data={personalStats.data}
             keyOfObject={"describe_hospital"}
-            header={"hospital care description:"}
+            header={"Hospital care description:"}
           ></TextComponent>
+
+          <DoughnutComponent
+            data={dataRecievedPostCare}
+            header={"Recieved care after hospitalization"}
+          ></DoughnutComponent>
         </div>
       </div>
     </div>
