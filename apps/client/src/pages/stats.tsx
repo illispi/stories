@@ -246,17 +246,15 @@ const Stats: NextPage = () => {
     ],
   };
 
-  const YesOrNoData = (stat: Array<keyof typeof personalStats.data>) => {
+  const yesOrNoData = (stat: keyof PersonalQuestions, label: string) => {
     return {
       labels: ["Yes", "No"],
       datasets: [
         {
-          label: "Recieved post care",
+          label: label,
           data: [
-            personalStats.data?.filter((e) => e[stat] === true)
-              .length,
-            personalStats.data?.filter((e) => e[stat] === false)
-              .length,
+            personalStats.data?.filter((e) => e[stat] === true).length,
+            personalStats.data?.filter((e) => e[stat] === false).length,
           ],
           backgroundColor: [
             "rgba(54, 162, 235, 0.2)",
@@ -321,58 +319,7 @@ const Stats: NextPage = () => {
     ],
   };
 
-  const dataHospitalizedFirst = {
-    labels: ["Yes", "No"],
-    datasets: [
-      {
-        label: "Hospitalization shares",
-        data: [
-          personalStats.data?.filter((e) => e.hospitalized_on_first === true)
-            .length,
-          personalStats.data?.filter((e) => e.hospitalized_on_first === false)
-            .length,
-        ],
-        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
-        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  };
-  const dataHospitalsSatisfaction = {
-    labels: ["Yes", "No"],
-    datasets: [
-      {
-        label: "Hospitalization shares",
-        data: [
-          personalStats.data?.filter((e) => e.hospital_satisfaction === true)
-            .length,
-          personalStats.data?.filter((e) => e.hospital_satisfaction === false)
-            .length,
-        ],
-        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
-        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const dataRecievedPostCare = {
-    labels: ["Yes", "No"],
-    datasets: [
-      {
-        label: "Recieved post care",
-        data: [
-          personalStats.data?.filter((e) => e.care_after_hospital === true)
-            .length,
-          personalStats.data?.filter((e) => e.care_after_hospital === false)
-            .length,
-        ],
-        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
-        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  };
+ 
 
   const dataOnset = {
     labels: ["Male", "Female", "Other"],
@@ -488,13 +435,21 @@ const Stats: NextPage = () => {
             )}
           </AnimatePresence>
 
+        {/* TODO maybe make yesOrNo component to futher reduce duplication */}
+
           <DoughnutComponent
-            data={dataHospitalizedFirst}
+            data={yesOrNoData(
+              "hospitalized_on_first",
+              "Hospitalized on first psychosis"
+            )}
             header={"Hospitalized on first psychosis"}
           ></DoughnutComponent>
 
           <DoughnutComponent
-            data={dataHospitalsSatisfaction}
+            data={yesOrNoData(
+              "hospital_satisfaction",
+              "Were satisfied with hospital care"
+            )}
             header={"Were satisfied with hospital care"}
           ></DoughnutComponent>
           <TextComponent
@@ -504,7 +459,10 @@ const Stats: NextPage = () => {
           ></TextComponent>
 
           <DoughnutComponent
-            data={dataRecievedPostCare}
+            data={yesOrNoData(
+              "care_after_hospital",
+              "Recieved care after hospitalization"
+            )}
             header={"Recieved care after hospitalization"}
           ></DoughnutComponent>
         </div>
