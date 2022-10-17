@@ -49,6 +49,8 @@ ChartJS.register(
   Title
 );
 
+//NOTE getting trpc types out of nextjs page component
+
 const DoughnutComponent = ({
   data,
   keyOfObject,
@@ -63,6 +65,25 @@ const DoughnutComponent = ({
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
       <div className="flex max-w-xs items-center justify-center">
         <Doughnut data={data} />
+      </div>
+    </>
+  );
+};
+
+const YesOrNoComponent = ({
+  data,
+  header,
+  stat,
+}: {
+  data: any;
+  header: string;
+  stat: keyof PersonalQuestions;
+}) => {
+  return (
+    <>
+      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
+      <div className="flex max-w-xs items-center justify-center">
+        <Doughnut data={yesOrNoData(data, stat, header)} />
       </div>
     </>
   );
@@ -197,6 +218,28 @@ const calcAgeOfResBrackets = (data) => {
   return resBrackets;
 };
 
+const yesOrNoData = (
+  data: any,
+  stat: keyof PersonalQuestions,
+  label: string
+) => {
+  return {
+    labels: ["Yes", "No"],
+    datasets: [
+      {
+        label: label,
+        data: [
+          data.filter((e) => e[stat] === true).length,
+          data.filter((e) => e[stat] === false).length,
+        ],
+        backgroundColor: ["rgba(54, 162, 235, 0.2)", "rgba(255, 99, 132, 0.2)"],
+        borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+};
+
 const Stats: NextPage = () => {
   const personalStats = trpc.useQuery(["personalStats"]);
   const ageOfOnset = trpc.useQuery(["ageOfOnsetPsychosisByGender"]);
@@ -244,27 +287,6 @@ const Stats: NextPage = () => {
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
-  };
-
-  const yesOrNoData = (stat: keyof PersonalQuestions, label: string) => {
-    return {
-      labels: ["Yes", "No"],
-      datasets: [
-        {
-          label: label,
-          data: [
-            personalStats.data?.filter((e) => e[stat] === true).length,
-            personalStats.data?.filter((e) => e[stat] === false).length,
-          ],
-          backgroundColor: [
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 99, 132, 0.2)",
-          ],
-          borderColor: ["rgba(54, 162, 235, 1)", "rgba(255, 99, 132, 1)"],
-          borderWidth: 1,
-        },
-      ],
-    };
   };
 
   const dataGender = {
@@ -318,8 +340,6 @@ const Stats: NextPage = () => {
       },
     ],
   };
-
- 
 
   const dataOnset = {
     labels: ["Male", "Female", "Other"],
@@ -435,36 +455,30 @@ const Stats: NextPage = () => {
             )}
           </AnimatePresence>
 
-        {/* TODO maybe make yesOrNo component to futher reduce duplication */}
+          {/* TODO maybe make yesOrNo component to futher reduce duplication */}
 
-          <DoughnutComponent
-            data={yesOrNoData(
-              "hospitalized_on_first",
-              "Hospitalized on first psychosis"
-            )}
+          <YesOrNoComponent
+            data={personalStats.data}
+            stat={"hospitalized_on_first"}
             header={"Hospitalized on first psychosis"}
-          ></DoughnutComponent>
+          ></YesOrNoComponent>
 
-          <DoughnutComponent
-            data={yesOrNoData(
-              "hospital_satisfaction",
-              "Were satisfied with hospital care"
-            )}
+          <YesOrNoComponent
+            data={personalStats.data}
+            stat={"hospital_satisfaction"}
             header={"Were satisfied with hospital care"}
-          ></DoughnutComponent>
+          ></YesOrNoComponent>
           <TextComponent
             data={personalStats.data}
             keyOfObject={"describe_hospital"}
             header={"Hospital care description:"}
           ></TextComponent>
 
-          <DoughnutComponent
-            data={yesOrNoData(
-              "care_after_hospital",
-              "Recieved care after hospitalization"
-            )}
+          <YesOrNoComponent
+            data={personalStats.data}
+            stat={"care_after_hospital"}
             header={"Recieved care after hospitalization"}
-          ></DoughnutComponent>
+          ></YesOrNoComponent>
         </div>
       </div>
     </div>
