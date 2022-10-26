@@ -11,6 +11,8 @@ import { trpc } from "../utils/trpc";
 
 //TODO Needs to put some of the fields like cognitive_symptoms_description as null
 
+//BUG only if asked needs to exclude other choices
+
 const Box: React.FC<{
   children: React.ReactNode;
   question: string;

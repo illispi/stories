@@ -488,3 +488,4 @@ const Stats: NextPage = () => {
 export default Stats;
 
 //TODO replace motion.div etc. with m.div, reduces bundlesize
+//TODO test if extra chartjs comps add to bundlesize

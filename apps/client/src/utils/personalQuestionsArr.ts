@@ -190,10 +190,10 @@ export const questions: QuestionPersonal[] = [
     questionType: "selection",
     questionDB: "smoking_amount",
     selections: [
+      "Less than 10 a week",
+      "Less than 10 a day",
       "10 a day",
       "20 or more a day",
-      "Less than 10 a day",
-      "Less than 10 a week",
     ],
   },
 
