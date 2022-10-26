@@ -1,4 +1,4 @@
-import * as trpc from "@trpc/server";
+import { initTRPC } from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
 import { db } from "./index";
@@ -6,12 +6,12 @@ import { db } from "./index";
 import { personalQuestionsSchema, theirQuestionsSchema } from "zod-types";
 import { sql } from "kysely";
 
-export const appRouter = trpc
-  .router<Context>()
-  .mutation("addPersonalAnswers", {
-    input: personalQuestionsSchema,
+export const t = initTRPC.context<Context>().create();
 
-    resolve: async ({ input, ctx }) => {
+export const appRouter = t.router({
+  addPersonalAnswers: t.procedure
+    .input(personalQuestionsSchema)
+    .mutation(async ({ input, ctx }) => {
       if (ctx.req.session.id) {
         const insertion = await db
           .insertInto("personal_questions")
@@ -27,11 +27,11 @@ export const appRouter = trpc
       }
 
       return "No session found";
-    },
-  })
-  .mutation("addTheirAnswers", {
-    input: theirQuestionsSchema,
-    resolve: async ({ input, ctx }) => {
+    }),
+
+  addTheirAnswers: t.procedure
+    .input(theirQuestionsSchema)
+    .mutation(async ({ input, ctx }) => {
       if (ctx.req.session.id) {
         const insertion = await db
           .insertInto("their_questions")
@@ -47,111 +47,103 @@ export const appRouter = trpc
       }
 
       return "No session found";
-    },
-  })
-  .mutation("createCookie", {
-    resolve: async ({ ctx }) => {
-      if (!ctx.req.session.id) {
-        const { user_id } = await db
-          .insertInto("user")
-          .values({ user_id: sql`DEFAULT` })
-          .returning("user_id")
-          .executeTakeFirstOrThrow();
+    }),
+  createCookie: t.procedure.mutation(async ({ ctx }) => {
+    if (!ctx.req.session.id) {
+      const { user_id } = await db
+        .insertInto("user")
+        .values({ user_id: sql`DEFAULT` })
+        .returning("user_id")
+        .executeTakeFirstOrThrow();
 
-        ctx.req.session.id = user_id;
+      ctx.req.session.id = user_id;
 
-        return "Cookies added";
-      }
-      return "Cookies should exist already";
-    },
-  })
-  .query("personalStats", {
-    resolve: async () => {
-      const allPersonalStats = await db
-        .selectFrom("personal_questions")
-        .selectAll()
-        .execute();
+      return "Cookies added";
+    }
+    return "Cookies should exist already";
+  }),
+  personalStats: t.procedure.query(async () => {
+    const allPersonalStats = await db
+      .selectFrom("personal_questions")
+      .selectAll()
+      .execute();
 
-      //TODO create partial that removes parts of properties from object inside array
+    //TODO create partial that removes parts of properties from object inside array
 
-      allPersonalStats.forEach((e) => {
-        delete e.user_id;
-        delete e.created_at;
-        delete e.created_at;
-        delete e.answer_personal_id;
-      });
+    allPersonalStats.forEach((e) => {
+      delete e.user_id;
+      delete e.created_at;
+      delete e.created_at;
+      delete e.answer_personal_id;
+    });
 
-      return allPersonalStats;
-    },
-  })
-  .query("ageOfOnsetPsychosisByGender", {
-    resolve: async () => {
-      const maleAge = await db
-        .selectFrom("personal_questions")
-        .select(["age_of_onset"])
-        .where("gender", "=", "male")
-        .execute();
+    return allPersonalStats;
+  }),
+  ageOfOnsetPsychosisByGender: t.procedure.query(async () => {
+    const maleAge = await db
+      .selectFrom("personal_questions")
+      .select(["age_of_onset"])
+      .where("gender", "=", "male")
+      .execute();
 
-      const femaleAge = await db
-        .selectFrom("personal_questions")
-        .select(["age_of_onset"])
-        .where("gender", "=", "female")
-        .execute();
-      const otherAge = await db
-        .selectFrom("personal_questions")
-        .select(["age_of_onset"])
-        .where("gender", "=", "other")
-        .execute();
+    const femaleAge = await db
+      .selectFrom("personal_questions")
+      .select(["age_of_onset"])
+      .where("gender", "=", "female")
+      .execute();
+    const otherAge = await db
+      .selectFrom("personal_questions")
+      .select(["age_of_onset"])
+      .where("gender", "=", "other")
+      .execute();
 
-      const average = (obj: typeof maleAge) => {
-        return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
-      };
-      const median = (obj: typeof maleAge) => {
-        const arr = obj.map((e) => e.age_of_onset);
-        const sorted = arr.sort((a, b) => a - b);
-        return sorted[Math.floor(arr.length / 2)];
-      };
+    const average = (obj: typeof maleAge) => {
+      return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
+    };
+    const median = (obj: typeof maleAge) => {
+      const arr = obj.map((e) => e.age_of_onset);
+      const sorted = arr.sort((a, b) => a - b);
+      return sorted[Math.floor(arr.length / 2)];
+    };
 
-      const result = {
-        maleAverage: average(maleAge),
-        femaleAverage: average(femaleAge),
-        otherAverage: average(otherAge),
-        maleMedian: median(maleAge),
-        femaleMedian: median(femaleAge),
-        otherMedian: median(otherAge),
-      };
+    const result = {
+      maleAverage: average(maleAge),
+      femaleAverage: average(femaleAge),
+      otherAverage: average(otherAge),
+      maleMedian: median(maleAge),
+      femaleMedian: median(femaleAge),
+      otherMedian: median(otherAge),
+    };
 
-      return result;
-    },
-  })
-  .query("PsyLengthByGender", {
-    resolve: async () => {
-      const maleSplit = await db
-        .selectFrom("personal_questions")
-        .select(["length_of_psychosis"])
-        .where("gender", "=", "male")
-        .execute();
+    return result;
+  }),
+  psyLengthByGender: t.procedure.query(async () => {
+    const maleSplit = await db
+      .selectFrom("personal_questions")
+      .select(["length_of_psychosis"])
+      .where("gender", "=", "male")
+      .execute();
 
-      const femaleSplit = await db
-        .selectFrom("personal_questions")
-        .select(["length_of_psychosis"])
-        .where("gender", "=", "female")
-        .execute();
-      const otherSplit = await db
-        .selectFrom("personal_questions")
-        .select(["length_of_psychosis"])
-        .where("gender", "=", "other")
-        .execute();
+    const femaleSplit = await db
+      .selectFrom("personal_questions")
+      .select(["length_of_psychosis"])
+      .where("gender", "=", "female")
+      .execute();
+    const otherSplit = await db
+      .selectFrom("personal_questions")
+      .select(["length_of_psychosis"])
+      .where("gender", "=", "other")
+      .execute();
 
-      const result = {
-        maleSplit,
-        femaleSplit,
-        otherSplit,
-      };
+    const result = {
+      maleSplit,
+      femaleSplit,
+      otherSplit,
+    };
 
-      return result;
-    },
-  });
+    return result;
+  }),
+});
 
 // export type definition of API
 export type AppRouter = typeof appRouter;

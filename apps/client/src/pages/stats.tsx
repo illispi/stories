@@ -241,9 +241,9 @@ const yesOrNoData = (
 };
 
 const Stats: NextPage = () => {
-  const personalStats = trpc.useQuery(["personalStats"]);
-  const ageOfOnset = trpc.useQuery(["ageOfOnsetPsychosisByGender"]);
-  const psyLengthSplits = trpc.useQuery(["PsyLengthByGender"]);
+  const personalStats = trpc.personalStats.useQuery();
+  const ageOfOnset = trpc.ageOfOnsetPsychosisByGender.useQuery();
+  const psyLengthSplits = trpc.psyLengthByGender.useQuery();
 
   //NOTE does this need to be state since I am not updating?
 

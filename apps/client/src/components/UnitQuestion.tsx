@@ -52,7 +52,7 @@ export const UnitQuestion: React.FC<{
 
   const valueOfLS = questionsLs[questionDB] ?? "";
 
-  const sendResults = trpc.useMutation("addPersonalAnswers");
+  const sendResults = trpc.addPersonalAnswers.useMutation();
 
   const submitResults = () => {
     (Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(

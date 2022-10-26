@@ -10,7 +10,7 @@ import { trpc } from "../utils/trpc";
 import { useEffect } from "react";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  const createCookie = trpc.useMutation("createCookie");
+  const createCookie = trpc.createCookie.useMutation();
   useEffect(() => {
     // createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() }); const utils = trpc.useContext();
     //NOTE just a example to invalidate queries if needed
