@@ -4,8 +4,8 @@ import React, { useState } from "react";
 const Links = () => {
   return (
     <div className="hidden items-center justify-end lg:flex">
-      <Link href={"/statistics"}>
-        <a className="mx-2 text-xl font-semibold">Statistics</a>
+      <Link href={"/stats"}>
+        <div className="mx-2 text-xl font-semibold">Statistics</div>
       </Link>
     </div>
   );
@@ -56,18 +56,18 @@ const Hamburger: React.FC<{
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  //BUG schizophrenia should be on left corner
   return (
     <div className="sticky top-0 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
       <Link href={"/"}>
-        <a className="mx-2 text-2xl font-semibold sm:hidden">
+        <div className="mx-2 text-2xl font-semibold sm:hidden">
           Schizo... stories
-        </a>
+        </div>
       </Link>
       <Link href={"/"}>
-        <a className="mx-2 hidden text-2xl font-semibold sm:flex">
+        <div className="mx-2 hidden text-2xl font-semibold sm:flex">
           Schizophrenia stories
-        </a>
+        </div>
       </Link>
       <Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <Links></Links>

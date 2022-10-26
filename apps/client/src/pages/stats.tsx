@@ -119,12 +119,12 @@ const TextComponent = ({
         </div>
       ))}
       <Link href={`/${keyOfObject}`}>
-        <a
+        <div
           className="m-2 rounded-full bg-blue-500 p-3 font-semibold
       text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
         >
           Show more
-        </a>
+        </div>
       </Link>
     </div>
   );

@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Link href="/personalQuestions">
-        <a>Personal questions</a>
+        <div>Personal questions</div>
       </Link>  
     </div>
   );
