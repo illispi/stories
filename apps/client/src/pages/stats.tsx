@@ -17,6 +17,7 @@ import { PersonalQuestions } from "zod-types";
 import CustomButton from "../components/CustomButton";
 import { trpc } from "../utils/trpc";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Context } from "chartjs-plugin-datalabels";
 
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
@@ -50,7 +51,24 @@ ChartJS.register(ChartDataLabels);
 
 ChartJS.defaults.set("plugins.datalabels", {
   font: { weight: "bold", size: 16 },
+  color: "#000000",
 });
+
+const optionsDoughnut = {
+  plugins: {
+    datalabels: {
+      formatter: (value, ctx: Context) => {
+        let sum = 0;
+        let dataArr = ctx.chart.data.datasets[0].data;
+        dataArr.map((data) => {
+          sum += data;
+        });
+        let percentage = ((value * 100) / sum).toFixed(2) + "%";
+        return percentage;
+      },
+    },
+  },
+};
 
 //NOTE getting trpc types out of nextjs page component
 
@@ -67,7 +85,7 @@ const DoughnutComponent = ({
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
       <div className="flex max-w-xs items-center justify-center">
-        <Doughnut data={data} />
+        <Doughnut data={data} options={optionsDoughnut} />
       </div>
     </>
   );
@@ -86,7 +104,10 @@ const YesOrNoComponent = ({
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
       <div className="flex max-w-xs items-center justify-center">
-        <Doughnut data={yesOrNoData(data, stat, header)} />
+        <Doughnut
+          data={yesOrNoData(data, stat, header)}
+          options={optionsDoughnut}
+        />
       </div>
     </>
   );
@@ -224,13 +245,13 @@ const calcAgeOfResBrackets = (data) => {
 const yesOrNoData = (
   data: any,
   stat: keyof PersonalQuestions,
-  label: string
+  header: string
 ) => {
   return {
     labels: ["Yes", "No"],
     datasets: [
       {
-        label: label,
+        label: header,
         data: [
           data.filter((e) => e[stat] === true).length,
           data.filter((e) => e[stat] === false).length,
@@ -371,8 +392,6 @@ const Stats: NextPage = () => {
   if (!personalStats.data) {
     return <h2>Loading...</h2>;
   }
-
-  console.log(personalStats.data);
 
   return (
     <div className="mt-8 flex w-screen flex-col items-center justify-center">
