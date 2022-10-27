@@ -48,6 +48,10 @@ ChartJS.register(
 
 ChartJS.register(ChartDataLabels);
 
+ChartJS.defaults.set("plugins.datalabels", {
+  font: { weight: "bold", size: 16 },
+});
+
 //NOTE getting trpc types out of nextjs page component
 
 const DoughnutComponent = ({
