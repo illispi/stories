@@ -16,6 +16,7 @@ import { Bar, Doughnut } from "react-chartjs-2";
 import { PersonalQuestions } from "zod-types";
 import CustomButton from "../components/CustomButton";
 import { trpc } from "../utils/trpc";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
@@ -44,6 +45,8 @@ ChartJS.register(
   BarElement,
   Title
 );
+
+ChartJS.register(ChartDataLabels);
 
 //NOTE getting trpc types out of nextjs page component
 
