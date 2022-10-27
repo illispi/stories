@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
+module.exports = withBundleAnalyzer({
   reactStrictMode: true,
   env: {
     IP_DEV: process.env.IP_DEV,
@@ -17,6 +22,6 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-};
+});
 
-module.exports = nextConfig;
+//NOTE add ALALYZE=true to env.local to get bundle analysis

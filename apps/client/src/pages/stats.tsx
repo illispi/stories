@@ -1,25 +1,21 @@
-import type { GetStaticProps, GetStaticPropsContext, NextPage } from "next";
-import { trpc } from "../utils/trpc";
-import React, { useState } from "react";
-import { PersonalQuestions } from "zod-types";
 import {
-  Chart as ChartJS,
   ArcElement,
-  Tooltip,
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
   Legend,
   LinearScale,
-  BarElement,
   Title,
-  CategoryScale,
+  Tooltip,
 } from "chart.js";
-import { Bar, Doughnut } from "react-chartjs-2";
-import CustomButton from "../components/CustomButton";
-import { AnimatePresence, domAnimation, LazyMotion, m, motion } from "framer-motion";
+import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
+import type { NextPage } from "next";
 import Link from "next/link";
-
-import { createSSGHelpers } from "@trpc/react/ssg";
-import { createContext } from "../utils/createContext";
-import { appRouter } from "../../../server/src/router";
+import { useState } from "react";
+import { Bar, Doughnut } from "react-chartjs-2";
+import { PersonalQuestions } from "zod-types";
+import CustomButton from "../components/CustomButton";
+import { trpc } from "../utils/trpc";
 
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
