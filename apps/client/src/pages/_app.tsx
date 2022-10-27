@@ -8,6 +8,7 @@ import { getFetch } from "@trpc/client";
 import NavBar from "../components/NavBar";
 import { trpc } from "../utils/trpc";
 import { useEffect } from "react";
+import { domAnimation, LazyMotion } from "framer-motion";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const createCookie = trpc.createCookie.useMutation();

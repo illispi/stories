@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es5",
     "module": "commonjs",
     "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
     "skipLibCheck": true,
@@ -23,6 +23,7 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "strict": true
+    
   },
   "exclude": ["node_modules", "./dist"],
   "include": ["./src/**/*.ts"]

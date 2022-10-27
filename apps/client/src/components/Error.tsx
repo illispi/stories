@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, domAnimation, LazyMotion, m, motion } from "framer-motion";
 
 const variants = {
   enter: () => {
@@ -29,20 +29,22 @@ const Error: React.FC<{
     }, 3000);
   }
   return (
-    <AnimatePresence>
-      {message && (
-        <motion.div
-          className="fixed top-2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl"
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: 0.15 }}
-        >
-          <p>{message}</p>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <LazyMotion features={domAnimation}>
+      <AnimatePresence>
+        {message && (
+          <m.div
+            className="fixed top-2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl"
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.15 }}
+          >
+            <p>{message}</p>
+          </m.div>
+        )}
+      </AnimatePresence>
+    </LazyMotion>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { Children, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, domAnimation, LazyMotion, m, motion } from "framer-motion";
 import { PersonalQuestions } from "zod-types";
 
 const variants = {
@@ -26,18 +26,20 @@ const QuestionTransition: React.FC<{
   children: React.ReactNode;
 }> = ({ children, direction }) => {
   return (
-    <motion.div
-      className="absolute z-50 flex h-full w-full flex-col
+    <LazyMotion features={domAnimation}>
+      <m.div
+        className="absolute z-50 flex h-full w-full flex-col
            items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500 "
-      variants={variants}
-      custom={direction}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{ duration: 1.2 }}
-    >
-      {children}
-    </motion.div>
+        variants={variants}
+        custom={direction}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{ duration: 1.2 }}
+      >
+        {children}
+      </m.div>
+    </LazyMotion>
   );
 };
 

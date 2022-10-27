@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
 import CustomButton from "../components/CustomButton";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, domAnimation, LazyMotion, m, motion } from "framer-motion";
 import Link from "next/link";
 
 import { createSSGHelpers } from "@trpc/react/ssg";
@@ -428,32 +428,33 @@ const Stats: NextPage = () => {
           >
             {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
           </CustomButton>
+          <LazyMotion features={domAnimation}>
+            <AnimatePresence>
+              {byGenderPsyLength && (
+                <m.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <DoughnutComponent
+                    data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+                    header={"First psychosis male"}
+                  ></DoughnutComponent>
 
-          <AnimatePresence>
-            {byGenderPsyLength && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <DoughnutComponent
-                  data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
-                  header={"First psychosis male"}
-                ></DoughnutComponent>
+                  <DoughnutComponent
+                    data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
+                    header={"First psychosis female"}
+                  ></DoughnutComponent>
 
-                <DoughnutComponent
-                  data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
-                  header={"First psychosis female"}
-                ></DoughnutComponent>
-
-                <DoughnutComponent
-                  data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
-                  header={"First psychosis other"}
-                ></DoughnutComponent>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <DoughnutComponent
+                    data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+                    header={"First psychosis other"}
+                  ></DoughnutComponent>
+                </m.div>
+              )}
+            </AnimatePresence>
+          </LazyMotion>
 
           {/* TODO maybe make yesOrNo component to futher reduce duplication */}
 
