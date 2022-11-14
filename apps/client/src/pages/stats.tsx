@@ -84,6 +84,7 @@ const DoughnutComponent = ({
   header: string;
 }) => {
   const { containerRef, isVisible } = useContext(IntersectionObserverCtx);
+
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
@@ -499,8 +500,6 @@ const Stats: NextPage = () => {
                 )}
               </AnimatePresence>
             </LazyMotion>
-
-            {/* TODO maybe make yesOrNo component to futher reduce duplication */}
 
             <YesOrNoComponent
               data={personalStats.data}

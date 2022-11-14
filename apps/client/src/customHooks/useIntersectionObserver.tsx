@@ -1,7 +1,9 @@
+import { Chart } from "chart.js";
 import { useEffect, useRef, useState } from "react";
 
 const useIntersectionObserver = (options) => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<Chart>(null);
+
   const [isVisible, setIsVisible] = useState<
     | "active"
     | "reset"
@@ -27,15 +29,14 @@ const useIntersectionObserver = (options) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(callbackFunction, options);
+    console.log(containerRef.current);
     if (containerRef.current) {
-      console.log(observer);
-
-      observer.observe(containerRef.current);
+      observer.observe(containerRef.current.canvas);
     }
 
     return () => {
       if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+        observer.unobserve(containerRef.current.canvas);
       }
     };
   }, [containerRef, options]);
