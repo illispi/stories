@@ -11,13 +11,15 @@ import {
 import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { PersonalQuestions } from "zod-types";
 import CustomButton from "../components/CustomButton";
 import { trpc } from "../utils/trpc";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Context } from "chartjs-plugin-datalabels";
+import useIntersectionObserver from "../customHooks/useIntersectionObserver";
+import React from "react";
 
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
@@ -63,7 +65,7 @@ const optionsDoughnut = {
         dataArr.map((data) => {
           sum += data;
         });
-        let percentage = ((value * 100) / sum).toFixed(2) + "%";
+        let percentage = ((value * 100) / sum).toFixed(0) + "%";
         return percentage;
       },
     },
@@ -81,11 +83,17 @@ const DoughnutComponent = ({
   keyOfObject?: string;
   header: string;
 }) => {
+  const { containerRef, isVisible } = useContext(IntersectionObserverCtx);
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
       <div className="flex max-w-xs items-center justify-center">
-        <Doughnut data={data} options={optionsDoughnut} />
+        <Doughnut
+          ref={containerRef}
+          updateMode={isVisible}
+          data={data}
+          options={optionsDoughnut}
+        />
       </div>
     </>
   );
@@ -264,12 +272,23 @@ const yesOrNoData = (
   };
 };
 
+const IntersectionObserverCtx = React.createContext({
+  containerRef: null,
+  isVisible: "active",
+});
+
 const Stats: NextPage = () => {
   const personalStats = trpc.personalStats.useQuery();
   const ageOfOnset = trpc.ageOfOnsetPsychosisByGender.useQuery();
   const psyLengthSplits = trpc.psyLengthByGender.useQuery();
 
   //NOTE does this need to be state since I am not updating?
+
+  const [containerRef, isVisible] = useIntersectionObserver({
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.2,
+  });
 
   const [gender, setGender] = useState(
     () => calcGenderShares(personalStats.data) //TODO how do i import this type
@@ -394,117 +413,121 @@ const Stats: NextPage = () => {
   }
 
   return (
-    <div className="mt-8 flex w-screen flex-col items-center justify-center">
-      <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-        <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
-          <h1 className="text-center font-semibold">Personal Stats</h1>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <Item
-            name={"Total responses:"}
-            item={`${personalStats.data.length}`}
-          ></Item>
-          <Item
-            name={"Average age of responses:"}
-            item={`${calcAverage(personalStats, "current_age")} years old`}
-          />
-
-          <DoughnutComponent
-            data={dataGender}
-            header={"Gender shares"}
-          ></DoughnutComponent>
-
-          <h4 className="m-2 text-center text-lg">Age of responses:</h4>
-          <div className="h-64 w-11/12">
-            <Bar data={ageOfResdata} options={options}></Bar>
+    <IntersectionObserverCtx.Provider value={{ containerRef, isVisible }}>
+      <div className="mt-8 flex w-screen flex-col items-center justify-center">
+        <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+          <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 className="text-center font-semibold">Personal Stats</h1>
           </div>
+          <div className="flex flex-col items-center justify-center">
+            <Item
+              name={"Total responses:"}
+              item={`${personalStats.data.length}`}
+            ></Item>
+            <Item
+              name={"Average age of responses:"}
+              item={`${calcAverage(personalStats, "current_age")} years old`}
+            />
 
-          {/*NOTE I could make this check for null but i dont think its necessary */}
-          <h4 className="m-2 text-center text-lg">Age of onset:</h4>
-          <div className="h-64 w-11/12">
-            <Bar data={dataOnset} options={options}></Bar>
+            <DoughnutComponent
+              data={dataGender}
+              header={"Gender shares"}
+            ></DoughnutComponent>
+
+            <h4 className="m-2 text-center text-lg">Age of responses:</h4>
+            <div className="h-64 w-11/12">
+              <Bar data={ageOfResdata} options={options}></Bar>
+            </div>
+
+            {/*NOTE I could make this check for null but i dont think its necessary */}
+            <h4 className="m-2 text-center text-lg">Age of onset:</h4>
+            <div className="h-64 w-11/12">
+              <Bar data={dataOnset} options={options}></Bar>
+            </div>
+
+            <DoughnutComponent
+              data={dataPsyLength}
+              header={"Length of first psychosis"}
+            ></DoughnutComponent>
+            <CustomButton
+              onClick={() => {
+                setByGenderPsyLength(byGenderPsyLength ? false : true);
+
+                byGenderPsyLength
+                  ? setTimeout(() => {
+                      window.scrollBy({
+                        top: -250,
+                        behavior: "smooth",
+                      });
+                    }, 100)
+                  : setTimeout(() => {
+                      window.scrollBy({
+                        top: 250,
+                        behavior: "smooth",
+                      });
+                    }, 100);
+              }}
+            >
+              {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
+            </CustomButton>
+            <LazyMotion features={domAnimation}>
+              <AnimatePresence>
+                {byGenderPsyLength && (
+                  <m.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <DoughnutComponent
+                      data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+                      header={"First psychosis male"}
+                    ></DoughnutComponent>
+
+                    <DoughnutComponent
+                      data={psyLengthByGender(
+                        psyLengthSplits.data?.femaleSplit
+                      )}
+                      header={"First psychosis female"}
+                    ></DoughnutComponent>
+
+                    <DoughnutComponent
+                      data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+                      header={"First psychosis other"}
+                    ></DoughnutComponent>
+                  </m.div>
+                )}
+              </AnimatePresence>
+            </LazyMotion>
+
+            {/* TODO maybe make yesOrNo component to futher reduce duplication */}
+
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"hospitalized_on_first"}
+              header={"Hospitalized on first psychosis"}
+            ></YesOrNoComponent>
+
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"hospital_satisfaction"}
+              header={"Were satisfied with hospital care"}
+            ></YesOrNoComponent>
+            <TextComponent
+              data={personalStats.data}
+              keyOfObject={"describe_hospital"}
+              header={"Hospital care description:"}
+            ></TextComponent>
+
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"care_after_hospital"}
+              header={"Recieved care after hospitalization"}
+            ></YesOrNoComponent>
           </div>
-
-          <DoughnutComponent
-            data={dataPsyLength}
-            header={"Length of first psychosis"}
-          ></DoughnutComponent>
-          <CustomButton
-            onClick={() => {
-              setByGenderPsyLength(byGenderPsyLength ? false : true);
-
-              byGenderPsyLength
-                ? setTimeout(() => {
-                    window.scrollBy({
-                      top: -250,
-                      behavior: "smooth",
-                    });
-                  }, 100)
-                : setTimeout(() => {
-                    window.scrollBy({
-                      top: 250,
-                      behavior: "smooth",
-                    });
-                  }, 100);
-            }}
-          >
-            {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
-          </CustomButton>
-          <LazyMotion features={domAnimation}>
-            <AnimatePresence>
-              {byGenderPsyLength && (
-                <m.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <DoughnutComponent
-                    data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
-                    header={"First psychosis male"}
-                  ></DoughnutComponent>
-
-                  <DoughnutComponent
-                    data={psyLengthByGender(psyLengthSplits.data?.femaleSplit)}
-                    header={"First psychosis female"}
-                  ></DoughnutComponent>
-
-                  <DoughnutComponent
-                    data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
-                    header={"First psychosis other"}
-                  ></DoughnutComponent>
-                </m.div>
-              )}
-            </AnimatePresence>
-          </LazyMotion>
-
-          {/* TODO maybe make yesOrNo component to futher reduce duplication */}
-
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"hospitalized_on_first"}
-            header={"Hospitalized on first psychosis"}
-          ></YesOrNoComponent>
-
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"hospital_satisfaction"}
-            header={"Were satisfied with hospital care"}
-          ></YesOrNoComponent>
-          <TextComponent
-            data={personalStats.data}
-            keyOfObject={"describe_hospital"}
-            header={"Hospital care description:"}
-          ></TextComponent>
-
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"care_after_hospital"}
-            header={"Recieved care after hospitalization"}
-          ></YesOrNoComponent>
         </div>
       </div>
-    </div>
+    </IntersectionObserverCtx.Provider>
   );
 };
 
