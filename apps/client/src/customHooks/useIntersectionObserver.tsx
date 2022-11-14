@@ -13,14 +13,12 @@ const useIntersectionObserver = (options) => {
     | "show"
     | "normal"
     | undefined
-  >("active");
+  >("reset");
 
   const callbackFunction = (entries) => {
-    /*     const [entry] = entries;
-    setIsVisible(entry.isIntersecting); */
-    console.log("made it");
+    const [entry] = entries;
 
-    if (entries[0].isIntersecting === true) {
+    if (entry.isIntersecting === true) {
       setIsVisible("active");
     } else {
       setIsVisible("reset");
@@ -29,7 +27,6 @@ const useIntersectionObserver = (options) => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(callbackFunction, options);
-    console.log(containerRef.current);
     if (containerRef.current) {
       observer.observe(containerRef.current.canvas);
     }
