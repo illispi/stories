@@ -20,6 +20,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Context } from "chartjs-plugin-datalabels";
 import useIntersectionObserver from "../customHooks/useIntersectionObserver";
 import React from "react";
+import useIntObsHtml from "../customHooks/useIntObsHtml";
 
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
@@ -172,8 +173,18 @@ const TextComponent = ({
 
   //TODO show more doesnt currently take anywhere.
 
+  const [containerRef, isVisible] = useIntObsHtml(intObsOptions);
+
+  console.log(containerRef, isVisible);
+
   return (
-    <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
+    <m.div
+      ref={containerRef}
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+      className="flex w-11/12 max-w-xs flex-col items-center justify-center"
+    >
       <h4 className="m-2 text-center text-lg">{header}</h4>
       {arr.slice(0, 3).map((e, i) => (
         <div
@@ -196,7 +207,7 @@ const TextComponent = ({
           Show more
         </div>
       </Link>
-    </div>
+    </m.div>
   );
 };
 
@@ -442,60 +453,61 @@ const Stats: NextPage = () => {
   }
 
   return (
-    <div className="mt-8 flex w-screen flex-col items-center justify-center">
-      <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-        <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
-          <h1 className="text-center font-semibold">Personal Stats</h1>
-        </div>
-        <div className="flex flex-col items-center justify-center">
-          <Item
-            name={"Total responses:"}
-            item={`${personalStats.data.length}`}
-          ></Item>
-          <Item
-            name={"Average age of responses:"}
-            item={`${calcAverage(personalStats, "current_age")} years old`}
-          />
+    <LazyMotion features={domAnimation}>
+      <div className="mt-8 flex w-screen flex-col items-center justify-center">
+        <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+          <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 className="text-center font-semibold">Personal Stats</h1>
+          </div>
+          <div className="flex flex-col items-center justify-center">
+            <Item
+              name={"Total responses:"}
+              item={`${personalStats.data.length}`}
+            ></Item>
+            <Item
+              name={"Average age of responses:"}
+              item={`${calcAverage(personalStats, "current_age")} years old`}
+            />
 
-          <DoughnutComponent
-            data={dataGender}
-            header={"Gender shares"}
-          ></DoughnutComponent>
+            <DoughnutComponent
+              data={dataGender}
+              header={"Gender shares"}
+            ></DoughnutComponent>
 
-          <CustomBar
-            data={dataAgeOfRes}
-            header={"Age of responses"}
-          ></CustomBar>
-          <CustomBar data={dataOnset} header={"Age of onset"}></CustomBar>
+            <CustomBar
+              data={dataAgeOfRes}
+              header={"Age of responses"}
+            ></CustomBar>
+            <CustomBar data={dataOnset} header={"Age of onset"}></CustomBar>
 
-          {/*NOTE I could make this check for null but i dont think its necessary */}
+            {/*NOTE I could make this check for null but i dont think its necessary */}
 
-          <DoughnutComponent
-            data={dataPsyLength}
-            header={"Length of first psychosis"}
-          ></DoughnutComponent>
-          <CustomButton
-            onClick={() => {
-              setByGenderPsyLength(byGenderPsyLength ? false : true);
+            <DoughnutComponent
+              data={dataPsyLength}
+              header={"Length of first psychosis"}
+            ></DoughnutComponent>
+            <CustomButton
+              onClick={() => {
+                setByGenderPsyLength(byGenderPsyLength ? false : true);
 
-              byGenderPsyLength
-                ? setTimeout(() => {
-                    window.scrollBy({
-                      top: -250,
-                      behavior: "smooth",
-                    });
-                  }, 100)
-                : setTimeout(() => {
-                    window.scrollBy({
-                      top: 250,
-                      behavior: "smooth",
-                    });
-                  }, 100);
-            }}
-          >
-            {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
-          </CustomButton>
-          <LazyMotion features={domAnimation}>
+                byGenderPsyLength
+                  ? setTimeout(() => {
+                      window.scrollBy({
+                        top: -250,
+                        behavior: "smooth",
+                      });
+                    }, 100)
+                  : setTimeout(() => {
+                      window.scrollBy({
+                        top: 250,
+                        behavior: "smooth",
+                      });
+                    }, 100);
+              }}
+            >
+              {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
+            </CustomButton>
+
             <AnimatePresence>
               {byGenderPsyLength && (
                 <m.div
@@ -521,33 +533,33 @@ const Stats: NextPage = () => {
                 </m.div>
               )}
             </AnimatePresence>
-          </LazyMotion>
 
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"hospitalized_on_first"}
-            header={"Hospitalized on first psychosis"}
-          ></YesOrNoComponent>
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"hospitalized_on_first"}
+              header={"Hospitalized on first psychosis"}
+            ></YesOrNoComponent>
 
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"hospital_satisfaction"}
-            header={"Were satisfied with hospital care"}
-          ></YesOrNoComponent>
-          <TextComponent
-            data={personalStats.data}
-            keyOfObject={"describe_hospital"}
-            header={"Hospital care description:"}
-          ></TextComponent>
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"hospital_satisfaction"}
+              header={"Were satisfied with hospital care"}
+            ></YesOrNoComponent>
+            <TextComponent
+              data={personalStats.data}
+              keyOfObject={"describe_hospital"}
+              header={"Hospital care description:"}
+            ></TextComponent>
 
-          <YesOrNoComponent
-            data={personalStats.data}
-            stat={"care_after_hospital"}
-            header={"Recieved care after hospitalization"}
-          ></YesOrNoComponent>
+            <YesOrNoComponent
+              data={personalStats.data}
+              stat={"care_after_hospital"}
+              header={"Recieved care after hospitalization"}
+            ></YesOrNoComponent>
+          </div>
         </div>
       </div>
-    </div>
+    </LazyMotion>
   );
 };
 
