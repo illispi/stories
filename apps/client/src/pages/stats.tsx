@@ -59,6 +59,7 @@ ChartJS.defaults.set("plugins.datalabels", {
 const optionsDoughnut = {
   plugins: {
     datalabels: {
+      textAlign: "center",
       formatter: (value, ctx: Context) => {
         let sum = 0;
         let dataArr = ctx.chart.data.datasets[0].data;
@@ -66,7 +67,7 @@ const optionsDoughnut = {
           sum += data;
         });
         let percentage = ((value * 100) / sum).toFixed(0) + "%";
-        return percentage;
+        return `${percentage}\n${ctx.chart.data.labels[ctx.dataIndex]}`;
       },
     },
   },
