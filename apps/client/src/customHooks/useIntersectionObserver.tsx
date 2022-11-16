@@ -4,24 +4,15 @@ import { useEffect, useRef, useState } from "react";
 const useIntersectionObserver = (options) => {
   const containerRef = useRef<Chart>(null);
 
-  const [isVisible, setIsVisible] = useState<
-    | "active"
-    | "reset"
-    | "resize"
-    | "none"
-    | "hide"
-    | "show"
-    | "normal"
-    | undefined
-  >("reset");
+  const [isVisible, setIsVisible] = useState(true);
 
   const callbackFunction = (entries) => {
     const [entry] = entries;
 
     if (entry.isIntersecting === true) {
-      setIsVisible("active");
+      setIsVisible(true);
     } else {
-      setIsVisible("reset");
+      setIsVisible(false);
     }
   };
 

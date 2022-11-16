@@ -97,9 +97,35 @@ const DoughnutComponent = ({
       <div className="flex max-w-xs items-center justify-center">
         <Doughnut
           ref={containerRef}
-          updateMode={isVisible}
           data={data}
           options={optionsDoughnut}
+          redraw={isVisible}
+        />
+      </div>
+    </>
+  );
+};
+
+const CustomBar = ({
+  data,
+  keyOfObject,
+  header,
+}: {
+  data: any;
+  keyOfObject?: string;
+  header: string;
+}) => {
+  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
+
+  return (
+    <>
+      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
+      <div className="h-64 w-11/12">
+        <Bar
+          ref={containerRef}
+          data={data}
+          options={optionsDefault}
+          redraw={isVisible}
         />
       </div>
     </>
@@ -123,9 +149,9 @@ const YesOrNoComponent = ({
       <div className="flex max-w-xs items-center justify-center">
         <Doughnut
           ref={containerRef}
-          updateMode={isVisible}
           data={yesOrNoData(data, stat, header)}
           options={optionsDoughnut}
+          redraw={isVisible}
         />
       </div>
     </>
@@ -283,6 +309,16 @@ const yesOrNoData = (
   };
 };
 
+const optionsDefault = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+  },
+};
+
 const Stats: NextPage = () => {
   const personalStats = trpc.personalStats.useQuery();
   const ageOfOnset = trpc.ageOfOnsetPsychosisByGender.useQuery();
@@ -299,15 +335,7 @@ const Stats: NextPage = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = useState(false);
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-    },
-  };
+  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
 
   const labelsAgeGroup = [
     "0-9",
@@ -321,7 +349,7 @@ const Stats: NextPage = () => {
 
   //NOTE consider percentage instead of number of age of responses below:
 
-  const ageOfResdata = {
+  const dataAgeOfRes = {
     labels: labelsAgeGroup,
     datasets: [
       {
@@ -433,16 +461,13 @@ const Stats: NextPage = () => {
             header={"Gender shares"}
           ></DoughnutComponent>
 
-          <h4 className="m-2 text-center text-lg">Age of responses:</h4>
-          <div className="h-64 w-11/12">
-            <Bar data={ageOfResdata} options={options}></Bar>
-          </div>
+          <CustomBar
+            data={dataAgeOfRes}
+            header={"Age of responses"}
+          ></CustomBar>
+          <CustomBar data={dataOnset} header={"Age of onset"}></CustomBar>
 
           {/*NOTE I could make this check for null but i dont think its necessary */}
-          <h4 className="m-2 text-center text-lg">Age of onset:</h4>
-          <div className="h-64 w-11/12">
-            <Bar data={dataOnset} options={options}></Bar>
-          </div>
 
           <DoughnutComponent
             data={dataPsyLength}
