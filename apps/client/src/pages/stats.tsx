@@ -175,19 +175,17 @@ const TextComponent = ({
 
   const [containerRef, isVisible] = useIntObsHtml(intObsOptions);
 
-  console.log(containerRef, isVisible);
-
   return (
-    <m.div
-      ref={containerRef}
-      initial={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-      className="flex w-11/12 max-w-xs flex-col items-center justify-center"
-    >
+    <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
       <h4 className="m-2 text-center text-lg">{header}</h4>
       {arr.slice(0, 3).map((e, i) => (
-        <div
+        <m.div
+          ref={containerRef}
+          initial={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+          animate={
+            isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
+          }
           className="flex w-full max-w-xs flex-col items-center justify-center"
           key={`${keyOfObject}_${i}_div`}
         >
@@ -197,7 +195,7 @@ const TextComponent = ({
           <p className="w-full" key={`${keyOfObject}_${i}`}>
             {e}
           </p>
-        </div>
+        </m.div>
       ))}
       <Link href={`/${keyOfObject}`}>
         <div
@@ -207,7 +205,7 @@ const TextComponent = ({
           Show more
         </div>
       </Link>
-    </m.div>
+    </div>
   );
 };
 
