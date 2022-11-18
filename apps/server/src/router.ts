@@ -70,7 +70,7 @@ export const appRouter = t.router({
 
     //TODO create partial that removes parts of properties from object inside array
 
-    allPersonalStats.forEach((e) => {
+    allPersonalStats.forEach((e: typeof allPersonalStats[0]) => {
       delete e.user_id;
       delete e.created_at;
       delete e.created_at;
