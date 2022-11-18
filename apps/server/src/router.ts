@@ -1,7 +1,6 @@
 import { initTRPC } from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
-import { db } from "./index";
 //TODO is there a way to import not the generated types but the typescript itself in "zod-types"
 import { personalQuestionsSchema, theirQuestionsSchema } from "zod-types";
 import { sql } from "kysely";
@@ -13,7 +12,7 @@ export const appRouter = t.router({
     .input(personalQuestionsSchema)
     .mutation(async ({ input, ctx }) => {
       if (ctx.req.session.id) {
-        const insertion = await db
+        const insertion = await ctx.db
           .insertInto("personal_questions")
           .values({ ...input, user_id: ctx.req.session.id }) //BUG what if session.if is null or otherwise wrong.
           .execute();
@@ -33,7 +32,7 @@ export const appRouter = t.router({
     .input(theirQuestionsSchema)
     .mutation(async ({ input, ctx }) => {
       if (ctx.req.session.id) {
-        const insertion = await db
+        const insertion = await ctx.db
           .insertInto("their_questions")
           .values({ ...input, user_id: ctx.req.session.id }) //BUG what if session.if is null or otherwise wrong.
           .execute();
@@ -50,7 +49,7 @@ export const appRouter = t.router({
     }),
   createCookie: t.procedure.mutation(async ({ ctx }) => {
     if (!ctx.req.session.id) {
-      const { user_id } = await db
+      const { user_id } = await ctx.db
         .insertInto("user")
         .values({ user_id: sql`DEFAULT` })
         .returning("user_id")
@@ -62,8 +61,8 @@ export const appRouter = t.router({
     }
     return "Cookies should exist already";
   }),
-  personalStats: t.procedure.query(async () => {
-    const allPersonalStats = await db
+  personalStats: t.procedure.query(async ({ ctx }) => {
+    const allPersonalStats = await ctx.db
       .selectFrom("personal_questions")
       .selectAll()
       .execute();
@@ -79,19 +78,19 @@ export const appRouter = t.router({
 
     return allPersonalStats;
   }),
-  ageOfOnsetPsychosisByGender: t.procedure.query(async () => {
-    const maleAge = await db
+  ageOfOnsetPsychosisByGender: t.procedure.query(async ({ ctx }) => {
+    const maleAge = await ctx.db
       .selectFrom("personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "male")
       .execute();
 
-    const femaleAge = await db
+    const femaleAge = await ctx.db
       .selectFrom("personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "female")
       .execute();
-    const otherAge = await db
+    const otherAge = await ctx.db
       .selectFrom("personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "other")
@@ -117,19 +116,19 @@ export const appRouter = t.router({
 
     return result;
   }),
-  psyLengthByGender: t.procedure.query(async () => {
-    const maleSplit = await db
+  psyLengthByGender: t.procedure.query(async ({ ctx }) => {
+    const maleSplit = await ctx.db
       .selectFrom("personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "male")
       .execute();
 
-    const femaleSplit = await db
+    const femaleSplit = await ctx.db
       .selectFrom("personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "female")
       .execute();
-    const otherSplit = await db
+    const otherSplit = await ctx.db
       .selectFrom("personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "other")

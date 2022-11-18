@@ -15,6 +15,7 @@ import connectRedis from "connect-redis";
 import Redis from "ioredis";
 import fs from "fs";
 import os from "os";
+import { Server, IncomingMessage, ServerResponse } from "http";
 
 //TODO might need to import DB rather from zod-types
 
@@ -89,24 +90,31 @@ server.register(fastifycors, {
   // exposedHeaders: ["set-cookie"],
 });
 
-// You'd create one of these when you start your app.
-export const db = new Kysely<DB>({
-  // Use MysqlDialect for MySQL and SqliteDialect for SQLite.
-  dialect: new PostgresDialect({
-    pool: new Pool({
-      host: "127.0.0.1",
-      database: "stories_dev",
-      password: process.env.PSQL_PASSWORD,
-      user: process.env.PSQL_USERNAME,
-      port: 5432,
+server.decorate(
+  "db",
+  new Kysely<DB>({
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        host: "127.0.0.1",
+        database: "stories_dev",
+        password: process.env.PSQL_PASSWORD,
+        user: process.env.PSQL_USERNAME,
+        port: 5432,
+      }),
     }),
-  }),
-});
+  })
+);
 
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: { router: appRouter, createContext },
 });
+
+declare module "fastify" {
+  interface FastifyInstance {
+    db: Kysely<DB>;
+  }
+}
 
 //NOTE is this the smart place to do it, does it only execute once?
 
@@ -114,7 +122,7 @@ server.register(fastifyTRPCPlugin, {
   try {
     await server.listen({ port: 4000, host: "0.0.0.0" });
   } catch (err) {
-    db.destroy(); //NOTE this destroys connction to db
+    server.db.destroy(); //NOTE this destroys connction to db
     //TODO might need to close on succesful exit SIGINIT
     server.log.error(err);
     process.exit(1);
