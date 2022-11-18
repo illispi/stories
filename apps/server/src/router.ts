@@ -2,6 +2,7 @@ import { initTRPC } from "@trpc/server";
 import { Context } from "./context";
 // import { z } from "zod";
 //TODO is there a way to import not the generated types but the typescript itself in "zod-types"
+//TODO look into trpcERROR
 import { personalQuestionsSchema, theirQuestionsSchema } from "zod-types";
 import { sql } from "kysely";
 
