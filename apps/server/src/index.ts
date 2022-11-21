@@ -15,8 +15,7 @@ import connectRedis from "connect-redis";
 import Redis from "ioredis";
 import fs from "fs";
 import os from "os";
-import { Server, IncomingMessage, ServerResponse } from "http";
-
+import helmet from "@fastify/helmet";
 //TODO might need to import DB rather from zod-types
 
 dotenv.config();
@@ -53,6 +52,7 @@ const server = fastify({
 });
 
 //NOTE httponly is on by default, https need secure: true
+server.register(helmet, { global: true });
 
 server.register(fastifyCookie, { secret: process.env.COOKIE_SECRET });
 

@@ -79,6 +79,7 @@ importers:
     specifiers:
       '@fastify/cookie': ^8.3.0
       '@fastify/cors': 8.1.1
+      '@fastify/helmet': ^10.0.2
       '@fastify/redis': ^6.0.1
       '@fastify/session': ^10.0.2
       '@trpc/server': 10.0.0-rc.0
@@ -105,6 +106,7 @@ importers:
     dependencies:
       '@fastify/cookie': 8.3.0
       '@fastify/cors': 8.1.1
+      '@fastify/helmet': 10.0.2
       '@fastify/redis': 6.0.1
       '@fastify/session': 10.0.2
       '@trpc/server': 10.0.0-rc.0
@@ -226,6 +228,13 @@ packages:
     resolution: {integrity: sha512-cTKBV2J9+u6VaKDhX7HepSfPSzw+F+TSd+k0wzifj4rG+4E5PjSFJCk19P8R6tr/72cuzgGd+mbB3jFT6lvAgw==}
     dependencies:
       fast-json-stringify: 5.4.0
+    dev: false
+
+  /@fastify/helmet/10.0.2:
+    resolution: {integrity: sha512-gljMbmHJbH85DUfZKN982Pg1hwzX/5Bcizduf1pdjh2uuOqjsqEc49ExSk6U3VNqqTlpm8e+hMaVDSJg2AUrGQ==}
+    dependencies:
+      fastify-plugin: 4.3.0
+      helmet: 6.0.0
     dev: false
 
   /@fastify/redis/6.0.1:
@@ -2371,6 +2380,11 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /helmet/6.0.0:
+    resolution: {integrity: sha512-FO9RpR1wNJepH/GbLPQVtkE2eESglXL641p7SdyoT4LngHFJcZheHMoyUcjCZF4qpuMMO1u5q6RK0l9Ux8JBcg==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /help-me/4.1.0:
     resolution: {integrity: sha512-5HMrkOks2j8Fpu2j5nTLhrBhT7VwHwELpqnSnx802ckofys5MO2SkLpgSz3dgNFHV7IYFX2igm5CM75SmuYidw==}
