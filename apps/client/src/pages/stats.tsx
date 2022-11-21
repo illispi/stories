@@ -21,7 +21,10 @@ import { Context } from "chartjs-plugin-datalabels";
 import useIntersectionObserver from "../customHooks/useIntersectionObserver";
 import React from "react";
 import useIntObsHtml from "../customHooks/useIntObsHtml";
+import type { inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "../../../server/src/router";
 
+type DataBackEnd = inferRouterOutputs<AppRouter>["personalStats"];
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
     router: appRouter, //This app router is in fastify
@@ -89,7 +92,7 @@ const DoughnutComponent = ({
   keyOfObject,
   header,
 }: {
-  data: any;
+  data: DataBackEnd["personalStats"];
   keyOfObject?: string;
   header: string;
 }) => {
@@ -115,7 +118,7 @@ const CustomBar = ({
   keyOfObject,
   header,
 }: {
-  data?: any;
+  data?: inferRouterOutputs<AppRouter>;
   keyOfObject?: string;
   header: string;
 }) => {
