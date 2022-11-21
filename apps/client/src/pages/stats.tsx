@@ -184,11 +184,9 @@ const TextComponent = ({
       {arr.slice(0, 3).map((e, i) => (
         <m.div
           ref={containerRef}
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, y: -50 }}
           transition={{ duration: 0.2 }}
-          animate={
-            isVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
-          }
+          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: -50 }}
           className="flex w-full max-w-xs flex-col items-center justify-center"
           key={`${keyOfObject}_${i}_div`}
         >
