@@ -14,7 +14,7 @@ import {
 import { AnimatePresence, domAnimation, LazyMotion, m } from "framer-motion";
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Bar, Doughnut } from "react-chartjs-2";
 import { PersonalQuestions } from "zod-types";
 import CustomButton from "../components/CustomButton";
@@ -107,7 +107,7 @@ const DoughnutComponent = ({
   header: string;
 }) => {
   const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
-
+  
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
@@ -389,6 +389,10 @@ const Stats: NextPage = () => {
 
   //NOTE consider percentage instead of number of age of responses below:
 
+  if (!personalStats.data) {
+    return <h2>Loading...</h2>;
+  }
+
   const dataAgeOfRes = {
     labels: labelsAgeGroup,
     datasets: [
@@ -480,10 +484,6 @@ const Stats: NextPage = () => {
     ],
   };
 
-  if (!personalStats.data) {
-    return <h2>Loading...</h2>;
-  }
-
   return (
     <DataContext.Provider value={personalStats.data}>
       <LazyMotion features={domAnimation}>
@@ -553,19 +553,19 @@ const Stats: NextPage = () => {
                     transition={{ duration: 0.25 }}
                   >
                     <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data?.maleSplit)}
+                      data={psyLengthByGender(psyLengthSplits.data!.maleSplit)}
                       header={"First psychosis male"}
                     ></DoughnutComponent>
 
                     <DoughnutComponent
                       data={psyLengthByGender(
-                        psyLengthSplits.data?.femaleSplit
+                        psyLengthSplits.data!.femaleSplit
                       )}
                       header={"First psychosis female"}
                     ></DoughnutComponent>
 
                     <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data?.otherSplit)}
+                      data={psyLengthByGender(psyLengthSplits.data!.otherSplit)}
                       header={"First psychosis other"}
                     ></DoughnutComponent>
                   </m.div>
