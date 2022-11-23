@@ -24,7 +24,7 @@ import useIntObsHtml from "../customHooks/useIntObsHtml";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "../../../server/src/router";
 
-type DataBackEnd = inferRouterOutputs<AppRouter>["personalStats"];
+type DataBackEnd = inferRouterOutputs<AppRouter>;
 /* export const getStaticProps: GetStaticProps = async () => {
   const ssg = await createSSGHelpers({
     router: appRouter, //This app router is in fastify

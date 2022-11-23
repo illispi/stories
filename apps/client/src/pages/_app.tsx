@@ -9,6 +9,9 @@ import NavBar from "../components/NavBar";
 import { trpc } from "../utils/trpc";
 import { useEffect } from "react";
 import { domAnimation, LazyMotion } from "framer-motion";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClientTest = new QueryClient();
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   const createCookie = trpc.createCookie.useMutation();
@@ -20,9 +23,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
 
   return (
     <>
-      <NavBar></NavBar>
-      <Component {...pageProps} />
-      {/* <ReactQueryDevtools /> */}
+      <QueryClientProvider client={queryClientTest}>
+        <NavBar></NavBar>
+        <Component {...pageProps} />
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </>
   );
 };
@@ -53,6 +58,7 @@ export default withTRPC<AppRouter>({
         }
         return {};
       },
+      queryClient: queryClientTest,
       fetch: async (url, opts) => {
         const fetch = getFetch();
 
