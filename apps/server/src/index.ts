@@ -110,6 +110,8 @@ server.register(fastifyTRPCPlugin, {
   trpcOptions: { router: appRouter, createContext },
 });
 
+export type Db = Kysely<DB>;
+
 declare module "fastify" {
   interface FastifyInstance {
     db: Kysely<DB>;

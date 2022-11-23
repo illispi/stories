@@ -1,10 +1,13 @@
 import {
   ArcElement,
   BarElement,
+  BubbleDataPoint,
   CategoryScale,
   Chart as ChartJS,
+  ChartData,
   Legend,
   LinearScale,
+  ScatterDataPoint,
   Title,
   Tooltip,
 } from "chart.js";
@@ -23,6 +26,9 @@ import React from "react";
 import useIntObsHtml from "../customHooks/useIntObsHtml";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "../../../server/src/router";
+import type { Db } from "../../../server/src/index";
+
+type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
 type DataBackEnd = inferRouterOutputs<AppRouter>;
 /* export const getStaticProps: GetStaticProps = async () => {
@@ -60,20 +66,20 @@ ChartJS.defaults.set("plugins.datalabels", {
   color: "#000000",
 });
 
-const DataContext = React.createContext({});
+const DataContext: any = React.createContext(null);
 
 const optionsDoughnut = {
   plugins: {
     datalabels: {
       textAlign: "center",
-      formatter: (value, ctx: Context) => {
+      formatter: (value: number, ctx: Context) => {
         let sum = 0;
-        let dataArr = ctx.chart.data.datasets[0].data;
+        let dataArr = ctx.chart.data.datasets[0].data as number[]; //NOTE once again bit hacky
         dataArr.map((data) => {
           sum += data;
         });
         let percentage = ((value * 100) / sum).toFixed(0) + "%";
-        return `${percentage}\n${ctx.chart.data.labels[ctx.dataIndex]}`;
+        return `${percentage}\n${ctx.chart.data.labels![ctx.dataIndex]}`;
       },
     },
   },
@@ -92,7 +98,11 @@ const DoughnutComponent = ({
   keyOfObject,
   header,
 }: {
-  data: DataBackEnd["personalStats"];
+  data: ChartData<
+    "doughnut",
+    (number | ScatterDataPoint | BubbleDataPoint | null)[],
+    unknown
+  >;
   keyOfObject?: string;
   header: string;
 }) => {
@@ -118,7 +128,11 @@ const CustomBar = ({
   keyOfObject,
   header,
 }: {
-  data?: inferRouterOutputs<AppRouter>;
+  data?: ChartData<
+    "bar",
+    (number | ScatterDataPoint | BubbleDataPoint | null)[],
+    unknown
+  >;
   keyOfObject?: string;
   header: string;
 }) => {
@@ -145,7 +159,7 @@ const YesOrNoComponent = ({
   header,
   stat,
 }: {
-  data?: any;
+  data?: DataBackEnd["personalStats"];
   header: string;
   stat: keyof PersonalQuestions;
 }) => {
@@ -172,14 +186,16 @@ const TextComponent = ({
   keyOfObject,
   header,
 }: {
-  data?: any;
-  keyOfObject: string;
+  data?: DataBackEnd["personalStats"];
+  keyOfObject: keyof PersonalQuestions;
   header: string;
 }) => {
   //TODO show more doesnt currently take anywhere.
   const dataDefault = useContext(DataContext);
   const [containerRef, isVisible] = useIntObsHtml(intObsOptions);
-  const arr = (data ? data : dataDefault).map((e) => e[keyOfObject]);
+  const arr = (data ? data : (dataDefault as DataBackEnd["personalStats"])).map(
+    (e) => e[keyOfObject]
+  );
 
   return (
     <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
@@ -213,7 +229,7 @@ const TextComponent = ({
   );
 };
 
-const psyLengthByGender = (data) => {
+const psyLengthByGender = (data: DataBackEnd["personalStats"]) => {
   const dataPsyLength = {
     labels: ["few weeks", "few months", "more than 6 months"],
     datasets: [
@@ -253,11 +269,17 @@ const Item = ({ name, item }: { name: string; item: string | number }) => {
   );
 };
 
-const calcAverage = (arr: any, key: keyof PersonalQuestions) => {
-  return arr.data.reduce((a, b) => a + b[key], 0) / arr.data.length;
+const calcAverage = (
+  data: DataBackEnd["personalStats"],
+  key: keyof PersonalQuestions
+) => {
+  return data.reduce((a, b) => a + (b[key] as number), 0) / data.length;
 };
 
-const calcGenderShares = (data) => {
+const calcGenderShares = (data: DataBackEnd["personalStats"] | undefined) => {
+  if (!data) {
+    return null;
+  }
   let genders = { male: 0, female: 0, other: 0 };
   data?.forEach((e) => {
     if (e.gender === "male") {
@@ -271,7 +293,13 @@ const calcGenderShares = (data) => {
   return genders;
 };
 
-const calcAgeOfResBrackets = (data) => {
+const calcAgeOfResBrackets = (
+  data: DataBackEnd["personalStats"] | undefined
+) => {
+  if (!data) {
+    return null;
+  }
+
   let resBrackets = {
     b09: 0,
     b1015: 0,
@@ -302,7 +330,7 @@ const calcAgeOfResBrackets = (data) => {
 };
 
 const yesOrNoData = (
-  data: any,
+  data: DataBackEnd["personalStats"],
   stat: keyof PersonalQuestions,
   header: string
 ) => {
@@ -341,15 +369,13 @@ const Stats: NextPage = () => {
   //NOTE does this need to be state since I am not updating?
 
   const [gender, setGender] = useState(
-    () => calcGenderShares(personalStats.data) //TODO how do i import this type
+    () => calcGenderShares(personalStats.data) //TODO Is exclamanation mark good practice?
   );
   const [ageOfRes, setAgeOfRes] = useState(() =>
     calcAgeOfResBrackets(personalStats.data)
   );
 
   const [byGenderPsyLength, setByGenderPsyLength] = useState(false);
-
-  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
 
   const labelsAgeGroup = [
     "0-9",
@@ -368,7 +394,11 @@ const Stats: NextPage = () => {
     datasets: [
       {
         label: "age of responses",
-        data: Object.keys(ageOfRes).map((e) => ageOfRes[e]),
+        data: ageOfRes
+          ? (Object.keys(ageOfRes) as Array<keyof typeof ageOfRes>).map(
+              (e) => ageOfRes[e]
+            )
+          : [null],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
@@ -379,7 +409,7 @@ const Stats: NextPage = () => {
     datasets: [
       {
         label: "Gender shares",
-        data: [gender.male, gender.female, gender.other],
+        data: [gender!.male, gender!.female, gender!.other],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -401,13 +431,13 @@ const Stats: NextPage = () => {
       {
         label: "Gender shares",
         data: [
-          personalStats.data?.filter(
+          personalStats.data!.filter(
             (e) => e.length_of_psychosis === "few weeks"
           ).length,
-          personalStats.data?.filter(
+          personalStats.data!.filter(
             (e) => e.length_of_psychosis === "few months"
           ).length,
-          personalStats.data?.filter(
+          personalStats.data!.filter(
             (e) => e.length_of_psychosis === "more than 6 months"
           ).length,
         ],
@@ -432,18 +462,18 @@ const Stats: NextPage = () => {
       {
         label: "Average",
         data: [
-          ageOfOnset.data?.maleAverage,
-          ageOfOnset.data?.femaleAverage,
-          ageOfOnset.data?.otherAverage,
+          ageOfOnset.data!.maleAverage,
+          ageOfOnset.data!.femaleAverage,
+          ageOfOnset.data!.otherAverage,
         ],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
         label: "Median",
         data: [
-          ageOfOnset.data?.maleMedian,
-          ageOfOnset.data?.femaleMedian,
-          ageOfOnset.data?.otherMedian,
+          ageOfOnset.data!.maleMedian,
+          ageOfOnset.data!.femaleMedian,
+          ageOfOnset.data!.otherMedian,
         ],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
@@ -469,7 +499,10 @@ const Stats: NextPage = () => {
               ></Item>
               <Item
                 name={"Average age of responses:"}
-                item={`${calcAverage(personalStats, "current_age")} years old`}
+                item={`${calcAverage(
+                  personalStats.data,
+                  "current_age"
+                )} years old`}
               />
 
               <DoughnutComponent
@@ -578,3 +611,4 @@ const Stats: NextPage = () => {
 export default Stats;
 
 //TODO replace motion.div etc. with m.div, reduces bundlesize
+//NOTE is as number for instance good practice?
