@@ -107,7 +107,13 @@ const DoughnutComponent = ({
   header: string;
 }) => {
   const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
+  const [firstDraw, setFirstDraw] = useState(() => isVisible);
 
+  useEffect(() => {
+    if (firstDraw && !isVisible) {
+      setFirstDraw(false);
+    }
+  }, [firstDraw, isVisible]);
 
   return (
     <>
@@ -117,7 +123,7 @@ const DoughnutComponent = ({
           ref={containerRef}
           data={data}
           options={optionsDoughnut}
-          redraw={isVisible}
+          redraw={firstDraw ? false : isVisible}
         />
       </div>
     </>
@@ -140,6 +146,14 @@ const CustomBar = ({
   const dataDefault = useContext(DataContext);
   const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
 
+  const [firstDraw, setFirstDraw] = useState(() => isVisible);
+
+  useEffect(() => {
+    if (firstDraw && !isVisible) {
+      setFirstDraw(false);
+    }
+  }, [firstDraw, isVisible]);
+
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
@@ -148,7 +162,7 @@ const CustomBar = ({
           ref={containerRef}
           data={data ? data : dataDefault}
           options={optionsDefault}
-          redraw={isVisible}
+          redraw={firstDraw ? false : isVisible}
         />
       </div>
     </>
@@ -167,6 +181,14 @@ const YesOrNoComponent = ({
   const dataDefault = useContext(DataContext);
   const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
 
+  const [firstDraw, setFirstDraw] = useState(() => isVisible);
+
+  useEffect(() => {
+    if (firstDraw && !isVisible) {
+      setFirstDraw(false);
+    }
+  }, [firstDraw, isVisible]);
+
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
@@ -175,7 +197,7 @@ const YesOrNoComponent = ({
           ref={containerRef}
           data={yesOrNoData(data ? data : dataDefault, stat, header)}
           options={optionsDoughnut}
-          redraw={isVisible}
+          redraw={firstDraw ? false : isVisible}
         />
       </div>
     </>

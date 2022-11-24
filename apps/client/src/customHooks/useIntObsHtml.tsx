@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const useIntObsHtml = (options) => {
   const containerRef = useRef(null);
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const callbackFunction = (entries) => {
     const [entry] = entries;
