@@ -16,14 +16,15 @@ const useIntObsHtml = (options) => {
   };
 
   useEffect(() => {
+    const value = containerRef.current;
     const observer = new IntersectionObserver(callbackFunction, options);
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
+    if (value) {
+      observer.observe(value);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (value) {
+        observer.unobserve(value);
       }
     };
   }, [containerRef, options]);

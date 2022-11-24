@@ -107,7 +107,8 @@ const DoughnutComponent = ({
   header: string;
 }) => {
   const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
-  
+
+
   return (
     <>
       <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>

@@ -17,14 +17,16 @@ const useIntersectionObserver = (options) => {
   };
 
   useEffect(() => {
+    const value = containerRef.current;
     const observer = new IntersectionObserver(callbackFunction, options);
-    if (containerRef.current) {
-      observer.observe(containerRef.current.canvas);
+
+    if (value) {
+      observer.observe(value.canvas);
     }
 
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current.canvas);
+      if (value?.canvas) {
+        observer.unobserve(value.canvas);
       }
     };
   }, [containerRef, options]);
