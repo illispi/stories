@@ -280,9 +280,6 @@ const calcAverage = (
 };
 
 const calcGenderShares = (data: DataBackEnd["personalStats"] | undefined) => {
-  if (!data) {
-    return null;
-  }
   let genders = { male: 0, female: 0, other: 0 };
   data?.forEach((e) => {
     if (e.gender === "male") {
@@ -296,13 +293,7 @@ const calcGenderShares = (data: DataBackEnd["personalStats"] | undefined) => {
   return genders;
 };
 
-const calcAgeOfResBrackets = (
-  data: DataBackEnd["personalStats"] | undefined
-) => {
-  if (!data) {
-    return null;
-  }
-
+const calcAgeOfResBrackets = (data: DataBackEnd["personalStats"]) => {
   let resBrackets = {
     b09: 0,
     b1015: 0,
@@ -364,22 +355,61 @@ const optionsDefault = {
   },
 };
 
-const Stats: NextPage = () => {
-  const personalStats = trpc.personalStats.useQuery();
-  const ageOfOnset = trpc.ageOfOnsetPsychosisByGender.useQuery();
-  const psyLengthSplits = trpc.psyLengthByGender.useQuery();
+const dataOnset = (
+  dataAgeOfOnset: DataBackEnd["ageOfOnsetPsychosisByGender"]
+) => {
 
-  //NOTE does this need to be state since I am not updating?
+  return {
+    labels: ["Male", "Female", "Other"],
+    datasets: [
+      {
+        label: "Average",
+        data: [
+          dataAgeOfOnset.maleAverage,
+          dataAgeOfOnset.femaleAverage,
+          dataAgeOfOnset.otherAverage,
+        ],
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Median",
+        data: [
+          dataAgeOfOnset.maleMedian,
+          dataAgeOfOnset.femaleMedian,
+          dataAgeOfOnset.otherMedian,
+        ],
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+};
 
-  const [gender, setGender] = useState(
-    () => calcGenderShares(personalStats.data) //TODO Is exclamanation mark good practice?
-  );
-  const [ageOfRes, setAgeOfRes] = useState(() =>
-    calcAgeOfResBrackets(personalStats.data)
-  );
+const dataGender = (data: DataBackEnd["personalStats"]) => {
+  const gender = calcGenderShares(data);
 
-  const [byGenderPsyLength, setByGenderPsyLength] = useState(false);
+  return {
+    labels: ["Male", "Female", "Other"],
+    datasets: [
+      {
+        label: "Gender shares",
+        data: [gender.male, gender.female, gender.other],
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+};
 
+const dataAgeOfRes = (data: DataBackEnd["personalStats"]) => {
   const labelsAgeGroup = [
     "0-9",
     "10-15",
@@ -390,13 +420,9 @@ const Stats: NextPage = () => {
     "36-80",
   ];
 
-  //NOTE consider percentage instead of number of age of responses below:
+  const ageOfRes = calcAgeOfResBrackets(data);
 
-  if (!personalStats.data) {
-    return <h2>Loading...</h2>;
-  }
-
-  const dataAgeOfRes = {
+  return {
     labels: labelsAgeGroup,
     datasets: [
       {
@@ -410,43 +436,19 @@ const Stats: NextPage = () => {
       },
     ],
   };
+};
 
-  const dataGender = {
-    labels: ["Male", "Female", "Other"],
-    datasets: [
-      {
-        label: "Gender shares",
-        data: [gender!.male, gender!.female, gender!.other],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const dataPsyLength = {
+const dataPsyLength = (data: DataBackEnd["personalStats"]) => {
+  return {
     labels: ["few weeks", "few months", "more than 6 months"],
     datasets: [
       {
         label: "Gender shares",
         data: [
-          personalStats.data!.filter(
-            (e) => e.length_of_psychosis === "few weeks"
-          ).length,
-          personalStats.data!.filter(
-            (e) => e.length_of_psychosis === "few months"
-          ).length,
-          personalStats.data!.filter(
-            (e) => e.length_of_psychosis === "more than 6 months"
-          ).length,
+          data.filter((e) => e.length_of_psychosis === "few weeks").length,
+          data.filter((e) => e.length_of_psychosis === "few months").length,
+          data.filter((e) => e.length_of_psychosis === "more than 6 months")
+            .length,
         ],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -462,36 +464,28 @@ const Stats: NextPage = () => {
       },
     ],
   };
+};
 
-  const dataOnset = {
-    labels: ["Male", "Female", "Other"],
-    datasets: [
-      {
-        label: "Average",
-        data: [
-          ageOfOnset.data!.maleAverage,
-          ageOfOnset.data!.femaleAverage,
-          ageOfOnset.data!.otherAverage,
-        ],
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-      {
-        label: "Median",
-        data: [
-          ageOfOnset.data!.maleMedian,
-          ageOfOnset.data!.femaleMedian,
-          ageOfOnset.data!.otherMedian,
-        ],
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
-    ],
-  };
+const Stats: NextPage = () => {
+  const personalStats = trpc.personalStats.useQuery();
+  const ageOfOnset = trpc.ageOfOnsetPsychosisByGender.useQuery();
+  const psyLengthSplits = trpc.psyLengthByGender.useQuery();
+
+  //TODO Is exclamanation mark good practice?
+
+  const [byGenderPsyLength, setByGenderPsyLength] = useState(false);
+
+  //NOTE consider percentage instead of number of age of responses below:
+
+  if (!personalStats.data || !ageOfOnset.data || !psyLengthSplits.data) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <DataContext.Provider value={personalStats.data}>
       <LazyMotion features={domAnimation}>
         <div className="mt-8 flex w-screen flex-col items-center justify-center">
-          <div className="flex w-11/12  max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+          <div className="flex w-11/12 max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
             <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
               <h1 className="text-center font-semibold">Personal Stats</h1>
             </div>
@@ -509,20 +503,23 @@ const Stats: NextPage = () => {
               />
 
               <DoughnutComponent
-                data={dataGender}
+                data={dataGender(personalStats.data)}
                 header={"Gender shares"}
               ></DoughnutComponent>
 
               <CustomBar
-                data={dataAgeOfRes}
+                data={dataAgeOfRes(personalStats.data)}
                 header={"Age of responses"}
               ></CustomBar>
-              <CustomBar data={dataOnset} header={"Age of onset"}></CustomBar>
+              <CustomBar
+                data={dataOnset(ageOfOnset.data)}
+                header={"Age of onset"}
+              ></CustomBar>
 
               {/*NOTE I could make this check for null but i dont think its necessary */}
 
               <DoughnutComponent
-                data={dataPsyLength}
+                data={dataPsyLength(personalStats.data)}
                 header={"Length of first psychosis"}
               ></DoughnutComponent>
               <CustomButton
@@ -556,19 +553,17 @@ const Stats: NextPage = () => {
                     transition={{ duration: 0.25 }}
                   >
                     <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data!.maleSplit)}
+                      data={psyLengthByGender(psyLengthSplits.data.maleSplit)}
                       header={"First psychosis male"}
                     ></DoughnutComponent>
 
                     <DoughnutComponent
-                      data={psyLengthByGender(
-                        psyLengthSplits.data!.femaleSplit
-                      )}
+                      data={psyLengthByGender(psyLengthSplits.data.femaleSplit)}
                       header={"First psychosis female"}
                     ></DoughnutComponent>
 
                     <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data!.otherSplit)}
+                      data={psyLengthByGender(psyLengthSplits.data.otherSplit)}
                       header={"First psychosis other"}
                     ></DoughnutComponent>
                   </m.div>
