@@ -265,7 +265,7 @@ const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
     <div className="my-3 flex flex-col items-center justify-center">
       <p className="mb-2 text-center text-lg">{name} </p>
-      <p className="rounded-full  border-2 border-slate-400 p-2 text-center font-semibold">
+      <p className="rounded-full border-2 border-slate-400 p-2 text-center font-semibold">
         {item}
       </p>
     </div>
@@ -358,7 +358,6 @@ const optionsDefault = {
 const dataOnset = (
   dataAgeOfOnset: DataBackEnd["ageOfOnsetPsychosisByGender"]
 ) => {
-
   return {
     labels: ["Male", "Female", "Other"],
     datasets: [
@@ -485,7 +484,7 @@ const Stats: NextPage = () => {
     <DataContext.Provider value={personalStats.data}>
       <LazyMotion features={domAnimation}>
         <div className="mt-8 flex w-screen flex-col items-center justify-center">
-          <div className="flex w-11/12 max-w-xs flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+          <div className="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
             <div className="flex h-16 items-center justify-center bg-blue-300 p-4">
               <h1 className="text-center font-semibold">Personal Stats</h1>
             </div>
@@ -526,7 +525,7 @@ const Stats: NextPage = () => {
                 onClick={() => {
                   setByGenderPsyLength(byGenderPsyLength ? false : true);
 
-                  byGenderPsyLength
+                  /*  byGenderPsyLength
                     ? setTimeout(() => {
                         window.scrollBy({
                           top: -250,
@@ -538,7 +537,7 @@ const Stats: NextPage = () => {
                           top: 250,
                           behavior: "smooth",
                         });
-                      }, 100);
+                      }, 100); */
                 }}
               >
                 {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}

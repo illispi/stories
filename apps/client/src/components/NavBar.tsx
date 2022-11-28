@@ -58,7 +58,7 @@ const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   //BUG schizophrenia should be on left corner
   return (
-    <div className="sticky top-0 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
+    <div className="sticky top-0 z-10 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
       <Link href={"/"}>
         <div className="mx-2 text-2xl font-semibold sm:hidden">
           Schizo... stories
