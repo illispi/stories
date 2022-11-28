@@ -546,10 +546,10 @@ const Stats: NextPage = () => {
               <AnimatePresence>
                 {byGenderPsyLength && (
                   <m.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
+                    initial={{ opacity: 0, height: 0, y: -600 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -600 }}
+                    transition={{ duration: 1 }}
                   >
                     <DoughnutComponent
                       data={psyLengthByGender(psyLengthSplits.data.maleSplit)}
@@ -569,6 +569,7 @@ const Stats: NextPage = () => {
                 )}
               </AnimatePresence>
 
+              <m.div></m.div>
               <YesOrNoComponent
                 stat={"hospitalized_on_first"}
                 header={"Hospitalized on first psychosis"}
