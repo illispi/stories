@@ -106,14 +106,8 @@ const DoughnutComponent = ({
   keyOfObject?: string;
   header: string;
 }) => {
-  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
-  const [firstDraw, setFirstDraw] = useState(() => isVisible);
-
-  useEffect(() => {
-    if (firstDraw && !isVisible) {
-      setFirstDraw(false);
-    }
-  }, [firstDraw, isVisible]);
+  const [containerRef, isVisible, firstDraw] =
+    useIntersectionObserver(intObsOptions);
 
   return (
     <>
@@ -144,15 +138,8 @@ const CustomBar = ({
   header: string;
 }) => {
   const dataDefault = useContext(DataContext);
-  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
-
-  const [firstDraw, setFirstDraw] = useState(() => isVisible);
-
-  useEffect(() => {
-    if (firstDraw && !isVisible) {
-      setFirstDraw(false);
-    }
-  }, [firstDraw, isVisible]);
+  const [containerRef, isVisible, firstDraw] =
+    useIntersectionObserver(intObsOptions);
 
   return (
     <>
@@ -179,15 +166,8 @@ const YesOrNoComponent = ({
   stat: keyof PersonalQuestions;
 }) => {
   const dataDefault = useContext(DataContext);
-  const [containerRef, isVisible] = useIntersectionObserver(intObsOptions);
-
-  const [firstDraw, setFirstDraw] = useState(() => isVisible);
-
-  useEffect(() => {
-    if (firstDraw && !isVisible) {
-      setFirstDraw(false);
-    }
-  }, [firstDraw, isVisible]);
+  const [containerRef, isVisible, firstDraw] =
+    useIntersectionObserver(intObsOptions);
 
   return (
     <>

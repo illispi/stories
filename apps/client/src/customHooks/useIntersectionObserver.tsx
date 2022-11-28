@@ -5,6 +5,9 @@ const useIntersectionObserver = (options) => {
   const containerRef = useRef<Chart>(null);
 
   const [isVisible, setIsVisible] = useState(true);
+  const [firstDraw, setFirstDraw] = useState(() => isVisible);
+
+  
 
   const callbackFunction = (entries) => {
     const [entry] = entries;
@@ -15,6 +18,12 @@ const useIntersectionObserver = (options) => {
       setIsVisible(false);
     }
   };
+  
+  useEffect(() => {
+    if (firstDraw && !isVisible) {
+      setFirstDraw(false);
+    }
+  }, [firstDraw, isVisible]);
 
   useEffect(() => {
     const value = containerRef.current;
@@ -31,7 +40,7 @@ const useIntersectionObserver = (options) => {
     };
   }, [containerRef, options]);
 
-  return [containerRef, isVisible];
+  return [containerRef, isVisible, firstDraw];
 };
 
 export default useIntersectionObserver;
