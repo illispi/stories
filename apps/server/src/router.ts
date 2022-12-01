@@ -75,7 +75,8 @@ export const appRouter = t.router({
       delete e.created_at;
       delete e.created_at;
       delete e.answer_personal_id;
-    });
+    })
+    //const test = allPersonalStats.filter(e => !e.user_id || !e.created_at || !e.answer_personal_id  )
 
     return allPersonalStats;
   }),
