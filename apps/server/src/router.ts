@@ -68,17 +68,14 @@ export const appRouter = t.router({
       .selectAll()
       .execute();
 
-    //TODO create partial that removes parts of properties from object inside array
+    const filterSensitve = allPersonalStats.map(
+      (e: typeof allPersonalStats[0]) => {
+        const { user_id, created_at, answer_personal_id, ...filtered } = e;
+        return filtered;
+      }
+    );
 
-    allPersonalStats.forEach((e: typeof allPersonalStats[0]) => {
-      delete e.user_id;
-      delete e.created_at;
-      delete e.created_at;
-      delete e.answer_personal_id;
-    })
-    //const test = allPersonalStats.filter(e => !e.user_id || !e.created_at || !e.answer_personal_id  )
-
-    return allPersonalStats;
+    return filterSensitve;
   }),
   ageOfOnsetPsychosisByGender: t.procedure.query(async ({ ctx }) => {
     const maleAge = await ctx.db
