@@ -593,7 +593,7 @@ const Stats: NextPage = () => {
               ></YesOrNoComponent>
               <TextComponent
                 keyOfObject={"describe_hospital"}
-                header={"Hospital care description"}
+                header={"Hospital care opinions"}
               ></TextComponent>
 
               <YesOrNoComponent
@@ -603,7 +603,7 @@ const Stats: NextPage = () => {
 
               <TextComponent
                 keyOfObject={"what_kind_of_care_after"}
-                header={"People recieved care after"}
+                header={"Care after opionions"}
               ></TextComponent>
 
               <YesOrNoComponent
