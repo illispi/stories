@@ -17,6 +17,7 @@ async function migrateToLatest(dir: string[]) {
 
   const db = new Kysely<any>({
     //TODO replace any with Database types
+    log: ["error", "query"],
     dialect: new PostgresDialect({
       pool: new Pool({
         host: "127.0.0.1",
