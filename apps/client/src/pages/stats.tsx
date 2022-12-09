@@ -111,8 +111,8 @@ const DoughnutComponent = ({
 
   return (
     <>
-      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
-      <div className="flex max-w-xs items-center justify-center">
+      <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
+      <div className="mb-8 flex w-11/12 items-center justify-center lg:max-w-xs">
         <Doughnut
           ref={containerRef}
           data={data}
@@ -143,8 +143,8 @@ const CustomBar = ({
 
   return (
     <>
-      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
-      <div className="h-64 w-11/12">
+      <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
+      <div className="mb-8 h-64 w-11/12">
         <Bar
           ref={containerRef}
           data={data ? data : dataDefault}
@@ -171,8 +171,8 @@ const YesOrNoComponent = ({
 
   return (
     <>
-      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
-      <div className="flex max-w-xs items-center justify-center">
+      <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
+      <div className="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
         <Doughnut
           ref={containerRef}
           data={yesOrNoData(data ? data : dataDefault, stat, header)}
@@ -202,7 +202,7 @@ const TextComponent = ({
 
   return (
     <div className="flex w-11/12 max-w-xs flex-col items-center justify-center">
-      <h4 className="m-2 text-center text-lg">{`${header}:`}</h4>
+      <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
       {arr.slice(0, 3).map((e, i) => (
         <m.div
           ref={containerRef}
@@ -222,8 +222,8 @@ const TextComponent = ({
       ))}
       <Link href={`/${keyOfObject}`}>
         <div
-          className="m-2 rounded-full bg-blue-500 p-3 font-semibold
-      text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+          className="m-2 mb-8 rounded-full bg-blue-500 p-3
+      font-semibold text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
         >
           Show more
         </div>
@@ -264,7 +264,9 @@ const psyLengthByGender = (data: DataBackEnd["personalStats"]) => {
 const Item = ({ name, item }: { name: string; item: string | number }) => {
   return (
     <div className="my-3 flex flex-col items-center justify-center">
-      <p className="mb-2 text-center text-lg">{name} </p>
+      <p className="mb-2 text-center text-xl underline underline-offset-8">
+        {name}{" "}
+      </p>
       <p className="rounded-full border-2 border-slate-400 p-2 text-center font-semibold">
         {item}
       </p>
@@ -489,43 +491,44 @@ const Stats: NextPage = () => {
               <h1 className="text-center font-semibold">Personal Stats</h1>
             </div>
             <div className="flex flex-col items-center justify-center">
-              <Item
-                name={"Total responses:"}
-                item={`${personalStats.data.length}`}
-              ></Item>
-              <Item
-                name={"Average age of responses:"}
-                item={`${calcAverage(
-                  personalStats.data,
-                  "current_age"
-                )} years old`}
-              />
+              <div className="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                <Item
+                  name={"Total responses:"}
+                  item={`${personalStats.data.length}`}
+                ></Item>
+                <Item
+                  name={"Average age of responses:"}
+                  item={`${calcAverage(
+                    personalStats.data,
+                    "current_age"
+                  )} years old`}
+                />
 
-              <DoughnutComponent
-                data={dataGender(personalStats.data)}
-                header={"Gender shares"}
-              ></DoughnutComponent>
+                <DoughnutComponent
+                  data={dataGender(personalStats.data)}
+                  header={"Gender shares"}
+                ></DoughnutComponent>
 
-              <CustomBar
-                data={dataAgeOfRes(personalStats.data)}
-                header={"Age of responses"}
-              ></CustomBar>
-              <CustomBar
-                data={dataOnset(ageOfOnset.data)}
-                header={"Age of onset"}
-              ></CustomBar>
+                <CustomBar
+                  data={dataAgeOfRes(personalStats.data)}
+                  header={"Age of responses"}
+                ></CustomBar>
+                <CustomBar
+                  data={dataOnset(ageOfOnset.data)}
+                  header={"Age of onset"}
+                ></CustomBar>
 
-              {/*NOTE I could make this check for null but i dont think its necessary */}
+                {/*NOTE I could make this check for null but i dont think its necessary */}
 
-              <DoughnutComponent
-                data={dataPsyLength(personalStats.data)}
-                header={"Length of first psychosis"}
-              ></DoughnutComponent>
-              <CustomButton
-                onClick={() => {
-                  setByGenderPsyLength(byGenderPsyLength ? false : true);
+                <DoughnutComponent
+                  data={dataPsyLength(personalStats.data)}
+                  header={"Length of first psychosis"}
+                ></DoughnutComponent>
+                <CustomButton
+                  onClick={() => {
+                    setByGenderPsyLength(byGenderPsyLength ? false : true);
 
-                  /*  byGenderPsyLength
+                    /*  byGenderPsyLength
                     ? setTimeout(() => {
                         window.scrollBy({
                           top: -250,
@@ -538,10 +541,13 @@ const Stats: NextPage = () => {
                           behavior: "smooth",
                         });
                       }, 100); */
-                }}
-              >
-                {`${!byGenderPsyLength ? "Show by gender" : "Close by gender"}`}
-              </CustomButton>
+                  }}
+                >
+                  {`${
+                    !byGenderPsyLength ? "Show by gender" : "Close by gender"
+                  }`}
+                </CustomButton>
+              </div>
 
               <AnimatePresence>
                 {byGenderPsyLength && (
@@ -550,26 +556,32 @@ const Stats: NextPage = () => {
                     animate={{ opacity: 1, height: "auto", y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -600 }}
                     transition={{ duration: 1 }}
+                    className="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
                   >
-                    <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data.maleSplit)}
-                      header={"First psychosis male"}
-                    ></DoughnutComponent>
+                    <div className=" flex w-full flex-col items-center justify-center lg:max-w-xs">
+                      <DoughnutComponent
+                        data={psyLengthByGender(psyLengthSplits.data.maleSplit)}
+                        header={"First psychosis male"}
+                      ></DoughnutComponent>
 
-                    <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data.femaleSplit)}
-                      header={"First psychosis female"}
-                    ></DoughnutComponent>
+                      <DoughnutComponent
+                        data={psyLengthByGender(
+                          psyLengthSplits.data.femaleSplit
+                        )}
+                        header={"First psychosis female"}
+                      ></DoughnutComponent>
 
-                    <DoughnutComponent
-                      data={psyLengthByGender(psyLengthSplits.data.otherSplit)}
-                      header={"First psychosis other"}
-                    ></DoughnutComponent>
+                      <DoughnutComponent
+                        data={psyLengthByGender(
+                          psyLengthSplits.data.otherSplit
+                        )}
+                        header={"First psychosis other"}
+                      ></DoughnutComponent>
+                    </div>
                   </m.div>
                 )}
               </AnimatePresence>
 
-              <m.div></m.div>
               <YesOrNoComponent
                 stat={"hospitalized_on_first"}
                 header={"Hospitalized on first psychosis"}
