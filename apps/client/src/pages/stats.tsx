@@ -222,7 +222,7 @@ const TextComponent = ({
       ))}
       <Link href={`/${keyOfObject}`}>
         <div
-          className="m-2 mb-8 rounded-full bg-blue-500 p-3
+          className="m-2 mt-8 mb-8 rounded-full bg-blue-500 p-3
       font-semibold text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
         >
           Show more
@@ -603,7 +603,7 @@ const Stats: NextPage = () => {
 
               <TextComponent
                 keyOfObject={"what_kind_of_care_after"}
-                header={"Care after opionions"}
+                header={"Care after opinions"}
               ></TextComponent>
 
               <YesOrNoComponent
