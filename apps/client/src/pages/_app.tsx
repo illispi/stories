@@ -8,12 +8,14 @@ import { getFetch } from "@trpc/client";
 import NavBar from "../components/NavBar";
 import { trpc } from "../utils/trpc";
 import { useEffect } from "react";
-import { domAnimation, LazyMotion } from "framer-motion";
+import { AnimatePresence, domAnimation, LazyMotion } from "framer-motion";
 import { QueryClient, QueryClientProvider } from "react-query";
+import router from "next/router";
+import Layout from "../components/Layout";
 
 const queryClientTest = new QueryClient();
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType = ({ Component, pageProps, router }) => {
   const createCookie = trpc.createCookie.useMutation();
   useEffect(() => {
     // createCookie.mutate(null, { onSuccess: () => utils.invalidateQueries() }); const utils = trpc.useContext();
@@ -25,7 +27,17 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <>
       <QueryClientProvider client={queryClientTest}>
         <NavBar></NavBar>
-        <Component {...pageProps} />
+        <LazyMotion features={domAnimation}>
+          <AnimatePresence
+            mode="wait"
+            key={router.asPath}
+            onExitComplete={() => window.scrollTo(0, 0)}
+          >
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AnimatePresence>
+        </LazyMotion>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </>

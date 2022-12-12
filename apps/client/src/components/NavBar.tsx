@@ -59,7 +59,7 @@ const NavBar = () => {
   //BUG schizophrenia should be on left corner
   return (
     <div className="sticky top-0 z-50 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
-      <Link href={"/"}>
+      <Link href={"/"} className="sm:hidden">
         <div className="mx-2 text-2xl font-semibold sm:hidden">
           Schizo... stories
         </div>
