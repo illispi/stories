@@ -106,19 +106,11 @@ const DoughnutComponent = ({
   keyOfObject?: string;
   header: string;
 }) => {
-  const [containerRef, isVisible, firstDraw] =
-    useIntersectionObserver(intObsOptions);
-
   return (
     <>
       <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
       <div className="mb-8 flex w-11/12 items-center justify-center lg:max-w-xs">
-        <Doughnut
-          ref={containerRef}
-          data={data}
-          options={optionsDoughnut}
-          redraw={firstDraw ? false : isVisible}
-        />
+        <Doughnut data={data} options={optionsDoughnut} />
       </div>
     </>
   );
@@ -166,18 +158,14 @@ const YesOrNoComponent = ({
   stat: keyof PersonalQuestions;
 }) => {
   const dataDefault = useContext(DataContext);
-  const [containerRef, isVisible, firstDraw] =
-    useIntersectionObserver(intObsOptions);
 
   return (
     <>
       <h4 className="m-2 text-center text-xl underline underline-offset-8">{`${header}:`}</h4>
       <div className="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
         <Doughnut
-          ref={containerRef}
           data={yesOrNoData(data ? data : dataDefault, stat, header)}
           options={optionsDoughnut}
-          redraw={firstDraw ? false : isVisible}
         />
       </div>
     </>
