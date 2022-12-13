@@ -75,9 +75,6 @@ export const appRouter = t.router({
       }
     );
 
-    return filterSensitve;
-  }),
-  ageOfOnsetPsychosisByGender: t.procedure.query(async ({ ctx }) => {
     const maleAge = await ctx.db
       .selectFrom("personal_questions")
       .select(["age_of_onset"])
@@ -104,7 +101,7 @@ export const appRouter = t.router({
       return sorted[Math.floor(arr.length / 2)];
     };
 
-    const result = {
+    const ageOfOnsetByGender = {
       maleAverage: average(maleAge),
       femaleAverage: average(femaleAge),
       otherAverage: average(otherAge),
@@ -113,9 +110,6 @@ export const appRouter = t.router({
       otherMedian: median(otherAge),
     };
 
-    return result;
-  }),
-  psyLengthByGender: t.procedure.query(async ({ ctx }) => {
     const maleSplit = await ctx.db
       .selectFrom("personal_questions")
       .select(["length_of_psychosis"])
@@ -133,13 +127,13 @@ export const appRouter = t.router({
       .where("gender", "=", "other")
       .execute();
 
-    const result = {
+    const lengthByGender = {
       maleSplit,
       femaleSplit,
       otherSplit,
     };
 
-    return result;
+    return { ...filterSensitve, ...ageOfOnsetByGender, ...lengthByGender };
   }),
 });
 
