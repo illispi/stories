@@ -10,7 +10,8 @@
       "outputs": []
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "inputs": ["packages/*", "apps/solid-stories/*", "apps/server/*"]
     },
     "test:ci": {
       "cache": false
