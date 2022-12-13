@@ -8,7 +8,6 @@ import {
   Setter,
 } from "solid-js";
 import { A, Title } from "solid-start";
-import { trpc } from "~/utils/trpc";
 
 const NavLinks: Component = () => {
   return (
