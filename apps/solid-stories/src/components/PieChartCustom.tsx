@@ -21,7 +21,7 @@ const PieChartCustom: Component<{}> = (props) => {
     );
   });
 
-  onCleanup(() => pie.detach);
+  onCleanup(() => pie?.detach);
 
   return <div id={`chart${id}`} />;
 };

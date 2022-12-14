@@ -5,6 +5,6 @@ import { defineConfig } from "vite";
 export default defineConfig(() => {
   dotenv.config();
   return {
-    plugins: [solid({ ssr: true })],
+    plugins: [solid({ ssr: false })],
   };
 });

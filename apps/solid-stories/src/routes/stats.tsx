@@ -1,4 +1,4 @@
-import { Component, For, ParentComponent } from "solid-js";
+import { Component, createEffect, For, ParentComponent, Show } from "solid-js";
 import { createRouteData, useRouteData } from "solid-start";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -38,36 +38,30 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
 
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
-
-  if (personalStats.loading) {
-    return (
-      <>
-        <PieChartCustom />
-        <PieChartCustom />
-        <PieChartCustom />
-        <PieChartCustom />
-
-        <div>loading</div>
-      </>
-    );
-  }
+  console.log(personalStats.loading);
 
   return (
-    <div class="mt-8 flex w-screen flex-col items-center justify-center">
-      <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-        <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-          <h1 class="text-center font-semibold">Personal Stats</h1>
-        </div>
-        <div class="flex flex-col items-center justify-center">
-          <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-            <Item
-              name={"Total responses:"}
-              value={`${personalStats()?.arrayOfData.length}`}
-            />
+    <Show when={!personalStats.loading} fallback={<div>loading</div>}>
+      <div class="mt-8 flex w-screen flex-col items-center justify-center">
+        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Personal Stats</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+              <Item
+                name={"Total responses:"}
+                value={`${personalStats()?.arrayOfData.length}`}
+              />
+              <PieChartCustom />
+              <PieChartCustom />
+              <PieChartCustom />
+              <PieChartCustom />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Show>
   );
 };
 
