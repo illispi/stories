@@ -128,12 +128,18 @@ export const appRouter = t.router({
       .execute();
 
     const lengthByGender = {
-      maleSplit,
-      femaleSplit,
-      otherSplit,
+      ...maleSplit,
+      ...femaleSplit,
+      ...otherSplit,
     };
 
-    return { ...filterSensitve, ...ageOfOnsetByGender, ...lengthByGender };
+    const allData = {
+      arrayOfData: filterSensitve,
+      onsetByGender: { ...ageOfOnsetByGender },
+      lengthByGender: { ...lengthByGender },
+    };
+
+    return allData;
   }),
 });
 

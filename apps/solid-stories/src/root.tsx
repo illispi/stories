@@ -12,7 +12,7 @@ import {
   Scripts,
   Title,
 } from "solid-start";
-import NavBar from "./components/navbar";
+import NavBar from "./components/Navbar";
 
 export default function Root() {
   return (
