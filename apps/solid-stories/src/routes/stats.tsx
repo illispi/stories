@@ -43,6 +43,10 @@ const Stats: ParentComponent = () => {
     return (
       <>
         <PieChartCustom />
+        <PieChartCustom />
+        <PieChartCustom />
+        <PieChartCustom />
+
         <div>loading</div>
       </>
     );

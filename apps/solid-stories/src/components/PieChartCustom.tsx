@@ -2,9 +2,13 @@ import { PieChart } from "chartist";
 import { Component, onCleanup, onMount } from "solid-js";
 
 const PieChartCustom: Component<{}> = (props) => {
+  let pie: PieChart;
+  const id = Math.floor(Math.random() * 100000000).toString();
+  console.log(id);
+
   onMount(() => {
-    new PieChart(
-      "#chart",
+    pie = new PieChart(
+      `#chart${id}`,
       {
         series: [20, 10, 30, 40],
       },
@@ -17,7 +21,9 @@ const PieChartCustom: Component<{}> = (props) => {
     );
   });
 
-  return <div id="chart" />;
+  onCleanup(() => pie.detach);
+
+  return <div id={`chart${id}`} />;
 };
 
 export default PieChartCustom;
