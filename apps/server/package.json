@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate:latest": "ts-node ./src/migrate.ts",
     "migrate:down": "ts-node ./src/migrate.ts down",
-    "dev": "tsnd --exit-child --inspect --transpile-only src/index.ts | pino-pretty",
+    "dev": "tsnd --exit-child --transpile-only src/index.ts | pino-pretty",
+    "debug": "tsnd --exit-child --inspect --transpile-only src/index.ts | pino-pretty",
     "tsc": "tsc ./**/*.ts"
   },
   "keywords": [],

@@ -8,6 +8,7 @@ import type { Db } from "../../../server/src/index";
 import "chartist/dist/index.css";
 import { PieChart } from "chartist";
 import PieChartCustom from "~/components/PieChartCustom";
+import { ChartistData } from "~/types/types";
 
 type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
@@ -36,9 +37,48 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
   );
 };
 
+const calcGenderShares = (
+  data: RouterOutput["personalStats"]["arrayOfData"] | undefined
+) => {
+  let genders = { male: 0, female: 0, other: 0 };
+
+  data?.forEach((e) => {
+    if (e.gender === "male") {
+      genders.male++;
+    } else if (e.gender === "female") {
+      genders.female++;
+    } else if (e.gender === "other") {
+      genders.other++;
+    }
+  });
+  return genders;
+};
+
+const dataGender = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
+  const gender = calcGenderShares(data);
+
+  return {
+    labels: ["Male", "Female", "Other"],
+    series: [gender.male, gender.female, gender.other],
+  };
+};
+
+const DoughnutComponent: Component<{
+  data: ChartistData;
+  header: string;
+}> = (props) => {
+  return (
+    <>
+      <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
+      <div class="mb-8 flex w-11/12 items-center justify-center lg:max-w-xs">
+        <PieChartCustom data={props.data} />
+      </div>
+    </>
+  );
+};
+
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
-  console.log(personalStats.loading);
 
   return (
     <Show when={!personalStats.loading} fallback={<div>loading</div>}>
@@ -53,10 +93,10 @@ const Stats: ParentComponent = () => {
                 name={"Total responses:"}
                 value={`${personalStats()?.arrayOfData.length}`}
               />
-              <PieChartCustom />
-              <PieChartCustom />
-              <PieChartCustom />
-              <PieChartCustom />
+              <DoughnutComponent
+                header="Share of genders"
+                data={dataGender(personalStats()?.arrayOfData)}
+              />
             </div>
           </div>
         </div>
