@@ -1,6 +1,8 @@
 import { PieChart } from "chartist";
-import { Component, onCleanup, onMount } from "solid-js";
+import { type Component, onCleanup, onMount } from "solid-js";
 import  type{ ChartistData } from "../types/types";
+import "./test.css"
+
 
 const PieChartCustom: Component<{ data: ChartistData }> = (
   props
@@ -26,7 +28,7 @@ const PieChartCustom: Component<{ data: ChartistData }> = (
 
   onCleanup(() => pie?.detach);
 
-  return <div id={`chart${id}`} class="h-80" />;
+  return <div style={{stroke: "blue"}} id={`chart${id}`} class="h-80"/>
 };
 
 export default PieChartCustom;
