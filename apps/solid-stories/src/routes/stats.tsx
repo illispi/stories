@@ -1,4 +1,4 @@
-import { Component, createEffect, For, ParentComponent, Show } from "solid-js";
+import { Component, createEffect, ErrorBoundary, For, ParentComponent, Show } from "solid-js";
 import { createRouteData, useRouteData } from "solid-start";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -81,7 +81,8 @@ const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
   return (
-    <Show when={!personalStats.loading} fallback={<div>loading</div>}>
+    <ErrorBoundary fallback={err => err}>
+    <Show when={!personalStats.loading || personalStats.error} fallback={<div>loading</div>}>
       <div class="mt-8 flex w-screen flex-col items-center justify-center">
         <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
           <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
@@ -102,6 +103,7 @@ const Stats: ParentComponent = () => {
         </div>
       </div>
     </Show>
+    </ErrorBoundary>
   );
 };
 
