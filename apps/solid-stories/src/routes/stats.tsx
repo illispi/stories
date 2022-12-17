@@ -1,21 +1,14 @@
-import {
-  Component,
-  createEffect,
-  ErrorBoundary,
-  For,
-  ParentComponent,
-  Show,
-} from "solid-js";
+import type { Component, ParentComponent } from "solid-js";
+import { ErrorBoundary, Show } from "solid-js";
 import { createRouteData, useRouteData } from "solid-start";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "../../../server/src/router";
 import type { Db } from "../../../server/src/index";
 
-import "chartist/dist/index.css";
-import { PieChart } from "chartist";
 import PieChartCustom from "~/components/PieChartCustom";
-import { ChartistData } from "~/types/types";
+import type { ChartistData } from "~/types/types";
+import type { PersonalQuestions } from "zod-types";
 
 type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
@@ -93,6 +86,40 @@ const DoughnutComponent: Component<{
   );
 };
 
+const YesOrNoComponent: Component<{
+  data: RouterOutput["personalStats"]["arrayOfData"];
+  stat: keyof PersonalQuestions;
+  header: string;
+}> = (props) => {
+  return (
+    <>
+      <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
+      <div class="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
+        <PieChartCustom
+          data={{
+            labels: [
+              `Yes ${Math.floor(
+                (props.data?.filter((e) => e[props.stat] === true).length /
+                  props.data?.filter((e) => e[props.stat]).length) *
+                  100
+              )}%`,
+              `No ${Math.floor(
+                (props.data?.filter((e) => e[props.stat] === false).length /
+                  props.data?.filter((e) => e[props.stat]).length) *
+                  100
+              )}%`,
+            ],
+            series: [
+              props.data?.filter((e) => e[props.stat] === true).length,
+              props.data?.filter((e) => e[props.stat] === false).length,
+            ],
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
@@ -117,6 +144,26 @@ const Stats: ParentComponent = () => {
                   header="Share of genders"
                   data={dataGender(personalStats()?.arrayOfData)}
                 />
+                <YesOrNoComponent
+                  data={personalStats()?.arrayOfData}
+                  header="Hospitalized on first psychosis"
+                  stat={"hospitalized_on_first"}
+                />
+                <YesOrNoComponent
+                  data={personalStats()?.arrayOfData}
+                  header="Were satisfied with hospital care"
+                  stat={"hospital_satisfaction"}
+                />
+                <YesOrNoComponent
+                  data={personalStats()?.arrayOfData}
+                  header="Recieved care after hospitalization"
+                  stat={"care_after_hospital"}
+                />
+                <YesOrNoComponent
+                  data={personalStats()?.arrayOfData}
+                  header="Were satisifed with after hospitalization care"
+                  stat={"after_hospital_satisfaction"}
+                />
               </div>
             </div>
           </div>
@@ -127,3 +174,5 @@ const Stats: ParentComponent = () => {
 };
 
 export default Stats;
+
+//TODO consider grid for bigger screens
