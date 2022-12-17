@@ -6,5 +6,6 @@ export default defineConfig(() => {
   dotenv.config();
   return {
     plugins: [solid({ ssr: false })],
+    server: { host: true },
   };
 });
