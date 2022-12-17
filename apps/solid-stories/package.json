@@ -33,7 +33,8 @@
     "solid-start-trpc": "^0.0.16",
     "solid-trpc": "^0.0.9",
     "undici": "5.14.0",
-    "zod": "^3.20.2"
+    "zod": "^3.20.2",
+    "zod-types": "*"
   },
   "engines": {
     "node": ">=16"

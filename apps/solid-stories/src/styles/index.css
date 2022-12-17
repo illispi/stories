@@ -1,8 +1,8 @@
 .ct-label {
   fill: rgba(0, 0, 0, 1);
   color: rgba(0, 0, 0, 1);
-  font-size: 1.2rem;
-  line-height: 2;
+  font-size: 0.9rem;
+  line-height: 1;
 }
 .ct-chart-bar .ct-label,
 .ct-chart-line .ct-label {

@@ -1,5 +1,6 @@
 import { PieChart } from "chartist";
-import { Component, For, onCleanup, onMount } from "solid-js";
+import type { Component } from "solid-js";
+import { For, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "../types/types";
 import "../styles/index.css";
 
