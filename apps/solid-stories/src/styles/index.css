@@ -1,7 +1,7 @@
 .ct-label {
   fill: rgba(0, 0, 0, 1);
   color: rgba(0, 0, 0, 1);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 2;
 }
 .ct-chart-bar .ct-label,
@@ -104,7 +104,7 @@
 .ct-series-b .ct-line,
 .ct-series-b .ct-point,
 .ct-series-b .ct-slice-donut {
-  stroke: #72ffe5;
+  stroke: #f77a9d;
 }
 .ct-series-b .ct-area,
 .ct-series-b .ct-slice-pie {

@@ -1,4 +1,11 @@
-import { Component, createEffect, ErrorBoundary, For, ParentComponent, Show } from "solid-js";
+import {
+  Component,
+  createEffect,
+  ErrorBoundary,
+  For,
+  ParentComponent,
+  Show,
+} from "solid-js";
 import { createRouteData, useRouteData } from "solid-start";
 
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -17,7 +24,9 @@ type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export const routeData = () => {
   return createRouteData(async () => {
-    const response = await fetch("http://127.0.0.1:4000/trpc/personalStats");
+    const response = await fetch(
+      "http://192.168.50.55:4000/trpc/personalStats"
+    );
     const allData = await response.json();
     const queryData = allData.result.data as RouterOutput["personalStats"];
     return queryData;
@@ -40,15 +49,18 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
 const calcGenderShares = (
   data: RouterOutput["personalStats"]["arrayOfData"] | undefined
 ) => {
-  let genders = { male: 0, female: 0, other: 0 };
+  let genders = { male: 0, female: 0, other: 0, total: 0 };
 
   data?.forEach((e) => {
     if (e.gender === "male") {
       genders.male++;
+      genders.total++;
     } else if (e.gender === "female") {
       genders.female++;
+      genders.total++;
     } else if (e.gender === "other") {
       genders.other++;
+      genders.total++;
     }
   });
   return genders;
@@ -58,7 +70,11 @@ const dataGender = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
   const gender = calcGenderShares(data);
 
   return {
-    labels: ["Male", "Female", "Other"],
+    labels: [
+      `Male ${Math.floor((gender.male / gender.total) * 100)}%`,
+      `Female ${Math.floor((gender.female / gender.total) * 100)}%`,
+      `Other ${Math.floor((gender.other / gender.total) * 100)}%`,
+    ],
     series: [gender.male, gender.female, gender.other],
   };
 };
@@ -81,28 +97,31 @@ const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
   return (
-    <ErrorBoundary fallback={err => err}>
-    <Show when={!personalStats.loading || personalStats.error} fallback={<div>loading</div>}>
-      <div class="mt-8 flex w-screen flex-col items-center justify-center">
-        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-            <h1 class="text-center font-semibold">Personal Stats</h1>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-              <Item
-                name={"Total responses:"}
-                value={`${personalStats()?.arrayOfData.length}`}
-              />
-              <DoughnutComponent
-                header="Share of genders"
-                data={dataGender(personalStats()?.arrayOfData)}
-              />
+    <ErrorBoundary fallback={(err) => err}>
+      <Show
+        when={!personalStats.loading || personalStats.error}
+        fallback={<div>loading</div>}
+      >
+        <div class="mt-8 flex w-screen flex-col items-center justify-center">
+          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+              <h1 class="text-center font-semibold">Personal Stats</h1>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                <Item
+                  name={"Total responses:"}
+                  value={`${personalStats()?.arrayOfData.length}`}
+                />
+                <DoughnutComponent
+                  header="Share of genders"
+                  data={dataGender(personalStats()?.arrayOfData)}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Show>
+      </Show>
     </ErrorBoundary>
   );
 };
