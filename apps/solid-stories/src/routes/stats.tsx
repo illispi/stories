@@ -174,15 +174,26 @@ const dataAgeOfRes = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
   };
 };
 
+const dataOnset = (data: RouterOutput["personalStats"]["onsetByGender"]) => {
+  return {
+    labels: ["Male", "Female", "Other"],
+    series: [
+      [data.maleAverage, data.femaleAverage, data.otherAverage],
+      [data.maleMedian, data.femaleMedian, data.otherMedian],
+    ],
+  };
+};
+
 const CustomBarComponent: Component<{
   data: ChartistData;
   header: string;
+  distribute: boolean;
 }> = (props) => {
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="mb-8 h-64 w-11/12">
-        <BarChartCustom data={props.data} />
+        <BarChartCustom data={props.data} distributeSeries={props.distribute} />
       </div>
     </>
   );
@@ -215,6 +226,12 @@ const Stats: ParentComponent = () => {
                 <CustomBarComponent
                   header="Age of responses"
                   data={dataAgeOfRes(personalStats()?.arrayOfData)}
+                  distribute={true}
+                />
+                <CustomBarComponent
+                  header="Age of Onset"
+                  data={dataOnset(personalStats()?.onsetByGender)}
+                  distribute={false}
                 />
                 <YesOrNoComponent
                   data={personalStats()?.arrayOfData}

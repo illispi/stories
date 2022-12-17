@@ -36,8 +36,8 @@ const PieChartCustom: Component<{ data: ChartistData }> = (props) => {
         <For each={props.data.labels} fallback={<div>Error</div>}>
           {(label, index) => (
             <div class="flex items-center justify-left">
-              <div class={`${colors[index()]} w-8 h-8 mx-2`} />
-              <div>{label}</div>
+              <div class={`${colors[index()]} w-6 h-6 mx-2`} />
+              <div class="text-sm">{label}</div>
             </div>
           )}
         </For>

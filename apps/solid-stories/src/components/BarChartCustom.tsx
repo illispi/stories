@@ -4,7 +4,7 @@ import { For, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 
-const BarChartCustom: Component<{ data: ChartistData }> = (props) => {
+const BarChartCustom: Component<{ data: ChartistData, distributeSeries: boolean }> = (props) => {
   let bar: BarChart;
   const id = Math.floor(Math.random() * 100000000).toString();
 
@@ -17,7 +17,7 @@ const BarChartCustom: Component<{ data: ChartistData }> = (props) => {
       },
       {
         chartPadding: 30,
-        distributeSeries: true,
+        distributeSeries: props.distributeSeries,
       }
     );
   });
@@ -26,7 +26,7 @@ const BarChartCustom: Component<{ data: ChartistData }> = (props) => {
 
   return (
     <div class="flex flex-col items-center justify-center">
-      <div class="h-80 w-96" id={`chart${id}`} />
+      <div class="h-80 w-96 lg:w-[500px]" id={`chart${id}`} />
     </div>
   );
 };
