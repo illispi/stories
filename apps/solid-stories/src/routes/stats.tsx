@@ -10,6 +10,7 @@ import PieChartCustom from "~/components/PieChartCustom";
 import type { ChartistData } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
+import { AxisOptions, BarChartOptions } from "chartist";
 
 type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
@@ -187,13 +188,13 @@ const dataOnset = (data: RouterOutput["personalStats"]["onsetByGender"]) => {
 const CustomBarComponent: Component<{
   data: ChartistData;
   header: string;
-  distribute: boolean;
+  options?: BarChartOptions<AxisOptions, AxisOptions>;
 }> = (props) => {
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="mb-8 h-64 w-11/12">
-        <BarChartCustom data={props.data} distributeSeries={props.distribute} />
+        <BarChartCustom data={props.data} options={props.options} />
       </div>
     </>
   );
@@ -226,12 +227,11 @@ const Stats: ParentComponent = () => {
                 <CustomBarComponent
                   header="Age of responses"
                   data={dataAgeOfRes(personalStats()?.arrayOfData)}
-                  distribute={true}
+                  options={{ distributeSeries: true }}
                 />
                 <CustomBarComponent
                   header="Age of Onset"
                   data={dataOnset(personalStats()?.onsetByGender)}
-                  distribute={false}
                 />
                 <YesOrNoComponent
                   data={personalStats()?.arrayOfData}

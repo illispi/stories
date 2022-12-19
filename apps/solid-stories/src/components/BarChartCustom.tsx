@@ -1,10 +1,14 @@
+import type { AxisOptions, BarChartOptions } from "chartist";
 import { BarChart } from "chartist";
 import type { Component } from "solid-js";
-import { For, onCleanup, onMount } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 
-const BarChartCustom: Component<{ data: ChartistData, distributeSeries: boolean }> = (props) => {
+const BarChartCustom: Component<{
+  data: ChartistData;
+  options?: BarChartOptions<AxisOptions, AxisOptions>;
+}> = (props) => {
   let bar: BarChart;
   const id = Math.floor(Math.random() * 100000000).toString();
 
@@ -15,10 +19,7 @@ const BarChartCustom: Component<{ data: ChartistData, distributeSeries: boolean 
         series: props.data.series,
         labels: props.data.labels,
       },
-      {
-        chartPadding: 30,
-        distributeSeries: props.distributeSeries,
-      }
+      { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
     );
   });
 
@@ -32,3 +33,5 @@ const BarChartCustom: Component<{ data: ChartistData, distributeSeries: boolean 
 };
 
 export default BarChartCustom;
+
+//NOTE index.css is global but you can get over it with module.css, see start.solidjs.com "styling"
