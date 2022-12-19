@@ -4,17 +4,18 @@ import type { Component } from "solid-js";
 import { onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
+import { barChartCount, setBarChartCount } from "../globalSignals";
 
 const BarChartCustom: Component<{
   data: ChartistData;
   options?: BarChartOptions<AxisOptions, AxisOptions>;
 }> = (props) => {
   let bar: BarChart;
-  const id = Math.floor(Math.random() * 100000000).toString();
-
+  setBarChartCount(barChartCount() + 1);
+  const id = barChartCount().toString();
   onMount(() => {
     bar = new BarChart(
-      `#chart${id}`,
+      `#chartBar${id}`,
       {
         series: props.data.series,
         labels: props.data.labels,
@@ -27,7 +28,7 @@ const BarChartCustom: Component<{
 
   return (
     <div class="flex flex-col items-center justify-center">
-      <div class="h-80 w-96 lg:w-[500px]" id={`chart${id}`} />
+      <div class="h-80 w-96 lg:w-[500px]" id={`chartBar${id}`} />
     </div>
   );
 };
