@@ -2,6 +2,8 @@ import {
   Component,
   createContext,
   createSignal,
+  For,
+  Index,
   ParentComponent,
   useContext,
 } from "solid-js";
@@ -248,6 +250,29 @@ const CustomBarComponent: Component<{
   );
 };
 
+const TextComponent: Component<{
+  header: string;
+  stat: keyof PersonalQuestions;
+}> = (props) => {
+  const personalStats = useData();
+  const arr = personalStats()
+    .arrayOfData.map((e) => e[props.stat])
+    .slice(0.3);
+  return (
+    <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
+      <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
+      <Index each={arr}>
+        {(stat, i) => (
+          <div class="flex w-full max-w-xs flex-col items-center justify-center">
+            <h5 class="m-2 font-bold">{i + 1}.</h5>
+            <p class="w-full">{stat()}</p>
+          </div>
+        )}
+      </Index>
+    </div>
+  );
+};
+
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
@@ -348,9 +373,17 @@ const Stats: ParentComponent = () => {
                   header="Were satisfied with hospital care"
                   stat={"hospital_satisfaction"}
                 />
+                <TextComponent
+                  stat={"describe_hospital"}
+                  header={"Hospital care opinions"}
+                />
                 <YesOrNoComponent
                   header="Recieved care after hospitalization"
                   stat={"care_after_hospital"}
+                />
+                <TextComponent
+                  stat={"what_kind_of_care_after"}
+                  header={"Care after opinions"}
                 />
                 <YesOrNoComponent
                   header="Were satisifed with after hospitalization care"
