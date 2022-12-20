@@ -222,6 +222,16 @@ const psyLengthByGender = (
   };
   return dataPsyLength;
 };
+const dataPsyLength = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
+  return {
+    labels: ["few weeks", "few months", "more than 6 months"],
+    series: [
+      data.filter((e) => e.length_of_psychosis === "few weeks").length,
+      data.filter((e) => e.length_of_psychosis === "few months").length,
+      data.filter((e) => e.length_of_psychosis === "more than 6 months").length,
+    ],
+  };
+};
 
 const CustomBarComponent: Component<{
   data: ChartistData;
@@ -274,21 +284,10 @@ const Stats: ParentComponent = () => {
                     header="Age of Onset"
                     data={dataOnset(personalStats()?.onsetByGender)}
                   />
-                  <YesOrNoComponent
-                    header="Hospitalized on first psychosis"
-                    stat={"hospitalized_on_first"}
-                  />
-                  <YesOrNoComponent
-                    header="Were satisfied with hospital care"
-                    stat={"hospital_satisfaction"}
-                  />
-                  <YesOrNoComponent
-                    header="Recieved care after hospitalization"
-                    stat={"care_after_hospital"}
-                  />
-                  <YesOrNoComponent
-                    header="Were satisifed with after hospitalization care"
-                    stat={"after_hospital_satisfaction"}
+
+                  <DoughnutComponent
+                    data={dataPsyLength(personalStats()?.arrayOfData)}
+                    header={"Length of first psychosis"}
                   />
 
                   <CustomButton
@@ -341,6 +340,22 @@ const Stats: ParentComponent = () => {
                     </Motion.div>
                   </Show>
                 </Presence>
+                <YesOrNoComponent
+                  header="Hospitalized on first psychosis"
+                  stat={"hospitalized_on_first"}
+                />
+                <YesOrNoComponent
+                  header="Were satisfied with hospital care"
+                  stat={"hospital_satisfaction"}
+                />
+                <YesOrNoComponent
+                  header="Recieved care after hospitalization"
+                  stat={"care_after_hospital"}
+                />
+                <YesOrNoComponent
+                  header="Were satisifed with after hospitalization care"
+                  stat={"after_hospital_satisfaction"}
+                />
               </div>
             </div>
           </div>
