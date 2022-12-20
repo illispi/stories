@@ -18,6 +18,7 @@ import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
 import { AxisOptions, BarChartOptions } from "chartist";
 import CustomButton from "~/components/CustomButton";
+import { Motion, Presence } from "@motionone/solid";
 
 type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
@@ -207,6 +208,21 @@ const dataOnset = (data: RouterOutput["personalStats"]["onsetByGender"]) => {
   };
 };
 
+const psyLengthByGender = (
+  data: RouterOutput["personalStats"]["arrayOfData"]
+) => {
+  const dataPsyLength = {
+    labels: ["few weeks", "few months", "more than 6 months"],
+    series: [
+      data?.filter((e) => e.length_of_psychosis === "few weeks").length,
+      data?.filter((e) => e.length_of_psychosis === "few months").length,
+      data?.filter((e) => e.length_of_psychosis === "more than 6 months")
+        .length,
+    ],
+  };
+  return dataPsyLength;
+};
+
 const CustomBarComponent: Component<{
   data: ChartistData;
   header: string;
@@ -287,6 +303,44 @@ const Stats: ParentComponent = () => {
                     }`}
                   </CustomButton>
                 </div>
+
+                <Presence>
+                  <Show when={byGenderPsyLength()}>
+                    <Motion.div
+                      initial={{ opacity: 0, height: 0, y: -1400 }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        y: 0,
+                        transition: { duration: 1.5 },
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        y: -1400,
+                        transition: { duration: 1.5 },
+                      }}
+                      class="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
+                    >
+                      <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
+                        <DoughnutComponent
+                          data={psyLengthByGender(personalStats()?.arrayOfData)}
+                          header={"First psychosis male"}
+                        />
+
+                        <DoughnutComponent
+                          data={psyLengthByGender(personalStats()?.arrayOfData)}
+                          header={"First psychosis female"}
+                        />
+
+                        <DoughnutComponent
+                          data={psyLengthByGender(personalStats()?.arrayOfData)}
+                          header={"First psychosis other"}
+                        />
+                      </div>
+                    </Motion.div>
+                  </Show>
+                </Presence>
               </div>
             </div>
           </div>
