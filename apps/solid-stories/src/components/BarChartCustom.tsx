@@ -12,7 +12,7 @@ const BarChartCustom: Component<{
 }> = (props) => {
   let bar: BarChart;
   setBarChartCount(barChartCount() + 1);
-  const id = barChartCount().toString();
+  const id = barChartCount().toString(); //NOTE is this good way to do this? whats even the point of onMount?
   onMount(() => {
     bar = new BarChart(
       `#chartBar${id}`,

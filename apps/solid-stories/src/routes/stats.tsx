@@ -1,4 +1,9 @@
-import type { Component, ParentComponent } from "solid-js";
+import {
+  Component,
+  createContext,
+  ParentComponent,
+  useContext,
+} from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
 import { createRouteData, useRouteData } from "solid-start";
 
@@ -26,6 +31,11 @@ export const routeData = () => {
     const queryData = allData.result.data as RouterOutput["personalStats"];
     return queryData;
   });
+};
+
+const DataContext = createContext<RouterOutput["personalStats"]>();
+const useData = () => {
+  return useContext(DataContext);
 };
 
 const Item: Component<{ name: string; value: string | number }> = (props) => {
@@ -89,10 +99,11 @@ const DoughnutComponent: Component<{
 };
 
 const YesOrNoComponent: Component<{
-  data: RouterOutput["personalStats"]["arrayOfData"];
   stat: keyof PersonalQuestions;
   header: string;
 }> = (props) => {
+  const personalStats = useData();
+
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
@@ -101,19 +112,28 @@ const YesOrNoComponent: Component<{
           data={{
             labels: [
               `Yes ${Math.floor(
-                (props.data?.filter((e) => e[props.stat] === true).length /
-                  props.data?.filter((e) => e[props.stat]).length) *
+                (personalStats()?.arrayOfData.filter(
+                  (e) => e[props.stat] === true
+                ).length /
+                  personalStats()?.arrayOfData.filter((e) => e[props.stat])
+                    .length) *
                   100
               )}%`,
               `No ${Math.floor(
-                (props.data?.filter((e) => e[props.stat] === false).length /
-                  props.data?.filter((e) => e[props.stat]).length) *
+                (personalStats()?.arrayOfData.filter(
+                  (e) => e[props.stat] === false
+                ).length /
+                  personalStats()?.arrayOfData.filter((e) => e[props.stat])
+                    .length) *
                   100
               )}%`,
             ],
             series: [
-              props.data?.filter((e) => e[props.stat] === true).length,
-              props.data?.filter((e) => e[props.stat] === false).length,
+              personalStats()?.arrayOfData.filter((e) => e[props.stat] === true)
+                .length,
+              personalStats()?.arrayOfData.filter(
+                (e) => e[props.stat] === false
+              ).length,
             ],
           }}
         />
@@ -204,61 +224,59 @@ const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
   return (
-    <ErrorBoundary fallback={(err) => err}>
-      <Show
-        when={!personalStats.loading || personalStats.error}
-        fallback={<div>loading</div>}
-      >
-        <div class="mt-8 flex w-screen flex-col items-center justify-center">
-          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-              <h1 class="text-center font-semibold">Personal Stats</h1>
-            </div>
-            <div class="flex flex-col items-center justify-center">
-              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                <Item
-                  name={"Total responses:"}
-                  value={`${personalStats()?.arrayOfData.length}`}
-                />
-                <DoughnutComponent
-                  header="Share of genders"
-                  data={dataGender(personalStats()?.arrayOfData)}
-                />
-                <CustomBarComponent
-                  header="Age of responses"
-                  data={dataAgeOfRes(personalStats()?.arrayOfData)}
-                  options={{ distributeSeries: true }}
-                />
-                <CustomBarComponent
-                  header="Age of Onset"
-                  data={dataOnset(personalStats()?.onsetByGender)}
-                />
-                <YesOrNoComponent
-                  data={personalStats()?.arrayOfData}
-                  header="Hospitalized on first psychosis"
-                  stat={"hospitalized_on_first"}
-                />
-                <YesOrNoComponent
-                  data={personalStats()?.arrayOfData}
-                  header="Were satisfied with hospital care"
-                  stat={"hospital_satisfaction"}
-                />
-                <YesOrNoComponent
-                  data={personalStats()?.arrayOfData}
-                  header="Recieved care after hospitalization"
-                  stat={"care_after_hospital"}
-                />
-                <YesOrNoComponent
-                  data={personalStats()?.arrayOfData}
-                  header="Were satisifed with after hospitalization care"
-                  stat={"after_hospital_satisfaction"}
-                />
+    <DataContext.Provider value={personalStats}>
+      <ErrorBoundary fallback={(err) => err}>
+        <Show
+          when={!personalStats.loading || personalStats.error}
+          fallback={<div>loading</div>}
+        >
+          <div class="mt-8 flex w-screen flex-col items-center justify-center">
+            <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                <h1 class="text-center font-semibold">Personal Stats</h1>
+              </div>
+              <div class="flex flex-col items-center justify-center">
+                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                  <Item
+                    name={"Total responses:"}
+                    value={`${personalStats()?.arrayOfData.length}`}
+                  />
+                  <DoughnutComponent
+                    header="Share of genders"
+                    data={dataGender(personalStats()?.arrayOfData)}
+                  />
+                  <CustomBarComponent
+                    header="Age of responses"
+                    data={dataAgeOfRes(personalStats()?.arrayOfData)}
+                    options={{ distributeSeries: true }}
+                  />
+                  <CustomBarComponent
+                    header="Age of Onset"
+                    data={dataOnset(personalStats()?.onsetByGender)}
+                  />
+                  <YesOrNoComponent
+                    header="Hospitalized on first psychosis"
+                    stat={"hospitalized_on_first"}
+                  />
+                  <YesOrNoComponent
+                    header="Were satisfied with hospital care"
+                    stat={"hospital_satisfaction"}
+                  />
+                  <YesOrNoComponent
+                    header="Recieved care after hospitalization"
+                    stat={"care_after_hospital"}
+                  />
+                  <YesOrNoComponent
+                    header="Were satisifed with after hospitalization care"
+                    stat={"after_hospital_satisfaction"}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </Show>
-    </ErrorBoundary>
+        </Show>
+      </ErrorBoundary>
+    </DataContext.Provider>
   );
 };
 
