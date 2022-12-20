@@ -1,6 +1,7 @@
 import {
   Component,
   createContext,
+  createSignal,
   ParentComponent,
   useContext,
 } from "solid-js";
@@ -16,6 +17,7 @@ import type { ChartistData } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
 import { AxisOptions, BarChartOptions } from "chartist";
+import CustomButton from "~/components/CustomButton";
 
 type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
 
@@ -33,7 +35,7 @@ export const routeData = () => {
   });
 };
 
-const DataContext = createContext<RouterOutput["personalStats"]>();
+const DataContext = createContext<typeof routeData>();
 const useData = () => {
   return useContext(DataContext);
 };
@@ -223,6 +225,8 @@ const CustomBarComponent: Component<{
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
+  const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
+
   return (
     <DataContext.Provider value={personalStats}>
       <ErrorBoundary fallback={(err) => err}>
@@ -270,6 +274,18 @@ const Stats: ParentComponent = () => {
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
+
+                  <CustomButton
+                    onClick={() => {
+                      setByGenderPsyLength(byGenderPsyLength() ? false : true);
+                    }}
+                  >
+                    {`${
+                      !byGenderPsyLength()
+                        ? "Show by gender"
+                        : "Close by gender"
+                    }`}
+                  </CustomButton>
                 </div>
               </div>
             </div>
