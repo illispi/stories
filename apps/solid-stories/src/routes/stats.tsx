@@ -317,7 +317,7 @@ const Stats: ParentComponent = () => {
 
                   <CustomButton
                     onClick={() => {
-                      setByGenderPsyLength(byGenderPsyLength() ? false : true);
+                      setByGenderPsyLength(!byGenderPsyLength());
                     }}
                   >
                     {`${
@@ -331,19 +331,18 @@ const Stats: ParentComponent = () => {
                 <Presence>
                   <Show when={byGenderPsyLength()}>
                     <Motion.div
-                      initial={{ opacity: 0, height: 0, y: -1400 }}
+                      initial={{ opacity: 0, height: 0, y: -600 }}
                       animate={{
                         opacity: 1,
                         height: "auto",
                         y: 0,
-                        transition: { duration: 1.5 },
                       }}
                       exit={{
                         opacity: 0,
                         height: 0,
-                        y: -1400,
-                        transition: { duration: 1.5 },
+                        y: -600,
                       }}
+                      transition={{ duration: 1.5 }}
                       class="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
                     >
                       <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
