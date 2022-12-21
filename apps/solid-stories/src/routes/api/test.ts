@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "./db/dbTypes";
+import "dotenv/config";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],

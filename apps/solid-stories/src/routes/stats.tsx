@@ -1,43 +1,19 @@
-import {
-  Component,
-  createContext,
-  createSignal,
-  For,
-  Index,
-  ParentComponent,
-  useContext,
-} from "solid-js";
+import { createContext, createSignal, Index, useContext } from "solid-js";
+import type { ParentComponent, Component } from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
-import { createRouteData, useRouteData } from "solid-start";
-
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "../../../server/src/router";
-import type { Db } from "../../../server/src/index";
-
+import { useRouteData } from "solid-start";
 import PieChartCustom from "~/components/PieChartCustom";
 import type { ChartistData } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
-import { AxisOptions, BarChartOptions } from "chartist";
 import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
+import { createServerData$ } from "solid-start/server";
+import { test } from "./api/test";
 
-type PreventDbTypeAutoDelete = Db; //NOTE this is here because trpc needs type Db from backend for some reason
-
-type RouterInput = inferRouterInputs<AppRouter>;
-type RouterOutput = inferRouterOutputs<AppRouter>;
-
-export const routeData = () => {
-  return createRouteData(async () => {
-    const response = await fetch(
-      "http://192.168.50.55:4000/trpc/personalStats"
-    );
-    const allData = await response.json();
-    const queryData = allData.result.data as RouterOutput["personalStats"];
-    return queryData;
-  });
-};
-
+export function routeData() {
+  return createServerData$(async () => await test());
+}
 const DataContext = createContext<typeof routeData>();
 const useData = () => {
   return useContext(DataContext);
@@ -224,7 +200,7 @@ const psyLengthByGender = (
   };
   return dataPsyLength;
 };
-const dataPsyLength = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
+const dataPsyLength = (data: typeof routeData) => {
   return {
     labels: ["few weeks", "few months", "more than 6 months"],
     series: [
