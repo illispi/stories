@@ -252,6 +252,8 @@ const TextComponent: Component<{
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
+  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode
+
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
