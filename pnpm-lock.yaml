@@ -75,6 +75,7 @@ importers:
       '@tanstack/solid-query': ^4.19.1
       '@trpc/client': ^10.5.0
       '@trpc/server': ^10.5.0
+      '@types/pg': ^8.6.5
       '@typescript-eslint/eslint-plugin': ^5.46.1
       '@typescript-eslint/parser': ^5.46.1
       autoprefixer: ^10.4.13
@@ -82,6 +83,8 @@ importers:
       dotenv: ^16.0.3
       eslint: ^8.29.0
       eslint-plugin-solid: ^0.9.1
+      kysely: ^0.22.0
+      pg: ^8.8.0
       postcss: ^8.4.20
       sass: ^1.56.2
       solid-js: ^1.6.5
@@ -104,6 +107,8 @@ importers:
       '@trpc/server': 10.5.0
       chartist: 1.3.0
       dotenv: 16.0.3
+      kysely: 0.22.0
+      pg: 8.8.0
       solid-js: 1.6.5
       solid-start: 0.2.7_jfq6s65pvyuo652ytqnpyknqye
       solid-start-trpc: 0.0.16_36hkmyezda4wsxhqu56djxxqca
@@ -112,6 +117,7 @@ importers:
       zod: 3.20.2
       zod-types: link:../../packages/zod-types
     devDependencies:
+      '@types/pg': 8.6.5
       '@typescript-eslint/eslint-plugin': 5.46.1_imrg37k3svwu377c6q7gkarwmi
       '@typescript-eslint/parser': 5.46.1_ha6vam6werchizxrnqvarmz2zu
       autoprefixer: 10.4.13_postcss@8.4.20
@@ -1833,7 +1839,7 @@ packages:
   /@types/pg/8.6.5:
     resolution: {integrity: sha512-tOkGtAqRVkHa/PVZicq67zuujI4Oorfglsr2IbKofDwBSysnaqSx7W1mDqFqdkGE6Fbgh+PZAl0r/BWON/mozw==}
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.11.14
       pg-protocol: 1.5.0
       pg-types: 2.2.0
     dev: true
