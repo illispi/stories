@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "./db/dbTypes";
 import "dotenv/config";
+import { PersonalQuestions } from "zod-types";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],
@@ -15,6 +16,22 @@ const db = new Kysely<DB>({
     }),
   }),
 });
+
+export const personalStatsPost = async (data) => {
+  // if (ctx.req.session.id) {
+  const insertion = await db
+    .insertInto("personal_questions")
+    .values({ ...data, user_id: Math.floor(Math.random() * 100000) }) //BUG what if session.if is null or otherwise wrong., this should be session id
+    .execute();
+
+  if (insertion) {
+    //BUG what if insertion returns no success
+    return "Added, waiting for approval";
+  }
+
+  return "failed to add for approval";
+  // }
+};
 
 export const personalStatsGet = async () => {
   const allPersonalStats = await db

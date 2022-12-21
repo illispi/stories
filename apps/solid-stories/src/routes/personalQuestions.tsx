@@ -4,6 +4,7 @@ import { Motion, Presence } from "@motionone/solid";
 import { Rerun } from "@solid-primitives/keyed";
 import CustomButton from "~/components/CustomButton";
 import { questions } from "~/data/personalQuestionsArr";
+import { UnitQuestion } from "~/components/UnitQuestion";
 
 const Counter: ParentComponent<{ page: number }> = (props) => {
   return (
@@ -33,9 +34,11 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
   );
 };
 
-const Questions: ParentComponent<{ direction: number; page: number }> = (
-  props
-) => {
+const Questions: ParentComponent<{
+  direction: number;
+  page: number;
+  paginate: (newDirection: number) => void;
+}> = (props) => {
   return (
     <Show fallback={<div>Loading....</div>} when={props.page > 0}>
       <Show
@@ -46,8 +49,10 @@ const Questions: ParentComponent<{ direction: number; page: number }> = (
           <Presence>
             <Rerun on={props.page}>
               <QuestionTransition direction={props.direction}>
-                <p>test</p>
-                {/* <UnitQuestion key={page} content={questions[page]}/> */}
+                <UnitQuestion
+                  content={questions[props.page]}
+                  paginate={props.paginate}
+                />
               </QuestionTransition>
             </Rerun>
           </Presence>
@@ -86,7 +91,6 @@ const PersonalQuestions: ParentComponent = () => {
         <Counter page={page()} />
         <CustomButton
           type="button"
-          class="my-4 max-h-12"
           onClick={() => {
             if (page() >= 0) {
               const skipAmount = localStorage.getItem(
@@ -101,7 +105,7 @@ const PersonalQuestions: ParentComponent = () => {
         </CustomButton>
       </div>
 
-      <Questions direction={direction()} page={page()} />
+      <Questions direction={direction()} page={page()} paginate={paginate} />
       <div class="mb-10" />
     </div>
   );
