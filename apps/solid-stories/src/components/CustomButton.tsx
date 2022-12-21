@@ -1,11 +1,10 @@
-import { Component, JSX, splitProps } from "solid-js";
+import { Component, JSX, ParentComponent, splitProps } from "solid-js";
 
-const CustomButton: Component<{
+interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   type?: "button" | "submit" | "reset";
-  rest?: JSX.ButtonHTMLAttributes<HTMLButtonElement>;
-  children: JSX.Element;
-}> = (props) => {
+}
+const CustomButton: ParentComponent<Props> = (props) => {
   const [local, others] = splitProps(props, ["className", "type"]);
   return (
     <button
