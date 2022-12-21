@@ -11,24 +11,11 @@ import { Rerun } from "@solid-primitives/keyed";
 import CustomButton from "~/components/CustomButton";
 import { questions } from "~/data/personalQuestionsArr";
 
-type PaginationContext = {
-  page: Accessor<number>;
-  direction: Accessor<number>;
-  paginate: (newDirection: number) => void;
-};
-
-const paginationContext = createContext<PaginationContext>();
-const usePagination = () => {
-  return useContext(paginationContext);
-};
-
-const Counter: ParentComponent = () => {
-  const { page } = usePagination();
-
+const Counter: ParentComponent<{ page: number }> = (props) => {
   return (
     <div class="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
       <h3 class="p-6 text-lg font-semibold">{`${Math.floor(
-        ((page() + 1) / questions.length) * 100
+        ((props.page + 1) / questions.length) * 100
       )}%`}</h3>
     </div>
   );
@@ -49,16 +36,19 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
   );
 };
 
-const Questions: ParentComponent = () => {
-  const { direction, page } = usePagination();
-
+const Questions: ParentComponent<{ direction: number; page: number }> = (
+  props
+) => {
   return (
-    <Show fallback={<div>Loading....</div>} when={page() > 0}>
-      <Show fallback={<div>Done!!!</div>} when={page() !== questions.length}>
+    <Show fallback={<div>Loading....</div>} when={props.page > 0}>
+      <Show
+        fallback={<div>Done!!!</div>}
+        when={props.page !== questions.length}
+      >
         <div class="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
           <Presence>
-            <Rerun on={page()}>
-              <QuestionTransition direction={direction()}>
+            <Rerun on={props.page}>
+              <QuestionTransition direction={props.direction}>
                 <p>test</p>
                 {/* <UnitQuestion key={page} content={questions[page]}/> */}
               </QuestionTransition>
@@ -93,32 +83,30 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <paginationContext.Provider value={{ page, direction, paginate }}>
-      <div class="flex h-screen flex-col items-center justify-start">
-        {/* BUG cant have hard coded widths */}
-        <div class="flex h-1/6 w-[320px] items-end justify-between p-2">
-          <Counter />
-          <CustomButton
-            type="button"
-            class="my-4 max-h-12"
-            onClick={() => {
-              if (page() >= 0) {
-                const skipAmount = localStorage.getItem(
-                  `to_${questions[page()].questionDB}`
-                );
+    <div class="flex h-screen flex-col items-center justify-start">
+      {/* BUG cant have hard coded widths */}
+      <div class="flex h-1/6 w-[320px] items-end justify-between p-2">
+        <Counter page={page()} />
+        <CustomButton
+          type="button"
+          class="my-4 max-h-12"
+          onClick={() => {
+            if (page() >= 0) {
+              const skipAmount = localStorage.getItem(
+                `to_${questions[page()].questionDB}`
+              );
 
-                paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
-              }
-            }}
-          >
-            Previous
-          </CustomButton>
-        </div>
-
-        <Questions />
-        <div class="mb-10" />
+              paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
+            }
+          }}
+        >
+          Previous
+        </CustomButton>
       </div>
-    </paginationContext.Provider>
+
+      <Questions direction={direction()} page={page()} />
+      <div class="mb-10" />
+    </div>
   );
 };
 

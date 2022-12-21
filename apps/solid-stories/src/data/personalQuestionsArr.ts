@@ -1,4 +1,4 @@
-import { PersonalQuestions } from "zod-types";
+import type { PersonalQuestions } from "zod-types";
 
 //NOTE making questionDB optional might not be the best idea
 
