@@ -2,7 +2,7 @@ import { Component } from "solid-js";
 
 const Home: Component = () => {
   return (
-    <div class="w-screen h-screen flex justify-center items-center">
+    <div class="flex h-screen w-screen items-center justify-center">
       Empty for now
     </div>
   );

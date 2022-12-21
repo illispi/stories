@@ -1,11 +1,5 @@
-import {
-  createContext,
-  createEffect,
-  createSignal,
-  Show,
-  useContext,
-} from "solid-js";
-import type { ParentComponent, Accessor } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
+import type { ParentComponent } from "solid-js";
 import { Motion, Presence } from "@motionone/solid";
 import { Rerun } from "@solid-primitives/keyed";
 import CustomButton from "~/components/CustomButton";
@@ -24,14 +18,17 @@ const Counter: ParentComponent<{ page: number }> = (props) => {
 const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
   return (
     <Motion.div
-      class="absolute z-50 flex h-full w-full flex-col
-  items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500 "
       initial={{ x: props.direction > 0 ? 340 : -340, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
       transition={{ duration: 1.2 }}
     >
-      {props.children}
+      <div
+        class="absolute z-50 flex h-full w-full flex-col
+  items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500 "
+      >
+        {props.children}
+      </div>
     </Motion.div>
   );
 };
