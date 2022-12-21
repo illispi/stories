@@ -10,9 +10,12 @@ import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
 import { createServerData$ } from "solid-start/server";
 import { test } from "./api/test";
+import type { AxisOptions, BarChartOptions } from "chartist";
+
+type PersonalStats = Awaited<ReturnType<typeof test>>;
 
 export function routeData() {
-  return createServerData$(async () => await test());
+  return createServerData$(() => test());
 }
 const DataContext = createContext<typeof routeData>();
 const useData = () => {
@@ -32,10 +35,8 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
   );
 };
 
-const calcGenderShares = (
-  data: RouterOutput["personalStats"]["arrayOfData"] | undefined
-) => {
-  let genders = { male: 0, female: 0, other: 0, total: 0 };
+const calcGenderShares = (data: PersonalStats["arrayOfData"]) => {
+  const genders = { male: 0, female: 0, other: 0, total: 0 };
 
   data?.forEach((e) => {
     if (e.gender === "male") {
@@ -52,7 +53,7 @@ const calcGenderShares = (
   return genders;
 };
 
-const dataGender = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
+const dataGender = (data: PersonalStats["arrayOfData"]) => {
   const gender = calcGenderShares(data);
 
   return {
@@ -123,10 +124,8 @@ const YesOrNoComponent: Component<{
   );
 };
 
-const calcAgeOfResBrackets = (
-  data: RouterOutput["personalStats"]["arrayOfData"]
-) => {
-  let resBrackets = {
+const calcAgeOfResBrackets = (data: PersonalStats["arrayOfData"]) => {
+  const resBrackets = {
     b09: 0,
     b1015: 0,
     b1620: 0,
@@ -155,7 +154,7 @@ const calcAgeOfResBrackets = (
   return resBrackets;
 };
 
-const dataAgeOfRes = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
+const dataAgeOfRes = (data: PersonalStats["arrayOfData"]) => {
   const labelsAgeGroup = [
     "0-9",
     "10-15",
@@ -176,7 +175,7 @@ const dataAgeOfRes = (data: RouterOutput["personalStats"]["arrayOfData"]) => {
   };
 };
 
-const dataOnset = (data: RouterOutput["personalStats"]["onsetByGender"]) => {
+const dataOnset = (data: PersonalStats["onsetByGender"]) => {
   return {
     labels: ["Male", "Female", "Other"],
     series: [
@@ -186,9 +185,7 @@ const dataOnset = (data: RouterOutput["personalStats"]["onsetByGender"]) => {
   };
 };
 
-const psyLengthByGender = (
-  data: RouterOutput["personalStats"]["arrayOfData"]
-) => {
+const psyLengthByGender = (data: PersonalStats["arrayOfData"]) => {
   const dataPsyLength = {
     labels: ["few weeks", "few months", "more than 6 months"],
     series: [
@@ -200,7 +197,7 @@ const psyLengthByGender = (
   };
   return dataPsyLength;
 };
-const dataPsyLength = (data: typeof routeData) => {
+const dataPsyLength = (data: PersonalStats["arrayOfData"]) => {
   return {
     labels: ["few weeks", "few months", "more than 6 months"],
     series: [
@@ -255,6 +252,7 @@ const Stats: ParentComponent = () => {
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
+
 
   return (
     <DataContext.Provider value={personalStats}>
