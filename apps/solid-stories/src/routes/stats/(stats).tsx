@@ -258,7 +258,7 @@ const TextComponent: Component<{
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
-  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode
+  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log
 
   console.log(personalStats());
 

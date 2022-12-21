@@ -70,6 +70,7 @@ importers:
   apps/solid-stories:
     specifiers:
       '@motionone/solid': ^10.15.4
+      '@solid-primitives/keyed': ^1.1.4
       '@solidjs/meta': ^0.28.2
       '@solidjs/router': ^0.5.1
       '@types/pg': ^8.6.5
@@ -96,6 +97,7 @@ importers:
       zod-types: '*'
     dependencies:
       '@motionone/solid': 10.15.4_solid-js@1.6.5
+      '@solid-primitives/keyed': 1.1.4_solid-js@1.6.5
       '@solidjs/meta': 0.28.2_solid-js@1.6.5
       '@solidjs/router': 0.5.1_solid-js@1.6.5
       chartist: 1.3.0
@@ -1673,6 +1675,14 @@ packages:
 
   /@sideway/pinpoint/2.0.0:
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+
+  /@solid-primitives/keyed/1.1.4_solid-js@1.6.5:
+    resolution: {integrity: sha512-K4DR4qGYOh5pJXgKKWwPjBEsnEBF4Old3zo4ht9wGBEvv3UB82P+zExqJK1lFie+7dYLOkgKD+8iZle1wZSEzg==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      solid-js: 1.6.5
+    dev: false
 
   /@solid-primitives/props/3.0.1_solid-js@1.6.5:
     resolution: {integrity: sha512-5v27ex4KxxnIbgze1lXPEXHO/ebbtEjL6idkhezH/7jHpjunl8PYabpDgoGO16tb8DawcZWOAXa7waWqWPAe/A==}
