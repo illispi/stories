@@ -1,7 +1,11 @@
+import { Presence } from "@motionone/solid";
 import {
   createContext,
   createEffect,
   createSignal,
+  Match,
+  Show,
+  Switch,
   useContext,
 } from "solid-js";
 import CustomButton from "~/components/CustomButton";
@@ -21,6 +25,24 @@ const Counter = () => {
         ((page() + 1) / questions.length) * 100
       )}%`}</h3>
     </div>
+  );
+};
+
+const Questions = () => {
+  const { direction, page, paginate } = useContext(paginationContext);
+
+  return (
+    <Show fallback={<div>Loading....</div>} when={page() > 0}>
+      <Show fallback={<div>Done!!!</div>} when={page() !== questions.length}>
+        <div class="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
+          <Presence custom={direction}>
+            <QuestionTransition key={page} direction={direction}>
+              <UnitQuestion key={page} content={questions[page]}></UnitQuestion>
+            </QuestionTransition>
+          </Presence>
+        </div>
+      </Show>
+    </Show>
   );
 };
 
@@ -69,8 +91,8 @@ const PersonalQuestions = () => {
               Previous
             </CustomButton>
           </div>
-          {/* 
-          <Questions></Questions> */}
+
+          <Questions></Questions>
           <div class="mb-10" />
         </div>
       </PaginationContext.Provider>
