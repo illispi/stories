@@ -87,6 +87,8 @@ export const personalStatsGet = async () => {
     ...otherSplit,
   };
 
+  //BUG this seems to return too little
+
   const allData = {
     arrayOfData: filterSensitve,
     onsetByGender: { ...ageOfOnsetByGender },

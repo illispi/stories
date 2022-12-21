@@ -245,8 +245,8 @@ const TextComponent: Component<{
 
       <A href={`${props.stat}`}>
         <div
-          class="m-2 mt-8 mb-8 rounded-full bg-blue-500 p-3
-      font-semibold text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+          class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
+      text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
         >
           Show more
         </div>
@@ -259,6 +259,8 @@ const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode
+
+  console.log(personalStats());
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
