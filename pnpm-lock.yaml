@@ -72,9 +72,6 @@ importers:
       '@motionone/solid': ^10.15.4
       '@solidjs/meta': ^0.28.2
       '@solidjs/router': ^0.5.1
-      '@tanstack/solid-query': ^4.19.1
-      '@trpc/client': ^10.5.0
-      '@trpc/server': ^10.5.0
       '@types/pg': ^8.6.5
       '@typescript-eslint/eslint-plugin': ^5.46.1
       '@typescript-eslint/parser': ^5.46.1
@@ -83,6 +80,7 @@ importers:
       dotenv: ^16.0.3
       eslint: ^8.29.0
       eslint-plugin-solid: ^0.9.1
+      eslint-plugin-tailwindcss: ^3.7.1
       kysely: ^0.22.0
       pg: ^8.8.0
       postcss: ^8.4.20
@@ -90,8 +88,6 @@ importers:
       solid-js: ^1.6.5
       solid-start: ^0.2.7
       solid-start-node: ^0.2.7
-      solid-start-trpc: ^0.0.16
-      solid-trpc: ^0.0.9
       tailwindcss: ^3.2.4
       typescript: ^4.9.4
       undici: 5.14.0
@@ -102,17 +98,11 @@ importers:
       '@motionone/solid': 10.15.4_solid-js@1.6.5
       '@solidjs/meta': 0.28.2_solid-js@1.6.5
       '@solidjs/router': 0.5.1_solid-js@1.6.5
-      '@tanstack/solid-query': 4.19.1_solid-js@1.6.5
-      '@trpc/client': 10.5.0_@trpc+server@10.5.0
-      '@trpc/server': 10.5.0
       chartist: 1.3.0
-      dotenv: 16.0.3
       kysely: 0.22.0
       pg: 8.8.0
       solid-js: 1.6.5
       solid-start: 0.2.7_jfq6s65pvyuo652ytqnpyknqye
-      solid-start-trpc: 0.0.16_36hkmyezda4wsxhqu56djxxqca
-      solid-trpc: 0.0.9_7uxzxmkypiphlqnpkfsx3gwq74
       undici: 5.14.0
       zod: 3.20.2
       zod-types: link:../../packages/zod-types
@@ -121,8 +111,10 @@ importers:
       '@typescript-eslint/eslint-plugin': 5.46.1_imrg37k3svwu377c6q7gkarwmi
       '@typescript-eslint/parser': 5.46.1_ha6vam6werchizxrnqvarmz2zu
       autoprefixer: 10.4.13_postcss@8.4.20
+      dotenv: 16.0.3
       eslint: 8.29.0
       eslint-plugin-solid: 0.9.1_ha6vam6werchizxrnqvarmz2zu
+      eslint-plugin-tailwindcss: 3.7.1
       postcss: 8.4.20
       sass: 1.56.2
       solid-start-node: 0.2.7_5rcqlkztk6lvdy7aksayuiud3e
@@ -1713,33 +1705,8 @@ packages:
     dependencies:
       solid-js: 1.6.5
 
-  /@tanstack/query-core/4.19.1:
-    resolution: {integrity: sha512-Zp0aIose5C8skBzqbVFGk9HJsPtUhRVDVNWIqVzFbGQQgYSeLZMd3Sdb4+EnA5wl1J7X+bre2PJGnQg9x/zHOA==}
-    dev: false
-
-  /@tanstack/solid-query/4.19.1_solid-js@1.6.5:
-    resolution: {integrity: sha512-eYwRXKbmkcaWsGXuhyfCtxYDUGJp6Yp57Vm5sJ9uWJh6wIUax+vii6fF0Mi0R3qzOxtO5xxhyCpL7WRaYvJ9ig==}
-    peerDependencies:
-      solid-js: ^1.5.7
-    dependencies:
-      '@tanstack/query-core': 4.19.1
-      solid-js: 1.6.5
-    dev: false
-
-  /@trpc/client/10.5.0_@trpc+server@10.5.0:
-    resolution: {integrity: sha512-ULRL6YUi/4sMzZnqS3VCe/VduPZgY24wdC4canpwWZfHj+O0kHz3KR260DzEw0QrpLrOwmkIWOlQKzVBn2lLgQ==}
-    peerDependencies:
-      '@trpc/server': 10.5.0
-    dependencies:
-      '@trpc/server': 10.5.0
-    dev: false
-
   /@trpc/server/10.1.0:
     resolution: {integrity: sha512-UiRZPApLruhi1UKukTNsB9igFBEhEA0aMxy86Xp1OvbzuY00yoFcvDUYsBdBjp9mzIHR3yNjqrlfS/RNpPhZEw==}
-    dev: false
-
-  /@trpc/server/10.5.0:
-    resolution: {integrity: sha512-AJ4ckDpnN8xuqWBox68KDTFpG12ZxKkW7fi9XJ+TLtyyNyqOMVUvKH9070CdxhqBZjebTASryE+/6lntkDFQxA==}
     dev: false
 
   /@tsconfig/node10/1.0.9:
@@ -3288,6 +3255,17 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - typescript
+    dev: true
+
+  /eslint-plugin-tailwindcss/3.7.1:
+    resolution: {integrity: sha512-MCPpVp5VvNYuRz1JYN9sN0r/cgAt3SfIlKbvYjVij+T/8r0z4U8nPY/c07vm+dLYb7mBv9N9LLIR4l9pLHSJaQ==}
+    engines: {node: '>=12.13.0'}
+    dependencies:
+      fast-glob: 3.2.12
+      postcss: 8.4.20
+      tailwindcss: 3.2.4_postcss@8.4.20
+    transitivePeerDependencies:
+      - ts-node
     dev: true
 
   /eslint-scope/5.1.1:
@@ -5377,20 +5355,6 @@ packages:
       - supports-color
     dev: true
 
-  /solid-start-trpc/0.0.16_36hkmyezda4wsxhqu56djxxqca:
-    resolution: {integrity: sha512-99/EGIE0SObmCVhZR00bYpkEQpCDP22YgjalQpVgm0BKy2+tJzEC6vdvOII2Ppa0Fm7iPwc4LDZoFX2E3KYmsg==}
-    peerDependencies:
-      '@trpc/client': ^10.0.0
-      '@trpc/server': ^10.0.0
-      solid-js: ^1.5.7
-      solid-start: ^0.2.1
-    dependencies:
-      '@trpc/client': 10.5.0_@trpc+server@10.5.0
-      '@trpc/server': 10.5.0
-      solid-js: 1.6.5
-      solid-start: 0.2.7_jfq6s65pvyuo652ytqnpyknqye
-    dev: false
-
   /solid-start/0.2.7_jfq6s65pvyuo652ytqnpyknqye:
     resolution: {integrity: sha512-e/h4kE9lATMsX0PKKM07y6rPCt+AV8TE6n1m+8LZzgsBWtO9G/qKHEbQsjx+RCNqEi0zTl6gVSxPfXVQcKocXg==}
     hasBin: true
@@ -5436,20 +5400,6 @@ packages:
       wait-on: 6.0.1_debug@4.3.4
     transitivePeerDependencies:
       - supports-color
-
-  /solid-trpc/0.0.9_7uxzxmkypiphlqnpkfsx3gwq74:
-    resolution: {integrity: sha512-hBa71XPQHtU6AwYQiPNwmQeuMaXhdRu4kLTIoUq34W4UTbf4nnkK/Q3B53jeIAhhOWnRQ3mXc0uxyhAwdHAOEA==}
-    peerDependencies:
-      '@tanstack/solid-query': ^4.6.1
-      '@trpc/client': 9.27.2
-      '@trpc/server': 9.27.2
-      solid-js: ^1.5.3
-    dependencies:
-      '@tanstack/solid-query': 4.19.1_solid-js@1.6.5
-      '@trpc/client': 10.5.0_@trpc+server@10.5.0
-      '@trpc/server': 10.5.0
-      solid-js: 1.6.5
-    dev: false
 
   /sonic-boom/3.2.0:
     resolution: {integrity: sha512-SbbZ+Kqj/XIunvIAgUZRlqd6CGQYq71tRRbXR92Za8J/R3Yh4Av+TWENiSiEgnlwckYLyP0YZQWVfyNC0dzLaA==}
