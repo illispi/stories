@@ -1,7 +1,7 @@
 import { createContext, createSignal, Index, useContext } from "solid-js";
 import type { ParentComponent, Component } from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
-import { useRouteData } from "solid-start";
+import { A, useRouteData } from "solid-start";
 import PieChartCustom from "~/components/PieChartCustom";
 import type { ChartistData } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
@@ -9,13 +9,13 @@ import BarChartCustom from "~/components/BarChartCustom";
 import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
 import { createServerData$ } from "solid-start/server";
-import { test } from "./api/test";
+import { personalStatsGet } from "../api/server";
 import type { AxisOptions, BarChartOptions } from "chartist";
 
-type PersonalStats = Awaited<ReturnType<typeof test>>;
+type PersonalStats = Awaited<ReturnType<typeof personalStatsGet>>;
 
 export function routeData() {
-  return createServerData$(() => test());
+  return createServerData$(() => personalStatsGet());
 }
 const DataContext = createContext<typeof routeData>();
 const useData = () => {
@@ -242,6 +242,15 @@ const TextComponent: Component<{
           </div>
         )}
       </Index>
+
+      <A href={`${props.stat}`}>
+        <div
+          class="m-2 mt-8 mb-8 rounded-full bg-blue-500 p-3
+      font-semibold text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+        >
+          Show more
+        </div>
+      </A>
     </div>
   );
 };
@@ -252,7 +261,6 @@ const Stats: ParentComponent = () => {
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
-
 
   return (
     <DataContext.Provider value={personalStats}>

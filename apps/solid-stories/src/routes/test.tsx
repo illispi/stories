@@ -1,10 +1,10 @@
 import { useRouteData } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import PieChartCustom from "~/components/PieChartCustom";
-import { test } from "~/routes/api/test";
+import { personalStatsGet } from "~/routes/api/server";
 
 export function routeData() {
-  return createServerData$(async () => await test());
+  return createServerData$(async () => await personalStatsGet());
 }
 
 const Test = () => {

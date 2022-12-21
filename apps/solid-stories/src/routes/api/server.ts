@@ -16,7 +16,7 @@ const db = new Kysely<DB>({
   }),
 });
 
-export const test = async () => {
+export const personalStatsGet = async () => {
   const allPersonalStats = await db
     .selectFrom("personal_questions")
     .selectAll()
