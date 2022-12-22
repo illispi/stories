@@ -1,4 +1,4 @@
 export interface ChartistData {
   labels: string[];
-  series: number[];
+  series: number[][] | number[];
 }

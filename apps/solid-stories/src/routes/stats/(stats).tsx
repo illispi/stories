@@ -1,4 +1,10 @@
-import { createContext, createSignal, Index, useContext } from "solid-js";
+import {
+  createContext,
+  createEffect,
+  createSignal,
+  Index,
+  useContext,
+} from "solid-js";
 import type { ParentComponent, Component } from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
 import { A, useRouteData } from "solid-start";
@@ -17,7 +23,7 @@ type PersonalStats = Awaited<ReturnType<typeof personalStatsGet>>;
 export function routeData() {
   return createServerData$(() => personalStatsGet());
 }
-const DataContext = createContext<typeof routeData>();
+const DataContext = createContext<ReturnType<typeof routeData>>();
 const useData = () => {
   return useContext(DataContext);
 };
@@ -87,7 +93,7 @@ const YesOrNoComponent: Component<{
   const personalStats = useData();
 
   return (
-    <>
+    <Show when={!personalStats?.loading}>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
         <PieChartCustom
@@ -97,16 +103,18 @@ const YesOrNoComponent: Component<{
                 (personalStats()?.arrayOfData.filter(
                   (e) => e[props.stat] === true
                 ).length /
-                  personalStats()?.arrayOfData.filter((e) => e[props.stat])
-                    .length) *
+                  personalStats()?.arrayOfData.filter(
+                    (e) => e[props.stat] !== null
+                  ).length) *
                   100
               )}%`,
               `No ${Math.floor(
                 (personalStats()?.arrayOfData.filter(
                   (e) => e[props.stat] === false
                 ).length /
-                  personalStats()?.arrayOfData.filter((e) => e[props.stat])
-                    .length) *
+                  personalStats()?.arrayOfData.filter(
+                    (e) => e[props.stat] !== null
+                  ).length) *
                   100
               )}%`,
             ],
@@ -120,7 +128,7 @@ const YesOrNoComponent: Component<{
           }}
         />
       </div>
-    </>
+    </Show>
   );
 };
 
@@ -268,7 +276,9 @@ const Stats: ParentComponent = () => {
     <DataContext.Provider value={personalStats}>
       <ErrorBoundary fallback={(err) => err}>
         <Show
-          when={!personalStats.loading || personalStats.error}
+          when={
+            !personalStats.loading && !personalStats.error && personalStats()
+          }
           fallback={<div>loading</div>}
         >
           <div class="mt-8 flex w-screen flex-col items-center justify-center">

@@ -342,7 +342,7 @@ export const UnitQuestion: ParentComponent<{
               <input
                 id="int"
                 type="tel"
-                value={number}
+                value={number()}
                 onInput={(e) => {
                   setNumber(e.target.value);
                   setError(null);
