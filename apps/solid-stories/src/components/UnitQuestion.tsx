@@ -119,13 +119,13 @@ export const UnitQuestion: ParentComponent<{
     sendData(questionsLs);
   };
 
-  const handleMultiSubmit = (values: typeof multiSelections) => {
-    if (!values()) {
+  const handleMultiSubmit = (values: Record<"children" | "after_hospital_satisfaction" | "age_of_onset" | "anhedonia" | "apathy" | "cannabis" | "care_after_hospital" | "cognitive_symptoms" | "cognitive_symptoms_description" | "current_age" | "current_med" | "describe_hospital" | "describe_prodromal_symptoms" | "efficacy_of_med" | "flat_expressions" | "friends" | "gained_weight" | "gender" | "goals_after" | "goals_changed" | "hospital_satisfaction" | "hospitalized_on_first" | "hospitalized_voluntarily" | "lack_of_motivation" | "length_of_psychosis" | "life_satisfaction" | "life_satisfaction_description" | "life_situation" | "negative_symptoms" | "no_interest_socially" | "not_have_schizophrenia" | "not_have_schizophrenia_description" | "other_help" | "partner" | "personality_after" | "personality_before" | "personality_changed" | "poverty_of_speech" | "prodromal_symptoms" | "psychosis_how_many" | "quitting" | "quitting_regret" | "quitting_what_happened" | "quitting_why" | "responded_to_telling" | "side_effs_dizziness" | "side_effs_movement_effects" | "side_effs_sedation" | "side_effs_sexual" | "side_effs_tardive" | "side_effs_weight_gain" | "smoking" | "smoking_amount" | "suicidal_thoughts" | "suicide_attempts" | "symptoms_delusions" | "symptoms_disorganized" | "symptoms_hallucinations" | "symptoms_paranoia" | "told_employer" | "told_family" | "told_friends" | "told_if_asked" | "told_nobody" | "weight_amount" | "what_kind_of_care_after" | "what_others_should_know" | "worst_symptom", boolean> | undefined) => {
+    if (!values) {
       return undefined; //TODO might need something better, this a null check
     }
     if (
       (Object.keys(values) as Array<keyof PersonalQuestions>).filter(
-        (e) => values()[e] === false
+        (e) => values[e] === false
       ).length === multiSelect?.map((e) => e[0]).length
     ) {
       setError("Please select at least one option");
@@ -156,11 +156,11 @@ export const UnitQuestion: ParentComponent<{
   ) => {
     try {
       if (questionDB === "weight_amount") {
-        localStorage.setItem("system", JSON.stringify(metric));
+        localStorage.setItem("system", JSON.stringify(metric()));
       }
       if (
         questionDB === "weight_amount" &&
-        !metric &&
+        !metric() &&
         typeof value === "string"
       ) {
         value = { [questionDB]: Math.floor(parseInt(value) * 0.45359237) };
@@ -246,7 +246,7 @@ export const UnitQuestion: ParentComponent<{
     //TODO cant be too old validation
 
     if (validateInt(number())) {
-      handleSubmit({ [questionDB]: number });
+      handleSubmit({ [questionDB]: number() });
       setError(null);
     } else {
       setError("Please provide whole numbers only");
@@ -255,11 +255,11 @@ export const UnitQuestion: ParentComponent<{
 
   const handleText = (e) => {
     e.preventDefault();
-    if (text.length < 1000 && text.length !== 0) {
-      handleSubmit({ [questionDB]: text });
+    if (text().length < 1000 && text().length !== 0) {
+      handleSubmit({ [questionDB]: text() });
       setError(null);
     } else {
-      if (text.length >= 1000) {
+      if (text().length >= 1000) {
         setError("Maximum allowed character amount is 1000");
       } else {
         setError("Please provide some text");
@@ -411,7 +411,7 @@ export const UnitQuestion: ParentComponent<{
           </div>
         </Box>
       </Match>
-      <Match when={questionType === "multiSelect" && !multiSelections()}>
+      <Match when={questionType === "multiSelect"}>
         <Box question={question}>
           <div class="flex flex-col items-center justify-end ">
             <ErrorCustom setError={setError} message={error()} />
@@ -425,25 +425,22 @@ export const UnitQuestion: ParentComponent<{
                         : null
                     }
                     onClick={() => {
-                      setMultiSelections()(() =>
+                      setMultiSelections(
                         multiSelections()[v[0]] === true
-                          ? { ...multiSelections, [v[0]]: false }
-                          : { ...multiSelections, [v[0]]: true }
+                          ? { ...multiSelections(), [v[0]]: false }
+                          : { ...multiSelections(), [v[0]]: true }
                       );
                       setError(null);
                     }}
                   >
                     {v[1]}
                   </CustomButton>
-
-                  <CustomButton
-                    onClick={() => handleMultiSubmit(multiSelections)}
-                  >
-                    Next
-                  </CustomButton>
                 </>
               )}
             </For>
+            <CustomButton onClick={() => handleMultiSubmit(multiSelections())}>
+              Next
+            </CustomButton>
           </div>
         </Box>
       </Match>
