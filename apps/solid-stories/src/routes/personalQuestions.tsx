@@ -23,13 +23,9 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
       transition={{ duration: 1.2 }}
+      class="absolute z-50 flex h-full w-full flex-col items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
     >
-      <div
-        class="absolute z-50 flex h-full w-full flex-col
-  items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500 "
-      >
-        {props.children}
-      </div>
+      {props.children}
     </Motion.div>
   );
 };
@@ -40,7 +36,7 @@ const Questions: ParentComponent<{
   paginate: (newDirection: number) => void;
 }> = (props) => {
   return (
-    <Show fallback={<div>Loading....</div>} when={props.page > 0}>
+    <Show fallback={<div>Loading....</div>} when={props.page >= 0}>
       <Show
         fallback={<div>Done!!!</div>}
         when={props.page !== questions.length}

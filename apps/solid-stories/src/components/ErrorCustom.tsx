@@ -1,6 +1,5 @@
 import { Presence, Motion } from "@motionone/solid";
-import type { ParentComponent, Setter } from "solid-js";
-import { createEffect } from "solid-js";
+import { createEffect, ParentComponent, Setter } from "solid-js";
 
 const ErrorCustom: ParentComponent<{
   message: string | null;
