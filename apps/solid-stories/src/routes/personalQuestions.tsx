@@ -65,8 +65,8 @@ const PersonalQuestions: ParentComponent = () => {
   //NOTE does this nedd to be memo or use on directive?
 
   const paginate = (newDirection: number) => {
-    setPage(page() + newDirection);
     setDirection(newDirection);
+    setPage(page() + newDirection);
   };
 
   createEffect(() => {
