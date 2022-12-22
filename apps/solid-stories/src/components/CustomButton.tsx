@@ -2,7 +2,7 @@ import type { JSX, ParentComponent } from "solid-js";
 import { splitProps } from "solid-js";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
-  classChange?: string;
+  classChange?: string | null;
   type?: "button" | "submit" | "reset";
 }
 const CustomButton: ParentComponent<Props> = (props) => {
