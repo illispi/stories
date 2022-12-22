@@ -119,7 +119,9 @@ export const UnitQuestion: ParentComponent<{
     sendData(questionsLs);
   };
 
-  const handleMultiSubmit = (values: Record<"children" | "after_hospital_satisfaction" | "age_of_onset" | "anhedonia" | "apathy" | "cannabis" | "care_after_hospital" | "cognitive_symptoms" | "cognitive_symptoms_description" | "current_age" | "current_med" | "describe_hospital" | "describe_prodromal_symptoms" | "efficacy_of_med" | "flat_expressions" | "friends" | "gained_weight" | "gender" | "goals_after" | "goals_changed" | "hospital_satisfaction" | "hospitalized_on_first" | "hospitalized_voluntarily" | "lack_of_motivation" | "length_of_psychosis" | "life_satisfaction" | "life_satisfaction_description" | "life_situation" | "negative_symptoms" | "no_interest_socially" | "not_have_schizophrenia" | "not_have_schizophrenia_description" | "other_help" | "partner" | "personality_after" | "personality_before" | "personality_changed" | "poverty_of_speech" | "prodromal_symptoms" | "psychosis_how_many" | "quitting" | "quitting_regret" | "quitting_what_happened" | "quitting_why" | "responded_to_telling" | "side_effs_dizziness" | "side_effs_movement_effects" | "side_effs_sedation" | "side_effs_sexual" | "side_effs_tardive" | "side_effs_weight_gain" | "smoking" | "smoking_amount" | "suicidal_thoughts" | "suicide_attempts" | "symptoms_delusions" | "symptoms_disorganized" | "symptoms_hallucinations" | "symptoms_paranoia" | "told_employer" | "told_family" | "told_friends" | "told_if_asked" | "told_nobody" | "weight_amount" | "what_kind_of_care_after" | "what_others_should_know" | "worst_symptom", boolean> | undefined) => {
+  const handleMultiSubmit = (
+    values: Record<keyof PersonalQuestions, boolean>
+  ) => {
     if (!values) {
       return undefined; //TODO might need something better, this a null check
     }
@@ -299,8 +301,8 @@ export const UnitQuestion: ParentComponent<{
             <div class="flex flex-col items-center justify-end">
               <input
                 id="int"
-                /* type="tel"
-                value={number()} */
+                type="tel"
+                value={number()}
                 onInput={(e) => {
                   setNumber(e.target.value);
                   setError(null);
@@ -339,8 +341,8 @@ export const UnitQuestion: ParentComponent<{
             <div class="flex flex-col items-center justify-end">
               <input
                 id="int"
-                /*  type="tel"
-              value={number} */
+                type="tel"
+                value={number}
                 onInput={(e) => {
                   setNumber(e.target.value);
                   setError(null);
@@ -361,7 +363,7 @@ export const UnitQuestion: ParentComponent<{
               <input
                 id="int"
                 type="text"
-                /*  value={text} */
+                value={text()}
                 onInput={(e) => {
                   setText(e.target.value);
                   setError(null);
