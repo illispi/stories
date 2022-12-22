@@ -34,18 +34,20 @@ const StatsText = () => {
             each={personalStats()?.arrayOfData}
             fallback={<div>failure</div>}
           >
-            {(stat, i) => (
-              <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
-                <h5 class="m-2 my-8 font-bold">{i() + 1}.</h5>
-                <p class="w-full">{stat[params.statsText]}</p>
-              </div>
-            )}
+            {(stat, i) =>
+              stat[params.statsText] ? (
+                <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
+                  <h5 class="m-2 my-8 font-bold">{i() + 1}.</h5>
+                  <p class="w-full">{stat[params.statsText]}</p>
+                </div>
+              ) : null
+            }
           </For>
 
           <A href={`/stats`}>
             <div
-              class="m-2 mb-8 mt-8 rounded-full bg-blue-500 p-3
-          font-semibold text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+              class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
+          text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
             >
               Back to Stats
             </div>

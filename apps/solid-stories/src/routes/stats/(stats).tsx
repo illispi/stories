@@ -238,7 +238,8 @@ const TextComponent: Component<{
   const personalStats = useData();
   const arr = personalStats()
     .arrayOfData.map((e) => e[props.stat])
-    .slice(0.3);
+    .filter((f) => f !== null)
+    .slice(0, 8);
   return (
     <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
@@ -266,7 +267,7 @@ const TextComponent: Component<{
 const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
-  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log
+  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
 
   console.log(personalStats());
 
