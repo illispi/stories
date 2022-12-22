@@ -277,10 +277,10 @@ export const UnitQuestion: ParentComponent<{
                 <div class="m-2">
                   <CustomButton
                     onClick={() => handleSubmit({ [questionDB]: v })}
-                    class={
+                    classChange={
                       v === selection()
-                        ? `bg-green-500 hover:bg-green-600 active:bg-green-600`
-                        : ""
+                        ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                        : null
                     }
                   >
                     {firstLetterUpperCase(v)}
@@ -311,7 +311,7 @@ export const UnitQuestion: ParentComponent<{
                 classChange={
                   !metric()
                     ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                    : ""
+                    : null
                 }
               >
                 Imperial (lbs)
@@ -321,7 +321,7 @@ export const UnitQuestion: ParentComponent<{
                 classChange={
                   metric()
                     ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                    : ""
+                    : null
                 }
               >
                 Metric (kg)
@@ -381,7 +381,7 @@ export const UnitQuestion: ParentComponent<{
               classChange={
                 yesOrNO() === true
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                  : ""
+                  : null
               }
               onClick={() => handleSubmit({ [questionDB]: true })}
             >
@@ -391,7 +391,7 @@ export const UnitQuestion: ParentComponent<{
               classChange={
                 yesOrNO() === false
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                  : ""
+                  : null
               }
               onClick={() =>
                 handleSubmit(
@@ -422,7 +422,7 @@ export const UnitQuestion: ParentComponent<{
                     classChange={
                       multiSelections()[v[0]] === true
                         ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                        : ""
+                        : null
                     }
                     onClick={() => {
                       setMultiSelections()(() =>
