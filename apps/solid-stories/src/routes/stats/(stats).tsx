@@ -16,14 +16,14 @@ import BarChartCustom from "~/components/BarChartCustom";
 import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
 import { createServerData$ } from "solid-start/server";
-import { personalStatsGet } from "../api/server";
+import { personalStatsGet } from "~/server/server";
 import type { AxisOptions, BarChartOptions } from "chartist";
 
 type PersonalStats = Awaited<ReturnType<typeof personalStatsGet>>;
 
-export function routeData() {
+export const routeData = () => {
   return createServerData$(() => personalStatsGet());
-}
+};
 const DataContext = createContext<ReturnType<typeof routeData>>();
 const useData = () => {
   return useContext(DataContext);

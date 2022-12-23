@@ -2,7 +2,7 @@ import { For, Show } from "solid-js";
 import { A, useParams, useRouteData } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import { questions } from "~/data/personalQuestionsArr";
-import { personalStatsGet } from "../api/server";
+import { personalStatsGet } from "~/server/server";
 
 export function routeData() {
   return createServerData$(() => personalStatsGet());

@@ -6,6 +6,7 @@ import CustomButton from "~/components/CustomButton";
 import { questions } from "~/data/personalQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
 
+
 const Counter: ParentComponent<{ page: number }> = (props) => {
   return (
     <div class="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">

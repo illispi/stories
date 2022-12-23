@@ -2,7 +2,7 @@ import { Motion, Presence } from "@motionone/solid";
 import { useRouteData } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import PieChartCustom from "~/components/PieChartCustom";
-import { personalStatsGet } from "~/routes/api/server";
+import { personalStatsGet } from "~/server/server";
 
 const Test = () => {
   return (

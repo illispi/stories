@@ -3,6 +3,7 @@ import { Kysely, PostgresDialect, sql } from "kysely";
 import type { DB } from "./db/dbTypes";
 import "dotenv/config";
 import { PersonalQuestions } from "zod-types";
+import { createCookieSessionStorage, json, redirect } from "solid-start";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],
@@ -17,29 +18,71 @@ const db = new Kysely<DB>({
   }),
 });
 
-export const personalStatsPost = async (data) => {
-  // if (ctx.req.session.id) {
-  console.log(data);
-  const user = await db
-    .insertInto("user")
-    .values({ user_id: sql`DEFAULT` })
-    .returning("user_id")
-    .executeTakeFirstOrThrow();
+const storage = createCookieSessionStorage({
+  cookie: {
+    name: "session",
+    secure: import.meta.env.PROD,
+    secrets: ["egesgsgeskpsgoåkogpeskopgesopesgkokpsgeegsokpesgpko"],
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+    httpOnly: true,
+  },
+});
 
-  console.log(user, "here1");
+const getSessionFromCookie = async (request: Request) => {
+  const cookie = request.headers.get("Cookie") ?? "";
+  const session = await storage.getSession(cookie);
+  return { userId: session.get("userId"), session: session };
+};
 
-  const insertion = await db
-    .insertInto("personal_questions")
-    .values({ ...data, user_id: user.user_id }) //BUG what if session.if is null or otherwise wrong., this should be session id
-    .execute();
+export const createOrGetUser = async (request: Request) => {
+  const { session, userId } = await getSessionFromCookie(request);
+  if (!userId) {
+    const user = await db
+      .insertInto("user")
+      .values({ user_id: sql`DEFAULT` })
+      .returning("user_id")
+      .executeTakeFirstOrThrow();
 
-  if (insertion) {
-    //BUG what if insertion returns no success
-    return "Added, waiting for approval";
+    if (user.user_id) {
+      session.set("userId", user.user_id);
+      return json("Cookie set", {
+        headers: {
+          "Set-Cookie": await storage.commitSession(session),
+        },
+      });
+    } else {
+      return "error";
+    }
+  }
+  return "Already has a cookie";
+};
+
+export const personalStatsPost = async (data, request: Request) => {
+  const { userId } = await getSessionFromCookie(request);
+
+  if (!userId) {
+    return "no userId in session found";
   }
 
-  return "failed to add for approval";
-  // }
+  const user = await db
+    .selectFrom("user")
+    .select("user_id")
+    .where("user_id", "=", userId)
+    .executeTakeFirstOrThrow();
+
+  if (user?.user_id) {
+    const insertion = await db
+      .insertInto("personal_questions")
+      .values({ ...data, user_id: user.user_id })
+      .execute();
+
+    if (insertion) {
+      return "Added succesfully";
+    }
+  }
+  return "failed to insert";
 };
 
 export const personalStatsGet = async () => {
@@ -123,3 +166,5 @@ export const personalStatsGet = async () => {
 
   return allData;
 };
+
+//BUG in solid start? server doesnt recompile even though it says it does

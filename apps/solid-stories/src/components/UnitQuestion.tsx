@@ -4,7 +4,7 @@ import { createServerAction$ } from "solid-start/server";
 import type { PersonalQuestions } from "zod-types";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
-import { personalStatsPost } from "~/routes/api/server";
+import { personalStatsPost } from "~/server/server";
 import CustomButton from "./CustomButton";
 import ErrorCustom from "./ErrorCustom";
 
@@ -34,8 +34,8 @@ export const UnitQuestion: ParentComponent<{
   paginate: (newDirection: number) => void;
 }> = (props) => {
   const [sendingData, sendData] = createServerAction$(
-    async (data: PersonalQuestions) => {
-      await personalStatsPost(data);
+    async (data: PersonalQuestions, { request }) => {
+      await personalStatsPost(data, request);
     }
   );
 

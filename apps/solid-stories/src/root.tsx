@@ -11,8 +11,10 @@ import {
   Routes,
   Scripts,
   Title,
+  useRouteData,
 } from "solid-start";
 import NavBar from "./components/Navbar";
+import CreateUser from "./components/CreateUser";
 
 export default function Root() {
   return (
@@ -26,6 +28,7 @@ export default function Root() {
         <Suspense>
           <ErrorBoundary>
             <NavBar />
+            <CreateUser />
             <Routes>
               <FileRoutes />
             </Routes>
