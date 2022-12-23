@@ -3,6 +3,7 @@ import {
   createEffect,
   createSignal,
   Index,
+  Suspense,
   useContext,
 } from "solid-js";
 import type { ParentComponent, Component } from "solid-js";
@@ -276,119 +277,128 @@ const Stats: ParentComponent = () => {
   return (
     <DataContext.Provider value={personalStats}>
       <ErrorBoundary fallback={(err) => err}>
-        <Show
-          when={
-            !personalStats.loading && !personalStats.error && personalStats()
-          }
-          fallback={<div>loading</div>}
-        >
-          <div class="mt-8 flex w-screen flex-col items-center justify-center">
-            <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
-              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                <h1 class="text-center font-semibold">Personal Stats</h1>
-              </div>
-              <div class="flex flex-col items-center justify-center">
-                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                  <Item
-                    name={"Total responses:"}
-                    value={`${personalStats()?.arrayOfData.length}`}
-                  />
-                  <DoughnutComponent
-                    header="Share of genders"
-                    data={dataGender(personalStats()?.arrayOfData)}
-                  />
-                  <CustomBarComponent
-                    header="Age of responses"
-                    data={dataAgeOfRes(personalStats()?.arrayOfData)}
-                    options={{ distributeSeries: true }}
-                  />
-                  <CustomBarComponent
-                    header="Age of Onset"
-                    data={dataOnset(personalStats()?.onsetByGender)}
-                  />
-
-                  <DoughnutComponent
-                    data={dataPsyLength(personalStats()?.arrayOfData)}
-                    header={"Length of first psychosis"}
-                  />
-
-                  <CustomButton
-                    onClick={() => {
-                      setByGenderPsyLength(!byGenderPsyLength());
-                    }}
-                  >
-                    {`${
-                      !byGenderPsyLength()
-                        ? "Show by gender"
-                        : "Close by gender"
-                    }`}
-                  </CustomButton>
+        <Suspense fallback={<div>Loading</div>}>
+          <Show
+            when={
+              !personalStats.loading && !personalStats.error && personalStats()
+            }
+            fallback={<div>loading</div>}
+            keyed
+          >
+            <div class="mt-8 flex w-screen flex-col items-center justify-center">
+              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                  <h1 class="text-center font-semibold">Personal Stats</h1>
                 </div>
+                <div class="flex flex-col items-center justify-center">
+                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                    <Item
+                      name={"Total responses:"}
+                      value={`${personalStats()?.arrayOfData.length}`}
+                    />
+                    <DoughnutComponent
+                      header="Share of genders"
+                      data={dataGender(personalStats().arrayOfData)}
+                    />
+                    <CustomBarComponent
+                      header="Age of responses"
+                      data={dataAgeOfRes(personalStats().arrayOfData)}
+                      options={{ distributeSeries: true }}
+                    />
+                    <CustomBarComponent
+                      header="Age of Onset"
+                      data={dataOnset(personalStats().onsetByGender)}
+                    />
 
-                <Presence>
-                  <Show when={byGenderPsyLength()}>
-                    <Motion.div
-                      initial={{ opacity: 0, height: 0, y: -600 }}
-                      animate={{
-                        opacity: 1,
-                        height: "auto",
-                        y: 0,
+                    <DoughnutComponent
+                      data={dataPsyLength(personalStats().arrayOfData)}
+                      header={"Length of first psychosis"}
+                    />
+
+                    <CustomButton
+                      onClick={() => {
+                        setByGenderPsyLength(!byGenderPsyLength());
                       }}
-                      exit={{
-                        opacity: 0,
-                        height: 0,
-                        y: -600,
-                      }}
-                      transition={{ duration: 1.5 }}
-                      class="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
                     >
-                      <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
-                        <DoughnutComponent
-                          data={psyLengthByGender(personalStats()?.arrayOfData)}
-                          header={"First psychosis male"}
-                        />
+                      {`${
+                        !byGenderPsyLength()
+                          ? "Show by gender"
+                          : "Close by gender"
+                      }`}
+                    </CustomButton>
+                  </div>
 
-                        <DoughnutComponent
-                          data={psyLengthByGender(personalStats()?.arrayOfData)}
-                          header={"First psychosis female"}
-                        />
+                  <Presence>
+                    <Show when={byGenderPsyLength()}>
+                      <Motion.div
+                        initial={{ opacity: 0, height: 0, y: -600 }}
+                        animate={{
+                          opacity: 1,
+                          height: "auto",
+                          y: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          height: 0,
+                          y: -600,
+                        }}
+                        transition={{ duration: 1.5 }}
+                        class="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
+                      >
+                        <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
+                          <DoughnutComponent
+                            data={psyLengthByGender(
+                              personalStats()?.arrayOfData
+                            )}
+                            header={"First psychosis male"}
+                          />
 
-                        <DoughnutComponent
-                          data={psyLengthByGender(personalStats()?.arrayOfData)}
-                          header={"First psychosis other"}
-                        />
-                      </div>
-                    </Motion.div>
-                  </Show>
-                </Presence>
-                <YesOrNoComponent
-                  header="Hospitalized on first psychosis"
-                  stat={"hospitalized_on_first"}
-                />
-                <YesOrNoComponent
-                  header="Were satisfied with hospital care"
-                  stat={"hospital_satisfaction"}
-                />
-                <TextComponent
-                  stat={"describe_hospital"}
-                  header={"Hospital care opinions"}
-                />
-                <YesOrNoComponent
-                  header="Recieved care after hospitalization"
-                  stat={"care_after_hospital"}
-                />
-                <TextComponent
-                  stat={"what_kind_of_care_after"}
-                  header={"Care after opinions"}
-                />
-                <YesOrNoComponent
-                  header="Were satisifed with after hospitalization care"
-                  stat={"after_hospital_satisfaction"}
-                />
+                          <DoughnutComponent
+                            data={psyLengthByGender(
+                              personalStats()?.arrayOfData
+                            )}
+                            header={"First psychosis female"}
+                          />
+
+                          <DoughnutComponent
+                            data={psyLengthByGender(
+                              personalStats()?.arrayOfData
+                            )}
+                            header={"First psychosis other"}
+                          />
+                        </div>
+                      </Motion.div>
+                    </Show>
+                  </Presence>
+                  <YesOrNoComponent
+                    header="Hospitalized on first psychosis"
+                    stat={"hospitalized_on_first"}
+                  />
+                  <YesOrNoComponent
+                    header="Were satisfied with hospital care"
+                    stat={"hospital_satisfaction"}
+                  />
+                  <TextComponent
+                    stat={"describe_hospital"}
+                    header={"Hospital care opinions"}
+                  />
+                  <YesOrNoComponent
+                    header="Recieved care after hospitalization"
+                    stat={"care_after_hospital"}
+                  />
+                  <TextComponent
+                    stat={"what_kind_of_care_after"}
+                    header={"Care after opinions"}
+                  />
+                  <YesOrNoComponent
+                    header="Were satisifed with after hospitalization care"
+                    stat={"after_hospital_satisfaction"}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </Show>
+          </Show>
+        </Suspense>
       </ErrorBoundary>
     </DataContext.Provider>
   );
