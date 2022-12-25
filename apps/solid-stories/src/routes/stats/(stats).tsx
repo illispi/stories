@@ -331,16 +331,16 @@ const Stats: ParentComponent = () => {
                   <Presence>
                     <Show when={byGenderPsyLength()}>
                       <Motion.div
-                        initial={{ opacity: 0, height: 0, y: -600 }}
+                        initial={{ opacity: 0, y: -1400 }}
                         animate={{
                           opacity: 1,
-                          height: "auto",
+
                           y: 0,
                         }}
                         exit={{
                           opacity: 0,
-                          height: 0,
-                          y: -600,
+
+                          y: -1400,
                         }}
                         transition={{ duration: 1.5 }}
                         class="z-[2] my-4 flex w-full flex-col items-center justify-center rounded-3xl border-2 border-gray-900 bg-gray-100"
@@ -348,21 +348,27 @@ const Stats: ParentComponent = () => {
                         <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData
+                              personalStats()?.arrayOfData.filter(
+                                (e) => e.gender === "male"
+                              )
                             )}
                             header={"First psychosis male"}
                           />
 
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData
+                              personalStats()?.arrayOfData.filter(
+                                (e) => e.gender === "female"
+                              )
                             )}
                             header={"First psychosis female"}
                           />
 
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData
+                              personalStats()?.arrayOfData.filter(
+                                (e) => e.gender === "other"
+                              )
                             )}
                             header={"First psychosis other"}
                           />
@@ -370,30 +376,32 @@ const Stats: ParentComponent = () => {
                       </Motion.div>
                     </Show>
                   </Presence>
-                  <YesOrNoComponent
-                    header="Hospitalized on first psychosis"
-                    stat={"hospitalized_on_first"}
-                  />
-                  <YesOrNoComponent
-                    header="Were satisfied with hospital care"
-                    stat={"hospital_satisfaction"}
-                  />
-                  <TextComponent
-                    stat={"describe_hospital"}
-                    header={"Hospital care opinions"}
-                  />
-                  <YesOrNoComponent
-                    header="Recieved care after hospitalization"
-                    stat={"care_after_hospital"}
-                  />
-                  <TextComponent
-                    stat={"what_kind_of_care_after"}
-                    header={"Care after opinions"}
-                  />
-                  <YesOrNoComponent
-                    header="Were satisifed with after hospitalization care"
-                    stat={"after_hospital_satisfaction"}
-                  />
+                 
+                    <YesOrNoComponent
+                      header="Hospitalized on first psychosis"
+                      stat={"hospitalized_on_first"}
+                    />
+                    <YesOrNoComponent
+                      header="Were satisfied with hospital care"
+                      stat={"hospital_satisfaction"}
+                    />
+                    <TextComponent
+                      stat={"describe_hospital"}
+                      header={"Hospital care opinions"}
+                    />
+                    <YesOrNoComponent
+                      header="Recieved care after hospitalization"
+                      stat={"care_after_hospital"}
+                    />
+                    <TextComponent
+                      stat={"what_kind_of_care_after"}
+                      header={"Care after opinions"}
+                    />
+                    <YesOrNoComponent
+                      header="Were satisifed with after hospitalization care"
+                      stat={"after_hospital_satisfaction"}
+                    />
+              
                 </div>
               </div>
             </div>

@@ -22,7 +22,7 @@ const storage = createCookieSessionStorage({
   cookie: {
     name: "session",
     secure: import.meta.env.PROD,
-    secrets: ["egesgsgeskpsgoåkogpeskopgesopesgkokpsgeegsokpesgpko"],
+    secrets: [process.env.SESSSION_SECRET],
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
