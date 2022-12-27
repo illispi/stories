@@ -29,6 +29,37 @@ const useData = () => {
   return useContext(DataContext);
 };
 
+const dataMedication = (data: PersonalStats["arrayOfData"]) => {
+  const labelsMeds = [
+    "risperidone (Risperdal)",
+    "quetiapine (Seroquel)",
+    "olanzapine (Zyprexa)",
+    "ziprasidone (Zeldox)",
+    "paliperidone (Invega)",
+    "aripiprazole (Abilify)",
+    "clozapine (Clozaril)",
+    "other",
+    "no medication",
+  ];
+
+  const medsArray = [
+    data.filter((e) => e.current_med === "risperidone (Risperdal)").length,
+    data.filter((e) => e.current_med === "quetiapine (Seroquel)").length,
+    data.filter((e) => e.current_med === "olanzapine (Zyprexa)").length,
+    data.filter((e) => e.current_med === "ziprasidone (Zeldox)").length,
+    data.filter((e) => e.current_med === "paliperidone (Invega)").length,
+    data.filter((e) => e.current_med === "aripiprazole (Abilify)").length,
+    data.filter((e) => e.current_med === "clozapine (Clozaril)").length,
+    data.filter((e) => e.current_med === "other").length,
+    data.filter((e) => e.current_med === "no medication").length,
+  ];
+
+  return {
+    labels: labelsMeds,
+    series: medsArray,
+  };
+};
+
 const Item: Component<{ name: string; value: string | number }> = (props) => {
   return (
     <div class="my-3 flex flex-col items-center justify-center">
@@ -239,80 +270,29 @@ const dataSideEffects = (data: PersonalStats["arrayOfData"]) => {
   };
 };
 
-const dataMedication = (data: PersonalStats["arrayOfData"]) => {
-  const labelsMeds = [
-    "risperidone (Risperdal)",
-    "quetiapine (Seroquel)",
-    "olanzapine (Zyprexa)",
-    "ziprasidone (Zeldox)",
-    "paliperidone (Invega)",
-    "aripiprazole (Abilify)",
-    "clozapine (Clozaril)",
-    "other",
-    "no medication",
-  ];
+const dataSelection = (
+  data: PersonalStats["arrayOfData"],
+  stat: keyof PersonalQuestions,
+  labels: string[]
+) => {
+  const total = data.filter((e) => e[stat]).length;
 
-  const medsArray = [
-    data.filter((e) => e.current_med === "risperidone (Risperdal)").length,
-    data.filter((e) => e.current_med === "quetiapine (Seroquel)").length,
-    data.filter((e) => e.current_med === "olanzapine (Zyprexa)").length,
-    data.filter((e) => e.current_med === "ziprasidone (Zeldox)").length,
-    data.filter((e) => e.current_med === "paliperidone (Invega)").length,
-    data.filter((e) => e.current_med === "aripiprazole (Abilify)").length,
-    data.filter((e) => e.current_med === "clozapine (Clozaril)").length,
-    data.filter((e) => e.current_med === "other").length,
-    data.filter((e) => e.current_med === "no medication").length,
-  ];
+  const series = labels.map((f) => data.filter((e) => e[stat] === f).length);
+
+  const labelsPercentage = labels.map(
+    (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
+  );
+
+  series.forEach((e, i) => {
+    if (e === 0) {
+      delete series[i];
+      delete labelsPercentage[i];
+    }
+  });
 
   return {
-    labels: labelsMeds,
-    series: medsArray,
-  };
-};
-const dataSmokingAmount = (data: PersonalStats["arrayOfData"]) => {
-  const labelsSmoking = [
-    "10 a day",
-    "20 or more a day",
-    "Less than 10 a day",
-    "Less than 10 a week",
-  ];
-
-  const smokingArray = [
-    data.filter((e) => e.smoking_amount === "10 a day").length,
-    data.filter((e) => e.smoking_amount === "20 or more a day").length,
-    data.filter((e) => e.smoking_amount === "Less than 10 a day").length,
-    data.filter((e) => e.smoking_amount === "Less than 10 a week").length,
-  ];
-
-  return {
-    labels: labelsSmoking,
-    series: smokingArray,
-  };
-};
-
-const dataQuitting = (data: PersonalStats["arrayOfData"]) => {
-  const sideEffs = data.filter((e) => e.quitting_why === "side effects").length;
-  const normalcy = data.filter((e) => e.quitting_why === "felt normal").length;
-  const affordability = data.filter((e) => e.quitting_why === "affordability")
-    .length;
-  const other = data.filter((e) => e.quitting_why === "other").length;
-
-  const total = data.filter((e) => e.quitting_why).length;
-
-  const labelsReasons = [
-    `side effects ${Math.floor((sideEffs / total) * 100)}%`,
-    `felt normal ${Math.floor((normalcy / total) * 100)}%`,
-    `affordability ${Math.floor((affordability / total) * 100)}%`,
-    `other ${Math.floor((other / total) * 100)}%`,
-  ];
-
-  //TODO add other option to database
-
-  const reasonsArray = [sideEffs, normalcy, affordability, other];
-
-  return {
-    labels: labelsReasons,
-    series: reasonsArray,
+    labels: labelsPercentage,
+    series: series,
   };
 };
 
@@ -585,7 +565,11 @@ const Stats: ParentComponent = () => {
                   />
                   <DoughnutComponent
                     header="Reasons on quitting medication"
-                    data={dataQuitting(personalStats()?.arrayOfData)}
+                    data={dataSelection(
+                      personalStats()?.arrayOfData,
+                      "quitting_why",
+                      ["side effects", "felt normal", "affordability", "other"]
+                    )}
                   />
                   <TextComponent
                     header="Happened after quitting medication"
@@ -607,7 +591,16 @@ const Stats: ParentComponent = () => {
                   <YesOrNoComponent header="Smoking" stat="smoking" />
                   <DoughnutComponent
                     header="Smoking tobacco amount"
-                    data={dataSmokingAmount(personalStats()?.arrayOfData)}
+                    data={dataSelection(
+                      personalStats()?.arrayOfData,
+                      "smoking_amount",
+                      [
+                        "10 a day",
+                        "20 or more a day",
+                        "Less than 10 a day",
+                        "Less than 10 a week",
+                      ]
+                    )}
                   />
                 </div>
               </div>
