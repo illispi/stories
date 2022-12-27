@@ -276,7 +276,7 @@ const CustomBarComponent: Component<{
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="mb-8 h-64 w-11/12">
+      <div class="mb-8 w-11/12">
         <BarChartCustom data={props.data} options={props.options} />
       </div>
     </>
@@ -479,8 +479,13 @@ const Stats: ParentComponent = () => {
                       horizontalBars: true,
                       axisY: { offset: 70 },
                       reverseData: true,
-                      height: "600",
+                      height: "500",
                     }}
+                  />
+
+                  <YesOrNoComponent
+                    header="Medications helped to psychosis symptoms"
+                    stat="efficacy_of_med"
                   />
                 </div>
               </div>
