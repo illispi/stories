@@ -439,7 +439,6 @@ const Stats: ParentComponent = () => {
                       }`}
                     </CustomButton>
                   </div>
-
                   <Presence>
                     <Show when={byGenderPsyLength()}>
                       <Motion.div
@@ -488,7 +487,6 @@ const Stats: ParentComponent = () => {
                       </Motion.div>
                     </Show>
                   </Presence>
-
                   <YesOrNoComponent
                     header="Hospitalized on first psychosis"
                     stat={"hospitalized_on_first"}
@@ -513,14 +511,11 @@ const Stats: ParentComponent = () => {
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
-
                   {/* TODO add psychosis how many, but make it a selection instead of integer in database */}
-
                   <YesOrNoComponent
                     header="Had prodromal symptoms"
                     stat={"prodromal_symptoms"}
                   />
-
                   <TextComponent
                     stat={"describe_prodromal_symptoms"}
                     header={"Had these kinds of prodromal symptoms"}
@@ -530,7 +525,6 @@ const Stats: ParentComponent = () => {
                     data={dataSymptoms(personalStats()?.arrayOfData)}
                     options={{ distributeSeries: true }}
                   />
-
                   {/* TODO add question to database about describing first psychosis and to here and questionsArray */}
                   <CustomBarComponent
                     header="Primary anti-psychotic"
@@ -543,12 +537,10 @@ const Stats: ParentComponent = () => {
                       height: "500",
                     }}
                   />
-
                   <YesOrNoComponent
                     header="Medications helped to psychosis symptoms"
                     stat="efficacy_of_med"
                   />
-
                   <CustomBarComponent
                     header="Side-effects from medication"
                     data={dataSideEffects(personalStats()?.arrayOfData)}
@@ -558,7 +550,6 @@ const Stats: ParentComponent = () => {
                       axisY: { offset: 70 },
                     }}
                   />
-
                   <YesOrNoComponent
                     header="Have quit medication"
                     stat="quitting"
@@ -575,7 +566,6 @@ const Stats: ParentComponent = () => {
                     header="Happened after quitting medication"
                     stat="quitting_what_happened"
                   />
-
                   <YesOrNoComponent
                     header="Regreted quitting medication"
                     stat="quitting_regret"
@@ -601,6 +591,18 @@ const Stats: ParentComponent = () => {
                         "Less than 10 a week",
                       ]
                     )}
+                  />
+                  <YesOrNoComponent
+                    header="Has used cannabis"
+                    stat="cannabis"
+                  />
+                  <YesOrNoComponent
+                    header="Has had suicidal thoughts"
+                    stat="suicidal_thoughts"
+                  />
+                  <YesOrNoComponent
+                    header="Has attempted suicide"
+                    stat="suicide_attempts"
                   />
                 </div>
               </div>
