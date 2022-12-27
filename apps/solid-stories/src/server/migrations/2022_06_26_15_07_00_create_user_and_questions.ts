@@ -93,7 +93,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("quitting_why", "text", (col) =>
       col
         .check(
-          sql`quitting_why in ('side effects', 'felt normal', 'affordability')`
+          sql`quitting_why in ('side effects', 'felt normal', 'affordability')` //TODO missing "other"
         )
         .check(sql` NOT (quitting AND quitting_why IS NULL)`)
     )

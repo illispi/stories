@@ -80,7 +80,7 @@ const DoughnutComponent: Component<{
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="mb-8 flex w-11/12 items-center justify-center lg:max-w-xs">
+      <div class="mb-4 flex w-11/12 items-center justify-center lg:max-w-xs">
         <PieChartCustom data={props.data} />
       </div>
     </>
@@ -203,6 +203,30 @@ const dataSymptoms = (data: PersonalStats["arrayOfData"]) => {
     series: symptomsArray,
   };
 };
+const dataSideEffects = (data: PersonalStats["arrayOfData"]) => {
+  const labelsSides = [
+    "Slow movements",
+    "Dizziness",
+    "Weight gain",
+    "Sedation",
+    "Tardive dyskinesia",
+    "Sexual problems",
+  ];
+
+  const sidesArray = [
+    data.filter((e) => e.side_effs_movement_effects).length,
+    data.filter((e) => e.side_effs_dizziness).length,
+    data.filter((e) => e.side_effs_weight_gain).length,
+    data.filter((e) => e.side_effs_sedation).length,
+    data.filter((e) => e.side_effs_tardive).length,
+    data.filter((e) => e.side_effs_sexual).length,
+  ];
+
+  return {
+    labels: labelsSides,
+    series: sidesArray,
+  };
+};
 
 const dataMedication = (data: PersonalStats["arrayOfData"]) => {
   const labelsMeds = [
@@ -232,6 +256,31 @@ const dataMedication = (data: PersonalStats["arrayOfData"]) => {
   return {
     labels: labelsMeds,
     series: medsArray,
+  };
+};
+const dataQuitting = (data: PersonalStats["arrayOfData"]) => {
+  const sideEffs = data.filter((e) => e.quitting_why === "side effects").length;
+  const normalcy = data.filter((e) => e.quitting_why === "felt normal").length;
+  const affordability = data.filter((e) => e.quitting_why === "affordability")
+    .length;
+  const other = data.filter((e) => e.quitting_why === "other").length;
+
+  const total = data.filter((e) => e.quitting_why).length;
+
+  const labelsReasons = [
+    `side effects ${Math.floor((sideEffs / total) * 100)}%`,
+    `felt normal ${Math.floor((normalcy / total) * 100)}%`,
+    `affordability ${Math.floor((affordability / total) * 100)}%`,
+    `other ${Math.floor((other / total) * 100)}%`,
+  ];
+
+  //TODO add other option to database
+
+  const reasonsArray = [sideEffs, normalcy, affordability, other];
+
+  return {
+    labels: labelsReasons,
+    series: reasonsArray,
   };
 };
 
@@ -276,7 +325,7 @@ const CustomBarComponent: Component<{
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="mb-8 w-11/12">
+      <div class="mb-4 w-11/12">
         <BarChartCustom data={props.data} options={props.options} />
       </div>
     </>
@@ -486,6 +535,34 @@ const Stats: ParentComponent = () => {
                   <YesOrNoComponent
                     header="Medications helped to psychosis symptoms"
                     stat="efficacy_of_med"
+                  />
+
+                  <CustomBarComponent
+                    header="Side-effects from medication"
+                    data={dataSideEffects(personalStats()?.arrayOfData)}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 70 },
+                    }}
+                  />
+
+                  <YesOrNoComponent
+                    header="Have quit medication"
+                    stat="quitting"
+                  />
+                  <DoughnutComponent
+                    header="Reasons on quitting medication"
+                    data={dataQuitting(personalStats()?.arrayOfData)}
+                  />
+                  <TextComponent
+                    header="Happened after quitting medication"
+                    stat="quitting_what_happened"
+                  />
+
+                  <YesOrNoComponent
+                    header="Regreted quitting medication"
+                    stat="quitting_regret"
                   />
                 </div>
               </div>

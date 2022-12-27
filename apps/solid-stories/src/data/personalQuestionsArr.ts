@@ -155,7 +155,7 @@ export const questions: QuestionPersonal[] = [
     question: "Why did you quit the medications?",
     questionType: "selection",
     questionDB: "quitting_why",
-    selections: ["side effects", "felt normal", "affordability"],
+    selections: ["side effects", "felt normal", "affordability", "other"],
   },
   {
     question: "Were there any consequences to quitting the medication?",
