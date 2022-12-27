@@ -133,6 +133,8 @@ export const personalStatsGet = async () => {
     otherMedian: median(otherAge),
   };
 
+  //BUG below code soesnt work currently, and its not even used in frontend
+
   const maleSplit = await db
     .selectFrom("personal_questions")
     .select(["length_of_psychosis"])

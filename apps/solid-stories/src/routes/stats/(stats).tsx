@@ -183,6 +183,57 @@ const dataAgeOfRes = (data: PersonalStats["arrayOfData"]) => {
     ),
   };
 };
+const dataSymptoms = (data: PersonalStats["arrayOfData"]) => {
+  const labelsSymptoms = [
+    "hallucinations",
+    "delusions",
+    "paranoia",
+    "disorganized symptoms",
+  ];
+
+  const symptomsArray = [
+    data.filter((e) => e.symptoms_hallucinations).length,
+    data.filter((e) => e.symptoms_delusions).length,
+    data.filter((e) => e.symptoms_paranoia).length,
+    data.filter((e) => e.symptoms_disorganized).length,
+  ];
+
+  return {
+    labels: labelsSymptoms,
+    series: symptomsArray,
+  };
+};
+
+const dataMedication = (data: PersonalStats["arrayOfData"]) => {
+  const labelsMeds = [
+    "risperidone (Risperdal)",
+    "quetiapine (Seroquel)",
+    "olanzapine (Zyprexa)",
+    "ziprasidone (Zeldox)",
+    "paliperidone (Invega)",
+    "aripiprazole (Abilify)",
+    "clozapine (Clozaril)",
+    "other",
+    "no medication",
+  ];
+
+  const medsArray = [
+    data.filter((e) => e.current_med === "risperidone (Risperdal)").length,
+    data.filter((e) => e.current_med === "quetiapine (Seroquel)").length,
+    data.filter((e) => e.current_med === "olanzapine (Zyprexa)").length,
+    data.filter((e) => e.current_med === "ziprasidone (Zeldox)").length,
+    data.filter((e) => e.current_med === "paliperidone (Invega)").length,
+    data.filter((e) => e.current_med === "aripiprazole (Abilify)").length,
+    data.filter((e) => e.current_med === "clozapine (Clozaril)").length,
+    data.filter((e) => e.current_med === "other").length,
+    data.filter((e) => e.current_med === "no medication").length,
+  ];
+
+  return {
+    labels: labelsMeds,
+    series: medsArray,
+  };
+};
 
 const dataOnset = (data: PersonalStats["onsetByGender"]) => {
   return {
@@ -400,6 +451,36 @@ const Stats: ParentComponent = () => {
                   <YesOrNoComponent
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
+                  />
+
+                  {/* TODO add psychosis how many, but make it a selection instead of integer in database */}
+
+                  <YesOrNoComponent
+                    header="Had prodromal symptoms"
+                    stat={"prodromal_symptoms"}
+                  />
+
+                  <TextComponent
+                    stat={"describe_prodromal_symptoms"}
+                    header={"Had these kinds of prodromal symptoms"}
+                  />
+                  <CustomBarComponent
+                    header="First psychosis symptoms"
+                    data={dataSymptoms(personalStats()?.arrayOfData)}
+                    options={{ distributeSeries: true }}
+                  />
+
+                  {/* TODO add question to database about describing first psychosis and to here and questionsArray */}
+                  <CustomBarComponent
+                    header="Primary anti-psychotic"
+                    data={dataMedication(personalStats()?.arrayOfData)}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 70 },
+                      reverseData: true,
+                      height: "600",
+                    }}
                   />
                 </div>
               </div>
