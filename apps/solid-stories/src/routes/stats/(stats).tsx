@@ -32,7 +32,7 @@ const useData = () => {
 const Item: Component<{ name: string; value: string | number }> = (props) => {
   return (
     <div class="my-3 flex flex-col items-center justify-center">
-      <p class="mb-2 text-center text-xl underline underline-offset-8">
+      <p class="mb-4 text-center text-xl underline underline-offset-8">
         {props.name}{" "}
       </p>
       <p class="rounded-full border-2 border-slate-400 p-2 text-center font-semibold">
@@ -40,6 +40,17 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
       </p>
     </div>
   );
+};
+const calcAverageWeight = (data: PersonalStats["arrayOfData"]) => {
+  const averageKg =
+    data
+      .filter((e) => e.weight_amount !== null)
+      .reduce(
+        (accumulator, currentValue) => accumulator + currentValue.weight_amount,
+        0
+      ) / data.filter((e) => e.weight_amount !== null).length;
+
+  return `${averageKg}Kg / ${averageKg * 2.2}pounds`;
 };
 
 const calcGenderShares = (data: PersonalStats["arrayOfData"]) => {
@@ -258,6 +269,27 @@ const dataMedication = (data: PersonalStats["arrayOfData"]) => {
     series: medsArray,
   };
 };
+const dataSmokingAmount = (data: PersonalStats["arrayOfData"]) => {
+  const labelsSmoking = [
+    "10 a day",
+    "20 or more a day",
+    "Less than 10 a day",
+    "Less than 10 a week",
+  ];
+
+  const smokingArray = [
+    data.filter((e) => e.smoking_amount === "10 a day").length,
+    data.filter((e) => e.smoking_amount === "20 or more a day").length,
+    data.filter((e) => e.smoking_amount === "Less than 10 a day").length,
+    data.filter((e) => e.smoking_amount === "Less than 10 a week").length,
+  ];
+
+  return {
+    labels: labelsSmoking,
+    series: smokingArray,
+  };
+};
+
 const dataQuitting = (data: PersonalStats["arrayOfData"]) => {
   const sideEffs = data.filter((e) => e.quitting_why === "side effects").length;
   const normalcy = data.filter((e) => e.quitting_why === "felt normal").length;
@@ -563,6 +595,19 @@ const Stats: ParentComponent = () => {
                   <YesOrNoComponent
                     header="Regreted quitting medication"
                     stat="quitting_regret"
+                  />
+                  <YesOrNoComponent
+                    header="Have gained weight after medications"
+                    stat="gained_weight"
+                  />
+                  <Item
+                    name="Average amount gained"
+                    value={calcAverageWeight(personalStats()?.arrayOfData)}
+                  />
+                  <YesOrNoComponent header="Smoking" stat="smoking" />
+                  <DoughnutComponent
+                    header="Smoking tobacco amount"
+                    data={dataSmokingAmount(personalStats()?.arrayOfData)}
                   />
                 </div>
               </div>
