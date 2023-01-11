@@ -3,7 +3,7 @@ import { Kysely, sql } from "kysely";
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("user")
-    .addColumn("user_id", "uuid", (col) =>
+    .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
@@ -12,12 +12,16 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .createTable("personal_questions")
-    .addColumn("answer_personal_id", "serial", (col) => col.primaryKey())
+    .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
       "user_id",
       "uuid",
-      (col) =>
-        col.references("user.user_id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
+      (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
+    )
+    .addColumn("diagnosis", "text", (col) =>
+      col
+        .notNull()
+        .check(sql`diagnosis in ('schizophrenia', 'schizoaffective', 'other')`)
     )
     .addColumn(
       "gender",
@@ -93,7 +97,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("quitting_why", "text", (col) =>
       col
         .check(
-          sql`quitting_why in ('side effects', 'felt normal', 'affordability')`
+          sql`quitting_why in ('side effects', 'felt normal', 'affordability', 'other')`
         )
         .check(sql` NOT (quitting AND quitting_why IS NULL)`)
     )
@@ -201,9 +205,9 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .createTable("their_questions")
-    .addColumn("answer_their_id", "serial", (col) => col.primaryKey())
+    .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn("user_id", "uuid", (col) =>
-      col.references("user.user_id").onDelete("cascade").notNull()
+      col.references("user.id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
       col
