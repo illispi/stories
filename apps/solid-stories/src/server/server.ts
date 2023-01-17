@@ -42,12 +42,12 @@ export const createOrGetUser = async (request: Request) => {
   if (!userId) {
     const user = await db
       .insertInto("user")
-      .values({ user_id: sql`DEFAULT` })
-      .returning("user_id")
+      .values({ id: sql`DEFAULT` })
+      .returning("id")
       .executeTakeFirstOrThrow();
 
-    if (user.user_id) {
-      session.set("userId", user.user_id);
+    if (user.id) {
+      session.set("userId", user.id);
       return json("Cookie set", {
         headers: {
           "Set-Cookie": await storage.commitSession(session),
@@ -69,14 +69,14 @@ export const personalStatsPost = async (data, request: Request) => {
 
   const user = await db
     .selectFrom("user")
-    .select("user_id")
-    .where("user_id", "=", userId)
+    .select("id")
+    .where("id", "=", userId)
     .executeTakeFirstOrThrow();
 
-  if (user?.user_id) {
+  if (user?.id) {
     const insertion = await db
       .insertInto("personal_questions")
-      .values({ ...data, user_id: user.user_id })
+      .values({ ...data, user_id: user.id })
       .execute();
 
     if (insertion) {
@@ -127,15 +127,6 @@ export const personalStatsGet = async () => {
       };
     } else if (e.questionType === "integer") {
       if (e.questionDB === "weight_amount") {
-        /* const integer = filterSensitive.map((i) => i["weight_amount"]);
-        const noNulls = integer.filter((i) => i !== null);
-        const average =
-          noNulls.reduce(
-            (accumulator, currentValue) => accumulator + currentValue,
-            0
-          ) / noNulls.length;
-        return { weight_amount: average }; */
-
         const resBrackets = {
           b05: 0,
           b0610: 0,
@@ -144,7 +135,7 @@ export const personalStatsGet = async () => {
           b3140: 0,
           b4150: 0,
           b5180: 0,
-          b81300: 0,
+          b81200: 0,
         };
         filterSensitive
           .map((d) => d.weight_amount)
@@ -164,10 +155,11 @@ export const personalStatsGet = async () => {
               resBrackets.b4150++;
             } else if (i >= 51 && i <= 80) {
               resBrackets.b5180++;
-            } else if (i >= 81 && i <= 300) {
-              resBrackets.b81300++;
+            } else if (i >= 81 && i <= 200) {
+              resBrackets.b81200++;
             }
           });
+        return { weight_amount: resBrackets };
       } else if (e.questionDB === "age_of_onset") {
         const average = (obj: typeof maleAge) => {
           return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
@@ -216,8 +208,32 @@ export const personalStatsGet = async () => {
           }
         });
 
-        return { ["current_age"]: resBrackets };
+        return { current_age: resBrackets };
       }
+    } else if (e.questionType === "selection") {
+      const selectionAmounts = e.selections?.map((i) => {
+        return {
+          [e.questionDB]: filterSensitive.filter((d) => d[i] === i).length,
+        };
+      });
+
+      return { [e.questionDB]: selectionAmounts };
+    } else if (e.questionType === "text") {
+      return {
+        [e.questionDB]: filterSensitive
+          .map((i) => i[e.questionDB])
+          .filter((f) => f !== null)
+          .slice(0, 8),
+      };
+    } else if (e.questionType === "multiSelect") {
+      const value = e.multiSelect?.map((i) => {
+        return {
+          [i[1]]: filterSensitive.map((d) => d[i[0]]).filter((f) => f !== null)
+            .length,
+        };
+      });
+
+      return { [e.multiSelect[0][0]]: value };
     }
   });
 
