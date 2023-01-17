@@ -118,126 +118,136 @@ export const personalStatsGet = async () => {
     }
   );
 
-  const automatic = questions.map((e) => {
-    if (e.questionType === "yesOrNo") {
-      const yesOrNo = filterSensitive.map((i) => i[e.questionDB]);
-      return {
-        [e.questionDB]: {
-          yes: yesOrNo.filter((i) => i === true).length,
-          no: yesOrNo.filter((i) => i === false).length,
-        },
-      };
-    } else if (e.questionType === "integer") {
-      if (e.questionDB === "weight_amount") {
-        const resBrackets = {
-          b05: 0,
-          b0610: 0,
-          b1120: 0,
-          b2130: 0,
-          b3140: 0,
-          b4150: 0,
-          b5180: 0,
-          b81200: 0,
+  const automatic = questions
+    .map((e) => {
+      if (e.questionType === "yesOrNo") {
+        const yesOrNo = filterSensitive.map((i) => i[e.questionDB]);
+        return {
+          [e.questionDB]: {
+            yes: yesOrNo.filter((i) => i === true).length,
+            no: yesOrNo.filter((i) => i === false).length,
+          },
         };
-        filterSensitive
-          .map((d) => d.weight_amount)
-          .filter((f) => f !== null)
-          .forEach((i) => {
-            if (i <= 5) {
-              resBrackets.b05++;
-            } else if (i >= 6 && i <= 10) {
-              resBrackets.b0610++;
-            } else if (i >= 11 && i <= 20) {
-              resBrackets.b1120++;
-            } else if (i >= 21 && i <= 30) {
-              resBrackets.b2130++;
-            } else if (i >= 31 && i <= 40) {
-              resBrackets.b3140++;
-            } else if (i >= 41 && i <= 50) {
-              resBrackets.b4150++;
-            } else if (i >= 51 && i <= 80) {
-              resBrackets.b5180++;
-            } else if (i >= 81 && i <= 200) {
-              resBrackets.b81200++;
+      } else if (e.questionType === "integer") {
+        if (e.questionDB === "weight_amount") {
+          const resBrackets = {
+            b05: 0,
+            b0610: 0,
+            b1120: 0,
+            b2130: 0,
+            b3140: 0,
+            b4150: 0,
+            b5180: 0,
+            b81200: 0,
+          };
+          filterSensitive
+            .map((d) => d.weight_amount)
+            .filter((f) => f !== null)
+            .forEach((i) => {
+              if (i <= 5) {
+                resBrackets.b05++;
+              } else if (i >= 6 && i <= 10) {
+                resBrackets.b0610++;
+              } else if (i >= 11 && i <= 20) {
+                resBrackets.b1120++;
+              } else if (i >= 21 && i <= 30) {
+                resBrackets.b2130++;
+              } else if (i >= 31 && i <= 40) {
+                resBrackets.b3140++;
+              } else if (i >= 41 && i <= 50) {
+                resBrackets.b4150++;
+              } else if (i >= 51 && i <= 80) {
+                resBrackets.b5180++;
+              } else if (i >= 81 && i <= 200) {
+                resBrackets.b81200++;
+              }
+            });
+          return { weight_amount: resBrackets };
+        } else if (e.questionDB === "age_of_onset") {
+          const average = (obj: typeof maleAge) => {
+            return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
+          };
+          const median = (obj: typeof maleAge) => {
+            const arr = obj.map((i) => i.age_of_onset);
+            const sorted = arr.sort((a, b) => a - b);
+            return sorted[Math.floor(arr.length / 2)];
+          };
+
+          const ageOfOnsetByGender = {
+            maleAverage: average(maleAge),
+            femaleAverage: average(femaleAge),
+            otherAverage: average(otherAge),
+            maleMedian: median(maleAge),
+            femaleMedian: median(femaleAge),
+            otherMedian: median(otherAge),
+          };
+
+          return { ageOfOnsetByGender };
+        } else if (e.questionDB === "current_age") {
+          const resBrackets = {
+            b09: 0,
+            b1015: 0,
+            b1620: 0,
+            b2125: 0,
+            b2630: 0,
+            b3135: 0,
+            b3680: 0,
+          };
+          filterSensitive.forEach((i) => {
+            if (i.current_age <= 10) {
+              resBrackets.b09++;
+            } else if (i.current_age >= 10 && i.current_age <= 15) {
+              resBrackets.b1015++;
+            } else if (i.current_age >= 16 && i.current_age <= 20) {
+              resBrackets.b1620++;
+            } else if (i.current_age >= 21 && i.current_age <= 25) {
+              resBrackets.b2125++;
+            } else if (i.current_age >= 26 && i.current_age <= 30) {
+              resBrackets.b2630++;
+            } else if (i.current_age >= 31 && i.current_age <= 35) {
+              resBrackets.b3135++;
+            } else if (i.current_age >= 36 && i.current_age <= 80) {
+              resBrackets.b3680++;
             }
           });
-        return { weight_amount: resBrackets };
-      } else if (e.questionDB === "age_of_onset") {
-        const average = (obj: typeof maleAge) => {
-          return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
-        };
-        const median = (obj: typeof maleAge) => {
-          const arr = obj.map((i) => i.age_of_onset);
-          const sorted = arr.sort((a, b) => a - b);
-          return sorted[Math.floor(arr.length / 2)];
-        };
 
-        const ageOfOnsetByGender = {
-          maleAverage: average(maleAge),
-          femaleAverage: average(femaleAge),
-          otherAverage: average(otherAge),
-          maleMedian: median(maleAge),
-          femaleMedian: median(femaleAge),
-          otherMedian: median(otherAge),
-        };
-
-        return ageOfOnsetByGender;
-      } else if (e.questionDB === "current_age") {
-        const resBrackets = {
-          b09: 0,
-          b1015: 0,
-          b1620: 0,
-          b2125: 0,
-          b2630: 0,
-          b3135: 0,
-          b3680: 0,
-        };
-        filterSensitive.forEach((i) => {
-          if (i.current_age <= 10) {
-            resBrackets.b09++;
-          } else if (i.current_age >= 10 && i.current_age <= 15) {
-            resBrackets.b1015++;
-          } else if (i.current_age >= 16 && i.current_age <= 20) {
-            resBrackets.b1620++;
-          } else if (i.current_age >= 21 && i.current_age <= 25) {
-            resBrackets.b2125++;
-          } else if (i.current_age >= 26 && i.current_age <= 30) {
-            resBrackets.b2630++;
-          } else if (i.current_age >= 31 && i.current_age <= 35) {
-            resBrackets.b3135++;
-          } else if (i.current_age >= 36 && i.current_age <= 80) {
-            resBrackets.b3680++;
-          }
+          return { current_age: resBrackets };
+        }
+      } else if (e.questionType === "selection") {
+        const selectionAmounts = e.selections?.map((i) => {
+          return {
+            [i]: filterSensitive.filter((d) => d[i] === i).length,
+          };
         });
 
-        return { current_age: resBrackets };
+        return { [e.questionDB]: selectionAmounts };
+      } else if (e.questionType === "text") {
+        return {
+          [e.questionDB]: filterSensitive
+            .map((i) => i[e.questionDB])
+            .filter((f) => f !== null)
+            .slice(0, 8),
+        };
+      } else if (e.questionType === "multiSelect") {
+        const value = e.multiSelect?.map((i) => {
+          return {
+            [i[1]]: filterSensitive
+              .map((d) => d[i[0]])
+              .filter((f) => f !== null).length,
+          };
+        });
+
+        return { [e.multiSelect[0][0]]: value };
       }
-    } else if (e.questionType === "selection") {
-      const selectionAmounts = e.selections?.map((i) => {
-        return {
-          [i]: filterSensitive.filter((d) => d[i] === i).length,
-        };
-      });
+    })
+    .reduce((acc, cur) => {
+      if (cur) {
+        acc[Object.keys(cur)[0]] = cur[Object.keys(cur)[0]];
+      }
+      return acc;
+    }, {});
 
-      return { [e.questionDB]: selectionAmounts };
-    } else if (e.questionType === "text") {
-      return {
-        [e.questionDB]: filterSensitive
-          .map((i) => i[e.questionDB])
-          .filter((f) => f !== null)
-          .slice(0, 8),
-      };
-    } else if (e.questionType === "multiSelect") {
-      const value = e.multiSelect?.map((i) => {
-        return {
-          [i[1]]: filterSensitive.map((d) => d[i[0]]).filter((f) => f !== null)
-            .length,
-        };
-      });
-
-      return { [e.multiSelect[0][0]]: value };
-    }
-  });
+  console.log(automatic);
 
   //BUG below code soesnt work currently, and its not even used in frontend
 
@@ -266,7 +276,9 @@ export const personalStatsGet = async () => {
 
   //BUG above seems to return too little
 
-  return { total: responsesTotal, ...automatic };
+  console.log(automatic);
+
+  return { total: responsesTotal, automatic };
 };
 
 //BUG in solid start? server doesnt recompile even though it says it does
