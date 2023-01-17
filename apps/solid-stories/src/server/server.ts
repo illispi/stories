@@ -4,6 +4,7 @@ import type { DB } from "./db/dbTypes";
 import "dotenv/config";
 import { PersonalQuestions } from "zod-types";
 import { createCookieSessionStorage, json, redirect } from "solid-start";
+import { questions } from "../data/personalQuestionsArr";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],
@@ -91,13 +92,6 @@ export const personalStatsGet = async () => {
     .selectAll()
     .execute();
 
-  const filterSensitve = allPersonalStats.map(
-    (e: typeof allPersonalStats[0]) => {
-      const { user_id, created_at, answer_personal_id, ...filtered } = e;
-      return filtered;
-    }
-  );
-
   const maleAge = await db
     .selectFrom("personal_questions")
     .select(["age_of_onset"])
@@ -115,23 +109,117 @@ export const personalStatsGet = async () => {
     .where("gender", "=", "other")
     .execute();
 
-  const average = (obj: typeof maleAge) => {
-    return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
-  };
-  const median = (obj: typeof maleAge) => {
-    const arr = obj.map((e) => e.age_of_onset);
-    const sorted = arr.sort((a, b) => a - b);
-    return sorted[Math.floor(arr.length / 2)];
-  };
+  const filterSensitive = allPersonalStats.map(
+    (e: typeof allPersonalStats[0]) => {
+      const { user_id, created_at, id, ...filtered } = e;
+      return filtered;
+    }
+  );
 
-  const ageOfOnsetByGender = {
-    maleAverage: average(maleAge),
-    femaleAverage: average(femaleAge),
-    otherAverage: average(otherAge),
-    maleMedian: median(maleAge),
-    femaleMedian: median(femaleAge),
-    otherMedian: median(otherAge),
-  };
+  const automatic = questions.map((e) => {
+    if (e.questionType === "yesOrNo") {
+      const yesOrNo = filterSensitive.map((i) => i[e.questionDB]);
+      return {
+        [e.questionDB]: {
+          yes: yesOrNo.filter((i) => i === true).length,
+          no: yesOrNo.filter((i) => i === false).length,
+        },
+      };
+    } else if (e.questionType === "integer") {
+      if (e.questionDB === "weight_amount") {
+        /* const integer = filterSensitive.map((i) => i["weight_amount"]);
+        const noNulls = integer.filter((i) => i !== null);
+        const average =
+          noNulls.reduce(
+            (accumulator, currentValue) => accumulator + currentValue,
+            0
+          ) / noNulls.length;
+        return { weight_amount: average }; */
+
+        const resBrackets = {
+          b05: 0,
+          b0610: 0,
+          b1120: 0,
+          b2130: 0,
+          b3140: 0,
+          b4150: 0,
+          b5180: 0,
+          b81300: 0,
+        };
+        filterSensitive
+          .map((d) => d.weight_amount)
+          .filter((f) => f !== null)
+          .forEach((i) => {
+            if (i <= 5) {
+              resBrackets.b05++;
+            } else if (i >= 6 && i <= 10) {
+              resBrackets.b0610++;
+            } else if (i >= 11 && i <= 20) {
+              resBrackets.b1120++;
+            } else if (i >= 21 && i <= 30) {
+              resBrackets.b2130++;
+            } else if (i >= 31 && i <= 40) {
+              resBrackets.b3140++;
+            } else if (i >= 41 && i <= 50) {
+              resBrackets.b4150++;
+            } else if (i >= 51 && i <= 80) {
+              resBrackets.b5180++;
+            } else if (i >= 81 && i <= 300) {
+              resBrackets.b81300++;
+            }
+          });
+      } else if (e.questionDB === "age_of_onset") {
+        const average = (obj: typeof maleAge) => {
+          return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
+        };
+        const median = (obj: typeof maleAge) => {
+          const arr = obj.map((i) => i.age_of_onset);
+          const sorted = arr.sort((a, b) => a - b);
+          return sorted[Math.floor(arr.length / 2)];
+        };
+
+        const ageOfOnsetByGender = {
+          maleAverage: average(maleAge),
+          femaleAverage: average(femaleAge),
+          otherAverage: average(otherAge),
+          maleMedian: median(maleAge),
+          femaleMedian: median(femaleAge),
+          otherMedian: median(otherAge),
+        };
+
+        return ageOfOnsetByGender;
+      } else if (e.questionDB === "current_age") {
+        const resBrackets = {
+          b09: 0,
+          b1015: 0,
+          b1620: 0,
+          b2125: 0,
+          b2630: 0,
+          b3135: 0,
+          b3680: 0,
+        };
+        filterSensitive.forEach((i) => {
+          if (i.current_age <= 10) {
+            resBrackets.b09++;
+          } else if (i.current_age >= 10 && i.current_age <= 15) {
+            resBrackets.b1015++;
+          } else if (i.current_age >= 16 && i.current_age <= 20) {
+            resBrackets.b1620++;
+          } else if (i.current_age >= 21 && i.current_age <= 25) {
+            resBrackets.b2125++;
+          } else if (i.current_age >= 26 && i.current_age <= 30) {
+            resBrackets.b2630++;
+          } else if (i.current_age >= 31 && i.current_age <= 35) {
+            resBrackets.b3135++;
+          } else if (i.current_age >= 36 && i.current_age <= 80) {
+            resBrackets.b3680++;
+          }
+        });
+
+        return { ["current_age"]: resBrackets };
+      }
+    }
+  });
 
   //BUG below code soesnt work currently, and its not even used in frontend
 

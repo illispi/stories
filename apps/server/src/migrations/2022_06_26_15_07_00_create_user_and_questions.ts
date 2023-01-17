@@ -21,7 +21,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
-        .check(sql`diagnosis in ('schizophrenia', 'schizoaffective', 'other')`)
+        .check(sql`diagnosis in ('schizophrenia', 'schizoaffective')`)
     )
     .addColumn(
       "gender",
@@ -66,7 +66,13 @@ export async function up(db: Kysely<any>): Promise<void> {
         sql`NOT (hospitalized_on_first AND care_after_hospital AND after_hospital_satisfaction IS NULL) `
       )
     )
-    .addColumn("psychosis_how_many", "integer", (col) => col.notNull())
+    .addColumn("psychosis_how_many", "text", (col) =>
+      col
+        .notNull()
+        .check(
+          sql`psychosis_how_many in ('once', 'twice', 'three times', 'four times', 'five or more')`
+        )
+    )
     .addColumn("prodromal_symptoms", "boolean", (col) => col.notNull())
     .addColumn(
       "describe_prodromal_symptoms",

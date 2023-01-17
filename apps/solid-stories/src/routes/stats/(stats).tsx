@@ -511,7 +511,9 @@ const Stats: ParentComponent = () => {
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
+
                   {/* TODO add psychosis how many, but make it a selection instead of integer in database */}
+
                   <YesOrNoComponent
                     header="Had prodromal symptoms"
                     stat={"prodromal_symptoms"}
@@ -542,7 +544,7 @@ const Stats: ParentComponent = () => {
                     stat="efficacy_of_med"
                   />
                   <CustomBarComponent
-                    header="Side-effects from medication"
+                    header="Side effects from medication"
                     data={dataSideEffects(personalStats()?.arrayOfData)}
                     options={{
                       distributeSeries: true,

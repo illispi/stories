@@ -19,6 +19,12 @@ export interface QuestionPersonal {
 
 export const questions: QuestionPersonal[] = [
   {
+    question: "What is your diagonosis?",
+    questionType: "selection",
+    questionDB: "diagnosis",
+    selections: ["schizophrenia", "schizoaffective"],
+  },
+  {
     question: "What is your gender?",
     questionType: "selection",
     questionDB: "gender",
@@ -81,7 +87,8 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question: "How many times have you experienced major psychosis?",
-    questionType: "integer",
+    questionType: "selection",
+    selections: ["once", "twice", "three times", "four times", "five or more"],
     questionDB: "psychosis_how_many",
   },
   {
