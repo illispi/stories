@@ -34,7 +34,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col
         .notNull()
         .check(
-          sql`length_of_psychosis in ('few weeks', 'few months', 'more than 6 months')`
+          sql`length_of_psychosis in ('few days', 'few weeks', 'few months', 'more than 6 months')`
         )
     )
     .addColumn("hospitalized_on_first", "boolean", (col) => col.notNull())

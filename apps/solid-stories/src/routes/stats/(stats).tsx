@@ -606,3 +606,5 @@ export default Stats;
 //TODO consider grid for bigger screens
 
 //TODO maybe some kind of array could reduce boilerplate in this
+
+//TODO few fields should be multiselect like prodromal and cognitive
