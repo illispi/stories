@@ -92,6 +92,8 @@ export const personalStatsGet = async () => {
     .selectAll()
     .execute();
 
+  const responsesTotal = allPersonalStats.length;
+
   const maleAge = await db
     .selectFrom("personal_questions")
     .select(["age_of_onset"])
@@ -213,7 +215,7 @@ export const personalStatsGet = async () => {
     } else if (e.questionType === "selection") {
       const selectionAmounts = e.selections?.map((i) => {
         return {
-          [e.questionDB]: filterSensitive.filter((d) => d[i] === i).length,
+          [i]: filterSensitive.filter((d) => d[i] === i).length,
         };
       });
 
@@ -262,15 +264,9 @@ export const personalStatsGet = async () => {
     ...otherSplit,
   };
 
-  //BUG this seems to return too little
+  //BUG above seems to return too little
 
-  const allData = {
-    arrayOfData: filterSensitve,
-    onsetByGender: { ...ageOfOnsetByGender },
-    lengthByGender: { ...lengthByGender },
-  };
-
-  return allData;
+  return { total: responsesTotal, ...automatic };
 };
 
 //BUG in solid start? server doesnt recompile even though it says it does

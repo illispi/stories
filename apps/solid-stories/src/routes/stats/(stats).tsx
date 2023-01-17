@@ -84,32 +84,15 @@ const calcAverageWeight = (data: PersonalStats["arrayOfData"]) => {
   return `${averageKg}Kg / ${averageKg * 2.2}pounds`;
 };
 
-const calcGenderShares = (data: PersonalStats["arrayOfData"]) => {
-  const genders = { male: 0, female: 0, other: 0, total: 0 };
-
-  data?.forEach((e) => {
-    if (e.gender === "male") {
-      genders.male++;
-      genders.total++;
-    } else if (e.gender === "female") {
-      genders.female++;
-      genders.total++;
-    } else if (e.gender === "other") {
-      genders.other++;
-      genders.total++;
-    }
-  });
-  return genders;
-};
-
-const dataGender = (data: PersonalStats["arrayOfData"]) => {
-  const gender = calcGenderShares(data);
+const dataGender = (data) => {
+  const gender = data.gender;
+  const total = gender.male + gender.female + gender.other;
 
   return {
     labels: [
-      `Male ${Math.floor((gender.male / gender.total) * 100)}%`,
-      `Female ${Math.floor((gender.female / gender.total) * 100)}%`,
-      `Other ${Math.floor((gender.other / gender.total) * 100)}%`,
+      `Male ${Math.floor((gender.male / total) * 100)}%`,
+      `Female ${Math.floor((gender.female / total) * 100)}%`,
+      `Other ${Math.floor((gender.other / total) * 100)}%`,
     ],
     series: [gender.male, gender.female, gender.other],
   };
@@ -404,13 +387,15 @@ const Stats: ParentComponent = () => {
                 </div>
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                    <Item
-                      name={"Total responses:"}
-                      value={`${personalStats()?.arrayOfData.length}`}
-                    />
+                    {
+                      <Item
+                        name={"Total responses:"}
+                        value={`${personalStats()?.total}`}
+                      />
+                    }
                     <DoughnutComponent
                       header="Share of genders"
-                      data={dataGender(personalStats().arrayOfData)}
+                      data={dataGender(personalStats())}
                     />
                     <CustomBarComponent
                       header="Age of responses"
@@ -619,3 +604,5 @@ const Stats: ParentComponent = () => {
 export default Stats;
 
 //TODO consider grid for bigger screens
+
+//TODO maybe some kind of array could reduce boilerplate in this
