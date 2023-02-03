@@ -215,9 +215,11 @@ export const personalStatsGet = async () => {
         automatic.current_age = resBrackets;
       }
     } else if (e.questionType === "selection") {
-      let selections = {};
+      const selections = {};
       e.selections?.forEach((i) => {
-        selections[i] = filterSensitive.filter((d) => d[i] === i).length;
+        selections[i] = filterSensitive.filter(
+          (d) => d[e.questionDB] === i
+        ).length;
       });
       automatic[e.questionDB] = selections;
     } else if (e.questionType === "text") {
@@ -226,14 +228,15 @@ export const personalStatsGet = async () => {
         .filter((f) => f !== null)
         .slice(0, 8);
     } else if (e.questionType === "multiSelect") {
-      const value = e.multiSelect?.map((i) => {
-        return {
-          [i[1]]: filterSensitive.map((d) => d[i[0]]).filter((f) => f !== null)
-            .length,
-        };
+      const multiSelections = {};
+
+      e.multiSelect?.forEach((i) => {
+        Object.assign(multiSelections, {
+          [i[1]]: filterSensitive.filter((d) => d[i[0]] === true).length,
+        });
       });
 
-      automatic[e.multiSelect[0][0]] = value;
+      automatic[e.questionDB] = multiSelections;
     }
   });
 
