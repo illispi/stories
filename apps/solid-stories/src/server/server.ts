@@ -39,6 +39,9 @@ const getSessionFromCookie = async (request: Request) => {
 
 export const createOrGetUser = async (request: Request) => {
   const { session, userId } = await getSessionFromCookie(request);
+
+  console.log("testtest");
+
   if (!userId) {
     const user = await db
       .insertInto("user")
@@ -48,6 +51,7 @@ export const createOrGetUser = async (request: Request) => {
 
     if (user.id) {
       session.set("userId", user.id);
+
       return json("Cookie set", {
         headers: {
           "Set-Cookie": await storage.commitSession(session),
@@ -120,7 +124,6 @@ export const personalStatsGet = async () => {
 
   let automatic = {};
 
-  console.log(filterSensitive);
 
   questions.forEach((e) => {
     if (e.questionType === "yesOrNo") {
@@ -240,7 +243,6 @@ export const personalStatsGet = async () => {
     }
   });
 
-  console.log(automatic, responsesTotal);
 
   //BUG below code soesnt work currently, and its not even used in frontend
 
@@ -273,3 +275,4 @@ export const personalStatsGet = async () => {
 };
 
 //BUG in solid start? server doesnt recompile even though it says it does
+//BUG migrations cant be done from solid start

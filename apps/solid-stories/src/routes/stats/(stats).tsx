@@ -18,6 +18,7 @@ import { Motion, Presence } from "@motionone/solid";
 import { createServerData$ } from "solid-start/server";
 import { personalStatsGet } from "~/server/server";
 import type { AxisOptions, BarChartOptions } from "chartist";
+import CreateUser from "~/components/CreateUser";
 
 type PersonalStats = Awaited<ReturnType<typeof personalStatsGet>>;
 
