@@ -86,7 +86,7 @@ const calcAverageWeight = (data: PersonalStats["arrayOfData"]) => {
 };
 
 const dataGender = (data) => {
-  const gender = data.gender;
+  const gender = data;
   const total = gender.male + gender.female + gender.other;
 
   return {
@@ -189,7 +189,7 @@ const calcAgeOfResBrackets = (data: PersonalStats["arrayOfData"]) => {
   return resBrackets;
 };
 
-const dataAgeOfRes = (data: PersonalStats["arrayOfData"]) => {
+const dataAgeOfRes = (data) => {
   const labelsAgeGroup = [
     "0-9",
     "10-15",
@@ -200,13 +200,9 @@ const dataAgeOfRes = (data: PersonalStats["arrayOfData"]) => {
     "36-80",
   ];
 
-  const ageOfRes = calcAgeOfResBrackets(data);
-
   return {
     labels: labelsAgeGroup,
-    series: (Object.keys(ageOfRes) as Array<keyof typeof ageOfRes>).map(
-      (e) => ageOfRes[e]
-    ),
+    series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
   };
 };
 const dataSymptoms = (data: PersonalStats["arrayOfData"]) => {
@@ -280,12 +276,13 @@ const dataSelection = (
   };
 };
 
-const dataOnset = (data: PersonalStats["onsetByGender"]) => {
+const dataOnset = (data) => {
+  const onset = data;
   return {
     labels: ["Male", "Female", "Other"],
     series: [
-      [data.maleAverage, data.femaleAverage, data.otherAverage],
-      [data.maleMedian, data.femaleMedian, data.otherMedian],
+      [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
+      [onset.maleMedian, onset.femaleMedian, onset.otherMedian],
     ],
   };
 };
@@ -302,13 +299,14 @@ const psyLengthByGender = (data: PersonalStats["arrayOfData"]) => {
   };
   return dataPsyLength;
 };
-const dataPsyLength = (data: PersonalStats["arrayOfData"]) => {
+const dataPsyLength = (data) => {
   return {
-    labels: ["few weeks", "few months", "more than 6 months"],
+    labels: ["few days", "few weeks", "few months", "more than 6 months"],
     series: [
-      data.filter((e) => e.length_of_psychosis === "few weeks").length,
-      data.filter((e) => e.length_of_psychosis === "few months").length,
-      data.filter((e) => e.length_of_psychosis === "more than 6 months").length,
+      data["few days"],
+      data["few weeks"],
+      data["few months"],
+      data["more than 6 months"],
     ],
   };
 };
@@ -396,20 +394,20 @@ const Stats: ParentComponent = () => {
                     }
                     <DoughnutComponent
                       header="Share of genders"
-                      data={dataGender(personalStats())}
+                      data={dataGender(personalStats()?.gender)}
                     />
                     <CustomBarComponent
                       header="Age of responses"
-                      data={dataAgeOfRes(personalStats().arrayOfData)}
+                      data={dataAgeOfRes(personalStats()?.current_age)}
                       options={{ distributeSeries: true }}
                     />
                     <CustomBarComponent
                       header="Age of Onset"
-                      data={dataOnset(personalStats().onsetByGender)}
+                      data={dataOnset(personalStats()?.ageOfOnsetByGender)}
                     />
 
                     <DoughnutComponent
-                      data={dataPsyLength(personalStats().arrayOfData)}
+                      data={dataPsyLength(personalStats()?.length_of_psychosis)}
                       header={"Length of first psychosis"}
                     />
 

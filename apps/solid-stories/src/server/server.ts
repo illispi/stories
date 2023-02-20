@@ -40,8 +40,6 @@ const getSessionFromCookie = async (request: Request) => {
 export const createOrGetUser = async (request: Request) => {
   const { session, userId } = await getSessionFromCookie(request);
 
-  console.log("testtest");
-
   if (!userId) {
     const user = await db
       .insertInto("user")
@@ -122,8 +120,7 @@ export const personalStatsGet = async () => {
     }
   );
 
-  let automatic = {};
-
+  const automatic: PersonalQuestions = {};
 
   questions.forEach((e) => {
     if (e.questionType === "yesOrNo") {
@@ -243,7 +240,6 @@ export const personalStatsGet = async () => {
     }
   });
 
-
   //BUG below code soesnt work currently, and its not even used in frontend
 
   const maleSplit = await db
@@ -263,15 +259,30 @@ export const personalStatsGet = async () => {
     .where("gender", "=", "other")
     .execute();
 
-  const lengthByGender = {
-    ...maleSplit,
-    ...femaleSplit,
-    ...otherSplit,
-  };
-
   //BUG above seems to return too little
 
-  return { total: responsesTotal, automatic };
+  /*   const selections = {};
+      e.selections?.forEach((i) => {
+        selections[i] = filterSensitive.filter(
+          (d) => d[e.questionDB] === i
+        ).length;
+      });
+      automatic[e.questionDB] = selections; */
+
+  const maleSelections = {};
+  maleSplit.forEach((e) => {
+    maleSelections[e.length_of_psychosis] = maleSplit.filter(
+      (i) => e.length_of_psychosis === i
+    ).length;
+  });
+
+  automatic.lengthByGender = {
+    maleSplit: maleSelections,
+  };
+
+  console.log(automatic, maleSplit);
+
+  return { total: responsesTotal, ...automatic };
 };
 
 //BUG in solid start? server doesnt recompile even though it says it does
