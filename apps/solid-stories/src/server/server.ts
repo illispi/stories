@@ -5,6 +5,7 @@ import "dotenv/config";
 import { PersonalQuestions } from "zod-types";
 import { createCookieSessionStorage, json, redirect } from "solid-start";
 import { questions } from "../data/personalQuestionsArr";
+import { MainReturn } from "./types";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],
@@ -120,7 +121,7 @@ export const personalStatsGet = async () => {
     }
   );
 
-  const automatic: PersonalQuestions = {};
+  const automatic: MainReturn = {} as any;
 
   questions.forEach((e) => {
     if (e.questionType === "yesOrNo") {
@@ -269,20 +270,30 @@ export const personalStatsGet = async () => {
       });
       automatic[e.questionDB] = selections; */
 
-  const maleSelections = {};
-  maleSplit.forEach((e) => {
-    maleSelections[e.length_of_psychosis] = maleSplit.filter(
-      (i) => e.length_of_psychosis === i
-    ).length;
-  });
+  const lengthPsyFunc = (split) => {
+    const object = {};
 
-  automatic.lengthByGender = {
-    maleSplit: maleSelections,
+    const lengthSelections = questions
+      .find((q) => q.questionDB === "length_of_psychosis")
+      ?.selections?.map((r) => r);
+    lengthSelections?.forEach((e) => {
+      object[e] = split.filter((i) => i.length_of_psychosis === e).length;
+    });
+
+    return object;
   };
 
-  console.log(automatic, maleSplit);
+  automatic.lengthByGender = {
+    maleSplit: lengthPsyFunc(maleSplit),
+    femaleSplit: lengthPsyFunc(femaleSplit),
+    otherSplit: lengthPsyFunc(otherSplit),
+  };
 
-  return { total: responsesTotal, ...automatic };
+  automatic.total = responsesTotal;
+
+  console.log(automatic);
+
+  return automatic;
 };
 
 //BUG in solid start? server doesnt recompile even though it says it does
