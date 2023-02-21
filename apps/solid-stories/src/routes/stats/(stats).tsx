@@ -119,6 +119,9 @@ const YesOrNoComponent: Component<{
 }> = (props) => {
   const personalStats = useData();
 
+  const total =
+    personalStats()[props.stat].yes + personalStats()[props.stat].no;
+
   return (
     <Show when={!personalStats?.loading}>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
@@ -127,30 +130,15 @@ const YesOrNoComponent: Component<{
           data={{
             labels: [
               `Yes ${Math.floor(
-                (personalStats()?.arrayOfData.filter(
-                  (e) => e[props.stat] === true
-                ).length /
-                  personalStats()?.arrayOfData.filter(
-                    (e) => e[props.stat] !== null
-                  ).length) *
-                  100
+                personalStats()[props.stat].yes / (total * 100)
               )}%`,
               `No ${Math.floor(
-                (personalStats()?.arrayOfData.filter(
-                  (e) => e[props.stat] === false
-                ).length /
-                  personalStats()?.arrayOfData.filter(
-                    (e) => e[props.stat] !== null
-                  ).length) *
-                  100
+                personalStats()[props.stat].no / (total * 100)
               )}%`,
             ],
             series: [
-              personalStats()?.arrayOfData.filter((e) => e[props.stat] === true)
-                .length,
-              personalStats()?.arrayOfData.filter(
-                (e) => e[props.stat] === false
-              ).length,
+              personalStats()[props.stat].yes,
+              personalStats()[props.stat].no,
             ],
           }}
         />
@@ -205,7 +193,7 @@ const dataAgeOfRes = (data) => {
     series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
   };
 };
-const dataSymptoms = (data: PersonalStats["arrayOfData"]) => {
+const dataSymptoms = (data) => {
   const labelsSymptoms = [
     "hallucinations",
     "delusions",
@@ -214,10 +202,7 @@ const dataSymptoms = (data: PersonalStats["arrayOfData"]) => {
   ];
 
   const symptomsArray = [
-    data.filter((e) => e.symptoms_hallucinations).length,
-    data.filter((e) => e.symptoms_delusions).length,
-    data.filter((e) => e.symptoms_paranoia).length,
-    data.filter((e) => e.symptoms_disorganized).length,
+    data
   ];
 
   return {
@@ -287,14 +272,14 @@ const dataOnset = (data) => {
   };
 };
 
-const psyLengthByGender = (data: PersonalStats["arrayOfData"]) => {
+const psyLengthByGender = (data) => {
   const dataPsyLength = {
-    labels: ["few weeks", "few months", "more than 6 months"],
+    labels: ["few days", "few weeks", "few months", "more than 6 months"],
     series: [
-      data?.filter((e) => e.length_of_psychosis === "few weeks").length,
-      data?.filter((e) => e.length_of_psychosis === "few months").length,
-      data?.filter((e) => e.length_of_psychosis === "more than 6 months")
-        .length,
+      data["few days"],
+      data["few weeks"],
+      data["few months"],
+      data["more than 6 months"],
     ],
   };
   return dataPsyLength;
@@ -331,14 +316,11 @@ const TextComponent: Component<{
   stat: keyof PersonalQuestions;
 }> = (props) => {
   const personalStats = useData();
-  const arr = personalStats()
-    .arrayOfData.map((e) => e[props.stat])
-    .filter((f) => f !== null)
-    .slice(0, 8);
+
   return (
     <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <Index each={arr}>
+      <Index each={personalStats()[props.stat]}>
         {(stat, i) => (
           <div class="flex w-full max-w-xs flex-col items-center justify-center">
             <h5 class="m-2 font-bold">{i + 1}.</h5>
@@ -443,27 +425,21 @@ const Stats: ParentComponent = () => {
                         <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData.filter(
-                                (e) => e.gender === "male"
-                              )
+                              personalStats()?.lengthByGender.maleSplit
                             )}
                             header={"First psychosis male"}
                           />
 
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData.filter(
-                                (e) => e.gender === "female"
-                              )
+                              personalStats()?.lengthByGender.femaleSplit
                             )}
                             header={"First psychosis female"}
                           />
 
                           <DoughnutComponent
                             data={psyLengthByGender(
-                              personalStats()?.arrayOfData.filter(
-                                (e) => e.gender === "other"
-                              )
+                              personalStats()?.lengthByGender.otherSplit
                             )}
                             header={"First psychosis other"}
                           />
@@ -508,7 +484,7 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="First psychosis symptoms"
-                    data={dataSymptoms(personalStats()?.arrayOfData)}
+                    data={dataSymptoms(personalStats()?.symptoms_hallucinations)}
                     options={{ distributeSeries: true }}
                   />
                   {/* TODO add question to database about describing first psychosis and to here and questionsArray */}
