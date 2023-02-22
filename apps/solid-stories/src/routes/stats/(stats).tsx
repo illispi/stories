@@ -105,10 +105,10 @@ const YesOrNoComponent: Component<{
           data={{
             labels: [
               `Yes ${Math.floor(
-                personalStats()[props.stat].yes / (total * 100)
+                (personalStats()[props.stat].yes / total) * 100
               )}%`,
               `No ${Math.floor(
-                personalStats()[props.stat].no / (total * 100)
+                (personalStats()[props.stat].no / total) * 100
               )}%`,
             ],
             series: [
@@ -449,6 +449,7 @@ const Stats: ParentComponent = () => {
                   <CustomBarComponent
                     header="Weight gained"
                     data={weightBrackets(personalStats()?.weight_amount)}
+                    options={{ distributeSeries: true }}
                   />
                   <YesOrNoComponent header="Smoking" stat="smoking" />
                   <DoughnutComponent
