@@ -361,9 +361,6 @@ const Stats: ParentComponent = () => {
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
-
-                  {/* TODO add psychosis how many, but make it a selection instead of integer in database */}
-
                   <YesOrNoComponent
                     header="Had prodromal symptoms"
                     stat={"prodromal_symptoms"}
@@ -379,7 +376,7 @@ const Stats: ParentComponent = () => {
                     )}
                     options={{ distributeSeries: true }}
                   />
-                  {/* TODO add question to database about describing first psychosis and to here and questionsArray */}
+
                   <CustomBarComponent
                     header="Primary anti-psychotic"
                     data={dataSelection(personalStats()?.current_med)}
@@ -463,3 +460,5 @@ export default Stats;
 //TODO maybe some kind of array could reduce boilerplate in this
 
 //TODO few fields should be multiselect like prodromal and cognitive
+
+/* TODO add question to database about describing first psychosis and to here and questionsArray */
