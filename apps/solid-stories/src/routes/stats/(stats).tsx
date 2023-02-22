@@ -153,7 +153,9 @@ const dataMultiSelect = (data) => {
 };
 
 const dataSelection = (data) => {
-  const keys = Object.keys(data);
+  const keysBeforePruning = Object.keys(data);
+
+  const keys = keysBeforePruning.filter((e) => data[e] !== 0);
 
   let total = 0;
 
@@ -180,30 +182,6 @@ const dataOnset = (data) => {
     series: [
       [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
       [onset.maleMedian, onset.femaleMedian, onset.otherMedian],
-    ],
-  };
-};
-
-const psyLengthByGender = (data) => {
-  const dataPsyLength = {
-    labels: ["few days", "few weeks", "few months", "more than 6 months"],
-    series: [
-      data["few days"],
-      data["few weeks"],
-      data["few months"],
-      data["more than 6 months"],
-    ],
-  };
-  return dataPsyLength;
-};
-const dataPsyLength = (data) => {
-  return {
-    labels: ["few days", "few weeks", "few months", "more than 6 months"],
-    series: [
-      data["few days"],
-      data["few weeks"],
-      data["few months"],
-      data["more than 6 months"],
     ],
   };
 };
@@ -301,7 +279,7 @@ const Stats: ParentComponent = () => {
                     />
 
                     <DoughnutComponent
-                      data={dataPsyLength(personalStats()?.length_of_psychosis)}
+                      data={dataSelection(personalStats()?.length_of_psychosis)}
                       header={"Length of first psychosis"}
                     />
 
@@ -336,21 +314,21 @@ const Stats: ParentComponent = () => {
                       >
                         <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
                           <DoughnutComponent
-                            data={psyLengthByGender(
+                            data={dataSelection(
                               personalStats()?.lengthByGender.maleSplit
                             )}
                             header={"First psychosis male"}
                           />
 
                           <DoughnutComponent
-                            data={psyLengthByGender(
+                            data={dataSelection(
                               personalStats()?.lengthByGender.femaleSplit
                             )}
                             header={"First psychosis female"}
                           />
 
                           <DoughnutComponent
-                            data={psyLengthByGender(
+                            data={dataSelection(
                               personalStats()?.lengthByGender.otherSplit
                             )}
                             header={"First psychosis other"}
