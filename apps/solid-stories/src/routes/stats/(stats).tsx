@@ -30,37 +30,6 @@ const useData = () => {
   return useContext(DataContext);
 };
 
-const dataMedication = (data: PersonalStats["arrayOfData"]) => {
-  const labelsMeds = [
-    "risperidone (Risperdal)",
-    "quetiapine (Seroquel)",
-    "olanzapine (Zyprexa)",
-    "ziprasidone (Zeldox)",
-    "paliperidone (Invega)",
-    "aripiprazole (Abilify)",
-    "clozapine (Clozaril)",
-    "other",
-    "no medication",
-  ];
-
-  const medsArray = [
-    data.filter((e) => e.current_med === "risperidone (Risperdal)").length,
-    data.filter((e) => e.current_med === "quetiapine (Seroquel)").length,
-    data.filter((e) => e.current_med === "olanzapine (Zyprexa)").length,
-    data.filter((e) => e.current_med === "ziprasidone (Zeldox)").length,
-    data.filter((e) => e.current_med === "paliperidone (Invega)").length,
-    data.filter((e) => e.current_med === "aripiprazole (Abilify)").length,
-    data.filter((e) => e.current_med === "clozapine (Clozaril)").length,
-    data.filter((e) => e.current_med === "other").length,
-    data.filter((e) => e.current_med === "no medication").length,
-  ];
-
-  return {
-    labels: labelsMeds,
-    series: medsArray,
-  };
-};
-
 const Item: Component<{ name: string; value: string | number }> = (props) => {
   return (
     <div class="my-3 flex flex-col items-center justify-center">
@@ -73,16 +42,22 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
     </div>
   );
 };
-const calcAverageWeight = (data: PersonalStats["arrayOfData"]) => {
-  const averageKg =
-    data
-      .filter((e) => e.weight_amount !== null)
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.weight_amount,
-        0
-      ) / data.filter((e) => e.weight_amount !== null).length;
+const weightBrackets = (data) => {
+  const brackets = [
+    "0-5kg",
+    "6-10kg",
+    "11-20kg",
+    "21-30kg",
+    "31-40kg",
+    "41-50kg",
+    "51-80kg",
+    "81-200kg",
+  ];
 
-  return `${averageKg}Kg / ${averageKg * 2.2}pounds`;
+  return {
+    labels: brackets,
+    series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
+  };
 };
 
 const dataGender = (data) => {
@@ -147,36 +122,6 @@ const YesOrNoComponent: Component<{
   );
 };
 
-const calcAgeOfResBrackets = (data: PersonalStats["arrayOfData"]) => {
-  const resBrackets = {
-    b09: 0,
-    b1015: 0,
-    b1620: 0,
-    b2125: 0,
-    b2630: 0,
-    b3135: 0,
-    b3680: 0,
-  };
-  data?.forEach((e) => {
-    if (e.current_age <= 10) {
-      resBrackets.b09++;
-    } else if (e.current_age >= 10 && e.current_age <= 15) {
-      resBrackets.b1015++;
-    } else if (e.current_age >= 16 && e.current_age <= 20) {
-      resBrackets.b1620++;
-    } else if (e.current_age >= 21 && e.current_age <= 25) {
-      resBrackets.b2125++;
-    } else if (e.current_age >= 26 && e.current_age <= 30) {
-      resBrackets.b2630++;
-    } else if (e.current_age >= 31 && e.current_age <= 35) {
-      resBrackets.b3135++;
-    } else if (e.current_age >= 36 && e.current_age <= 80) {
-      resBrackets.b3680++;
-    }
-  });
-  return resBrackets;
-};
-
 const dataAgeOfRes = (data) => {
   const labelsAgeGroup = [
     "0-9",
@@ -193,67 +138,34 @@ const dataAgeOfRes = (data) => {
     series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
   };
 };
-const dataSymptoms = (data) => {
-  const labelsSymptoms = [
-    "hallucinations",
-    "delusions",
-    "paranoia",
-    "disorganized symptoms",
-  ];
+const dataMultiSelect = (data) => {
+  const labelsMultiSelect = Object.keys(data);
 
-  const symptomsArray = [
-    data
-  ];
+  const seriesMultiSelect = [];
+  for (let i = 0; i < labelsMultiSelect.length; i++) {
+    seriesMultiSelect.push(data[labelsMultiSelect[i]]);
+  }
 
   return {
-    labels: labelsSymptoms,
-    series: symptomsArray,
-  };
-};
-const dataSideEffects = (data: PersonalStats["arrayOfData"]) => {
-  const labelsSides = [
-    "Slow movements",
-    "Dizziness",
-    "Weight gain",
-    "Sedation",
-    "Tardive dyskinesia",
-    "Sexual problems",
-  ];
-
-  const sidesArray = [
-    data.filter((e) => e.side_effs_movement_effects).length,
-    data.filter((e) => e.side_effs_dizziness).length,
-    data.filter((e) => e.side_effs_weight_gain).length,
-    data.filter((e) => e.side_effs_sedation).length,
-    data.filter((e) => e.side_effs_tardive).length,
-    data.filter((e) => e.side_effs_sexual).length,
-  ];
-
-  return {
-    labels: labelsSides,
-    series: sidesArray,
+    labels: labelsMultiSelect,
+    series: seriesMultiSelect,
   };
 };
 
-const dataSelection = (
-  data: PersonalStats["arrayOfData"],
-  stat: keyof PersonalQuestions,
-  labels: string[]
-) => {
-  const total = data.filter((e) => e[stat]).length;
+const dataSelection = (data) => {
+  const keys = Object.keys(data);
 
-  const series = labels.map((f) => data.filter((e) => e[stat] === f).length);
+  let total = 0;
 
-  const labelsPercentage = labels.map(
+  for (let index = 0; index < keys.length; index++) {
+    total += data[keys[index]];
+  }
+
+  const series = keys.map((e) => data[e]);
+
+  const labelsPercentage = keys.map(
     (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
   );
-
-  series.forEach((e, i) => {
-    if (e === 0) {
-      delete series[i];
-      delete labelsPercentage[i];
-    }
-  });
 
   return {
     labels: labelsPercentage,
@@ -484,13 +396,15 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="First psychosis symptoms"
-                    data={dataSymptoms(personalStats()?.symptoms_hallucinations)}
+                    data={dataMultiSelect(
+                      personalStats()?.symptoms_hallucinations
+                    )}
                     options={{ distributeSeries: true }}
                   />
                   {/* TODO add question to database about describing first psychosis and to here and questionsArray */}
                   <CustomBarComponent
                     header="Primary anti-psychotic"
-                    data={dataMedication(personalStats()?.arrayOfData)}
+                    data={dataSelection(personalStats()?.current_med)}
                     options={{
                       distributeSeries: true,
                       horizontalBars: true,
@@ -505,7 +419,7 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="Side effects from medication"
-                    data={dataSideEffects(personalStats()?.arrayOfData)}
+                    data={dataMultiSelect(personalStats()?.side_effs_dizziness)}
                     options={{
                       distributeSeries: true,
                       horizontalBars: true,
@@ -518,11 +432,7 @@ const Stats: ParentComponent = () => {
                   />
                   <DoughnutComponent
                     header="Reasons on quitting medication"
-                    data={dataSelection(
-                      personalStats()?.arrayOfData,
-                      "quitting_why",
-                      ["side effects", "felt normal", "affordability", "other"]
-                    )}
+                    data={dataSelection(personalStats()?.quitting_why)}
                   />
                   <TextComponent
                     header="Happened after quitting medication"
@@ -536,23 +446,14 @@ const Stats: ParentComponent = () => {
                     header="Have gained weight after medications"
                     stat="gained_weight"
                   />
-                  <Item
-                    name="Average amount gained"
-                    value={calcAverageWeight(personalStats()?.arrayOfData)}
+                  <CustomBarComponent
+                    header="Weight gained"
+                    data={weightBrackets(personalStats()?.weight_amount)}
                   />
                   <YesOrNoComponent header="Smoking" stat="smoking" />
                   <DoughnutComponent
                     header="Smoking tobacco amount"
-                    data={dataSelection(
-                      personalStats()?.arrayOfData,
-                      "smoking_amount",
-                      [
-                        "10 a day",
-                        "20 or more a day",
-                        "Less than 10 a day",
-                        "Less than 10 a week",
-                      ]
-                    )}
+                    data={dataSelection(personalStats()?.smoking_amount)}
                   />
                   <YesOrNoComponent
                     header="Has used cannabis"
