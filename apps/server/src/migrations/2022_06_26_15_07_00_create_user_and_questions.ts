@@ -74,13 +74,27 @@ export async function up(db: Kysely<any>): Promise<void> {
         )
     )
     .addColumn("prodromal_symptoms", "boolean", (col) => col.notNull())
-    .addColumn(
-      "describe_prodromal_symptoms",
-      "text",
-      (col) =>
-        col.check(
-          sql`NOT (prodromal_symptoms AND describe_prodromal_symptoms IS NULL) `
-        ) //NOTE this IS NULL might be opposite
+
+    .addColumn("prodromal_anxiety", "boolean", (col) =>
+      col.check(sql`NOT (prodromal_symptoms AND prodromal_anxiety IS NULL) `)
+    )
+    .addColumn("prodromal_depression", "boolean", (col) =>
+      col.check(sql`NOT (prodromal_symptoms AND prodromal_depression IS NULL) `)
+    )
+    .addColumn("prodromal_mood_swings", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_mood_swings IS NULL) `
+      )
+    )
+    .addColumn("prodromal_sleep_disturbances", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_sleep_disturbances IS NULL) `
+      )
+    )
+    .addColumn("prodromal_irritability", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_irritability IS NULL) `
+      )
     )
     .addColumn("symptoms_hallucinations", "boolean")
     .addColumn("symptoms_delusions", "boolean")
@@ -93,12 +107,25 @@ export async function up(db: Kysely<any>): Promise<void> {
       )
     )
     .addColumn("efficacy_of_med", "boolean", (col) => col.notNull())
-    .addColumn("side_effs_movement_effects", "boolean")
-    .addColumn("side_effs_dizziness", "boolean")
-    .addColumn("side_effs_weight_gain", "boolean")
-    .addColumn("side_effs_sedation", "boolean")
-    .addColumn("side_effs_tardive", "boolean")
-    .addColumn("side_effs_sexual", "boolean")
+    .addColumn("had_side_effs", "boolean", (col) => col.notNull())
+    .addColumn("side_effs_movement_effects", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_movement_effects IS NULL)`)
+    )
+    .addColumn("side_effs_dizziness", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_dizziness IS NULL)`)
+    )
+    .addColumn("side_effs_weight_gain", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_weight_gain IS NULL)`)
+    )
+    .addColumn("side_effs_sedation", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_sedation IS NULL)`)
+    )
+    .addColumn("side_effs_tardive", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_tardive IS NULL)`)
+    )
+    .addColumn("side_effs_sexual", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_sexual IS NULL)`)
+    )
     .addColumn("quitting", "boolean", (col) => col.notNull())
     .addColumn("quitting_why", "text", (col) =>
       col
@@ -151,10 +178,22 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.check(sql`NOT (negative_symptoms AND lack_of_motivation IS NULL)`)
     )
     .addColumn("cognitive_symptoms", "boolean", (col) => col.notNull())
-    .addColumn("cognitive_symptoms_description", "text", (col) =>
+    .addColumn("disorganized_thinking", "boolean", (col) =>
+      col.check(sql`NOT (cognitive_symptoms AND disorganized_thinking IS NULL)`)
+    )
+    .addColumn("slow_thinking", "boolean", (col) =>
+      col.check(sql`NOT (cognitive_symptoms AND slow_thinking IS NULL)`)
+    )
+    .addColumn("difficulty_understanding", "boolean", (col) =>
       col.check(
-        sql`NOT (cognitive_symptoms AND cognitive_symptoms_description IS NULL)`
+        sql`NOT (cognitive_symptoms AND difficulty_understanding IS NULL)`
       )
+    )
+    .addColumn("poor_concentration", "boolean", (col) =>
+      col.check(sql`NOT (cognitive_symptoms AND poor_concentration IS NULL)`)
+    )
+    .addColumn("poor_memory", "boolean", (col) =>
+      col.check(sql`NOT (cognitive_symptoms AND poor_memory IS NULL)`)
     )
     .addColumn("personality_before", "text", (col) => col.notNull())
     .addColumn("personality_changed", "boolean", (col) => col.notNull())

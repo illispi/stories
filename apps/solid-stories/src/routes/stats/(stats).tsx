@@ -235,7 +235,6 @@ const Stats: ParentComponent = () => {
   const personalStats = useRouteData<typeof routeData>();
 
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
-
   console.log(personalStats());
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
@@ -252,7 +251,7 @@ const Stats: ParentComponent = () => {
             keyed
           >
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
-              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-xl">
+              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
                 <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
                   <h1 class="text-center font-semibold">Personal Stats</h1>
                 </div>
@@ -443,6 +442,10 @@ const Stats: ParentComponent = () => {
                     header="Has attempted suicide"
                     stat="suicide_attempts"
                   />
+                  <YesOrNoComponent
+                  header="Has cognitive symptoms"
+                  stat="cognitive_symptoms"/>
+
                 </div>
               </div>
             </div>
@@ -462,3 +465,5 @@ export default Stats;
 //TODO few fields should be multiselect like prodromal and cognitive
 
 /* TODO add question to database about describing first psychosis and to here and questionsArray */
+
+//TODO You need option for no side effects in questions, no need to update db i think

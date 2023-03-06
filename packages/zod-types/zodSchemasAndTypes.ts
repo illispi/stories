@@ -2,8 +2,8 @@
 import { z } from "zod";
 
 export const personalQuestionsSchema = z.object({
-  // id: z.number(),
-  // user_id: z.string(),
+  //id: z.number(),
+  //user_id: z.string(),
   diagnosis: z.string(),
   gender: z.string(),
   current_age: z.number(),
@@ -16,15 +16,20 @@ export const personalQuestionsSchema = z.object({
   care_after_hospital: z.boolean().nullable(),
   what_kind_of_care_after: z.string().nullable(),
   after_hospital_satisfaction: z.boolean().nullable(),
-  psychosis_how_many: z.number(),
+  psychosis_how_many: z.string(),
   prodromal_symptoms: z.boolean(),
-  describe_prodromal_symptoms: z.string().nullable(),
+  prodromal_anxiety: z.boolean().nullable(),
+  prodromal_depression: z.boolean().nullable(),
+  prodromal_mood_swings: z.boolean().nullable(),
+  prodromal_sleep_disturbances: z.boolean().nullable(),
+  prodromal_irritability: z.boolean().nullable(),
   symptoms_hallucinations: z.boolean().nullable(),
   symptoms_delusions: z.boolean().nullable(),
   symptoms_paranoia: z.boolean().nullable(),
   symptoms_disorganized: z.boolean().nullable(),
   current_med: z.string(),
   efficacy_of_med: z.boolean(),
+  had_side_effs: z.boolean(),
   side_effs_movement_effects: z.boolean().nullable(),
   side_effs_dizziness: z.boolean().nullable(),
   side_effs_weight_gain: z.boolean().nullable(),
@@ -50,7 +55,11 @@ export const personalQuestionsSchema = z.object({
   apathy: z.boolean().nullable(),
   lack_of_motivation: z.boolean().nullable(),
   cognitive_symptoms: z.boolean(),
-  cognitive_symptoms_description: z.string().nullable(),
+  disorganized_thinking: z.boolean().nullable(),
+  slow_thinking: z.boolean().nullable(),
+  difficulty_understanding: z.boolean().nullable(),
+  poor_concentration: z.boolean().nullable(),
+  poor_memory: z.boolean().nullable(),
   personality_before: z.string(),
   personality_changed: z.boolean(),
   personality_after: z.string().nullable(),
@@ -73,12 +82,12 @@ export const personalQuestionsSchema = z.object({
   what_others_should_know: z.string().nullable(),
   not_have_schizophrenia: z.boolean(),
   not_have_schizophrenia_description: z.string().nullable(),
-  //created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
+  created_at: z.union([z.number(), z.string(), z.date()]).nullable(),
 });
 
 export const theirQuestionsSchema = z.object({
   // id: z.number(),
-  //user_id: z.string(),
+  // user_id: z.string(),
   relation: z.string(),
   gender: z.string(),
   age_of_onset: z.number(),
@@ -115,6 +124,5 @@ export const dbSchema = z.object({
   their_questions: theirQuestionsSchema,
   user: userSchema,
 });
-
 export type PersonalQuestions = z.infer<typeof personalQuestionsSchema>;
 export type theirQuestions = z.infer<typeof theirQuestionsSchema>;

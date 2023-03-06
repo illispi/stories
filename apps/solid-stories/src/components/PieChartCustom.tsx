@@ -35,7 +35,7 @@ const PieChartCustom: Component<{ data: ChartistData; labels?: boolean }> = (
 
   return (
     <div class="flex flex-col items-center justify-center">
-      <div class="h-80 w-80" id={`chartPie${id}`} />
+      <div class="h-72 w-72" id={`chartPie${id}`} />
       <Show when={props.labels} fallback={null}>
         <div>
           <For each={props.data.labels} fallback={<div>Error</div>}>

@@ -18,6 +18,8 @@ import os from "os";
 import helmet from "@fastify/helmet";
 //TODO might need to import DB rather from zod-types
 
+//import { DB } from 'kysely-codegen'
+
 dotenv.config();
 
 const nets = os.networkInterfaces();

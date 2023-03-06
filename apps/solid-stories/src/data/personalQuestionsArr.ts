@@ -100,8 +100,15 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question: "What kind of prodromal symptoms did you have?",
-    questionType: "text",
-    questionDB: "describe_prodromal_symptoms",
+    questionType: "multiSelect",
+    questionDB: "prodromal_anxiety",
+    multiSelect: [
+      ["prodromal_anxiety", "Anxiety"],
+      ["prodromal_depression", "Depression"],
+      ["prodromal_mood_swings", "Mood swings"],
+      ["prodromal_sleep_disturbances", "Sleep disturbances"],
+      ["prodromal_irritability", "Irritability"],
+    ],
   },
   {
     question:
@@ -137,6 +144,11 @@ export const questions: QuestionPersonal[] = [
       "Did the antipsychotic medication help with your positive symptoms?",
     questionType: "yesOrNo",
     questionDB: "efficacy_of_med",
+  },
+  {
+    question: "Did the antipsychotic medication cause side effects",
+    questionType: "yesOrNo",
+    questionDB: "had_side_effs",
   },
 
   {
@@ -248,9 +260,16 @@ export const questions: QuestionPersonal[] = [
     skip: "personality_before",
   },
   {
-    question: "What kind of cognitive decline?",
-    questionType: "text",
-    questionDB: "cognitive_symptoms_description",
+    question: "What kind of cognitive symptoms did you have?",
+    questionType: "multiSelect",
+    questionDB: "disorganized_thinking",
+    multiSelect: [
+      ["disorganized_thinking", "Disorganized thinking"],
+      ["slow_thinking", "Slow thinking"],
+      ["difficulty_understanding", "Difficulty understanding"],
+      ["poor_memory", "Poor memory"],
+      ["poor_concetration", "Poor concentration"],
+    ],
   },
   {
     question: "How would you describe your personality before psychosis?",
