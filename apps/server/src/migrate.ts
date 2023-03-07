@@ -38,6 +38,8 @@ async function migrateToLatest(dir: string[]) {
     }),
   });
 
+  console.log(path.join(__dirname, "migrations"));
+
   const { error, results } =
     dir[0] === "down"
       ? await migrator.migrateDown()
