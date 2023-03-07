@@ -1,9 +1,8 @@
 import { Pool } from "pg";
 import { Kysely, PostgresDialect, sql } from "kysely";
-import type { DB } from "./db/dbTypes";
+import { DB } from "./db/dbTypes";
 import "dotenv/config";
-import { PersonalQuestions } from "zod-types";
-import { createCookieSessionStorage, json, redirect } from "solid-start";
+import { createCookieSessionStorage, json } from "solid-start";
 import { questions } from "../data/personalQuestionsArr";
 import { MainReturn } from "./types";
 
