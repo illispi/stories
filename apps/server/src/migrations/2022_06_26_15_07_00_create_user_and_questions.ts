@@ -8,7 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("name", "text")
     .addColumn("email", "text", (col) => col.unique())
-    .addColumn("emailVerified", "datetime")
+    .addColumn("emailVerified", "timestamp")
     .addColumn("image", "text")
     .execute();
 
@@ -43,7 +43,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("sessionToken", "text", (col) => col.unique().notNull())
     .addColumn("userId", "text", (col) => col.notNull())
-    .addColumn("expires", "datetime", (col) => col.notNull())
+    .addColumn("expires", "timestamp", (col) => col.notNull())
     .addColumn(
       "user",
       "uuid",
@@ -55,7 +55,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("VerificationToken")
     .addColumn("identifier", "text")
     .addColumn("token", "text", (col) => col.unique())
-    .addColumn("expires", "datetime")
+    .addColumn("expires", "timestamp")
     .execute();
 
   await db.schema

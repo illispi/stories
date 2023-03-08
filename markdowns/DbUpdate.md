@@ -9,3 +9,6 @@
 3. in ./apps/server
    1. pnpm ts-to-zod --skipValidation src/db/dbTypes.ts src/db/zodFromTypes.ts
 4. Copy zodFromTypes to zodSchemasAndTypes and copy last bit infers from orig. zodSchemasAndTypes and comment out users for now
+
+
+
