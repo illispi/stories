@@ -6,15 +6,63 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
-    .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
-    .addColumn("modified_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
+    .addColumn("name", "text")
+    .addColumn("email", "text", (col) => col.unique())
+    .addColumn("emailVerified", "datetime")
+    .addColumn("image", "text")
+    .execute();
+
+  await db.schema
+    .createTable("account")
+    .addColumn("id", "uuid", (col) =>
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
+    )
+    .addColumn("userId", "text", (col) => col.notNull())
+    .addColumn("type", "text", (col) => col.notNull())
+    .addColumn("provider", "text", (col) => col.notNull())
+    .addColumn("providerAccountId", "text", (col) => col.notNull())
+    .addColumn("refresh_token", "text")
+    .addColumn("refresh_token_expires_in", "integer")
+    .addColumn("access_token", "text")
+    .addColumn("expires_at", "integer")
+    .addColumn("token_type", "text")
+    .addColumn("scope", "text")
+    .addColumn("id_token", "text")
+    .addColumn("session_state", "text")
+    .addColumn(
+      "user",
+      "uuid",
+      (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
+    )
+    .execute();
+
+  await db.schema
+    .createTable("session")
+    .addColumn("id", "uuid", (col) =>
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
+    )
+    .addColumn("sessionToken", "text", (col) => col.unique().notNull())
+    .addColumn("userId", "text", (col) => col.notNull())
+    .addColumn("expires", "datetime", (col) => col.notNull())
+    .addColumn(
+      "user",
+      "uuid",
+      (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
+    )
+    .execute();
+
+  await db.schema
+    .createTable("VerificationToken")
+    .addColumn("identifier", "text")
+    .addColumn("token", "text", (col) => col.unique())
+    .addColumn("expires", "datetime")
     .execute();
 
   await db.schema
     .createTable("personal_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
-      "user_id",
+      "user",
       "uuid",
       (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
     )
