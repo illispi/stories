@@ -1,9 +1,12 @@
-import { SolidAuth, type SolidAuthConfig } from "@auth/solid-start";
+import { SolidAuth } from "@auth/solid-start";
+import type { SolidAuthConfig } from "@auth/solid-start";
 import Github from "@auth/core/providers/github";
 import { serverEnv } from "~/env/server";
 
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { Pool } from "pg";
+import KyselyAdapter from "~/server/kysely-adapter";
+import type { DB } from "~/server/db/dbTypes";
 
 const db = new Kysely<DB>({
   log: ["error", "query"],
@@ -19,18 +22,7 @@ const db = new Kysely<DB>({
 });
 
 export const authOpts: SolidAuthConfig = {
-  callbacks: {
-    session({ session, user }) {
-      /*     if (session.user) {
 
-        session.user.name = user.name;
-      } */
-
-      console.log(user);
-
-      return session;
-    },
-  },
   providers: [
     // @ts-expect-error Types Issue
     Github({
@@ -39,6 +31,9 @@ export const authOpts: SolidAuthConfig = {
     }),
   ],
   debug: false,
+  adapter: KyselyAdapter(db)
 };
 
 export const { GET, POST } = SolidAuth(authOpts);
+
+
