@@ -13,7 +13,7 @@ const db = new Kysely<DB>({
   dialect: new PostgresDialect({
     pool: new Pool({
       host: "127.0.0.1",
-      database: "auth_dev",
+      database: "stories_dev",
       password: process.env.PSQL_PASSWORD,
       user: process.env.PSQL_USERNAME,
       port: 5432,
@@ -22,7 +22,6 @@ const db = new Kysely<DB>({
 });
 
 export const authOpts: SolidAuthConfig = {
-
   providers: [
     // @ts-expect-error Types Issue
     Github({
@@ -31,9 +30,7 @@ export const authOpts: SolidAuthConfig = {
     }),
   ],
   debug: false,
-  adapter: KyselyAdapter(db)
+  adapter: KyselyAdapter(db),
 };
 
 export const { GET, POST } = SolidAuth(authOpts);
-
-

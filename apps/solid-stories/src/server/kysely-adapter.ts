@@ -87,7 +87,8 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
       const user = await kysely
         .selectFrom("user")
         .selectAll("user")
-        .where("id", "=", session?.userId);
+        .where("id", "=", session?.userId)
+        .executeTakeFirst();
       return { session, user };
     },
     async updateSession({ sessionToken }) {
@@ -119,5 +120,6 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
 
     //BUG these last two delete something as well
+    //BUG I think userID on account and session should be related to user
   };
 }
