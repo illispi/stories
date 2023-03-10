@@ -1,6 +1,5 @@
-import type { TestOptions } from "@next-auth/adapter-test";
 import type { Kysely } from "kysely";
-import type { DB } from "~/server/db/dbTypes";
+import type { DB } from "./dbTypes"
 
 export function dbHelper(db: Kysely<DB>): TestOptions["db"] {
   return {

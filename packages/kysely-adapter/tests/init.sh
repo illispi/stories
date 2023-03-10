@@ -10,9 +10,11 @@ PG_CONTAINER_NAME=next-auth-postgres-test
 
 docker run -d --rm -e POSTGRES_USER=${PGUSER} -e POSTGRES_DB=${PGDATABASE} -e POSTGRES_HOST_AUTH_METHOD=trust --name "${PG_CONTAINER_NAME}" -p 5432:5432 postgres:13.3
 
-WAIT=10
+WAIT=5
 echo "Waiting ${WAIT} sec for PostgreSQL db to be up..."
 sleep ${WAIT}
+
+ts-node ./tests/migrate.ts
 
 set -eu
 

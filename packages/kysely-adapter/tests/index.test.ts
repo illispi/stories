@@ -1,8 +1,8 @@
 import { runBasicTests } from "@next-auth/adapter-test";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
-import KyselyAdapter from "../src/server/kysely-adapter";
-import type { DB } from "../src/server/db/dbTypes";
+import KyselyAdapter from "../../../apps/solid-stories/src/server/kysely-adapter";
+import type { DB } from "../../../apps/solid-stories/src/server/db/dbTypes";
 import { dbHelper } from "./dbTestOptions";
 
 const dbKysely = new Kysely<DB>({
