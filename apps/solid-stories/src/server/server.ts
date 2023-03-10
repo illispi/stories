@@ -6,6 +6,8 @@ import { createCookieSessionStorage, json } from "solid-start";
 import { questions } from "../data/personalQuestionsArr";
 import { MainReturn } from "./types";
 
+//NOTE put for instance console.log inside that and you can check if you have multiple pools
+
 const db = new Kysely<DB>({
   log: ["error", "query"],
   dialect: new PostgresDialect({
