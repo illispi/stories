@@ -17,5 +17,7 @@ sleep ${WAIT}
 set -eu
 
 echo "Started running PostgreSQL tests with default models."
-jest tests/index.test.ts
+jest index.test.ts
 echo "Finished running PostgreSQL tests with default models."
+
+read varname

@@ -1,7 +1,7 @@
 import { runBasicTests } from "@next-auth/adapter-test";
 import { Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
-import KyselyAdapter from "~/server/kysely-adapter";
+import KyselyAdapter from "../src/server/kysely-adapter";
 import type { DB } from "../src/server/db/dbTypes";
 import { dbHelper } from "./dbTestOptions";
 
