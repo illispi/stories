@@ -1,9 +1,9 @@
-import { runBasicTests } from "@next-auth/adapter-test";
-import { Kysely, PostgresDialect } from "kysely";
-import { Pool } from "pg";
-import KyselyAdapter from "../../../apps/solid-stories/src/server/kysely-adapter";
-import type { DB } from "../../../apps/solid-stories/src/server/db/dbTypes";
-import { dbHelper } from "./dbTestOptions";
+import { Kysely, PostgresDialect } from "kysely"
+import KyselyAdapter from "../src/index"
+import { Pool } from "pg"
+import { DB } from "../src/dbTypes"
+import { dbHelper } from "./dbTestOptions"
+import { runBasicTests } from "@next-auth/adapter-test"
 
 const dbKysely = new Kysely<DB>({
   log: ["error", "query"],
@@ -15,9 +15,9 @@ const dbKysely = new Kysely<DB>({
       port: 5432,
     }),
   }),
-});
+})
 
 runBasicTests({
   adapter: KyselyAdapter(dbKysely),
   db: dbHelper(dbKysely),
-});
+})

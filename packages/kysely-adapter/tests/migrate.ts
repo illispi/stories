@@ -1,19 +1,19 @@
-import * as path from "path";
-import { Pool } from "pg";
-import { promises as fs } from "fs";
+import * as path from "path"
+import { Pool } from "pg"
+import { promises as fs } from "fs"
 import {
   Kysely,
   Migrator,
   PostgresDialect,
   FileMigrationProvider,
-} from "kysely";
+} from "kysely"
 // import { Database } from "./dbTypes";
-import * as dotenv from "dotenv";
+import * as dotenv from "dotenv"
 
-dotenv.config();
+dotenv.config()
 
 async function migrateToLatest(dir: string[]) {
-  console.log(dir);
+  console.log(dir)
 
   const db = new Kysely<any>({
     //TODO replace any with Database types
@@ -26,7 +26,7 @@ async function migrateToLatest(dir: string[]) {
         port: 5432,
       }),
     }),
-  });
+  })
 
   const migrator = new Migrator({
     db,
@@ -35,30 +35,30 @@ async function migrateToLatest(dir: string[]) {
       path,
       migrationFolder: path.join(__dirname, "migrations"),
     }),
-  });
+  })
 
-  console.log(path.join(__dirname, "migrations"));
+  console.log(path.join(__dirname, "migrations"))
 
   const { error, results } =
     dir[0] === "down"
       ? await migrator.migrateDown()
-      : await migrator.migrateToLatest();
+      : await migrator.migrateToLatest()
 
   results?.forEach((it) => {
     if (it.status === "Success") {
-      console.log(`migration "${it.migrationName}" was executed successfully`);
+      console.log(`migration "${it.migrationName}" was executed successfully`)
     } else if (it.status === "Error") {
-      console.error(`failed to execute migration "${it.migrationName}"`);
+      console.error(`failed to execute migration "${it.migrationName}"`)
     }
-  });
+  })
 
   if (error) {
-    console.error("failed to migrate");
-    console.error(error);
-    process.exit(1);
+    console.error("failed to migrate")
+    console.error(error)
+    process.exit(1)
   }
 
-  await db.destroy();
+  await db.destroy()
 }
 
-migrateToLatest(process.argv.slice(2));
+migrateToLatest(process.argv.slice(2))

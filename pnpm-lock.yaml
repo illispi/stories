@@ -72,7 +72,7 @@ importers:
       '@auth/core': ^0.5.1
       '@auth/solid-start': ^0.1.1
       '@motionone/solid': ^10.15.5
-      '@next-auth/adapter-test': workspace:^0.0.0
+      '@next-auth/kysely-adapter': workspace:^0.0.0
       '@prpc/solid': ^0.2.14
       '@prpc/vite': ^0.3.6
       '@solid-primitives/keyed': ^1.1.8
@@ -113,6 +113,7 @@ importers:
       '@auth/core': 0.5.1
       '@auth/solid-start': 0.1.1_qxfne3bpexgglt26jwixp3za4u
       '@motionone/solid': 10.15.5_solid-js@1.6.12
+      '@next-auth/kysely-adapter': link:../../packages/kysely-adapter
       '@prpc/solid': 0.2.14_us2obyke5iddtbtvrdoe5oqm74
       '@prpc/vite': 0.3.6_vite@4.1.4
       '@solid-primitives/keyed': 1.1.8_solid-js@1.6.12
@@ -128,7 +129,6 @@ importers:
       zod: 3.21.4
       zod-types: link:../../packages/zod-types
     devDependencies:
-      '@next-auth/adapter-test': link:../../packages/kysely-adapter
       '@swc/core': 1.3.39
       '@swc/jest': 0.2.24_@swc+core@1.3.39
       '@types/node': 18.14.6
@@ -6457,7 +6457,7 @@ packages:
       pretty-format: 27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1_3bszheb7uvxhm7xoyvgc67yd7m
+      ts-node: 10.9.1_bxdnunoxdbhylnbhcknccd4m4u
     transitivePeerDependencies:
       - bufferutil
       - canvas

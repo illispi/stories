@@ -22,4 +22,4 @@ echo "Started running PostgreSQL tests with default models."
 jest index.test.ts
 echo "Finished running PostgreSQL tests with default models."
 
-read varname
+docker rm -f "${PG_CONTAINER_NAME}"

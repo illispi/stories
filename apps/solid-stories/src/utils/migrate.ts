@@ -1,5 +1,6 @@
 import * as path from "path";
-import { Pool } from "pg";
+import PG from "pg";
+const Pool = PG.Pool;
 import { promises as fs } from "fs";
 import {
   Kysely,
@@ -9,6 +10,9 @@ import {
 } from "kysely";
 // import { Database } from "./dbTypes";
 import * as dotenv from "dotenv";
+import { fileURLToPath } from "url";
+
+const __dirname = fileURLToPath(new URL("../", import.meta.url));
 
 dotenv.config();
 

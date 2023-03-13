@@ -1,20 +1,12 @@
-import { Kysely, sql } from "kysely";
+import type { Kysely } from "kysely";
+import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .createTable("user")
-    .addColumn("id", "uuid", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
-    .addColumn("modified_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
-    .execute();
-
   await db.schema
     .createTable("personal_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
-      "user_id",
+      "user",
       "uuid",
       (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
     )
@@ -296,9 +288,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("personal_questions").execute();
   await db.schema.dropTable("their_questions").execute();
-  await db.schema.dropTable("user").execute();
+  await db.schema.dropTable("personal_questions").execute();
 }
-
-//NOTE if you added to column name_enum, you could spot them easily in zod schemas.

@@ -1,68 +1,13 @@
-import { Kysely, sql } from "kysely";
+import type { Kysely } from "kysely";
+import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
-  await db.schema
-    .createTable("user")
-    .addColumn("id", "uuid", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("name", "text")
-    .addColumn("email", "text", (col) => col.unique())
-    .addColumn("emailVerified", "timestamp")
-    .addColumn("image", "text")
-    .execute();
-
-  await db.schema
-    .createTable("account")
-    .addColumn("id", "uuid", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("userId", "text", (col) => col.notNull())
-    .addColumn("type", "text", (col) => col.notNull())
-    .addColumn("provider", "text", (col) => col.notNull())
-    .addColumn("providerAccountId", "text", (col) => col.notNull())
-    .addColumn("refresh_token", "text")
-    .addColumn("refresh_token_expires_in", "integer")
-    .addColumn("access_token", "text")
-    .addColumn("expires_at", "integer")
-    .addColumn("token_type", "text")
-    .addColumn("scope", "text")
-    .addColumn("id_token", "text")
-    .addColumn("session_state", "text")
-    .addColumn(
-      "user",
-      "uuid",
-      (col) => col.references("user.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
-    )
-    .execute();
-
-  await db.schema
-    .createTable("session")
-    .addColumn("id", "uuid", (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`)
-    )
-    .addColumn("sessionToken", "text", (col) => col.unique().notNull())
-    .addColumn("userId", "text", (col) => col.notNull())
-    .addColumn("expires", "timestamp", (col) => col.notNull())
-    .addColumn(
-      "user",
-      "uuid",
-      (col) => col.references("user.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
-    )
-    .execute();
-
-  await db.schema
-    .createTable("VerificationToken")
-    .addColumn("identifier", "text")
-    .addColumn("token", "text", (col) => col.unique())
-    .addColumn("expires", "timestamp")
-    .execute();
 
   await db.schema
     .createTable("personal_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
-      "user",
+      "userId",
       "uuid",
       (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
     )
@@ -299,7 +244,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("their_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("user_id", "uuid", (col) =>
+    .addColumn("userId", "uuid", (col) =>
       col.references("user.id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
@@ -344,12 +289,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("personal_questions").execute();
   await db.schema.dropTable("their_questions").execute();
-  await db.schema.dropTable("account").execute();
-  await db.schema.dropTable("session").execute();
-  await db.schema.dropTable("VerificationToken").execute();
-  await db.schema.dropTable("user").execute();
+  await db.schema.dropTable("personal_questions").execute();
 }
-
-//NOTE if you added to column name_enum, you could spot them easily in zod schemas.

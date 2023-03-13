@@ -6,15 +6,25 @@
     "Balázs Orbán <info@balazsorban.com>",
     "Nico Domino <yo@ndo.dev>"
   ],
+  "author": "Illispi",
+  "main": "dist/index.js",
   "files": [
     "jest"
   ],
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
     "test": "./tests/init.sh"
   },
   "license": "ISC",
-  "private": true,
+  "private": false,
+  "peerDependencies": {
+    "next-auth": "^4"
+  },
   "devDependencies": {
+    "@next-auth/tsconfig": "workspace:*",
+    "@next-auth/adapter-test": "workspace:*",
+    "next-auth": "workspace:*",
     "@babel/cli": "^7.14.3",
     "@babel/plugin-transform-runtime": "^7.14.3",
     "@babel/preset-env": "^7.14.2",
@@ -26,7 +36,6 @@
     "dotenv": "^16.0.3",
     "jest": "^27.0.3",
     "kysely": "^0.23.5",
-    "next-auth": "^4.20.1",
     "pg": "^8.10.0",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.9.1",
