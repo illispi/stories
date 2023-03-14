@@ -3,7 +3,7 @@ import { Component, Show } from "solid-js";
 import { For, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "../types/types";
 import "../styles/index.css";
-import { pieChartCount, setPieChartCount } from "~/globalSignals";
+import { pieChartCount, setPieChartCount } from "~/utils/globalSignals";
 
 const PieChartCustom: Component<{ data: ChartistData; labels?: boolean }> = (
   props

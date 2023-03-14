@@ -4,7 +4,7 @@ import { Component, Show } from "solid-js";
 import { onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
-import { barChartCount, setBarChartCount } from "../globalSignals";
+import { barChartCount, setBarChartCount } from "../utils/globalSignals";
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
