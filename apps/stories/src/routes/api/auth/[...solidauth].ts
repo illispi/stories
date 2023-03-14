@@ -6,21 +6,9 @@ import { serverEnv } from "~/env/server";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { Pool } from "pg";
 
-import type { DB } from "~/server/db/dbTypes";
-import KyselyAdapter from "~/server/db/kyselyAdapter";
-
-const db = new Kysely<DB>({
-  log: ["error", "query"],
-  dialect: new PostgresDialect({
-    pool: new Pool({
-      host: "127.0.0.1",
-      database: "stories_dev",
-      password: process.env.PSQL_PASSWORD,
-      user: process.env.PSQL_USERNAME,
-      port: 5432,
-    }),
-  }),
-});
+import type { DB } from "~/db/dbTypes";
+import KyselyAdapter from "~/db/kyselyAdapter";
+import { db } from "~/server/server";
 
 export const authOpts: SolidAuthConfig = {
   providers: [

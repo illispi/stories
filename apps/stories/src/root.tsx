@@ -14,7 +14,6 @@ import {
   useRouteData,
 } from "solid-start";
 import NavBar from "./components/Navbar";
-import CreateUser from "./components/CreateUser";
 import { QueryProvider } from "@prpc/solid";
 import { QueryClient } from "@tanstack/solid-query";
 
@@ -33,7 +32,6 @@ export default function Root() {
           <Suspense>
             <ErrorBoundary>
               <NavBar />
-              <CreateUser />
               <Routes>
                 <FileRoutes />
               </Routes>

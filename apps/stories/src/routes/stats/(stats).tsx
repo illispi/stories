@@ -8,24 +8,19 @@ import {
 } from "solid-js";
 import type { ParentComponent, Component } from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
-import { A, useRouteData } from "solid-start";
+import { A } from "solid-start";
 import PieChartCustom from "~/components/PieChartCustom";
 import type { ChartistData } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
 import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
-import { createServerData$ } from "solid-start/server";
-import { personalStatsGet } from "~/server/server";
 import type { AxisOptions, BarChartOptions } from "chartist";
-import CreateUser from "~/components/CreateUser";
+import { allStats } from "~/server/queries";
+import type { MainReturn } from "~/server/types";
+import type { CreateQueryResult } from "@tanstack/solid-query";
 
-type PersonalStats = Awaited<ReturnType<typeof personalStatsGet>>;
-
-export const routeData = () => {
-  return createServerData$(() => personalStatsGet());
-};
-const DataContext = createContext<ReturnType<typeof routeData>>();
+const DataContext = createContext<CreateQueryResult<MainReturn, Error>>();
 const useData = () => {
   return useContext(DataContext);
 };
@@ -95,25 +90,25 @@ const YesOrNoComponent: Component<{
   const personalStats = useData();
 
   const total =
-    personalStats()[props.stat].yes + personalStats()[props.stat].no;
+    personalStats?.data[props.stat].yes + personalStats?.data[props.stat].no;
 
   return (
-    <Show when={!personalStats?.loading}>
+    <Show when={personalStats.data}>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
         <PieChartCustom
           data={{
             labels: [
               `Yes ${Math.floor(
-                (personalStats()[props.stat].yes / total) * 100
+                (personalStats.data[props.stat].yes / total) * 100
               )}%`,
               `No ${Math.floor(
-                (personalStats()[props.stat].no / total) * 100
+                (personalStats.data[props.stat].no / total) * 100
               )}%`,
             ],
             series: [
-              personalStats()[props.stat].yes,
-              personalStats()[props.stat].no,
+              personalStats.data[props.stat].yes,
+              personalStats.data[props.stat].no,
             ],
           }}
         />
@@ -232,21 +227,19 @@ const TextComponent: Component<{
 };
 
 const Stats: ParentComponent = () => {
-  const personalStats = useRouteData<typeof routeData>();
+  const allStatsPersonal = allStats();
 
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
-  console.log(personalStats());
+  //console.log(personalStats());
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
-    <DataContext.Provider value={personalStats}>
+    <DataContext.Provider value={allStatsPersonal.data}>
       <ErrorBoundary fallback={(err) => err}>
         <Suspense fallback={<div>Loading</div>}>
           <Show
-            when={
-              !personalStats.loading && !personalStats.error && personalStats()
-            }
+            when={allStatsPersonal.data}
             fallback={<div>loading</div>}
             keyed
           >
@@ -260,25 +253,27 @@ const Stats: ParentComponent = () => {
                     {
                       <Item
                         name={"Total responses:"}
-                        value={`${personalStats()?.total}`}
+                        value={`${allStatsPersonal.data.total}`}
                       />
                     }
                     <DoughnutComponent
                       header="Share of genders"
-                      data={dataGender(personalStats()?.gender)}
+                      data={dataGender(allStatsPersonal.data.gender)}
                     />
                     <CustomBarComponent
                       header="Age of responses"
-                      data={dataAgeOfRes(personalStats()?.current_age)}
+                      data={dataAgeOfRes(allStatsPersonal.data.current_age)}
                       options={{ distributeSeries: true }}
                     />
                     <CustomBarComponent
                       header="Age of Onset"
-                      data={dataOnset(personalStats()?.ageOfOnsetByGender)}
+                      data={dataOnset(allStatsPersonal.data.ageOfOnsetByGender)}
                     />
 
                     <DoughnutComponent
-                      data={dataSelection(personalStats()?.length_of_psychosis)}
+                      data={dataSelection(
+                        allStatsPersonal.data.length_of_psychosis
+                      )}
                       header={"Length of first psychosis"}
                     />
 
@@ -314,21 +309,21 @@ const Stats: ParentComponent = () => {
                         <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
                           <DoughnutComponent
                             data={dataSelection(
-                              personalStats()?.lengthByGender.maleSplit
+                              allStatsPersonal.data.lengthByGender.maleSplit
                             )}
                             header={"First psychosis male"}
                           />
 
                           <DoughnutComponent
                             data={dataSelection(
-                              personalStats()?.lengthByGender.femaleSplit
+                              allStatsPersonal.data.lengthByGender.femaleSplit
                             )}
                             header={"First psychosis female"}
                           />
 
                           <DoughnutComponent
                             data={dataSelection(
-                              personalStats()?.lengthByGender.otherSplit
+                              allStatsPersonal.data.lengthByGender.otherSplit
                             )}
                             header={"First psychosis other"}
                           />
@@ -371,14 +366,14 @@ const Stats: ParentComponent = () => {
                   <CustomBarComponent
                     header="First psychosis symptoms"
                     data={dataMultiSelect(
-                      personalStats()?.symptoms_hallucinations
+                      allStatsPersonal.data.symptoms_hallucinations
                     )}
                     options={{ distributeSeries: true }}
                   />
 
                   <CustomBarComponent
                     header="Primary anti-psychotic"
-                    data={dataSelection(personalStats()?.current_med)}
+                    data={dataSelection(allStatsPersonal.data.current_med)}
                     options={{
                       distributeSeries: true,
                       horizontalBars: true,
@@ -393,7 +388,9 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="Side effects from medication"
-                    data={dataMultiSelect(personalStats()?.side_effs_dizziness)}
+                    data={dataMultiSelect(
+                      allStatsPersonal.data.side_effs_dizziness
+                    )}
                     options={{
                       distributeSeries: true,
                       horizontalBars: true,
@@ -406,7 +403,7 @@ const Stats: ParentComponent = () => {
                   />
                   <DoughnutComponent
                     header="Reasons on quitting medication"
-                    data={dataSelection(personalStats()?.quitting_why)}
+                    data={dataSelection(allStatsPersonal.data.quitting_why)}
                   />
                   <TextComponent
                     header="Happened after quitting medication"
@@ -422,13 +419,13 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="Weight gained"
-                    data={weightBrackets(personalStats()?.weight_amount)}
+                    data={weightBrackets(allStatsPersonal.data.weight_amount)}
                     options={{ distributeSeries: true }}
                   />
                   <YesOrNoComponent header="Smoking" stat="smoking" />
                   <DoughnutComponent
                     header="Smoking tobacco amount"
-                    data={dataSelection(personalStats()?.smoking_amount)}
+                    data={dataSelection(allStatsPersonal.data.smoking_amount)}
                   />
                   <YesOrNoComponent
                     header="Has used cannabis"
@@ -443,9 +440,9 @@ const Stats: ParentComponent = () => {
                     stat="suicide_attempts"
                   />
                   <YesOrNoComponent
-                  header="Has cognitive symptoms"
-                  stat="cognitive_symptoms"/>
-
+                    header="Has cognitive symptoms"
+                    stat="cognitive_symptoms"
+                  />
                 </div>
               </div>
             </div>
