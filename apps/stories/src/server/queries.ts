@@ -210,8 +210,6 @@ export const allStats = query$(
 
     automatic.total = responsesTotal;
 
-    console.log(automatic);
-
     return automatic;
   },
   "allStats" // this will be used as the query key (along with the input)

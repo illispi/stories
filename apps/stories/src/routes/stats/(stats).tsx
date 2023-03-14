@@ -232,8 +232,6 @@ const Stats: ParentComponent = () => {
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
   //console.log(personalStats());
 
-  console.log(allStatsPersonal.data.total);
-
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
@@ -241,7 +239,7 @@ const Stats: ParentComponent = () => {
       <ErrorBoundary fallback={(err) => err}>
         <Suspense fallback={<div>Loading</div>}>
           <Show
-            when={allStatsPersonal.data}
+            when={allStatsPersonal.data?.total}
             fallback={<div>loading</div>}
             keyed
           >
