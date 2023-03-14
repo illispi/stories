@@ -6,7 +6,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const convertToIso = (n: number) => {
   return n.toString().length > 1 ? n : `0${n.toString()}`;
-};
+}
 
 const date = new Date();
 const year = date.getFullYear();
