@@ -5,7 +5,7 @@ import { serverEnv } from "~/env/server";
 
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { Pool } from "pg";
-import KyselyAdapter from "~/server/kysely-adapter";
+import KyselyAdapter from "@next-auth/kysely-adapter";
 import type { DB } from "~/server/db/dbTypes";
 
 const db = new Kysely<DB>({
