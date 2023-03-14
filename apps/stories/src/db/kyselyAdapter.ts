@@ -1,6 +1,6 @@
-import type { Kysely } from "kysely"
-import { Adapter } from "next-auth/adapters"
-import { DB } from "./dbTypes"
+import type { Kysely } from "kysely";
+import { Adapter } from "next-auth/adapters";
+import { DB } from "../types/dbTypes";
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
@@ -10,7 +10,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
         .insertInto("user")
         .values({ ...user })
         .returningAll()
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async getUser(id) {
       return (
@@ -19,7 +19,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
           .selectAll()
           .where("id", "=", id)
           .executeTakeFirst()) ?? null
-      )
+      );
     },
     async getUserByEmail(email) {
       return (
@@ -28,7 +28,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
           .selectAll()
           .where("email", "=", email)
           .executeTakeFirst()) ?? null
-      )
+      );
     },
     async getUserByAccount({ providerAccountId, provider }) {
       const account = await kysely
@@ -36,18 +36,18 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
         .selectAll()
         .where("providerAccountId", "=", providerAccountId)
         .where("provider", "=", provider)
-        .executeTakeFirst()
+        .executeTakeFirst();
 
       if (!account) {
-        return null
+        return null;
       }
       const user =
         (await kysely
           .selectFrom("user")
           .selectAll()
           .where("id", "=", account?.userId)
-          .executeTakeFirst()) ?? null
-      return user
+          .executeTakeFirst()) ?? null;
+      return user;
     },
     async updateUser(user) {
       return await kysely
@@ -55,41 +55,41 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
         .set({ ...user })
         .where("id", "=", user.id)
         .returningAll()
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async deleteUser(userId) {
       return await kysely
         .deleteFrom("user")
         .where("id", "=", userId)
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async linkAccount(account) {
       const pgDefault = await kysely
         .insertInto("account")
         .values({ ...account })
         .returningAll()
-        .executeTakeFirst()
+        .executeTakeFirst();
 
       if (!pgDefault) {
-        return null
+        return null;
       }
 
-      pgDefault.expires_at = Number(pgDefault?.expires_at)
-      return pgDefault
+      pgDefault.expires_at = Number(pgDefault?.expires_at);
+      return pgDefault;
     },
     async unlinkAccount({ providerAccountId, provider }) {
       return await kysely
         .deleteFrom("account")
         .where("providerAccountId", "=", providerAccountId)
         .where("provider", "=", provider)
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async createSession({ sessionToken, userId, expires }) {
       return await kysely
         .insertInto("session")
         .values({ userId, sessionToken, expires })
         .returningAll()
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async getSessionAndUser(sessionToken) {
       const session =
@@ -97,39 +97,39 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
           .selectFrom("session")
           .selectAll("session")
           .where("sessionToken", "=", sessionToken)
-          .executeTakeFirst()) ?? null
+          .executeTakeFirst()) ?? null;
 
       if (!session) {
-        return null
+        return null;
       }
       const user =
         (await kysely
           .selectFrom("user")
           .selectAll("user")
           .where("id", "=", session?.userId)
-          .executeTakeFirst()) ?? null
+          .executeTakeFirst()) ?? null;
 
-      return { session, user }
+      return { session, user };
     },
     async updateSession({ sessionToken, expires }) {
       return await kysely
         .updateTable("session")
         .set({ sessionToken, expires })
         .where("sessionToken", "=", sessionToken)
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async deleteSession(sessionToken) {
       return await kysely
         .deleteFrom("session")
         .where("sessionToken", "=", sessionToken)
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async createVerificationToken({ identifier, expires, token }) {
       return await kysely
         .insertInto("VerificationToken")
         .values({ expires, identifier, token })
         .returningAll()
-        .executeTakeFirst()
+        .executeTakeFirst();
     },
     async useVerificationToken({ identifier, token }) {
       const VerificationToken = await kysely
@@ -137,15 +137,15 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
         .selectAll()
         .where("identifier", "=", identifier)
         .where("token", "=", token)
-        .executeTakeFirst()
+        .executeTakeFirst();
 
       await kysely
         .deleteFrom("VerificationToken")
         .where("identifier", "=", identifier)
         .where("token", "=", token)
-        .executeTakeFirst()
+        .executeTakeFirst();
 
-      return VerificationToken ?? null
+      return VerificationToken ?? null;
     },
-  }
+  };
 }

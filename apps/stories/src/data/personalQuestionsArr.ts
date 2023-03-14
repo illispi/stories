@@ -268,7 +268,7 @@ export const questions: QuestionPersonal[] = [
       ["slow_thinking", "Slow thinking"],
       ["difficulty_understanding", "Difficulty understanding"],
       ["poor_memory", "Poor memory"],
-      ["poor_concetration", "Poor concentration"],
+      ["poor_concentration", "Poor concentration"],
     ],
   },
   {

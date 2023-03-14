@@ -205,7 +205,7 @@ const TextComponent: Component<{
   return (
     <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <Index each={personalStats()[props.stat]}>
+      <Index each={personalStats?.data[props.stat]}>
         {(stat, i) => (
           <div class="flex w-full max-w-xs flex-col items-center justify-center">
             <h5 class="m-2 font-bold">{i + 1}.</h5>
@@ -231,6 +231,8 @@ const Stats: ParentComponent = () => {
 
   //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
   //console.log(personalStats());
+
+  console.log(allStatsPersonal.data.total);
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 

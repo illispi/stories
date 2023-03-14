@@ -1,10 +1,9 @@
 import type { ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
-import { createServerAction$ } from "solid-start/server";
-import type { PersonalQuestions } from "zod-types";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
-import { personalStatsPost } from "~/server/server";
+import { postPersonalStats } from "~/server/mutations";
+import { PersonalQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ErrorCustom from "./ErrorCustom";
 
@@ -33,11 +32,8 @@ export const UnitQuestion: ParentComponent<{
   content: QuestionPersonal;
   paginate: (newDirection: number) => void;
 }> = (props) => {
-  const [sendingData, sendData] = createServerAction$(
-    async (data: PersonalQuestions, { request }) => {
-      await personalStatsPost(data, request);
-    }
-  );
+
+  const sendStatsPersonal = postPersonalStats()
 
   const {
     question,
@@ -116,7 +112,7 @@ export const UnitQuestion: ParentComponent<{
       .filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
       .forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-    sendData(questionsLs);
+    sendStatsPersonal.mutateAsync(questionsLs)
   };
 
   const handleMultiSubmit = (
@@ -192,7 +188,6 @@ export const UnitQuestion: ParentComponent<{
           };
           localStorage.setItem("junctions", JSON.stringify(junctions));
         } else {
-          console.log(junctions, skipAmount, value, "here");
 
           if (junctions && junctions[questionDB]) {
             const LsTotal = localStorage.getItem(LsName);

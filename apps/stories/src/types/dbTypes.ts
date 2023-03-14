@@ -1,30 +1,22 @@
-import type { ColumnType } from "kysely";
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
-
-export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Account {
-  id: Generated<string>;
-  userId: string;
+  id: string;
   type: string;
   provider: string;
   providerAccountId: string;
   refresh_token: string | null;
-  refresh_token_expires_in: number | null;
   access_token: string | null;
-  expires_at: number | null;
+  expires_at: string | null;
   token_type: string | null;
   scope: string | null;
   id_token: string | null;
   session_state: string | null;
-  user: string;
+  userId: string | null;
 }
 
 export interface PersonalQuestions {
-  id: Generated<number>;
+  id: number;
   user: string;
   diagnosis: string;
   gender: string;
@@ -104,19 +96,18 @@ export interface PersonalQuestions {
   what_others_should_know: string | null;
   not_have_schizophrenia: boolean;
   not_have_schizophrenia_description: string | null;
-  created_at: Generated<Timestamp | null>;
+  created_at: Date | null;
 }
 
 export interface Session {
-  id: Generated<string>;
+  id: string;
   sessionToken: string;
-  userId: string;
-  expires: Timestamp;
-  user: string;
+  expires: Date;
+  userId: string | null;
 }
 
 export interface TheirQuestions {
-  id: Generated<number>;
+  id: number;
   user_id: string;
   relation: string;
   gender: string;
@@ -144,17 +135,17 @@ export interface TheirQuestions {
 }
 
 export interface User {
-  id: Generated<string>;
+  id: string;
   name: string | null;
   email: string | null;
-  emailVerified: Timestamp | null;
+  emailVerified: Date | null;
   image: string | null;
 }
 
 export interface VerificationToken {
   identifier: string | null;
   token: string | null;
-  expires: Timestamp | null;
+  expires: Date | null;
 }
 
 export interface DB {

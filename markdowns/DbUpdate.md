@@ -7,7 +7,7 @@
    3. copy .\node_modules\kysely-codegen\dist\index.d.ts to db/dbTypes.ts
    4. Look at the differences from git
 3. in ./apps/server
-   1. pnpm ts-to-zod --skipValidation src/db/dbTypes.ts src/db/zodFromTypes.ts
+   1. pnpm ts-to-zod --skipValidation src/types/dbTypes.ts src/types/zodFromTypes.ts
 4. Copy zodFromTypes to zodSchemasAndTypes and copy last bit infers from orig. zodSchemasAndTypes and comment out users for now
 
 

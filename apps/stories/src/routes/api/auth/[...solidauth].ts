@@ -6,7 +6,7 @@ import { serverEnv } from "~/env/server";
 import { Kysely, PostgresDialect, sql } from "kysely";
 import { Pool } from "pg";
 
-import type { DB } from "~/db/dbTypes";
+import type { DB } from "~/types/dbTypes";
 import KyselyAdapter from "~/db/kyselyAdapter";
 import { db } from "~/server/server";
 
