@@ -11,7 +11,7 @@
     },
     "dev": {
       "cache": false,
-      "inputs": ["packages/*", "apps/solid-stories/*", "apps/server/*"]
+      "inputs": ["packages/*", "apps/stories/*"]
     },
     "test:ci": {
       "cache": false
