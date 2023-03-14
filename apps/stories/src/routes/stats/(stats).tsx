@@ -93,7 +93,7 @@ const YesOrNoComponent: Component<{
     personalStats?.data[props.stat].yes + personalStats?.data[props.stat].no;
 
   return (
-    <Show when={personalStats.data}>
+    <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
         <PieChartCustom
@@ -113,7 +113,7 @@ const YesOrNoComponent: Component<{
           }}
         />
       </div>
-    </Show>
+    </>
   );
 };
 
@@ -232,7 +232,7 @@ const Stats: ParentComponent = () => {
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
-    <DataContext.Provider value={allStatsPersonal.data}>
+    <DataContext.Provider value={allStatsPersonal}>
       <ErrorBoundary fallback={(err) => err}>
         <Suspense fallback={<div>Loading</div>}>
           <Show
