@@ -229,9 +229,6 @@ const TextComponent: Component<{
 const Stats: ParentComponent = () => {
   const allStatsPersonal = allStats();
 
-  //BUG this might need effect in SSR mode, SSR true doesnt seem to work on dev mode, see below console.log(personalStats())
-  //console.log(personalStats());
-
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
@@ -360,7 +357,7 @@ const Stats: ParentComponent = () => {
                     stat={"prodromal_symptoms"}
                   />
                   <TextComponent
-                    stat={"describe_prodromal_symptoms"}
+                    stat={"prodromal_symptoms"}
                     header={"Had these kinds of prodromal symptoms"}
                   />
                   <CustomBarComponent
