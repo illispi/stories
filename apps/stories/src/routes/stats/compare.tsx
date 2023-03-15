@@ -1,7 +1,4 @@
-import type {
-  Accessor,
-  Component,
-  Setter} from "solid-js";
+import type { Accessor, Component, Setter } from "solid-js";
 import {
   createEffect,
   createSignal,
@@ -32,7 +29,9 @@ const Compared: Component<{
     "diagnosis"
   );
 
-  const [value, setValue] = createSignal("male");
+  const [male, setMale] = createSignal(true);
+  const [female, setFemale] = createSignal(true);
+  const [other, setOther] = createSignal(false);
 
   createEffect(() => {
     if (selection() === "gender") {
@@ -46,20 +45,14 @@ const Compared: Component<{
     }
   });
 
-  createEffect(() => {
-    if (value() === "female" && props.A() !== "female") {
-      props.setA("female");
-    } else if (value() === "other" && props.A() !== "other") {
-      props.setA("other");
-    } else if (value() === "male" && props.A() !== "male") {
-      props.setA("male");
-    } else {
-      props.setB(value());
-    }
-  });
+  const logic = () => { 
+      if()
+   }
+
+  
 
   return (
-    <>
+    <div class="flex flex-col items-center justify-center">
       <CustomButton onClick={() => setSelection("gender")}>
         By Gender
       </CustomButton>
@@ -69,12 +62,40 @@ const Compared: Component<{
       <Switch>
         <Match when={selection() === "diagnosis"}>placeholder</Match>
         <Match when={selection() === "gender"}>
-          <CustomButton onClick={() => setValue("male")}>Male</CustomButton>{" "}
-          <CustomButton onClick={() => setValue("female")}>Female</CustomButton>{" "}
-          <CustomButton onClick={() => setValue("other")}>Other</CustomButton>
+          <CustomButton
+            classChange={
+              props.A() === "male" || props.B() === "male"
+                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
+                : null
+            }
+            onClick={() => setMale(male() ? false : true)}
+          >
+            Male
+          </CustomButton>{" "}
+          <CustomButton
+            classChange={
+              props.A() === "female" || props.B() === "female"
+                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
+                : null
+            }
+            onClick={() => setFemale(female() ? false : true)}
+          >
+            Female
+          </CustomButton>{" "}
+          <CustomButton
+            classChange={
+              props.A() === "other" || props.B() === "other"
+                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
+                : null
+            }
+            onClick={() => setOther(other() ? false : true)}
+          >
+            Other
+          </CustomButton>
+          <CustomButton  onClick={logic()}>Compare</CustomButton>
         </Match>
       </Switch>
-    </>
+    </div>
   );
 };
 
