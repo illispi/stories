@@ -1,9 +1,11 @@
 import { query$ } from "@prpc/solid";
 import { z } from "zod";
 import { isServer } from "solid-js/web";
-import { MainReturn } from "./types";
+import type { MainReturn } from "./types";
 import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
+
+//TODO remember to only update this every once in a while in production
 
 export const allStats = query$(
   async () => {
@@ -143,10 +145,25 @@ export const allStats = query$(
         });
         automatic[e.questionDB] = selections;
       } else if (e.questionType === "text") {
-        automatic[e.questionDB] = filterSensitive
+        let allTexts = filterSensitive
           .map((i) => i[e.questionDB])
-          .filter((f) => f !== null)
-          .slice(0, 8);
+          .filter((f) => f !== null);
+
+        automatic[e.questionDB] = [];
+
+        for (
+          let index = 0;
+          index <= (allTexts.length <= 8 ? allTexts.length : 8);
+          index++
+        ) {
+          const element =
+            allTexts.length === 1
+              ? 0
+              : Math.floor(Math.random() * allTexts.length);
+
+          automatic[e.questionDB].push(allTexts[element]);
+          allTexts = allTexts.filter((q) => q !== allTexts[element]);
+        }
       } else if (e.questionType === "multiSelect") {
         const multiSelections = {};
 
