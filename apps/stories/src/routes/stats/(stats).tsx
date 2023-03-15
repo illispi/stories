@@ -37,7 +37,7 @@ const Item: Component<{ name: string; value: string | number }> = (props) => {
     </div>
   );
 };
-const weightBrackets = (data) => {
+const weightBrackets = (data: MainReturn["weight_amount"]) => {
   const brackets = [
     "0-5kg",
     "6-10kg",
@@ -55,7 +55,7 @@ const weightBrackets = (data) => {
   };
 };
 
-const dataGender = (data) => {
+const dataGender = (data: MainReturn["gender"]) => {
   const gender = data;
   const total = gender.male + gender.female + gender.other;
 
@@ -170,7 +170,7 @@ const dataSelection = (data) => {
   };
 };
 
-const dataOnset = (data) => {
+const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
   const onset = data;
   return {
     labels: ["Male", "Female", "Other"],
@@ -236,6 +236,8 @@ const Stats: ParentComponent = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
+  //NOTE there should be a fix coming for show not working with type narrowing
+
   return (
     <DataContext.Provider value={allStatsPersonal}>
       <ErrorBoundary fallback={(err) => err}>
@@ -255,26 +257,28 @@ const Stats: ParentComponent = () => {
                     {
                       <Item
                         name={"Total responses:"}
-                        value={`${allStatsPersonal.data.total}`}
+                        value={`${allStatsPersonal.data?.total}`}
                       />
                     }
                     <DoughnutComponent
                       header="Share of genders"
-                      data={dataGender(allStatsPersonal.data.gender)}
+                      data={dataGender(allStatsPersonal.data?.gender)}
                     />
                     <CustomBarComponent
                       header="Age of responses"
-                      data={dataAgeOfRes(allStatsPersonal.data.current_age)}
+                      data={dataAgeOfRes(allStatsPersonal.data?.current_age)}
                       options={{ distributeSeries: true }}
                     />
                     <CustomBarComponent
                       header="Age of Onset"
-                      data={dataOnset(allStatsPersonal.data.ageOfOnsetByGender)}
+                      data={dataOnset(
+                        allStatsPersonal.data?.ageOfOnsetByGender
+                      )}
                     />
 
                     <DoughnutComponent
                       data={dataSelection(
-                        allStatsPersonal.data.length_of_psychosis
+                        allStatsPersonal.data?.length_of_psychosis
                       )}
                       header={"Length of first psychosis"}
                     />
@@ -311,21 +315,21 @@ const Stats: ParentComponent = () => {
                         <div class=" flex w-full flex-col items-center justify-center lg:max-w-xs">
                           <DoughnutComponent
                             data={dataSelection(
-                              allStatsPersonal.data.lengthByGender.maleSplit
+                              allStatsPersonal.data?.lengthByGender.maleSplit
                             )}
                             header={"First psychosis male"}
                           />
 
                           <DoughnutComponent
                             data={dataSelection(
-                              allStatsPersonal.data.lengthByGender.femaleSplit
+                              allStatsPersonal.data?.lengthByGender.femaleSplit
                             )}
                             header={"First psychosis female"}
                           />
 
                           <DoughnutComponent
                             data={dataSelection(
-                              allStatsPersonal.data.lengthByGender.otherSplit
+                              allStatsPersonal.data?.lengthByGender.otherSplit
                             )}
                             header={"First psychosis other"}
                           />
@@ -368,14 +372,14 @@ const Stats: ParentComponent = () => {
                   <CustomBarComponent
                     header="First psychosis symptoms"
                     data={dataMultiSelect(
-                      allStatsPersonal.data.symptoms_hallucinations
+                      allStatsPersonal.data?.symptoms_hallucinations
                     )}
                     options={{ distributeSeries: true }}
                   />
 
                   <CustomBarComponent
                     header="Primary anti-psychotic"
-                    data={dataSelection(allStatsPersonal.data.current_med)}
+                    data={dataSelection(allStatsPersonal.data?.current_med)}
                     options={{
                       distributeSeries: true,
                       horizontalBars: true,
@@ -391,7 +395,7 @@ const Stats: ParentComponent = () => {
                   <CustomBarComponent
                     header="Side effects from medication"
                     data={dataMultiSelect(
-                      allStatsPersonal.data.side_effs_dizziness
+                      allStatsPersonal.data?.side_effs_dizziness
                     )}
                     options={{
                       distributeSeries: true,
@@ -405,7 +409,7 @@ const Stats: ParentComponent = () => {
                   />
                   <DoughnutComponent
                     header="Reasons on quitting medication"
-                    data={dataSelection(allStatsPersonal.data.quitting_why)}
+                    data={dataSelection(allStatsPersonal.data?.quitting_why)}
                   />
                   <TextComponent
                     header="Happened after quitting medication"
@@ -421,13 +425,13 @@ const Stats: ParentComponent = () => {
                   />
                   <CustomBarComponent
                     header="Weight gained"
-                    data={weightBrackets(allStatsPersonal.data.weight_amount)}
+                    data={weightBrackets(allStatsPersonal.data?.weight_amount)}
                     options={{ distributeSeries: true }}
                   />
                   <YesOrNoComponent header="Smoking" stat="smoking" />
                   <DoughnutComponent
                     header="Smoking tobacco amount"
-                    data={dataSelection(allStatsPersonal.data.smoking_amount)}
+                    data={dataSelection(allStatsPersonal.data?.smoking_amount)}
                   />
                   <YesOrNoComponent
                     header="Has used cannabis"
@@ -442,8 +446,107 @@ const Stats: ParentComponent = () => {
                     stat="suicide_attempts"
                   />
                   <YesOrNoComponent
+                    header="Has negative symptoms"
+                    stat="negative_symptoms"
+                  />
+                  <CustomBarComponent
+                    header="Negative symptoms"
+                    data={dataMultiSelect(
+                      allStatsPersonal.data?.flat_expressions
+                    )}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
+                  />
+                  <YesOrNoComponent
                     header="Has cognitive symptoms"
                     stat="cognitive_symptoms"
+                  />
+                  <CustomBarComponent
+                    header="Cognitive symptoms"
+                    data={dataMultiSelect(
+                      allStatsPersonal.data?.disorganized_thinking
+                    )}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
+                  />
+                  <TextComponent
+                    header="Personality before illness"
+                    stat="personality_before"
+                  />
+                  <YesOrNoComponent
+                    header="Personality changed"
+                    stat="personality_changed"
+                  />
+                  <TextComponent
+                    header="Personality after illness"
+                    stat="personality_after"
+                  />
+                  <TextComponent
+                    header="Things that have helped apart from medication"
+                    stat="other_help"
+                  />
+                  <DoughnutComponent
+                    header="Worst base symptom"
+                    data={dataSelection(allStatsPersonal.data?.worst_symptom)}
+                  />
+                  <CustomBarComponent
+                    header="Occupancy"
+                    data={dataSelection(allStatsPersonal.data?.life_situation)}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
+                  />
+                  <YesOrNoComponent header="Has partner" stat="partner" />
+                  <YesOrNoComponent header="Has friends" stat="friends" />
+                  <YesOrNoComponent header="Has children" stat="children" />
+                  <YesOrNoComponent
+                    header="Life goals changed"
+                    stat="goals_changed"
+                  />
+                  <TextComponent
+                    header="How life goals changed"
+                    stat="goals_after"
+                  />
+                  <CustomBarComponent
+                    header="Has told about illness"
+                    data={dataMultiSelect(allStatsPersonal.data?.told_family)}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
+                  />
+                  <TextComponent
+                    header="How people respnded"
+                    stat="responded_to_telling"
+                  />
+                  <YesOrNoComponent
+                    header="Were satisfied with life"
+                    stat="life_satisfaction"
+                  />
+                  <TextComponent
+                    header="Life satisfaction descrition"
+                    stat="life_satisfaction_description"
+                  />
+                  <TextComponent
+                    header="Wish people knew about schizphrenia"
+                    stat="what_others_should_know"
+                  />
+                  <YesOrNoComponent
+                    header="Would have chosen not to have schizphrenia"
+                    stat="not_have_schizophrenia"
+                  />
+                  <TextComponent
+                    header="Reasoning for wanting (or not) having schizphrenia"
+                    stat="not_have_schizophrenia_description"
                   />
                 </div>
               </div>
@@ -461,8 +564,4 @@ export default Stats;
 
 //TODO maybe some kind of array could reduce boilerplate in this
 
-//TODO few fields should be multiselect like prodromal and cognitive
-
 /* TODO add question to database about describing first psychosis and to here and questionsArray */
-
-//TODO You need option for no side effects in questions, no need to update db i think

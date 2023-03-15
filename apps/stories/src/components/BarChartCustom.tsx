@@ -1,6 +1,7 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { BarChart } from "chartist";
-import { Component, Show } from "solid-js";
+import type { Component} from "solid-js";
+import { Show } from "solid-js";
 import { onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";

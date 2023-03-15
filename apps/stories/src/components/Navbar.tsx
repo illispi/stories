@@ -69,16 +69,12 @@ const NavBar: Component = () => {
     <>
       <Title>Home</Title>
       <div class="sticky top-0 z-50 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
-        <A href={"/"} class="sm:hidden">
-          <div class="mx-2 text-2xl font-semibold sm:hidden">
-            Schizo... stories
-          </div>
-        </A>
         <A href={"/"}>
-          <div class="mx-2 hidden text-2xl font-semibold sm:flex">
-            Schizophrenia stories
+          <div class="mx-2 text-2xl font-semibold">
+            Schizopoll
           </div>
         </A>
+       
         <Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         <NavLinks />
       </div>
