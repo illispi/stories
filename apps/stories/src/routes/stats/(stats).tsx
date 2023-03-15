@@ -10,14 +10,13 @@ import type { ParentComponent, Component } from "solid-js";
 import { ErrorBoundary, Show } from "solid-js";
 import { A } from "solid-start";
 import PieChartCustom from "~/components/PieChartCustom";
-import type { ChartistData } from "~/types/types";
+import type { ChartistData, MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "zod-types";
 import BarChartCustom from "~/components/BarChartCustom";
 import CustomButton from "~/components/CustomButton";
 import { Motion, Presence } from "@motionone/solid";
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { allStats } from "~/server/queries";
-import type { MainReturn } from "~/server/types";
 import type { CreateQueryResult } from "@tanstack/solid-query";
 
 const DataContext = createContext<CreateQueryResult<MainReturn, Error>>();
@@ -231,6 +230,24 @@ const TextComponent: Component<{
   );
 };
 
+const CompareButton: Component = () => {
+  return (
+    <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
+      <A href={"compare"}>
+        <CustomButton
+          class="m-2 rounded-full bg-blue-500 p-5
+      font-semibold text-white transition-all  hover:scale-110
+    hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+        >
+          Compare
+        </CustomButton>
+      </A>
+      <div class="m-2" />
+      <p>Allows to compare statistics between genders and diagonosis</p>
+    </div>
+  );
+};
+
 const Stats: ParentComponent = () => {
   const allStatsPersonal = allStats();
 
@@ -252,12 +269,18 @@ const Stats: ParentComponent = () => {
                 </div>
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                    <CompareButton />
                     {
                       <Item
                         name={"Total responses:"}
                         value={`${allStatsPersonal.data?.total}`}
                       />
                     }
+
+                    <DoughnutComponent
+                      header="Share of diagnosis"
+                      data={dataSelection(allStatsPersonal.data?.diagnosis)}
+                    />
                     <DoughnutComponent
                       header="Share of genders"
                       data={dataGender(allStatsPersonal.data?.gender)}
@@ -568,6 +591,7 @@ const Stats: ParentComponent = () => {
                     header="Reasoning for wanting (or not) having schizphrenia"
                     stat="not_have_schizophrenia_description"
                   />
+                  <CompareButton />
                 </div>
               </div>
             </div>
@@ -579,11 +603,5 @@ const Stats: ParentComponent = () => {
 };
 
 export default Stats;
-
-//TODO consider grid for bigger screens
-
-//TODO maybe some kind of array could reduce boilerplate in this
-
-/* TODO add question to database about describing first psychosis and to here and questionsArray */
 
 //TODO might want to change ask first if you have told anybody and then who

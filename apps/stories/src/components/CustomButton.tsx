@@ -11,7 +11,7 @@ const CustomButton: ParentComponent<Props> = (props) => {
   return (
     <button
       type={local.type === undefined ? "button" : local.type}
-      class={`m-2 rounded-full  p-3 font-semibold
+      class={`m-2 rounded-full p-3 font-semibold
       text-white transition-all hover:scale-110  active:scale-110  ${
         local.classChange ?? "bg-blue-500 hover:bg-blue-600 active:bg-blue-600"
       }`}
