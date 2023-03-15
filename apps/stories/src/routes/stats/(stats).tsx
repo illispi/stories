@@ -249,7 +249,7 @@ const CompareButton: Component = () => {
 };
 
 const Stats: ParentComponent = () => {
-  const allStatsPersonal = allStats();
+  const allStatsPersonal = allStats({ value: "all" });
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 

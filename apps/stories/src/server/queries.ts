@@ -8,15 +8,56 @@ import type { MainReturn } from "~/types/types";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = query$(
-  async () => {
+  async ({ payload }) => {
     console.log(isServer, "server check");
 
-    const allPersonalStats = await db
-      .selectFrom("personal_questions")
-      .selectAll()
-      .execute();
+    let stats;
 
-    const responsesTotal = allPersonalStats.length;
+    switch (payload.value) {
+      case "all":
+        stats = await db.selectFrom("personal_questions").selectAll().execute();
+        break;
+      case "female":
+        stats = await db
+          .selectFrom("personal_questions")
+          .selectAll()
+          .where("gender", "=", "female")
+          .execute();
+        break;
+      case "other":
+        stats = await db
+          .selectFrom("personal_questions")
+          .selectAll()
+          .where("gender", "=", "other")
+          .execute();
+        break;
+      case "male":
+        stats = await db
+          .selectFrom("personal_questions")
+          .selectAll()
+          .where("gender", "=", "male")
+          .execute();
+        break;
+      case "schizophrenia":
+        stats = await db
+          .selectFrom("personal_questions")
+          .selectAll()
+          .where("diagnosis", "=", "schizophrenia")
+          .execute();
+        break;
+      case "schizoaffective":
+        stats = await db
+          .selectFrom("personal_questions")
+          .selectAll()
+          .where("diagnosis", "=", "schizoaffective")
+          .execute();
+        break;
+
+      default:
+        break;
+    }
+
+    const responsesTotal = stats.length;
 
     const maleAge = await db
       .selectFrom("personal_questions")
@@ -35,12 +76,10 @@ export const allStats = query$(
       .where("gender", "=", "other")
       .execute();
 
-    const filterSensitive = allPersonalStats.map(
-      (e: typeof allPersonalStats[0]) => {
-        const { user, created_at, id, ...filtered } = e;
-        return filtered;
-      }
-    );
+    const filterSensitive = stats.map((e: typeof stats[0]) => {
+      const { user, created_at, id, ...filtered } = e;
+      return filtered;
+    });
 
     const automatic: MainReturn = {} as any;
 
@@ -229,5 +268,15 @@ export const allStats = query$(
 
     return automatic;
   },
-  "allStats" // this will be used as the query key (along with the input)
+  "allStats",
+  z.object({
+    value: z.enum([
+      "all",
+      "schizophrenia",
+      "schizoaffective",
+      "female",
+      "other",
+      "male",
+    ]),
+  }) // this will be used as the query key (along with the input)
 ); // this will be used as the input type and input validation
