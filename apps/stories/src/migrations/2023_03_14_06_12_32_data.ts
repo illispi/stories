@@ -8,7 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn(
       "user",
       "uuid",
-      (col) => col.references("user.id").onDelete("cascade").notNull().unique() //NOTE this should work alas this is child table
+      (col) => col.references("user.id").onDelete("cascade").notNull() //TODO add .unique() because user can have only one in final iteration
     )
     .addColumn("diagnosis", "text", (col) =>
       col

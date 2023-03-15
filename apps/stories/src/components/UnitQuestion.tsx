@@ -7,6 +7,8 @@ import { PersonalQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ErrorCustom from "./ErrorCustom";
 
+
+
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
     <div class="flex grow flex-col">

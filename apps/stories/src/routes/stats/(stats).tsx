@@ -95,7 +95,7 @@ const YesOrNoComponent: Component<{
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="z-10 mb-8 flex max-w-xs items-center justify-center bg-white">
+      <div class="z-10 flex max-w-xs items-center justify-center bg-white">
         <PieChartCustom
           data={{
             labels: [
@@ -236,8 +236,6 @@ const Stats: ParentComponent = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
-  //NOTE there should be a fix coming for show not working with type narrowing
-
   return (
     <DataContext.Provider value={allStatsPersonal}>
       <ErrorBoundary fallback={(err) => err}>
@@ -250,7 +248,7 @@ const Stats: ParentComponent = () => {
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
               <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
                 <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                  <h1 class="text-center font-semibold">Personal Stats</h1>
+                  <h1 class="text-center font-semibold">Statistics personal</h1>
                 </div>
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
@@ -361,20 +359,42 @@ const Stats: ParentComponent = () => {
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
+                  <CustomBarComponent
+                    header="How many psychosis"
+                    data={dataSelection(
+                      allStatsPersonal.data?.psychosis_how_many
+                    )}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
+                  />
                   <YesOrNoComponent
                     header="Had prodromal symptoms"
                     stat={"prodromal_symptoms"}
                   />
-                  <TextComponent
-                    stat={"prodromal_symptoms"}
-                    header={"Had these kinds of prodromal symptoms"}
+                  <CustomBarComponent
+                    header="Prodromal symptoms"
+                    data={dataMultiSelect(
+                      allStatsPersonal.data?.prodromal_anxiety
+                    )}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
                   />
                   <CustomBarComponent
                     header="First psychosis symptoms"
                     data={dataMultiSelect(
                       allStatsPersonal.data?.symptoms_hallucinations
                     )}
-                    options={{ distributeSeries: true }}
+                    options={{
+                      distributeSeries: true,
+                      horizontalBars: true,
+                      axisY: { offset: 80 },
+                    }}
                   />
 
                   <CustomBarComponent
@@ -565,3 +585,5 @@ export default Stats;
 //TODO maybe some kind of array could reduce boilerplate in this
 
 /* TODO add question to database about describing first psychosis and to here and questionsArray */
+
+//TODO might want to change ask first if you have told anybody and then who
