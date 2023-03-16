@@ -9,7 +9,10 @@ import {
   Switch,
 } from "solid-js";
 import CustomButton from "~/components/CustomButton";
+import { DoughnutComponent } from "~/components/Doughnut";
+import { Item } from "~/components/Item";
 import { allStats } from "~/server/queries";
+import { dataSelection } from "~/utils/functions";
 
 const Compared: Component<{
   A: Accessor<
@@ -152,12 +155,21 @@ const CompareStats = () => {
                 <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
                   <Item
                     name={"Total responses:"}
-                    value={`${allStatsPersonal.data?.total}`}
+                    value={`${statsA.data?.total}`}
                   />
 
                   <DoughnutComponent
                     header="Share of diagnosis"
-                    data={dataSelection(allStatsPersonal.data?.diagnosis)}
+                    data={dataSelection(statsA.data?.diagnosis)}
+                  />
+                  <Item
+                    name={"Total responses:"}
+                    value={`${statsB.data?.total}`}
+                  />
+
+                  <DoughnutComponent
+                    header="Share of diagnosis"
+                    data={dataSelection(statsB.data?.diagnosis)}
                   />
                 </div>
               </div>
