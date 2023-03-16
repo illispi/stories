@@ -18,24 +18,10 @@ import { Motion, Presence } from "@motionone/solid";
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { allStats } from "~/server/queries";
 import type { CreateQueryResult } from "@tanstack/solid-query";
+import { Item } from "~/components/Item";
 
-const DataContext = createContext<CreateQueryResult<MainReturn, Error>>();
-const useData = () => {
-  return useContext(DataContext);
-};
 
-const Item: Component<{ name: string; value: string | number }> = (props) => {
-  return (
-    <div class="my-3 flex flex-col items-center justify-center">
-      <p class="mb-8 text-center text-xl underline underline-offset-8">
-        {props.name}
-      </p>
-      <p class=" mb-4 rounded-full border-2 border-slate-400 p-2 text-center font-semibold">
-        {props.value}
-      </p>
-    </div>
-  );
-};
+
 const weightBrackets = (data: MainReturn["weight_amount"]) => {
   const brackets = [
     "0-5kg",
@@ -85,11 +71,9 @@ const DoughnutComponent: Component<{
 const YesOrNoComponent: Component<{
   stat: keyof PersonalQuestions;
   header: string;
+  data;
 }> = (props) => {
-  const personalStats = useData();
-
-  const total =
-    personalStats?.data[props.stat].yes + personalStats?.data[props.stat].no;
+  const total = props.data[props.stat].yes + props.data[props.stat].no;
 
   return (
     <>
@@ -98,17 +82,10 @@ const YesOrNoComponent: Component<{
         <PieChartCustom
           data={{
             labels: [
-              `Yes ${Math.floor(
-                (personalStats.data[props.stat].yes / total) * 100
-              )}%`,
-              `No ${Math.floor(
-                (personalStats.data[props.stat].no / total) * 100
-              )}%`,
+              `Yes ${Math.floor((props.data[props.stat].yes / total) * 100)}%`,
+              `No ${Math.floor((props.data[props.stat].no / total) * 100)}%`,
             ],
-            series: [
-              personalStats.data[props.stat].yes,
-              personalStats.data[props.stat].no,
-            ],
+            series: [props.data[props.stat].yes, props.data[props.stat].no],
           }}
         />
       </div>
@@ -198,17 +175,16 @@ const CustomBarComponent: Component<{
 const TextComponent: Component<{
   header: string;
   stat: keyof PersonalQuestions;
+  data;
 }> = (props) => {
-  const personalStats = useData();
-
   return (
     <Show
-      when={personalStats?.data[props.stat].length > 0}
+      when={props.data[props.stat].length > 0}
       fallback={<div>failure</div>}
     >
       <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
         <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-        <Index each={personalStats?.data[props.stat]}>
+        <Index each={props.data[props.stat]}>
           {(stat, i) => (
             <div class="flex w-full max-w-xs flex-col items-center justify-center">
               <h5 class="m-2 font-bold">{i + 1}.</h5>
@@ -254,7 +230,7 @@ const Stats: ParentComponent = () => {
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
   return (
-    <DataContext.Provider value={allStatsPersonal}>
+
       <ErrorBoundary fallback={(err) => err}>
         <Suspense fallback={<div>Loading</div>}>
           <Show
@@ -270,12 +246,11 @@ const Stats: ParentComponent = () => {
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
                     <CompareButton />
-                    {
-                      <Item
-                        name={"Total responses:"}
-                        value={`${allStatsPersonal.data?.total}`}
-                      />
-                    }
+
+                    <Item
+                      name={"Total responses:"}
+                      value={`${allStatsPersonal.data?.total}`}
+                    />
 
                     <DoughnutComponent
                       header="Share of diagnosis"
@@ -359,26 +334,32 @@ const Stats: ParentComponent = () => {
                     </Show>
                   </Presence>
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Hospitalized on first psychosis"
                     stat={"hospitalized_on_first"}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Were satisfied with hospital care"
                     stat={"hospital_satisfaction"}
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     stat={"describe_hospital"}
                     header={"Hospital care opinions"}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Recieved care after hospitalization"
                     stat={"care_after_hospital"}
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     stat={"what_kind_of_care_after"}
                     header={"Care after opinions"}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Were satisifed with after hospitalization care"
                     stat={"after_hospital_satisfaction"}
                   />
@@ -394,6 +375,7 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Had prodromal symptoms"
                     stat={"prodromal_symptoms"}
                   />
@@ -432,6 +414,7 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Medications helped to psychosis symptoms"
                     stat="efficacy_of_med"
                   />
@@ -447,6 +430,7 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Have quit medication"
                     stat="quitting"
                   />
@@ -455,14 +439,17 @@ const Stats: ParentComponent = () => {
                     data={dataSelection(allStatsPersonal.data?.quitting_why)}
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Happened after quitting medication"
                     stat="quitting_what_happened"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Regreted quitting medication"
                     stat="quitting_regret"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Have gained weight after medications"
                     stat="gained_weight"
                   />
@@ -471,24 +458,32 @@ const Stats: ParentComponent = () => {
                     data={weightBrackets(allStatsPersonal.data?.weight_amount)}
                     options={{ distributeSeries: true }}
                   />
-                  <YesOrNoComponent header="Smoking" stat="smoking" />
+                  <YesOrNoComponent
+                    data={allStatsPersonal.data}
+                    header="Smoking"
+                    stat="smoking"
+                  />
                   <DoughnutComponent
                     header="Smoking tobacco amount"
                     data={dataSelection(allStatsPersonal.data?.smoking_amount)}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Has used cannabis"
                     stat="cannabis"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Has had suicidal thoughts"
                     stat="suicidal_thoughts"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Has attempted suicide"
                     stat="suicide_attempts"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Has negative symptoms"
                     stat="negative_symptoms"
                   />
@@ -504,6 +499,7 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Has cognitive symptoms"
                     stat="cognitive_symptoms"
                   />
@@ -519,18 +515,22 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Personality before illness"
                     stat="personality_before"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Personality changed"
                     stat="personality_changed"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Personality after illness"
                     stat="personality_after"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Things that have helped apart from medication"
                     stat="other_help"
                   />
@@ -547,14 +547,28 @@ const Stats: ParentComponent = () => {
                       axisY: { offset: 80 },
                     }}
                   />
-                  <YesOrNoComponent header="Has partner" stat="partner" />
-                  <YesOrNoComponent header="Has friends" stat="friends" />
-                  <YesOrNoComponent header="Has children" stat="children" />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
+                    header="Has partner"
+                    stat="partner"
+                  />
+                  <YesOrNoComponent
+                    data={allStatsPersonal.data}
+                    header="Has friends"
+                    stat="friends"
+                  />
+                  <YesOrNoComponent
+                    data={allStatsPersonal.data}
+                    header="Has children"
+                    stat="children"
+                  />
+                  <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Life goals changed"
                     stat="goals_changed"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="How life goals changed"
                     stat="goals_after"
                   />
@@ -568,26 +582,32 @@ const Stats: ParentComponent = () => {
                     }}
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="How people respnded"
                     stat="responded_to_telling"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Were satisfied with life"
                     stat="life_satisfaction"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Life satisfaction descrition"
                     stat="life_satisfaction_description"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Wish people knew about schizphrenia"
                     stat="what_others_should_know"
                   />
                   <YesOrNoComponent
+                    data={allStatsPersonal.data}
                     header="Would have chosen not to have schizphrenia"
                     stat="not_have_schizophrenia"
                   />
                   <TextComponent
+                    data={allStatsPersonal.data}
                     header="Reasoning for wanting (or not) having schizphrenia"
                     stat="not_have_schizophrenia_description"
                   />
@@ -598,7 +618,6 @@ const Stats: ParentComponent = () => {
           </Show>
         </Suspense>
       </ErrorBoundary>
-    </DataContext.Provider>
   );
 };
 

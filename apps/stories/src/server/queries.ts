@@ -52,9 +52,6 @@ export const allStats = query$(
           .where("diagnosis", "=", "schizoaffective")
           .execute();
         break;
-      case "deselected":
-        return null;
-        break;
 
       default:
         break;
@@ -279,8 +276,7 @@ export const allStats = query$(
       "schizoaffective",
       "female",
       "other",
-      "male",
-      "deselected",
+      "male"
     ]),
   }) // this will be used as the query key (along with the input)
 ); // this will be used as the input type and input validation
