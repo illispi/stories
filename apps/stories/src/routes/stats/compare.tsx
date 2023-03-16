@@ -1,4 +1,4 @@
-import type { Accessor, Component, Setter } from "solid-js";
+import { Accessor, Component, onMount, Setter } from "solid-js";
 import {
   createEffect,
   createSignal,
@@ -37,16 +37,6 @@ const Compared: Component<{
   const [other, setOther] = createSignal(false);
   const [state, setState] = createSignal("noErrors");
 
-  createEffect(() => {
-    if (selection() === "gender") {
-      props.setA("male");
-      props.setB("female");
-    } else if (selection() === "diagnosis") {
-      props.setA("schizophrenia");
-      props.setB("schizoaffective");
-    }
-  });
-
   const logic = () => {
     const arr = [
       [male(), "male"],
@@ -76,7 +66,7 @@ const Compared: Component<{
         By Diagnosis
       </CustomButton>
       <Switch>
-        <Match when={selection() === "diagnosis"}>placeholder</Match>
+        <Match when={selection() === "diagnosis"} />
         <Match when={selection() === "gender"}>
           <CustomButton
             classChange={

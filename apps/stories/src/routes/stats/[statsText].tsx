@@ -1,4 +1,4 @@
-import { For, Show } from "solid-js";
+/* import { For, Show } from "solid-js";
 import { A, useParams, useRouteData } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import { questions } from "~/data/personalQuestionsArr";
@@ -58,4 +58,4 @@ const StatsText = () => {
   );
 };
 
-export default StatsText;
+export default StatsText; */
