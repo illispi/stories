@@ -32,24 +32,35 @@ const Compared: Component<{
   const [male, setMale] = createSignal(true);
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
+  const [state, setState] = createSignal("noErrors");
 
   createEffect(() => {
     if (selection() === "gender") {
       props.setA("male");
       props.setB("female");
-    }
-
-    if (selection() === "diagnosis") {
+    } else if (selection() === "diagnosis") {
       props.setA("schizophrenia");
       props.setB("schizoaffective");
     }
   });
 
-  const logic = () => { 
-      if()
-   }
+  const logic = () => {
+    const arr = [male(), female(), other()];
+    const arr2 = ["male", "female", "other"];
 
-  
+    if (arr.filter((e) => e === true).length > 2) {
+      setState("tooManySelected");
+    } else if (arr.filter((e) => e === true).length < 2) {
+      setState("tooFewSelected");
+    } else {
+      const aEl = arr.findIndex((e) => e === true);
+      arr.splice(aEl, 1);
+      const bEl = arr.findIndex((e) => e === true);
+      props.setA(arr2[aEl]);
+      props.setB(arr2[bEl]);
+      setState("compare");
+    }
+  };
 
   return (
     <div class="flex flex-col items-center justify-center">
@@ -64,27 +75,25 @@ const Compared: Component<{
         <Match when={selection() === "gender"}>
           <CustomButton
             classChange={
-              props.A() === "male" || props.B() === "male"
-                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
-                : null
+              male() ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700" : null
             }
             onClick={() => setMale(male() ? false : true)}
           >
             Male
-          </CustomButton>{" "}
+          </CustomButton>
           <CustomButton
             classChange={
-              props.A() === "female" || props.B() === "female"
+              female()
                 ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
                 : null
             }
             onClick={() => setFemale(female() ? false : true)}
           >
             Female
-          </CustomButton>{" "}
+          </CustomButton>
           <CustomButton
             classChange={
-              props.A() === "other" || props.B() === "other"
+              other()
                 ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
                 : null
             }
@@ -92,7 +101,20 @@ const Compared: Component<{
           >
             Other
           </CustomButton>
-          <CustomButton  onClick={logic()}>Compare</CustomButton>
+          <CustomButton
+            classChange={"bg-green-500 hover:bg-green-700 active:bg-green-800"}
+            onClick={logic}
+          >
+            Compare
+          </CustomButton>
+          <Switch>
+            <Match when={state() === "tooManySelected"}>
+              <div>Please select only two genders</div>
+            </Match>
+            <Match when={state() === "tooFewSelected"}>
+              <div>Please select two genders</div>
+            </Match>
+          </Switch>
         </Match>
       </Switch>
     </div>
