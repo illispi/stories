@@ -266,6 +266,7 @@ export const allStats = query$(
 
     automatic.total = responsesTotal;
 
+
     return automatic;
   },
   "allStats",
@@ -276,7 +277,7 @@ export const allStats = query$(
       "schizoaffective",
       "female",
       "other",
-      "male"
+      "male",
     ]),
   }) // this will be used as the query key (along with the input)
 ); // this will be used as the input type and input validation

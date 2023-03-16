@@ -48,19 +48,21 @@ const Compared: Component<{
   });
 
   const logic = () => {
-    const arr = [male(), female(), other()];
-    const arr2 = ["male", "female", "other"];
+    const arr = [
+      [male(), "male"],
+      [female(), "female"],
+      [other(), "other"],
+    ];
 
-    if (arr.filter((e) => e === true).length > 2) {
+    if (arr.filter((e) => e[0] === true).length > 2) {
       setState("tooManySelected");
-    } else if (arr.filter((e) => e === true).length < 2) {
+    } else if (arr.filter((e) => e[0] === true).length < 2) {
       setState("tooFewSelected");
     } else {
-      const aEl = arr.findIndex((e) => e === true);
-      arr.splice(aEl, 1);
-      const bEl = arr.findIndex((e) => e === true);
-      props.setA(arr2[aEl]);
-      props.setB(arr2[bEl]);
+      const filtered = arr.filter((e) => e[0] === true);
+      props.setA(filtered[0][1]);
+      props.setB(filtered[1][1]);
+      props.setUpdate(true);
       setState("compare");
     }
   };
@@ -132,6 +134,8 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
+  const [update, setUpdate] = createSignal(false);
+
   const statsA = allStats(() => ({
     value: A(),
   }));
@@ -139,11 +143,17 @@ const CompareStats = () => {
     value: B(),
   }));
 
+  createEffect(() => {
+    statsA.refetch();
+    statsB.refetch();
+    setUpdate(false);
+  });
+
   return (
     <ErrorBoundary fallback={(err) => err}>
       <Suspense fallback={<div>Loading</div>}>
         <Show when={statsA.data && statsB.data}>
-          <Compared A={A} B={B} setA={setA} setB={setB} />
+          <Compared A={A} B={B} setA={setA} setB={setB} setUpdate={setUpdate} />
           <div class="mt-8 flex w-screen flex-col items-center justify-center">
             <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
               <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
@@ -161,6 +171,7 @@ const CompareStats = () => {
                   <DoughnutComponent
                     header="Share of diagnosis"
                     data={dataSelection(statsA.data?.diagnosis)}
+                    update={update()}
                   />
                   <Item
                     name={"Total responses:"}
@@ -170,6 +181,7 @@ const CompareStats = () => {
                   <DoughnutComponent
                     header="Share of diagnosis"
                     data={dataSelection(statsB.data?.diagnosis)}
+                    update={update()}
                   />
                 </div>
               </div>

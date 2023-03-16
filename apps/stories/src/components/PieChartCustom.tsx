@@ -1,13 +1,15 @@
 import { PieChart } from "chartist";
-import { Component, Show } from "solid-js";
+import { Component, createEffect, Show } from "solid-js";
 import { For, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "../types/types";
 import "../styles/index.css";
 import { pieChartCount, setPieChartCount } from "~/utils/globalSignals";
 
-const PieChartCustom: Component<{ data: ChartistData; labels?: boolean }> = (
-  props
-) => {
+const PieChartCustom: Component<{
+  data: ChartistData;
+  labels?: boolean;
+  update?: boolean;
+}> = (props) => {
   let pie: PieChart;
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
   setPieChartCount(pieChartCount() + 1);
@@ -29,6 +31,14 @@ const PieChartCustom: Component<{ data: ChartistData; labels?: boolean }> = (
         labelPosition: "outside",
       }
     );
+
+    //BUG below code probably never runs
+  });
+
+  createEffect(() => {
+    if (props.update) {
+      pie.update(props.data);
+    }
   });
 
   onCleanup(() => pie?.detach);
