@@ -13,6 +13,7 @@ import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
 import { allStats } from "~/server/queries";
 import { dataSelection } from "~/utils/functions";
+import { pieChartCount } from "~/utils/globalSignals";
 
 const Compared: Component<{
   A: Accessor<
@@ -52,7 +53,6 @@ const Compared: Component<{
       const filtered = arr.filter((e) => e[0] === true);
       props.setA(filtered[0][1]);
       props.setB(filtered[1][1]);
-      props.setUpdate(true);
       setState("compare");
     }
   };
@@ -62,7 +62,13 @@ const Compared: Component<{
       <CustomButton onClick={() => setSelection("gender")}>
         By Gender
       </CustomButton>
-      <CustomButton onClick={() => setSelection("diagnosis")}>
+      <CustomButton
+        onClick={() => {
+          setSelection("diagnosis");
+          props.setA("schizophrenia");
+          props.setB("schizoaffective");
+        }}
+      >
         By Diagnosis
       </CustomButton>
       <Switch>
@@ -124,8 +130,6 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
-  const [update, setUpdate] = createSignal(false);
-
   const statsA = allStats(() => ({
     value: A(),
   }));
@@ -136,14 +140,13 @@ const CompareStats = () => {
   createEffect(() => {
     statsA.refetch();
     statsB.refetch();
-    setUpdate(false);
   });
 
   return (
     <ErrorBoundary fallback={(err) => err}>
       <Suspense fallback={<div>Loading</div>}>
         <Show when={statsA.data && statsB.data}>
-          <Compared A={A} B={B} setA={setA} setB={setB} setUpdate={setUpdate} />
+          <Compared A={A} B={B} setA={setA} setB={setB} />
           <div class="mt-8 flex w-screen flex-col items-center justify-center">
             <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
               <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
@@ -161,7 +164,6 @@ const CompareStats = () => {
                   <DoughnutComponent
                     header="Share of diagnosis"
                     data={dataSelection(statsA.data?.diagnosis)}
-                    update={update()}
                   />
                   <Item
                     name={"Total responses:"}
@@ -171,7 +173,6 @@ const CompareStats = () => {
                   <DoughnutComponent
                     header="Share of diagnosis"
                     data={dataSelection(statsB.data?.diagnosis)}
-                    update={update()}
                   />
                 </div>
               </div>
