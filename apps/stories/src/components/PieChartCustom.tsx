@@ -22,8 +22,6 @@ const PieChartCustom: Component<{
   setPieChartCount(pieChartCount() + 1);
   const id = pieChartCount().toString();
 
-  const [data, setData] = createSignal(props.data);
-
   onMount(() => {
     pie = new PieChart(
       `#chartPie${id}`,
@@ -43,7 +41,6 @@ const PieChartCustom: Component<{
   });
 
   createEffect(() => {
-    data();
     pie.update(props.data);
   });
 
