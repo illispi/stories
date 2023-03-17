@@ -1,4 +1,11 @@
-import { Accessor, Component, onMount, Setter } from "solid-js";
+import {
+  Accessor,
+  Component,
+  JSX,
+  onMount,
+  Setter,
+  splitProps,
+} from "solid-js";
 import {
   createEffect,
   createSignal,
@@ -13,7 +20,30 @@ import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
 import { allStats } from "~/server/queries";
 import { dataSelection } from "~/utils/functions";
-import { pieChartCount } from "~/utils/globalSignals";
+
+interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
+  toggled?: boolean;
+}
+
+const ToggleButton: Component<Props> = (props) => {
+  const [local, others] = splitProps(props, ["toggled"]);
+  const [toggle, setToggle] = createSignal(local.toggled);
+
+  return (
+    <button onClick={props.onClick}>
+      <CustomButton
+        classChange={
+          toggle() ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : null
+        }
+        onClick={() => {
+          setToggle(toggle() ? setToggle(false) : setToggle(true));
+        }}
+      >
+        {props.children}
+      </CustomButton>
+    </button>
+  );
+};
 
 const Compared: Component<{
   A: Accessor<
@@ -37,6 +67,10 @@ const Compared: Component<{
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
   const [state, setState] = createSignal("noErrors");
+
+  createEffect(() => {
+    console.log(male(), female(), other());
+  });
 
   const logic = () => {
     const arr = [
@@ -74,37 +108,27 @@ const Compared: Component<{
       <Switch>
         <Match when={selection() === "diagnosis"} />
         <Match when={selection() === "gender"}>
-          <CustomButton
-            classChange={
-              male() ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700" : null
-            }
+          <ToggleButton
             onClick={() => setMale(male() ? false : true)}
+            toggled={male()}
           >
             Male
-          </CustomButton>
-          <CustomButton
-            classChange={
-              female()
-                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
-                : null
-            }
+          </ToggleButton>
+          <ToggleButton
             onClick={() => setFemale(female() ? false : true)}
+            toggled={female()}
           >
             Female
-          </CustomButton>
-          <CustomButton
-            classChange={
-              other()
-                ? "bg-blue-800 hover:bg-blue-900 active:bg-blue-700"
-                : null
-            }
+          </ToggleButton>
+          <ToggleButton
             onClick={() => setOther(other() ? false : true)}
+            toggled={other()}
           >
             Other
-          </CustomButton>
+          </ToggleButton>
           <CustomButton
-            classChange={"bg-green-500 hover:bg-green-700 active:bg-green-800"}
             onClick={logic}
+            classChange={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
           >
             Compare
           </CustomButton>
