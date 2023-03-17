@@ -151,12 +151,22 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
-  const statsA = allStats(() => ({
-    value: A(),
-  }));
-  const statsB = allStats(() => ({
-    value: B(),
-  }));
+  const statsA = allStats(
+    () => ({
+      value: A(),
+    }),
+    () => ({
+      placeholderData: (prev) => prev,
+    })
+  );
+  const statsB = allStats(
+    () => ({
+      value: B(),
+    }),
+    () => ({
+      placeholderData: (prev) => prev,
+    })
+  );
 
   return (
     <ErrorBoundary fallback={(err) => err}>
