@@ -9,7 +9,7 @@ import type { MainReturn } from "~/types/types";
 
 export const allStats = query$(
   async ({ payload }) => {
-    console.log(isServer, "server check");
+    console.log(payload);
 
     let stats;
 
@@ -265,7 +265,6 @@ export const allStats = query$(
     };
 
     automatic.total = responsesTotal;
-
 
     return automatic;
   },

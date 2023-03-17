@@ -1,5 +1,6 @@
 import {
   Accessor,
+  batch,
   Component,
   JSX,
   onMount,
@@ -156,11 +157,6 @@ const CompareStats = () => {
   const statsB = allStats(() => ({
     value: B(),
   }));
-
-  createEffect(() => {
-    statsA.refetch();
-    statsB.refetch();
-  });
 
   return (
     <ErrorBoundary fallback={(err) => err}>
