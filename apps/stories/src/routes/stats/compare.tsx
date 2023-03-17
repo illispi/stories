@@ -68,10 +68,6 @@ const Compared: Component<{
   const [other, setOther] = createSignal(false);
   const [state, setState] = createSignal("noErrors");
 
-  createEffect(() => {
-    console.log(male(), female(), other());
-  });
-
   const logic = () => {
     const arr = [
       [male(), "male"],
@@ -106,10 +102,10 @@ const Compared: Component<{
         By Diagnosis
       </CustomButton>
       <Switch>
-        <Match when={selection() === "diagnosis"} />
+        <Match when={selection() === "diagnosis"}>Placeholder</Match>
         <Match when={selection() === "gender"}>
           <ToggleButton
-            onClick={() => setMale(male() ? false : true)}
+            onClick={(e) => setMale(male() ? false : true)}
             toggled={male()}
           >
             Male
@@ -168,42 +164,30 @@ const CompareStats = () => {
 
   return (
     <ErrorBoundary fallback={(err) => err}>
-      <Suspense fallback={<div>Loading</div>}>
-        <Show when={statsA.data && statsB.data}>
-          <Compared A={A} B={B} setA={setA} setB={setB} />
-          <div class="mt-8 flex w-screen flex-col items-center justify-center">
-            <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                <h1 class="text-center font-semibold">
-                  Statistics Comparision
-                </h1>
-              </div>
-              <div class="flex flex-col items-center justify-center">
-                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                  <Item
-                    name={"Total responses:"}
-                    value={`${statsA.data?.total}`}
-                  />
+      <Compared A={A} B={B} setA={setA} setB={setB} />
+      <div class="mt-8 flex w-screen flex-col items-center justify-center">
+        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Statistics Comparision</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+              <Item name={"Total responses:"} value={`${statsA.data?.total}`} />
 
-                  <DoughnutComponent
-                    header="Share of diagnosis"
-                    data={dataSelection(statsA.data?.diagnosis)}
-                  />
-                  <Item
-                    name={"Total responses:"}
-                    value={`${statsB.data?.total}`}
-                  />
+              <DoughnutComponent
+                header="Share of diagnosis"
+                data={dataSelection(statsA.data?.diagnosis)}
+              />
+              <Item name={"Total responses:"} value={`${statsB.data?.total}`} />
 
-                  <DoughnutComponent
-                    header="Share of diagnosis"
-                    data={dataSelection(statsB.data?.diagnosis)}
-                  />
-                </div>
-              </div>
+              <DoughnutComponent
+                header="Share of diagnosis"
+                data={dataSelection(statsB.data?.diagnosis)}
+              />
             </div>
           </div>
-        </Show>
-      </Suspense>
+        </div>
+      </div>
     </ErrorBoundary>
   );
 };
