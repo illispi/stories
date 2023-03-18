@@ -52,6 +52,7 @@
     "pg": "^8.10.0",
     "solid-js": "^1.6.12",
     "solid-start": "^0.2.23",
+    "tailwind-merge": "^1.10.0",
     "undici": "5.20.0",
     "zod": "^3.21.4",
     "zod-types": "*"

@@ -42,6 +42,7 @@ importers:
       solid-js: ^1.6.12
       solid-start: ^0.2.23
       solid-start-node: ^0.2.23
+      tailwind-merge: ^1.10.0
       tailwindcss: ^3.2.7
       ts-node: ^10.9.1
       ts-node-dev: ^2.0.0
@@ -68,6 +69,7 @@ importers:
       pg: 8.10.0
       solid-js: 1.6.12
       solid-start: 0.2.23_pk3hqrh3unkki2ce4qsuctb3w4
+      tailwind-merge: 1.10.0
       undici: 5.20.0
       zod: 3.21.4
       zod-types: link:../../packages/zod-types
@@ -6914,6 +6916,10 @@ packages:
   /symbol-tree/3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
     dev: true
+
+  /tailwind-merge/1.10.0:
+    resolution: {integrity: sha512-WFnDXSS4kFTZwjKg5/oZSGzBRU/l+qcbv5NVTzLUQvJ9yovDAP05h0F2+ZFW0Lw9EcgRoc2AfURUdZvnEFrXKg==}
+    dev: false
 
   /tailwindcss/3.2.7_aesdjsunmf4wiehhujt67my7tu:
     resolution: {integrity: sha512-B6DLqJzc21x7wntlH/GsZwEXTBttVSl1FtCzC8WP4oBc/NKef7kaax5jeihkkCEWc831/5NDJ9gRNDK6NEioQQ==}

@@ -19,6 +19,7 @@ import {
 import CustomButton from "~/components/CustomButton";
 import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
+import ModalPopUp from "~/components/ModalPopUp";
 import { allStats } from "~/server/queries";
 import { dataSelection } from "~/utils/functions";
 
@@ -68,6 +69,12 @@ const Compared: Component<{
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
   const [state, setState] = createSignal("noErrors");
+  const [error, setError] = createSignal(null);
+
+  //BUG this can sometimes get out of sync
+  // createEffect(() => {
+  //   console.log("male", male(), "female", female(), "other", other());
+  // });
 
   const logic = () => {
     const arr = [
@@ -131,10 +138,10 @@ const Compared: Component<{
           </CustomButton>
           <Switch>
             <Match when={state() === "tooManySelected"}>
-              <div>Please select only two genders</div>
+              <ModalPopUp message={"Please select only two genders"} />
             </Match>
             <Match when={state() === "tooFewSelected"}>
-              <div>Please select two genders</div>
+              <ModalPopUp message={"Please select two genders"} />
             </Match>
           </Switch>
         </Match>
@@ -170,30 +177,38 @@ const CompareStats = () => {
 
   return (
     <ErrorBoundary fallback={(err) => err}>
-      <Compared A={A} B={B} setA={setA} setB={setB} />
-      <div class="mt-8 flex w-screen flex-col items-center justify-center">
-        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-            <h1 class="text-center font-semibold">Statistics Comparision</h1>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-              <Item name={"Total responses:"} value={`${statsA.data?.total}`} />
+      <Suspense>
+        <Compared A={A} B={B} setA={setA} setB={setB} />
+        <div class="mt-8 flex w-screen flex-col items-center justify-center">
+          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+              <h1 class="text-center font-semibold">Statistics Comparision</h1>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                <Item
+                  name={"Total responses:"}
+                  value={`${statsA.data?.total}`}
+                />
 
-              <DoughnutComponent
-                header="Share of diagnosis"
-                data={dataSelection(statsA.data?.diagnosis)}
-              />
-              <Item name={"Total responses:"} value={`${statsB.data?.total}`} />
+                <DoughnutComponent
+                  header="Share of diagnosis"
+                  data={dataSelection(statsA.data?.diagnosis)}
+                />
+                <Item
+                  name={"Total responses:"}
+                  value={`${statsB.data?.total}`}
+                />
 
-              <DoughnutComponent
-                header="Share of diagnosis"
-                data={dataSelection(statsB.data?.diagnosis)}
-              />
+                <DoughnutComponent
+                  header="Share of diagnosis"
+                  data={dataSelection(statsB.data?.diagnosis)}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Suspense>
     </ErrorBoundary>
   );
 };

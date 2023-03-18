@@ -3,11 +3,9 @@ import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
 import { postPersonalStats } from "~/server/mutations";
-import { PersonalQuestions } from "~/types/zodFromTypes";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
-import ErrorCustom from "./ErrorCustom";
-
-
+import ModalPopUp from "./ModalPopUp";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -34,8 +32,7 @@ export const UnitQuestion: ParentComponent<{
   content: QuestionPersonal;
   paginate: (newDirection: number) => void;
 }> = (props) => {
-
-  const sendStatsPersonal = postPersonalStats()
+  const sendStatsPersonal = postPersonalStats();
 
   const {
     question,
@@ -114,7 +111,7 @@ export const UnitQuestion: ParentComponent<{
       .filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
       .forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-    sendStatsPersonal.mutateAsync(questionsLs)
+    sendStatsPersonal.mutateAsync(questionsLs);
   };
 
   const handleMultiSubmit = (
@@ -190,7 +187,6 @@ export const UnitQuestion: ParentComponent<{
           };
           localStorage.setItem("junctions", JSON.stringify(junctions));
         } else {
-
           if (junctions && junctions[questionDB]) {
             const LsTotal = localStorage.getItem(LsName);
             const curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
@@ -326,7 +322,7 @@ export const UnitQuestion: ParentComponent<{
                 Metric (kg)
               </CustomButton>
               <CustomButton type="submit">Next</CustomButton>
-              <ErrorCustom setError={setError} message={error()} />
+              <ModalPopUp setMessage={setError} message={error()} />
             </div>
           </form>
         </Box>
@@ -346,7 +342,7 @@ export const UnitQuestion: ParentComponent<{
                 }}
               />
               <CustomButton type="submit">Next</CustomButton>
-              <ErrorCustom setError={setError} message={error()} />
+              <ModalPopUp setMessage={setError} message={error()} />
             </div>
           </form>
         </Box>
@@ -354,7 +350,7 @@ export const UnitQuestion: ParentComponent<{
 
       <Match when={questionType === "text"}>
         <Box question={question}>
-          <ErrorCustom setError={setError} message={error()} />
+          <ModalPopUp setMessage={setError} message={error()} />
           <form onSubmit={handleText}>
             <div class="flex flex-col items-center justify-end">
               <input
@@ -413,7 +409,7 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "multiSelect"}>
         <Box question={question}>
           <div class="flex flex-col items-center justify-end ">
-            <ErrorCustom setError={setError} message={error()} />
+            <ModalPopUp setMessage={setError} message={error()} />
             <For fallback={<div>Multiselect error</div>} each={multiSelect}>
               {(v) => (
                 <>
