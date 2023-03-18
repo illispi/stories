@@ -1,4 +1,4 @@
-import type { ParentComponent } from "solid-js";
+import { createEffect, ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
@@ -81,6 +81,10 @@ export const UnitQuestion: ParentComponent<{
   const [metric, setMetric] = createSignal<boolean>(
     JSON.parse(localStorage.getItem("system") ?? '"true"')
   );
+
+  createEffect(() => {
+    console.log(error());
+  });
 
   const submitResults = () => {
     (Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(
@@ -322,7 +326,7 @@ export const UnitQuestion: ParentComponent<{
                 Metric (kg)
               </CustomButton>
               <CustomButton type="submit">Next</CustomButton>
-              <ModalPopUp setMessage={setError} message={error()} />
+              {error() && <ModalPopUp message={error()} />}
             </div>
           </form>
         </Box>
@@ -342,7 +346,7 @@ export const UnitQuestion: ParentComponent<{
                 }}
               />
               <CustomButton type="submit">Next</CustomButton>
-              <ModalPopUp setMessage={setError} message={error()} />
+              {error() && <ModalPopUp message={error()} />}
             </div>
           </form>
         </Box>
@@ -350,7 +354,8 @@ export const UnitQuestion: ParentComponent<{
 
       <Match when={questionType === "text"}>
         <Box question={question}>
-          <ModalPopUp setMessage={setError} message={error()} />
+          {error() && <ModalPopUp message={error()} />}
+
           <form onSubmit={handleText}>
             <div class="flex flex-col items-center justify-end">
               <input
@@ -409,7 +414,7 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "multiSelect"}>
         <Box question={question}>
           <div class="flex flex-col items-center justify-end ">
-            <ModalPopUp setMessage={setError} message={error()} />
+            {error() && <ModalPopUp message={error()} />}
             <For fallback={<div>Multiselect error</div>} each={multiSelect}>
               {(v) => (
                 <>
