@@ -38,7 +38,7 @@ const ToggleButton: Component<Props> = (props) => {
           toggle() ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : null
         }
         onClick={() => {
-          setToggle(toggle() ? setToggle(false) : setToggle(true));
+          setToggle(!toggle());
         }}
       >
         {props.children}
@@ -68,8 +68,7 @@ const Compared: Component<{
   const [male, setMale] = createSignal(true);
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
-  const [state, setState] = createSignal("noErrors");
-  const [error, setError] = createSignal(null);
+  const [message, setMessage] = createSignal(null);
 
   //BUG this can sometimes get out of sync
   // createEffect(() => {
@@ -84,19 +83,20 @@ const Compared: Component<{
     ];
 
     if (arr.filter((e) => e[0] === true).length > 2) {
-      setState("tooManySelected");
+      setMessage("Please select only two genders");
     } else if (arr.filter((e) => e[0] === true).length < 2) {
-      setState("tooFewSelected");
+      setMessage("Please select two genders");
     } else {
       const filtered = arr.filter((e) => e[0] === true);
       props.setA(filtered[0][1]);
       props.setB(filtered[1][1]);
-      setState("compare");
+      setMessage(null);
     }
   };
 
   return (
     <div class="flex flex-col items-center justify-center">
+      <ModalPopUp setMessage={setMessage} message={message()} />
       <CustomButton onClick={() => setSelection("gender")}>
         By Gender
       </CustomButton>
@@ -136,14 +136,6 @@ const Compared: Component<{
           >
             Compare
           </CustomButton>
-          <Switch>
-            <Match when={state() === "tooManySelected"}>
-              <ModalPopUp message={"Please select only two genders"} />
-            </Match>
-            <Match when={state() === "tooFewSelected"}>
-              <ModalPopUp message={"Please select two genders"} />
-            </Match>
-          </Switch>
         </Match>
       </Switch>
     </div>

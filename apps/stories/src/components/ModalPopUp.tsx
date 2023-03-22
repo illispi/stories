@@ -1,27 +1,32 @@
 import { Presence, Motion } from "@motionone/solid";
-import { createEffect, createSignal, ParentComponent, Setter } from "solid-js";
+import type { ParentComponent, Setter } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 const ModalPopUp: ParentComponent<{
   message: string | null;
   customClasses?: string;
+  setMessage: Setter<string | null>;
 }> = (props) => {
-  const [visible, setVisible] = createSignal(true);
-
-  setTimeout(() => {
-    setVisible(false);
-  }, 3000);
-
   const classes = twMerge(
     "fixed top-2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl",
     props.customClasses
   );
 
+  createEffect(() => {
+    if (props.message) {
+      setTimeout(() => {
+        props.setMessage(null);
+      }, 3000);
+    }
+  });
+
   return (
     <Presence>
-      {visible() && (
+      {props.message && (
         <Motion.div
-          class={classes}
+          class="fixed top-16 left-1/2 -translate-x-1/2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl"
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}

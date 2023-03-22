@@ -82,10 +82,6 @@ export const UnitQuestion: ParentComponent<{
     JSON.parse(localStorage.getItem("system") ?? '"true"')
   );
 
-  createEffect(() => {
-    console.log(error());
-  });
-
   const submitResults = () => {
     (Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(
       (e) => {
@@ -326,7 +322,7 @@ export const UnitQuestion: ParentComponent<{
                 Metric (kg)
               </CustomButton>
               <CustomButton type="submit">Next</CustomButton>
-              {error() && <ModalPopUp message={error()} />}
+              <ModalPopUp message={error()} setMessage={setError} />
             </div>
           </form>
         </Box>
@@ -346,7 +342,7 @@ export const UnitQuestion: ParentComponent<{
                 }}
               />
               <CustomButton type="submit">Next</CustomButton>
-              {error() && <ModalPopUp message={error()} />}
+              <ModalPopUp message={error()} setMessage={setError} />
             </div>
           </form>
         </Box>
@@ -354,7 +350,7 @@ export const UnitQuestion: ParentComponent<{
 
       <Match when={questionType === "text"}>
         <Box question={question}>
-          {error() && <ModalPopUp message={error()} />}
+          <ModalPopUp message={error()} setMessage={setError} />
 
           <form onSubmit={handleText}>
             <div class="flex flex-col items-center justify-end">
@@ -414,7 +410,7 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "multiSelect"}>
         <Box question={question}>
           <div class="flex flex-col items-center justify-end ">
-            {error() && <ModalPopUp message={error()} />}
+            <ModalPopUp message={error()} setMessage={setError} />
             <For fallback={<div>Multiselect error</div>} each={multiSelect}>
               {(v) => (
                 <>
