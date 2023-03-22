@@ -26,7 +26,7 @@ const ModalPopUp: ParentComponent<{
     <Presence>
       {props.message && (
         <Motion.div
-          class="fixed top-16 left-1/2 -translate-x-1/2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl"
+          class={classes}
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}

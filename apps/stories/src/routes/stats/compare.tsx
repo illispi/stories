@@ -96,7 +96,11 @@ const Compared: Component<{
 
   return (
     <div class="flex flex-col items-center justify-center">
-      <ModalPopUp setMessage={setMessage} message={message()} />
+      <ModalPopUp
+        setMessage={setMessage}
+        message={message()}
+        customClasses="top-16"
+      />
       <CustomButton onClick={() => setSelection("gender")}>
         By Gender
       </CustomButton>
