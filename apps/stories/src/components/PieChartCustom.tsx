@@ -38,6 +38,9 @@ const PieChartCustom: Component<{
         labelPosition: "outside",
       }
     );
+
+    // pie.on("created", () =>
+    // {})
   });
 
   createEffect(() => {

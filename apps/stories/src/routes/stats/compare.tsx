@@ -28,8 +28,7 @@ interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ToggleButton: Component<Props> = (props) => {
-  const [local, others] = splitProps(props, ["toggled"]);
-  const [toggle, setToggle] = createSignal(local.toggled);
+  const [toggle, setToggle] = createSignal(props.toggled);
 
   return (
     <button onClick={props.onClick}>

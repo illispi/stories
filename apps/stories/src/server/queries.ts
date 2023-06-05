@@ -7,8 +7,8 @@ import type { MainReturn } from "~/types/types";
 
 //TODO remember to only update this every once in a while in production
 
-export const allStats = query$(
-  async ({ payload }) => {
+export const allStats = query$({
+  queryFn: async ({ payload }) => {
     console.log(payload);
 
     let stats;
@@ -44,6 +44,7 @@ export const allStats = query$(
           .selectAll()
           .where("diagnosis", "=", "schizophrenia")
           .execute();
+
         break;
       case "schizoaffective":
         stats = await db
@@ -268,8 +269,8 @@ export const allStats = query$(
 
     return automatic;
   },
-  "allStats",
-  z.object({
+  key: "allStats",
+  schema: z.object({
     value: z.enum([
       "all",
       "schizophrenia",
@@ -278,5 +279,5 @@ export const allStats = query$(
       "other",
       "male",
     ]),
-  }) // this will be used as the query key (along with the input)
-); // this will be used as the input type and input validation
+  }), // this will be used as the query key (along with the input)
+}); // this will be used as the input type and input validation
