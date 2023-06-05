@@ -59,6 +59,7 @@ const Compared: Component<{
   setA: Setter<
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >;
+  setLoadAnim: Setter<boolean>;
 }> = (props) => {
   const [selection, setSelection] = createSignal<"diagnosis" | "gender">(
     "diagnosis"
@@ -86,10 +87,12 @@ const Compared: Component<{
     } else if (arr.filter((e) => e[0] === true).length < 2) {
       setMessage("Please select two genders");
     } else {
+      props.setLoadAnim(true);
       const filtered = arr.filter((e) => e[0] === true);
       props.setA(filtered[0][1]);
       props.setB(filtered[1][1]);
       setMessage(null);
+      setTimeout(() => props.setLoadAnim(false), 5000);
     }
   };
 
@@ -105,9 +108,11 @@ const Compared: Component<{
       </CustomButton>
       <CustomButton
         onClick={() => {
+          props.setLoadAnim(true);
           setSelection("diagnosis");
           props.setA("schizophrenia");
           props.setB("schizoaffective");
+          setTimeout(() => props.setLoadAnim(false), 5000);
         }}
       >
         By Diagnosis
@@ -115,22 +120,13 @@ const Compared: Component<{
       <Switch>
         <Match when={selection() === "diagnosis"}>Placeholder</Match>
         <Match when={selection() === "gender"}>
-          <ToggleButton
-            onClick={(e) => setMale(male() ? false : true)}
-            toggled={male()}
-          >
+          <ToggleButton onClick={(e) => setMale(!male())} toggled={male()}>
             Male
           </ToggleButton>
-          <ToggleButton
-            onClick={() => setFemale(female() ? false : true)}
-            toggled={female()}
-          >
+          <ToggleButton onClick={() => setFemale(!female())} toggled={female()}>
             Female
           </ToggleButton>
-          <ToggleButton
-            onClick={() => setOther(other() ? false : true)}
-            toggled={other()}
-          >
+          <ToggleButton onClick={() => setOther(!other())} toggled={other()}>
             Other
           </ToggleButton>
           <CustomButton
@@ -153,6 +149,12 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
+  const [loadAnim, setLoadAnim] = createSignal(false);
+
+  createEffect(() => {
+    console.log(loadAnim());
+  });
+
   const statsA = allStats(
     () => ({
       value: A(),
@@ -173,7 +175,13 @@ const CompareStats = () => {
   return (
     <ErrorBoundary fallback={(err) => err}>
       <Suspense>
-        <Compared A={A} B={B} setA={setA} setB={setB} />
+        <Compared
+          A={A}
+          B={B}
+          setA={setA}
+          setB={setB}
+          setLoadAnim={setLoadAnim}
+        />
         <div class="mt-8 flex w-screen flex-col items-center justify-center">
           <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
             <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
@@ -181,24 +189,30 @@ const CompareStats = () => {
             </div>
             <div class="flex flex-col items-center justify-center">
               <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                <Item
-                  name={"Total responses:"}
-                  value={`${statsA.data?.total}`}
-                />
+                <Show when={loadAnim()}>
+                  <div class="animate-loading h-[600px] w-full bg-blue-400" />
+                </Show>
 
-                <DoughnutComponent
-                  header="Share of diagnosis"
-                  data={dataSelection(statsA.data?.diagnosis)}
-                />
-                <Item
-                  name={"Total responses:"}
-                  value={`${statsB.data?.total}`}
-                />
+                <Show when={!loadAnim()}>
+                  <Item
+                    name={"Total responses:"}
+                    value={`${statsA.data?.total}`}
+                  />
 
-                <DoughnutComponent
-                  header="Share of diagnosis"
-                  data={dataSelection(statsB.data?.diagnosis)}
-                />
+                  <DoughnutComponent
+                    header="Share of diagnosis"
+                    data={dataSelection(statsA.data?.diagnosis)}
+                  />
+                  <Item
+                    name={"Total responses:"}
+                    value={`${statsB.data?.total}`}
+                  />
+
+                  <DoughnutComponent
+                    header="Share of diagnosis"
+                    data={dataSelection(statsB.data?.diagnosis)}
+                  />
+                </Show>
               </div>
             </div>
           </div>

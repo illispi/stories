@@ -6,8 +6,8 @@ import { getSession } from "@auth/solid-start";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { db } from "./server";
 
-export const postPersonalStats = mutation$(
-  async ({ payload, request$ }) => {
+export const postPersonalStats = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
 
     if (!session) {
@@ -32,8 +32,8 @@ export const postPersonalStats = mutation$(
     }
     return "failed to insert";
   },
-  "postPersonalStats", // this will be used the mutation key
-  personalQuestionsSchema
-); // this will be used as the input type and input validation
+  key: "postPersonalStats", // this will be used the mutation key
+  schema: personalQuestionsSchema,
+}); // this will be used as the input type and input validation
 
 //BUG what if github and discord username is the same
