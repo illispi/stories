@@ -179,7 +179,7 @@ const CompareStats = () => {
               <h1 class="text-center font-semibold">Statistics Comparision</h1>
             </div>
             <div class="flex flex-col items-center justify-center">
-              <Presence exitBeforeEnter={true}>
+              <Presence>
                 <Show when={A() && B()} keyed>
                   {(change) => (
                     <Motion.div
@@ -188,7 +188,7 @@ const CompareStats = () => {
                       }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.6 }}
+                      transition={{ duration: 1.2 }}
                       class="z-[5] flex w-full flex-col items-center justify-center bg-white"
                     >
                       <Item
@@ -196,19 +196,19 @@ const CompareStats = () => {
                         value={`${statsA.data?.total}`}
                       />
 
-                      {/* <DoughnutComponent
-                      header="Share of diagnosis"
-                      data={dataSelection(statsA.data?.diagnosis)}
-                    /> */}
+                      <DoughnutComponent
+                        header="Share of diagnosis"
+                        data={dataSelection(statsA.data?.diagnosis)}
+                      />
                       <Item
                         name={"Total responses:"}
                         value={`${statsB.data?.total}`}
                       />
 
-                      {/* <DoughnutComponent
-                      header="Share of diagnosis"
-                      data={dataSelection(statsB.data?.diagnosis)}
-                    /> */}
+                      <DoughnutComponent
+                        header="Share of diagnosis"
+                        data={dataSelection(statsB.data?.diagnosis)}
+                      />
                     </Motion.div>
                   )}
                 </Show>
