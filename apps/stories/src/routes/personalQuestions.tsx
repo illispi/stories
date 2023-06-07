@@ -6,7 +6,6 @@ import CustomButton from "~/components/CustomButton";
 import { questions } from "~/data/personalQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
 
-
 const Counter: ParentComponent<{ page: number }> = (props) => {
   return (
     <div class="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
@@ -43,16 +42,15 @@ const Questions: ParentComponent<{
         when={props.page !== questions.length}
       >
         <div class="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
-
           <Presence>
-            <Rerun on={props.page}>
+            <Show when={props.page} keyed={true}>
               <QuestionTransition direction={props.direction}>
                 <UnitQuestion
                   content={questions[props.page]}
                   paginate={props.paginate}
                 />
               </QuestionTransition>
-            </Rerun>
+            </Show>
           </Presence>
         </div>
       </Show>

@@ -23,6 +23,8 @@ const PieChartCustom: Component<{
   const id = pieChartCount().toString();
 
   onMount(() => {
+    console.log(props.data);
+    console.log(id);
     pie = new PieChart(
       `#chartPie${id}`,
       {
@@ -43,11 +45,13 @@ const PieChartCustom: Component<{
     // {})
   });
 
-  createEffect(() => {
-    pie.update(props.data);
-  });
+  // createEffect(() => {
+  //   pie.update(props.data);
+  // });
 
   onCleanup(() => {
+    console.log("deleted", id, props.data);
+
     pie?.detach;
   });
 

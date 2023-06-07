@@ -1,6 +1,8 @@
 import type { Component } from "solid-js";
 
-export const Item: Component<{ name: string; value: string | number }> = (props) => {
+export const Item: Component<{ name: string; value: string | number }> = (
+  props
+) => {
   return (
     <div class="my-3 flex flex-col items-center justify-center">
       <p class="mb-8 text-center text-xl underline underline-offset-8">

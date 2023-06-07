@@ -89,8 +89,12 @@ const Compared: Component<{
       setMessage("Please select two genders");
     } else {
       const filtered = arr.filter((e) => e[0] === true);
-      props.setA(filtered[0][1]);
-      props.setB(filtered[1][1]);
+
+      batch(() => {
+        props.setA(filtered[0][1]);
+        props.setB(filtered[1][1]);
+      });
+
       setMessage(null);
     }
   };
@@ -108,8 +112,10 @@ const Compared: Component<{
       <CustomButton
         onClick={() => {
           setSelection("diagnosis");
-          props.setA("schizophrenia");
-          props.setB("schizoaffective");
+          batch(() => {
+            props.setA("schizophrenia");
+            props.setB("schizoaffective");
+          });
         }}
       >
         By Diagnosis
@@ -173,15 +179,15 @@ const CompareStats = () => {
               <h1 class="text-center font-semibold">Statistics Comparision</h1>
             </div>
             <div class="flex flex-col items-center justify-center">
-              <Presence>
-                <Rerun on={[A, B]}>
+              <Presence exitBeforeEnter={true}>
+                <Show when={A() && B()} keyed>
                   <Motion.div
                     initial={{
                       opacity: 0,
                     }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 1.2 }}
+                    transition={{ duration: 0.6 }}
                     class="z-[5] flex w-full flex-col items-center justify-center bg-white"
                   >
                     <Item
@@ -189,21 +195,21 @@ const CompareStats = () => {
                       value={`${statsA.data?.total}`}
                     />
 
-                    <DoughnutComponent
+                    {/* <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(statsA.data?.diagnosis)}
-                    />
+                    /> */}
                     <Item
                       name={"Total responses:"}
                       value={`${statsB.data?.total}`}
                     />
 
-                    <DoughnutComponent
+                    {/* <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(statsB.data?.diagnosis)}
-                    />
+                    /> */}
                   </Motion.div>
-                </Rerun>
+                </Show>
               </Presence>
             </div>
           </div>
