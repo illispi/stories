@@ -181,34 +181,36 @@ const CompareStats = () => {
             <div class="flex flex-col items-center justify-center">
               <Presence exitBeforeEnter={true}>
                 <Show when={A() && B()} keyed>
-                  <Motion.div
-                    initial={{
-                      opacity: 0,
-                    }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.6 }}
-                    class="z-[5] flex w-full flex-col items-center justify-center bg-white"
-                  >
-                    <Item
-                      name={"Total responses:"}
-                      value={`${statsA.data?.total}`}
-                    />
+                  {(change) => (
+                    <Motion.div
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.6 }}
+                      class="z-[5] flex w-full flex-col items-center justify-center bg-white"
+                    >
+                      <Item
+                        name={"Total responses:"}
+                        value={`${statsA.data?.total}`}
+                      />
 
-                    {/* <DoughnutComponent
+                      {/* <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(statsA.data?.diagnosis)}
                     /> */}
-                    <Item
-                      name={"Total responses:"}
-                      value={`${statsB.data?.total}`}
-                    />
+                      <Item
+                        name={"Total responses:"}
+                        value={`${statsB.data?.total}`}
+                      />
 
-                    {/* <DoughnutComponent
+                      {/* <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(statsB.data?.diagnosis)}
                     /> */}
-                  </Motion.div>
+                    </Motion.div>
+                  )}
                 </Show>
               </Presence>
             </div>
