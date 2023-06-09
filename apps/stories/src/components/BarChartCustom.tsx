@@ -36,8 +36,6 @@ const BarChartCustom: Component<{
 
   return (
     <div>
-        {console.log(id, "bar")}
-
       <Show
         when={props.options?.height}
         fallback={

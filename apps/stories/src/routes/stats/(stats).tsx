@@ -45,6 +45,8 @@ const Stats: ParentComponent = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
+  console.log(allStatsPersonal.data);
+
   return (
     <ErrorBoundary fallback={(err) => err}>
       <Suspense fallback={<div>Loading</div>}>
@@ -68,7 +70,7 @@ const Stats: ParentComponent = () => {
                       name={"Total responses:"}
                       value={`${allStatsPersonal.data?.total}`}
                     />
-
+                    {console.log(allStatsPersonal.data)}
                     <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(allStatsPersonal.data?.diagnosis)}

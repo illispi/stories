@@ -7,6 +7,8 @@ export const DoughnutComponent: Component<{
   header: string;
   update?: boolean;
 }> = (props) => {
+
+
   return (
     <div class="flex flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>

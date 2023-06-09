@@ -24,7 +24,7 @@ const PieChartCustom: Component<{
   increment();
   const id = count().toString();
 
-  console.log(count());
+
 
   onMount(
     () => {
