@@ -35,6 +35,9 @@ importers:
       '@solid-primitives/keyed':
         specifier: ^1.2.0
         version: 1.2.0(solid-js@1.7.6)
+      '@solid-primitives/presence':
+        specifier: ^0.0.2
+        version: 0.0.2(solid-js@1.7.6)
       '@solidjs/meta':
         specifier: ^0.28.5
         version: 0.28.5(solid-js@1.7.6)
@@ -3811,6 +3814,15 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
     dependencies:
+      solid-js: 1.7.6
+    dev: false
+
+  /@solid-primitives/presence@0.0.2(solid-js@1.7.6):
+    resolution: {integrity: sha512-DJAAzuEraBG2rsdLVXCHAKXfKWLPAtI5LA3yPY+vznhm7Dpxi5wIwYxPoZPSYhC6H6T56uLWTAJJxoWWyLJiPw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
       solid-js: 1.7.6
     dev: false
 

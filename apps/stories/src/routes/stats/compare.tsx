@@ -1,5 +1,6 @@
 import { Motion, Presence } from "@motionone/solid";
 import { Rerun } from "@solid-primitives/keyed";
+import { log } from "console";
 import {
   Accessor,
   batch,
@@ -90,10 +91,8 @@ const Compared: Component<{
     } else {
       const filtered = arr.filter((e) => e[0] === true);
 
-      batch(() => {
-        props.setA(filtered[0][1]);
-        props.setB(filtered[1][1]);
-      });
+      props.setA(filtered[0][1]);
+      props.setB(filtered[1][1]);
 
       setMessage(null);
     }
@@ -112,10 +111,9 @@ const Compared: Component<{
       <CustomButton
         onClick={() => {
           setSelection("diagnosis");
-          batch(() => {
-            props.setA("schizophrenia");
-            props.setB("schizoaffective");
-          });
+
+          props.setA("schizophrenia");
+          props.setB("schizoaffective");
         }}
       >
         By Diagnosis
@@ -123,7 +121,7 @@ const Compared: Component<{
       <Switch>
         <Match when={selection() === "diagnosis"}>Placeholder</Match>
         <Match when={selection() === "gender"}>
-          <ToggleButton onClick={(e) => setMale(!male())} toggled={male()}>
+          <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
             Male
           </ToggleButton>
           <ToggleButton onClick={() => setFemale(!female())} toggled={female()}>
@@ -144,6 +142,14 @@ const Compared: Component<{
   );
 };
 
+const showGender = (data) => {
+  console.log(data, "gender");
+
+  const keys = Object.keys(data);
+  const gender = keys.find((n) => data[n] > 0);
+  return gender;
+};
+
 const CompareStats = () => {
   const [A, setA] = createSignal<
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
@@ -155,67 +161,64 @@ const CompareStats = () => {
   const statsA = allStats(
     () => ({
       value: A(),
-    }),
-    () => ({
-      placeholderData: (prev) => prev,
     })
+    // () => ({
+    //   placeholderData: (prev) => prev,
+    // })
   );
   const statsB = allStats(
     () => ({
       value: B(),
-    }),
-    () => ({
-      placeholderData: (prev) => prev,
     })
+    // () => ({
+    //   placeholderData: (prev) => prev,
+    // })
   );
+
+  createEffect(() => {
+    console.log(A(), B());
+  });
 
   return (
     <ErrorBoundary fallback={(err) => err}>
-      <Suspense>
-        <Compared A={A} B={B} setA={setA} setB={setB} />
-        <div class="mt-8 flex w-screen flex-col items-center justify-center">
-          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-              <h1 class="text-center font-semibold">Statistics Comparision</h1>
-            </div>
-            <div class="flex flex-col items-center justify-center">
-              <Presence>
-                <Show when={A() && B()} keyed>
-                  {(change) => (
-                    <Motion.div
-                      initial={{
-                        opacity: 0,
-                      }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 1.2 }}
-                      class="z-[5] flex w-full flex-col items-center justify-center bg-white"
-                    >
-                      <Item
-                        name={"Total responses:"}
-                        value={`${statsA.data?.total}`}
-                      />
+      <Suspense fallback={<div>wtf</div>}>
+        <Show when={statsA.data && statsB.data}>
+          <Compared A={A} B={B} setA={setA} setB={setB} />
+          <div class="mt-8 flex w-screen flex-col items-center justify-center">
+            <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
+              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                <h1 class="text-center font-semibold">
+                  Statistics Comparision
+                </h1>
+              </div>
+              <div class="flex flex-col items-center justify-center">
+                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
+                  {/* <div>{showGender(statsA.data?.gender)}</div>
+                <div>{showGender(statsB.data?.gender)}</div> */}
+                  <Item
+                    name={"Total responses:"}
+                    value={`${statsA.data?.total}`}
+                  />
 
-                      <DoughnutComponent
-                        header="Share of diagnosis"
-                        data={dataSelection(statsA.data?.diagnosis)}
-                      />
-                      <Item
-                        name={"Total responses:"}
-                        value={`${statsB.data?.total}`}
-                      />
+                  <Item
+                    name={"Total responses:"}
+                    value={`${statsB.data?.total}`}
+                  />
 
-                      <DoughnutComponent
-                        header="Share of diagnosis"
-                        data={dataSelection(statsB.data?.diagnosis)}
-                      />
-                    </Motion.div>
-                  )}
-                </Show>
-              </Presence>
+                  <DoughnutComponent
+                    header="Share of diagnosis"
+                    data={dataSelection(statsA.data?.diagnosis)}
+                  />
+
+                  <DoughnutComponent
+                    header="Share of diagnosis"
+                    data={dataSelection(statsB.data?.diagnosis)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </Show>
       </Suspense>
     </ErrorBoundary>
   );

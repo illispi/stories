@@ -1,11 +1,11 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { BarChart } from "chartist";
-import type { Component} from "solid-js";
+import type { Component } from "solid-js";
 import { Show } from "solid-js";
 import { onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
-import { barChartCount, setBarChartCount } from "../utils/globalSignals";
+import { BarCounterProvider, useBarCounter } from "./globalSignals";
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
@@ -16,11 +16,12 @@ const BarChartCustom: Component<{
   options?: Adds;
 }> = (props) => {
   let bar: BarChart;
-  setBarChartCount(barChartCount() + 1);
-  const id = barChartCount().toString(); //NOTE is this good way to do this? whats even the point of onMount?
+  const [count, { increment }] = useBarCounter();
+  increment();
+
   onMount(() => {
     bar = new BarChart(
-      `#chartBar${id}`,
+      `#chartBar${count().toString()}`,
       {
         series: props.data.series,
         labels: props.data.labels,
@@ -32,21 +33,26 @@ const BarChartCustom: Component<{
   onCleanup(() => bar?.detach);
 
   return (
-    <Show
-      when={props.options?.height}
-      fallback={
+    <div>
+      <Show
+        when={props.options?.height}
+        fallback={
+          <div class="flex flex-col items-center justify-center">
+            <div
+              class="h-80 w-96 lg:w-[500px]"
+              id={`chartBar${count().toString()}`}
+            />
+          </div>
+        }
+      >
         <div class="flex flex-col items-center justify-center">
-          <div class="h-80 w-96 lg:w-[500px]" id={`chartBar${id}`} />
+          <div
+            class={`h-[${props.options?.height}px] w-96 lg:w-[500px]`}
+            id={`chartBar${count().toString()}`}
+          />
         </div>
-      }
-    >
-      <div class="flex flex-col items-center justify-center">
-        <div
-          class={`h-[${props.options?.height}px] w-96 lg:w-[500px]`}
-          id={`chartBar${id}`}
-        />
-      </div>
-    </Show>
+      </Show>
+    </div>
   );
 };
 
