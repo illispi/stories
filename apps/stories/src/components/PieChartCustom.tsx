@@ -22,11 +22,14 @@ const PieChartCustom: Component<{
   const [count, { increment }] = usePieCounter();
 
   increment();
+  const id = count().toString();
+
+  console.log(count());
 
   onMount(
     () => {
       pie = new PieChart(
-        `#chartPie${count().toString()}`,
+        `#chartPie${id}`,
         {
           series: props.data.series,
           labels: props.data.labels,
@@ -56,24 +59,24 @@ const PieChartCustom: Component<{
 
   return (
     <>
-        <div>
-          <div class="flex flex-col items-center justify-center">
-            <div class="h-64 w-64" id={`chartPie${count().toString()}`} />
+      <div>
+        <div class="flex flex-col items-center justify-center">
+          <div class="h-64 w-64" id={`chartPie${id}`} />
 
-            <Show when={props.labels} fallback={null}>
-              <div>
-                <For each={props.data.labels} fallback={<div>Error</div>}>
-                  {(label, index) => (
-                    <div class="flex items-center justify-start">
-                      <div class={`${colors[index()]} mx-2 h-6 w-6`} />
-                      <div class="text-sm">{label}</div>
-                    </div>
-                  )}
-                </For>
-              </div>
-            </Show>
-          </div>
+          <Show when={props.labels} fallback={null}>
+            <div>
+              <For each={props.data.labels} fallback={<div>Error</div>}>
+                {(label, index) => (
+                  <div class="flex items-center justify-start">
+                    <div class={`${colors[index()]} mx-2 h-6 w-6`} />
+                    <div class="text-sm">{label}</div>
+                  </div>
+                )}
+              </For>
+            </div>
+          </Show>
         </div>
+      </div>
     </>
   );
 };

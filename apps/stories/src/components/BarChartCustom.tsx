@@ -19,9 +19,11 @@ const BarChartCustom: Component<{
   const [count, { increment }] = useBarCounter();
   increment();
 
+  const id = count().toString();
+
   onMount(() => {
     bar = new BarChart(
-      `#chartBar${count().toString()}`,
+      `#chartBar${id}`,
       {
         series: props.data.series,
         labels: props.data.labels,
@@ -34,21 +36,20 @@ const BarChartCustom: Component<{
 
   return (
     <div>
+        {console.log(id, "bar")}
+
       <Show
         when={props.options?.height}
         fallback={
           <div class="flex flex-col items-center justify-center">
-            <div
-              class="h-80 w-96 lg:w-[500px]"
-              id={`chartBar${count().toString()}`}
-            />
+            <div class="h-80 w-96 lg:w-[500px]" id={`chartBar${id}`} />
           </div>
         }
       >
         <div class="flex flex-col items-center justify-center">
           <div
             class={`h-[${props.options?.height}px] w-96 lg:w-[500px]`}
-            id={`chartBar${count().toString()}`}
+            id={`chartBar${id}`}
           />
         </div>
       </Show>

@@ -4,8 +4,7 @@ const BarCounterContext = createContext();
 const PieCounterContext = createContext();
 
 export const BarCounterProvider = (props) => {
-  const [barChartCount, setBarChartCount] = createSignal(props.count || 1);
-  console.log("espigfjnsaeopijes");
+  const [barChartCount, setBarChartCount] = createSignal(props.count || 0);
 
   const barCounter = [
     barChartCount,

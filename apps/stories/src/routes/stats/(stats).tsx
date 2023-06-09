@@ -53,8 +53,8 @@ const Stats: ParentComponent = () => {
           fallback={<div>loading</div>}
           keyed
         > */}
-        <BarCounterProvider count={1}>
-          <PieCounterProvider count={1}>
+        <BarCounterProvider count={0}>
+          <PieCounterProvider count={0}>
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
               <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
                 <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
