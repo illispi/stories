@@ -45,16 +45,14 @@ const Stats: ParentComponent = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
-  console.log(allStatsPersonal.data);
 
   return (
-    <ErrorBoundary fallback={(err) => err}>
-      <Suspense fallback={<div>Loading</div>}>
-        {/* <Show
-          when={allStatsPersonal.data?.total}
+    <Suspense fallback={<div>Loading</div>}>
+        <ErrorBoundary fallback={(err) => err}>
+        <Show
+          when={allStatsPersonal.data}
           fallback={<div>loading</div>}
-          keyed
-        > */}
+        >
         <BarCounterProvider count={0}>
           <PieCounterProvider count={0}>
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
@@ -434,11 +432,11 @@ const Stats: ParentComponent = () => {
                 </div>
               </div>
             </div>
-            {/* </Show> */}
           </PieCounterProvider>
         </BarCounterProvider>
-      </Suspense>
+            </Show>
     </ErrorBoundary>
+      </Suspense>
   );
 };
 
