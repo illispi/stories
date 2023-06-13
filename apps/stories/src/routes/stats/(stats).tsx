@@ -45,14 +45,10 @@ const Stats: ParentComponent = () => {
 
   const [byGenderPsyLength, setByGenderPsyLength] = createSignal(false);
 
-
   return (
     <Suspense fallback={<div>Loading</div>}>
-        <ErrorBoundary fallback={(err) => err}>
-        {/* <Show
-          when={allStatsPersonal.data}
-          fallback={<div>loading</div>}
-        > */}
+      <ErrorBoundary fallback={(err) => err}>
+  
         <BarCounterProvider count={0}>
           <PieCounterProvider count={0}>
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
@@ -68,7 +64,6 @@ const Stats: ParentComponent = () => {
                       name={"Total responses:"}
                       value={`${allStatsPersonal.data?.total}`}
                     />
-                    {console.log(allStatsPersonal.data)}
                     <DoughnutComponent
                       header="Share of diagnosis"
                       data={dataSelection(allStatsPersonal.data?.diagnosis)}
@@ -434,9 +429,8 @@ const Stats: ParentComponent = () => {
             </div>
           </PieCounterProvider>
         </BarCounterProvider>
-            {/* </Show> */}
-    </ErrorBoundary>
-      </Suspense>
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 
