@@ -1,4 +1,4 @@
-import { Component } from "solid-js";
+import { Component, Show } from "solid-js";
 import { MainReturn } from "~/types/types";
 import { PersonalQuestions } from "~/types/zodFromTypes";
 import PieChartCustom from "./PieChartCustom";
@@ -6,12 +6,17 @@ import PieChartCustom from "./PieChartCustom";
 export const YesOrNoComponent: Component<{
   stat: keyof PersonalQuestions;
   header: string;
-  data: MainReturn;
+  data: MainReturn | undefined;
 }> = (props) => {
+
+
+
   return (
     <>
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="z-10 flex max-w-xs items-center justify-center bg-white">
+        <Show when={props.data}>
+          
         <PieChartCustom
           data={{
             labels: [
@@ -29,6 +34,7 @@ export const YesOrNoComponent: Component<{
             series: [props.data[props.stat].yes, props.data[props.stat].no],
           }}
         />
+        </Show>
       </div>
     </>
   );

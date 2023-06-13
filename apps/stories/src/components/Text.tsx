@@ -10,6 +10,10 @@ export const TextComponent: Component<{
   data: MainReturn;
 }> = (props) => {
   return (
+    <Show when={props.data}>
+
+
+
     <Show
       when={props.data[props.stat].length > 0}
       fallback={<div>failure</div>}
@@ -35,5 +39,7 @@ export const TextComponent: Component<{
         </A>
       </div>
     </Show>
+    </Show>
+
   );
 };

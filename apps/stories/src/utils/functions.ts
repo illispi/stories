@@ -1,6 +1,11 @@
 import { MainReturn } from "~/types/types";
 
 export const weightBrackets = (data: MainReturn["weight_amount"]) => {
+
+  if(!data){
+    return null
+  }
+
   const brackets = [
     "0-5kg",
     "6-10kg",
@@ -19,6 +24,9 @@ export const weightBrackets = (data: MainReturn["weight_amount"]) => {
 };
 
 export const dataGender = (data: MainReturn["gender"]) => {
+  if(!data){
+    return null
+  }
   const gender = data;
   const total = gender.male + gender.female + gender.other;
 
@@ -33,6 +41,9 @@ export const dataGender = (data: MainReturn["gender"]) => {
 };
 
 export const dataAgeOfRes = (data) => {
+  if(!data){
+    return null
+  }
   const labelsAgeGroup = [
     "0-9",
     "10-15",
@@ -49,6 +60,9 @@ export const dataAgeOfRes = (data) => {
   };
 };
 export const dataMultiSelect = (data) => {
+  if(!data){
+    return null
+  }
   const labelsMultiSelect = Object.keys(data);
 
   const seriesMultiSelect = [];
@@ -63,6 +77,9 @@ export const dataMultiSelect = (data) => {
 };
 
 export const dataSelection = (data) => {
+  if(!data){
+    return null
+  }
   const keysBeforePruning = Object.keys(data);
 
   const keys = keysBeforePruning.filter((e) => data[e] !== 0);
@@ -86,6 +103,9 @@ export const dataSelection = (data) => {
 };
 
 export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
+  if(!data){
+    return null
+  }
   const onset = data;
   return {
     labels: ["Male", "Female", "Other"],
