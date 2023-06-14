@@ -16,7 +16,7 @@ export const DoughnutComponent: Component<{
     | "dataAgeOfRes"
     | "dataMultiSelect";
 }> = (props) => {
-  const [dataA, dataB, data] = useData();
+  const {dataA, dataB, data} = useData();
 
   const [chartistData, setChartistData] = createSignal(null);
 

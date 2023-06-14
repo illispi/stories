@@ -9,7 +9,7 @@ export const YesOrNoComponent: Component<{
   header: string;
   data?: "A" | "B";
 }> = (props) => {
-  const [dataA, dataB, data] = useData();
+  const {dataA, dataB, data} = useData();
 
   const [questionData, setQuestionData] = createSignal(null);
 

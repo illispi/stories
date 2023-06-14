@@ -188,7 +188,7 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
-  const [setDataA, setDataB] = useData();
+  const { setDataA, setDataB } = useData();
 
   const [compOrder, setCompOrder] = createSignal<
     (
@@ -238,23 +238,22 @@ const CompareStats = () => {
           return <div>err</div>;
         }}
       >
-        <DataProvider dataA={statsA.data} dataB={statsB.data}>
-          <BarCounterProvider count={0}>
-            <PieCounterProvider count={0}>
-              <Compared A={A} B={B} setA={setA} setB={setB} />
-              <div class="mt-8 flex w-screen flex-col items-center justify-center">
-                <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
-                  <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                    <h1 class="text-center font-semibold">
-                      Statistics Comparision
-                    </h1>
-                  </div>
-                  <div class="flex flex-col items-center justify-center">
-                    <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                      <Index each={compOrder()}>
-                        {(comp, i) => <CompSelector {...comp()} />}
-                      </Index>
-                      {/* <Item
+        <BarCounterProvider count={0}>
+          <PieCounterProvider count={0}>
+            <Compared A={A} B={B} setA={setA} setB={setB} />
+            <div class="mt-8 flex w-screen flex-col items-center justify-center">
+              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
+                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                  <h1 class="text-center font-semibold">
+                    Statistics Comparision
+                  </h1>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
+                    <Index each={compOrder()}>
+                      {(comp, i) => <CompSelector {...comp()} data={"A"} />}
+                    </Index>
+                    {/* <Item
                         name={"Total responses:"}
                         value={`${statsA.data?.total}`}
                       />
@@ -275,13 +274,12 @@ const CompareStats = () => {
                           
               (statsB.data?.diagnosis)}
                       /> */}
-                    </div>
                   </div>
                 </div>
               </div>
-            </PieCounterProvider>
-          </BarCounterProvider>
-        </DataProvider>
+            </div>
+          </PieCounterProvider>
+        </BarCounterProvider>
       </ErrorBoundary>
     </Suspense>
   );
