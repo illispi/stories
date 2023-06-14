@@ -47,8 +47,12 @@ const Stats: ParentComponent = () => {
 
   return (
     <Suspense fallback={<div>Loading</div>}>
-      <ErrorBoundary fallback={(err) => err}>
-  
+      <ErrorBoundary
+        fallback={(err) => {
+          console.log(err);
+          return <div>err</div>;
+        }}
+      >
         <BarCounterProvider count={0}>
           <PieCounterProvider count={0}>
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
