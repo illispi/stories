@@ -5,6 +5,7 @@ import {
   Accessor,
   batch,
   Component,
+  Index,
   JSX,
   onMount,
   Setter,
@@ -25,9 +26,19 @@ import { Item } from "~/components/Item";
 import ModalPopUp from "~/components/ModalPopUp";
 import {
   BarCounterProvider,
+  DataProvider,
   PieCounterProvider,
+  useData,
 } from "~/components/globalSignals";
 import { allStats } from "~/server/queries";
+import type {
+  Bar,
+  Doughnut,
+  Stat,
+  YesOrNo,
+  Text,
+  CompType,
+} from "~/types/types";
 import { dataSelection } from "~/utils/functions";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -151,6 +162,24 @@ const showGender = (data) => {
   return gender;
 };
 
+const CompSelector = (props) => {
+  return (
+    <Switch>
+      <Match when={props.type === "stat"}>
+        <Item name={props.name} stat={props.stat} data={props.data} />
+      </Match>
+      <Match when={props.type === "doughnut"}>
+        <DoughnutComponent
+          function={props.function}
+          header={props.header}
+          stat={props.stat}
+          data={props.data}
+        />
+      </Match>
+    </Switch>
+  );
+};
+
 const CompareStats = () => {
   const [A, setA] = createSignal<
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
@@ -158,6 +187,26 @@ const CompareStats = () => {
   const [B, setB] = createSignal<
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
+
+  const [setDataA, setDataB] = useData();
+
+  const [compOrder, setCompOrder] = createSignal<
+    (
+      | (Stat & CompType)
+      | (YesOrNo & CompType)
+      | (Doughnut & CompType)
+      | (Bar & CompType)
+      | (Text & CompType)
+    )[]
+  >([
+    { type: "stat", name: "Total Responses", stat: "total" },
+    {
+      type: "doughnut",
+      header: "Share of diagnosis",
+      stat: "diagnosis",
+      function: "dataSelection",
+    },
+  ]);
 
   const statsA = allStats(
     () => ({
@@ -176,7 +225,10 @@ const CompareStats = () => {
     })
   );
 
-
+  createEffect(() => {
+    setDataA(statsA.data);
+    setDataB(statsB.data);
+  });
 
   return (
     <Suspense fallback={<div>wtf</div>}>
@@ -186,43 +238,50 @@ const CompareStats = () => {
           return <div>err</div>;
         }}
       >
-        <BarCounterProvider count={0}>
-          <PieCounterProvider count={0}>
-            <Compared A={A} B={B} setA={setA} setB={setB} />
-            <div class="mt-8 flex w-screen flex-col items-center justify-center">
-              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
-                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                  <h1 class="text-center font-semibold">
-                    Statistics Comparision
-                  </h1>
-                </div>
-                <div class="flex flex-col items-center justify-center">
-                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                    <Item
-                      name={"Total responses:"}
-                      value={`${statsA.data?.total}`}
-                    />
+        <DataProvider dataA={statsA.data} dataB={statsB.data}>
+          <BarCounterProvider count={0}>
+            <PieCounterProvider count={0}>
+              <Compared A={A} B={B} setA={setA} setB={setB} />
+              <div class="mt-8 flex w-screen flex-col items-center justify-center">
+                <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
+                  <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                    <h1 class="text-center font-semibold">
+                      Statistics Comparision
+                    </h1>
+                  </div>
+                  <div class="flex flex-col items-center justify-center">
+                    <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
+                      <Index each={compOrder()}>
+                        {(comp, i) => <CompSelector {...comp()} />}
+                      </Index>
+                      {/* <Item
+                        name={"Total responses:"}
+                        value={`${statsA.data?.total}`}
+                      />
 
-                    <Item
-                      name={"Total responses:"}
-                      value={`${statsB.data?.total}`}
-                    />
+                      <Item
+                        name={"Total responses:"}
+                        value={`${statsB.data?.total}`}
+                      />
 
-                    <DoughnutComponent
-                      header="Share of diagnosis"
-                      data={dataSelection(statsA.data?.diagnosis)}
-                    />
+                      <DoughnutComponent
+                        header="Share of diagnosis"
+                        data={dataSelection(statsA.data?.diagnosis)}
+                      />
 
-                    <DoughnutComponent
-                      header="Share of diagnosis"
-                      data={dataSelection(statsB.data?.diagnosis)}
-                    />
+                      <DoughnutComponent
+                        header="Share of diagnosis"
+                        data={dataSelection
+                          
+              (statsB.data?.diagnosis)}
+                      /> */}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </PieCounterProvider>
-        </BarCounterProvider>
+            </PieCounterProvider>
+          </BarCounterProvider>
+        </DataProvider>
       </ErrorBoundary>
     </Suspense>
   );

@@ -2,19 +2,25 @@ import { Component, Show, createEffect, createSignal } from "solid-js";
 import { MainReturn } from "~/types/types";
 import { PersonalQuestions } from "~/types/zodFromTypes";
 import PieChartCustom from "./PieChartCustom";
+import { useData } from "./globalSignals";
 
 export const YesOrNoComponent: Component<{
-  stat: keyof PersonalQuestions;
+  stat: keyof MainReturn;
   header: string;
-  data: MainReturn | undefined;
+  data?: "A" | "B";
 }> = (props) => {
+  const [dataA, dataB, data] = useData();
+
   const [questionData, setQuestionData] = createSignal(null);
+
+  //NOTE below might not be reactive since data is data[ojetfj] aint signal
 
   createEffect(() => {
     if (props.data) {
-      setQuestionData(props.data[props.stat]);
+      if (props.data === "A") setQuestionData(dataA[props.stat]);
+      else if (props.data === "B") setQuestionData(dataB[props.stat]);
     } else {
-      setQuestionData(null);
+      setQuestionData(data[props.stat]);
     }
   });
 

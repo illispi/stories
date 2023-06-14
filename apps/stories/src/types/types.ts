@@ -1,8 +1,48 @@
+import { JSXElement } from "solid-js";
+import { PersonalQuestions } from "./zodFromTypes";
+import { AxisOptions, BarChartOptions } from "chartist";
+
 export interface ChartistData {
   labels: string[];
   series: number[][] | number[];
 }
 
+export interface CompType {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+}
+export interface YesOrNo {
+  stat: keyof MainReturn;
+  header: string;
+}
+export interface Doughnut {
+  header: string;
+  stat: keyof PersonalQuestions;
+  function:
+    | "dataSelection"
+    | "dataOnset"
+    | "dataGender"
+    | "dataAgeOfRes"
+    | "dataMultiSelect";
+}
+export interface Bar {
+  options?: BarChartOptions<AxisOptions, AxisOptions>;
+  header: string;
+  stat: keyof PersonalQuestions;
+  function:
+    | "dataSelection"
+    | "dataOnset"
+    | "dataGender"
+    | "dataAgeOfRes"
+    | "dataMultiSelect";
+}
+export interface Text {
+  data: any;
+  header?: string;
+}
+export interface Stat {
+  name: string;
+  stat: keyof PersonalQuestions;
+}
 
 export interface MainReturn {
   diagnosis: Diagnosis;

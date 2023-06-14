@@ -1,9 +1,8 @@
 import { MainReturn } from "~/types/types";
 
 export const weightBrackets = (data: MainReturn["weight_amount"]) => {
-
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
 
   const brackets = [
@@ -24,8 +23,8 @@ export const weightBrackets = (data: MainReturn["weight_amount"]) => {
 };
 
 export const dataGender = (data: MainReturn["gender"]) => {
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
   const gender = data;
   const total = gender.male + gender.female + gender.other;
@@ -41,8 +40,8 @@ export const dataGender = (data: MainReturn["gender"]) => {
 };
 
 export const dataAgeOfRes = (data) => {
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
   const labelsAgeGroup = [
     "0-9",
@@ -60,8 +59,8 @@ export const dataAgeOfRes = (data) => {
   };
 };
 export const dataMultiSelect = (data) => {
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
   const labelsMultiSelect = Object.keys(data);
 
@@ -77,8 +76,8 @@ export const dataMultiSelect = (data) => {
 };
 
 export const dataSelection = (data) => {
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
   const keysBeforePruning = Object.keys(data);
 
@@ -103,8 +102,8 @@ export const dataSelection = (data) => {
 };
 
 export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
-  if(!data){
-    return null
+  if (!data) {
+    return null;
   }
   const onset = data;
   return {
@@ -114,4 +113,33 @@ export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
       [onset.maleMedian, onset.femaleMedian, onset.otherMedian],
     ],
   };
+};
+
+export const selector = (
+  selection:
+    | "dataSelection"
+    | "dataOnset"
+    | "dataGender"
+    | "dataAgeOfRes"
+    | "dataMultiSelect",
+  rawData
+) => {
+  switch (selection) {
+    case "dataAgeOfRes":
+      return dataAgeOfRes(rawData);
+
+    case "dataGender":
+      return dataGender(rawData);
+
+    case "dataMultiSelect":
+      return dataMultiSelect(rawData);
+
+    case "dataOnset":
+      return dataOnset(rawData);
+    case "dataSelection":
+      return dataSelection(rawData);
+
+    default:
+      break;
+  }
 };
