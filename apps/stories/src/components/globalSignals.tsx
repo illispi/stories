@@ -5,13 +5,9 @@ const PieCounterContext = createContext();
 const DataContext = createContext();
 
 export const DataProvider = (props) => {
-  console.log(props.data);
-
   const [data, setData] = createSignal(props.data || null);
   const [dataA, setDataA] = createSignal(props.dataA || null);
   const [dataB, setDataB] = createSignal(props.dataB || null);
-
-  console.log(data(), dataA(), dataB());
 
   return (
     <DataContext.Provider

@@ -1,5 +1,5 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
-import { createSignal, type Component } from "solid-js";
+import { createSignal, type Component, createEffect } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import BarChartCustom from "./BarChartCustom";
 import { useData } from "./globalSignals";
@@ -24,14 +24,17 @@ export const CustomBarComponent: Component<{
   const [chartistData, setChartistData] = createSignal(null);
 
   createEffect(() => {
+
+    if(dataA() || dataB() || data()){
     if (props.data) {
       if (props.data === "A")
-        setChartistData(selector(props.function, dataA[props.stat]));
+        setChartistData(selector(props.function, dataA()[props.stat]));
       else if (props.data === "B")
-        setChartistData(selector(props.function, dataB[props.stat]));
+        setChartistData(selector(props.function, dataB()[props.stat]));
     } else {
-      setChartistData(selector(props.function, data[props.stat]));
+      setChartistData(selector(props.function, data()[props.stat]));
     }
+  }
   });
 
   return (

@@ -5,6 +5,7 @@ import {
   Accessor,
   batch,
   Component,
+  For,
   Index,
   JSX,
   onMount,
@@ -226,6 +227,8 @@ const CompareStats = () => {
   );
 
   createEffect(() => {
+    console.log(statsA.data);
+
     setDataA(statsA.data);
     setDataB(statsB.data);
   });
@@ -250,9 +253,10 @@ const CompareStats = () => {
                 </div>
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                    <Index each={compOrder()}>
-                      {(comp, i) => <CompSelector {...comp()} data={"A"} />}
-                    </Index>
+                    <For each={compOrder()}>
+                      {(comp, i) => <CompSelector {...comp} data={"A"} />}
+                    </For>
+
                     {/* <Item
                         name={"Total responses:"}
                         value={`${statsA.data?.total}`}
