@@ -23,6 +23,10 @@ import CustomButton from "~/components/CustomButton";
 import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
 import ModalPopUp from "~/components/ModalPopUp";
+import {
+  BarCounterProvider,
+  PieCounterProvider,
+} from "~/components/globalSignals";
 import { allStats } from "~/server/queries";
 import { dataSelection } from "~/utils/functions";
 
@@ -31,17 +35,14 @@ interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ToggleButton: Component<Props> = (props) => {
-  const [toggle, setToggle] = createSignal(props.toggled);
-
   return (
-    <button onClick={props.onClick}>
+    <button onClick={(e) => props.onClick(e)}>
       <CustomButton
         classChange={
-          toggle() ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : null
+          props.toggled
+            ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900`
+            : null
         }
-        onClick={() => {
-          setToggle(!toggle());
-        }}
       >
         {props.children}
       </CustomButton>
@@ -161,18 +162,18 @@ const CompareStats = () => {
   const statsA = allStats(
     () => ({
       value: A(),
+    }),
+    () => ({
+      placeholderData: (prev) => prev, //NOTE why is this necessary, log something in effect
     })
-    // () => ({
-    //   placeholderData: (prev) => prev,
-    // })
   );
   const statsB = allStats(
     () => ({
       value: B(),
+    }),
+    () => ({
+      placeholderData: (prev) => prev,
     })
-    // () => ({
-    //   placeholderData: (prev) => prev,
-    // })
   );
 
   createEffect(() => {
@@ -180,47 +181,51 @@ const CompareStats = () => {
   });
 
   return (
-    <ErrorBoundary fallback={(err) => err}>
-      <Suspense fallback={<div>wtf</div>}>
-        <Show when={statsA.data && statsB.data}>
-          <Compared A={A} B={B} setA={setA} setB={setB} />
-          <div class="mt-8 flex w-screen flex-col items-center justify-center">
-            <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
-              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                <h1 class="text-center font-semibold">
-                  Statistics Comparision
-                </h1>
-              </div>
-              <div class="flex flex-col items-center justify-center">
-                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                  {/* <div>{showGender(statsA.data?.gender)}</div>
+    <Suspense fallback={<div>wtf</div>}>
+      <ErrorBoundary fallback={(err) => err}>
+        <BarCounterProvider count={0}>
+          <PieCounterProvider count={0}>
+            {/* <Show when={statsA.data && statsB.data}> */}
+            <Compared A={A} B={B} setA={setA} setB={setB} />
+            <div class="mt-8 flex w-screen flex-col items-center justify-center">
+              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
+                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+                  <h1 class="text-center font-semibold">
+                    Statistics Comparision
+                  </h1>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
+                    {/* <div>{showGender(statsA.data?.gender)}</div>
                 <div>{showGender(statsB.data?.gender)}</div> */}
-                  <Item
-                    name={"Total responses:"}
-                    value={`${statsA.data?.total}`}
-                  />
+                    <Item
+                      name={"Total responses:"}
+                      value={`${statsA.data?.total}`}
+                    />
 
-                  <Item
-                    name={"Total responses:"}
-                    value={`${statsB.data?.total}`}
-                  />
+                    <Item
+                      name={"Total responses:"}
+                      value={`${statsB.data?.total}`}
+                    />
 
-                  <DoughnutComponent
-                    header="Share of diagnosis"
-                    data={dataSelection(statsA.data?.diagnosis)}
-                  />
+                    <DoughnutComponent
+                      header="Share of diagnosis"
+                      data={dataSelection(statsA.data?.diagnosis)}
+                    />
 
-                  <DoughnutComponent
-                    header="Share of diagnosis"
-                    data={dataSelection(statsB.data?.diagnosis)}
-                  />
+                    <DoughnutComponent
+                      header="Share of diagnosis"
+                      data={dataSelection(statsB.data?.diagnosis)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Show>
-      </Suspense>
-    </ErrorBoundary>
+            {/* </Show> */}
+          </PieCounterProvider>
+        </BarCounterProvider>
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 
