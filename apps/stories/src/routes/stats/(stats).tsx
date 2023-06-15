@@ -2,7 +2,7 @@ import { Motion, Presence } from "@motionone/solid";
 import type { Component, ParentComponent } from "solid-js";
 import { createSignal, ErrorBoundary, Show, Suspense } from "solid-js";
 import { A } from "solid-start";
-import { CustomBarComponent } from "~/components/CustomBar";
+import { CustomBarComponent } from "~/components/Bar";
 import CustomButton from "~/components/CustomButton";
 import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
@@ -82,7 +82,7 @@ const Stats: ParentComponent = () => {
                       options={{ distributeSeries: true }}
                     />
                     <CustomBarComponent
-                      header="Age of Onset"
+                      header="Age of onset"
                       data={dataOnset(
                         allStatsPersonal.data?.ageOfOnsetByGender
                       )}

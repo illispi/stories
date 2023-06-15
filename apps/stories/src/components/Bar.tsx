@@ -6,7 +6,7 @@ import { useData } from "./globalSignals";
 import { selector } from "~/utils/functions";
 import { PersonalQuestions } from "~/types/zodFromTypes";
 
-export const CustomBarComponent: Component<{
+export const BarComponent: Component<{
   options?: BarChartOptions<AxisOptions, AxisOptions>;
 
   data?: "A" | "B";
@@ -38,11 +38,11 @@ export const CustomBarComponent: Component<{
   });
 
   return (
-    <>
+    <div class="flex flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="mb-4 w-11/12">
         <BarChartCustom data={chartistData()} options={props.options} />
       </div>
-    </>
+    </div>
   );
 };

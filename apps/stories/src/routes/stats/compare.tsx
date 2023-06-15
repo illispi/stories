@@ -21,10 +21,13 @@ import {
   Suspense,
   Switch,
 } from "solid-js";
+import { BarComponent } from "~/components/Bar";
 import CustomButton from "~/components/CustomButton";
 import { DoughnutComponent } from "~/components/Doughnut";
 import { Item } from "~/components/Item";
 import ModalPopUp from "~/components/ModalPopUp";
+import { TextComponent } from "~/components/Text";
+import { YesOrNoComponent } from "~/components/YesOrNo";
 import {
   BarCounterProvider,
   DataProvider,
@@ -167,15 +170,19 @@ const CompSelector = (props) => {
   return (
     <Switch>
       <Match when={props.type === "stat"}>
-        <Item name={props.name} stat={props.stat} data={props.data} />
+        <Item {...props} />
       </Match>
       <Match when={props.type === "doughnut"}>
-        <DoughnutComponent
-          function={props.function}
-          header={props.header}
-          stat={props.stat}
-          data={props.data}
-        />
+        <DoughnutComponent {...props} />
+      </Match>
+      <Match when={props.type === "bar"}>
+        <BarComponent {...props} />
+      </Match>
+      <Match when={props.type === "text"}>
+        <TextComponent {...props} />
+      </Match>
+      <Match when={props.type === "yesOrNo"}>
+        <YesOrNoComponent {...props} />
       </Match>
     </Switch>
   );
@@ -194,12 +201,31 @@ const CompareStats = () => {
   const [compOrder, setCompOrder] = createSignal<
     (Stat | YesOrNo | Doughnut | Bar | Text)[]
   >([
-    { type: "stat", name: "Total Responses", stat: "total" },
+    { type: "stat", stat: "total", name: "Total Responses" },
     {
       type: "doughnut",
-      header: "Share of diagnosis",
       stat: "diagnosis",
+      header: "Share of diagnosis",
       function: "dataSelection",
+    },
+    {
+      type: "doughnut",
+      stat: "gender",
+      header: "Share of genders",
+      function: "dataGender",
+    },
+    {
+      type: "bar",
+      stat: "current_age",
+      header: "Age of responses",
+      function: "dataAgeOfRes",
+      options: { distributeSeries: true },
+    },
+    {
+      type: "bar",
+      stat: "ageOfOnsetByGender",
+      header: "Age of onset",
+      function: "dataOnset",
     },
   ]);
 
@@ -239,25 +265,40 @@ const CompareStats = () => {
           <PieCounterProvider count={0}>
             <Compared A={A} B={B} setA={setA} setB={setB} />
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
-              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-3xl">
+              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-5xl">
                 <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
                   <h1 class="text-center font-semibold">
                     Statistics Comparision
                   </h1>
                 </div>
                 <div class="flex flex-col items-center justify-center">
-                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                    <Index each={compOrder()}>
-                      {(comp, i) => (
-                        <>
-                          <h5 class="md:hidden">{A()}:</h5>
-                          <CompSelector {...comp} data={"A"} />
-                          <h5 class="md:hidden">{B()}:</h5>
-                          <CompSelector {...comp} data={"B"} />
-                        </>
-                      )}
-                    </Index>
-                  </div>
+                  <Index each={compOrder()}>
+                    {(comp, i) => (
+                      <>
+                        <Show
+                          when={comp().type !== "bar"}
+                          fallback={
+                            <>
+                              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white xl:grid xl:grid-cols-2">
+                                <h5 class="xl:hidden">{A()}:</h5>
+                                <CompSelector {...comp} data={"A"} />
+
+                                <h5 class="xl:hidden">{B()}:</h5>
+                                <CompSelector {...comp} data={"B"} />
+                              </div>
+                            </>
+                          }
+                        >
+                          <div class="z-[5] flex w-full flex-col items-center justify-center bg-white sm:grid sm:grid-cols-2">
+                            <h5 class="sm:hidden">{A()}:</h5>
+                            <CompSelector {...comp} data={"A"} />
+                            <h5 class="sm:hidden">{B()}:</h5>
+                            <CompSelector {...comp} data={"B"} />
+                          </div>
+                        </Show>
+                      </>
+                    )}
+                  </Index>
                 </div>
               </div>
             </div>
