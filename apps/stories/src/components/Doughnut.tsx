@@ -21,7 +21,7 @@ export const DoughnutComponent: Component<{
   const [chartistData, setChartistData] = createSignal(null);
 
   createEffect(() => {
-    if(dataA() || dataB() || data()){
+    if((dataA() && dataB()) || data()){
     if (props.data) {
       if (props.data === "A")
         setChartistData(selector(props.function, dataA()[props.stat]));

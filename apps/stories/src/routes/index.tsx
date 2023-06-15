@@ -34,7 +34,8 @@ const Home: Component = () => {
   return (
     <div class="flex h-screen w-screen items-center justify-center">
       Empty for now
-      <A href="/personalQuestions"> Personal questions</A>
+      <A href="/personalQuestions">Personal questions</A>
+      <A href="/stats/compare">Compare</A>
       <AuthShowcase />
     </div>
   );

@@ -7,14 +7,13 @@ export interface ChartistData {
   series: number[][] | number[];
 }
 
-export interface CompType {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
-}
 export interface YesOrNo {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
   stat: keyof MainReturn;
   header: string;
 }
 export interface Doughnut {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
   header: string;
   stat: keyof PersonalQuestions;
   function:
@@ -25,6 +24,7 @@ export interface Doughnut {
     | "dataMultiSelect";
 }
 export interface Bar {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
   options?: BarChartOptions<AxisOptions, AxisOptions>;
   header: string;
   stat: keyof PersonalQuestions;
@@ -36,10 +36,12 @@ export interface Bar {
     | "dataMultiSelect";
 }
 export interface Text {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
   data: any;
   header?: string;
 }
 export interface Stat {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
   name: string;
   stat: keyof PersonalQuestions;
 }

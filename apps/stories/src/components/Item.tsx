@@ -14,7 +14,7 @@ export const Item: Component<{
   //NOTE below might not be reactive since data is data[ojetfj] aint signal
 
   createEffect(() => {
-   if(dataA() || dataB() || data()){
+   if((dataA() && dataB()) || data()){
 
      if (props.data) {
        if (props.data === "A") setQuestionData(dataA()[props.stat]);

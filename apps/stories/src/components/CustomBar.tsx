@@ -25,7 +25,7 @@ export const CustomBarComponent: Component<{
 
   createEffect(() => {
 
-    if(dataA() || dataB() || data()){
+    if((dataA() && dataB()) || data()){
     if (props.data) {
       if (props.data === "A")
         setChartistData(selector(props.function, dataA()[props.stat]));

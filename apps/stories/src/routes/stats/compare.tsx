@@ -192,13 +192,7 @@ const CompareStats = () => {
   const { setDataA, setDataB } = useData();
 
   const [compOrder, setCompOrder] = createSignal<
-    (
-      | (Stat & CompType)
-      | (YesOrNo & CompType)
-      | (Doughnut & CompType)
-      | (Bar & CompType)
-      | (Text & CompType)
-    )[]
+    (Stat | YesOrNo | Doughnut | Bar | Text)[]
   >([
     { type: "stat", name: "Total Responses", stat: "total" },
     {
@@ -253,31 +247,16 @@ const CompareStats = () => {
                 </div>
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white md:grid md:grid-cols-2">
-                    <For each={compOrder()}>
-                      {(comp, i) => <CompSelector {...comp} data={"A"} />}
-                    </For>
-
-                    {/* <Item
-                        name={"Total responses:"}
-                        value={`${statsA.data?.total}`}
-                      />
-
-                      <Item
-                        name={"Total responses:"}
-                        value={`${statsB.data?.total}`}
-                      />
-
-                      <DoughnutComponent
-                        header="Share of diagnosis"
-                        data={dataSelection(statsA.data?.diagnosis)}
-                      />
-
-                      <DoughnutComponent
-                        header="Share of diagnosis"
-                        data={dataSelection
-                          
-              (statsB.data?.diagnosis)}
-                      /> */}
+                    <Index each={compOrder()}>
+                      {(comp, i) => (
+                        <>
+                          <h5 class="md:hidden">{A()}:</h5>
+                          <CompSelector {...comp} data={"A"} />
+                          <h5 class="md:hidden">{B()}:</h5>
+                          <CompSelector {...comp} data={"B"} />
+                        </>
+                      )}
+                    </Index>
                   </div>
                 </div>
               </div>
