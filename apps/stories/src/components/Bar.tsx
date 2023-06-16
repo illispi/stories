@@ -17,7 +17,8 @@ export const BarComponent: Component<{
     | "dataOnset"
     | "dataGender"
     | "dataAgeOfRes"
-    | "dataMultiSelect";
+    | "dataMultiSelect"
+    | "weightBrackets"
 }> = (props) => {
   const {dataA, dataB, data} = useData();
 

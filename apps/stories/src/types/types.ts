@@ -33,7 +33,8 @@ export interface Bar {
     | "dataOnset"
     | "dataGender"
     | "dataAgeOfRes"
-    | "dataMultiSelect";
+    | "dataMultiSelect"
+    | "weightBrackets";
 }
 export interface Text {
   type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";

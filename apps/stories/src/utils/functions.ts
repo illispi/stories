@@ -121,7 +121,8 @@ export const selector = (
     | "dataOnset"
     | "dataGender"
     | "dataAgeOfRes"
-    | "dataMultiSelect",
+    | "dataMultiSelect"
+    | "weightBrackets",
   rawData
 ) => {
   switch (selection) {
@@ -138,6 +139,8 @@ export const selector = (
       return dataOnset(rawData);
     case "dataSelection":
       return dataSelection(rawData);
+    case "weightBrackets":
+      return weightBrackets(rawData);
 
     default:
       break;
