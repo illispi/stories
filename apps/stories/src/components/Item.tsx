@@ -23,6 +23,8 @@ export const Item: Component<{
        setQuestionData(data()[props.stat]);
      }
    }
+
+   
     
   });
 

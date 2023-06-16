@@ -18,10 +18,10 @@ export const YesOrNoComponent: Component<{
   createEffect(() => {
     if ((dataA() && dataB()) || data()) {
       if (props.data) {
-        if (props.data === "A") setQuestionData(dataA[props.stat]);
-        else if (props.data === "B") setQuestionData(dataB[props.stat]);
+        if (props.data === "A") setQuestionData(dataA()[props.stat]);
+        else if (props.data === "B") setQuestionData(dataB()[props.stat]);
       } else {
-        setQuestionData(data[props.stat]);
+        setQuestionData(data()[props.stat]);
       }
     }
   });

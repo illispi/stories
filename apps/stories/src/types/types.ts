@@ -38,7 +38,6 @@ export interface Bar {
 }
 export interface Text {
   type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
-  data: any;
   header?: string;
 }
 export interface Stat {
