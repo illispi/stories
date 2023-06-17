@@ -195,8 +195,6 @@ const CompareStats = () => {
     })
   );
 
-
-
   return (
     <Suspense fallback={<div>wtf</div>}>
       <ErrorBoundary
@@ -216,33 +214,37 @@ const CompareStats = () => {
                   </h1>
                 </div>
                 <div class="flex flex-col items-center justify-center">
-                  <Index each={compOrder()}>
-                    {(comp, i) => (
-                      <>
-                        <Show
-                          when={comp().type !== "bar"}
-                          fallback={
-                            <>
-                              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white xl:grid xl:grid-cols-2">
+                  <div class=" z-[5] flex w-full flex-col items-center justify-center bg-white xl:grid xl:grid-cols-2">
+                    <div class="m-6 flex items-center justify-center rounded-full border-2 border-blue-800 text-lg">
+                      <h3 class="sticky top-24">{A()}</h3>
+                    </div>
+                    <div class="m-6 flex items-center justify-center rounded-full border-2 border-blue-800 text-lg">
+                      <h3 class="sticky top-24">{B()}</h3>
+                    </div>
+                    <Index each={compOrder()}>
+                      {(comp, i) => (
+                        <>
+                          <Show
+                            when={comp().type !== "bar"}
+                            fallback={
+                              <>
                                 <h5 class="xl:hidden">{A()}:</h5>
                                 <CompSelector {...comp()} data={statsA.data} />
 
                                 <h5 class="xl:hidden">{B()}:</h5>
                                 <CompSelector {...comp()} data={statsB.data} />
-                              </div>
-                            </>
-                          }
-                        >
-                          <div class="z-[5] flex w-full flex-col items-center justify-center bg-white sm:grid sm:grid-cols-2">
+                              </>
+                            }
+                          >
                             <h5 class="sm:hidden">{A()}:</h5>
                             <CompSelector {...comp()} data={statsA.data} />
                             <h5 class="sm:hidden">{B()}:</h5>
                             <CompSelector {...comp()} data={statsB.data} />
-                          </div>
-                        </Show>
-                      </>
-                    )}
-                  </Index>
+                          </Show>
+                        </>
+                      )}
+                    </Index>
+                  </div>
                 </div>
               </div>
             </div>

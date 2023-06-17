@@ -1,36 +1,19 @@
-import { Motion, Presence } from "@motionone/solid";
 import type { Component, ParentComponent } from "solid-js";
 import {
-  createEffect,
-  createSignal,
   ErrorBoundary,
   Index,
-  Show,
   Suspense,
+  createSignal
 } from "solid-js";
 import { A } from "solid-start";
-import { CustomBarComponent } from "~/components/Bar";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
-import { DoughnutComponent } from "~/components/Doughnut";
-import { Item } from "~/components/Item";
-import { TextComponent } from "~/components/Text";
-import { YesOrNoComponent } from "~/components/YesOrNo";
 import {
   BarCounterProvider,
-  PieCounterProvider,
-  useData,
+  PieCounterProvider
 } from "~/components/globalSignals";
-import { allSTatsArr, allStatsArr } from "~/data/statsArrays";
+import { allStatsArr } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
-import {
-  dataAgeOfRes,
-  dataGender,
-  dataMultiSelect,
-  dataOnset,
-  dataSelection,
-  weightBrackets,
-} from "~/utils/functions";
 
 const CompareButton: Component = () => {
   return (
