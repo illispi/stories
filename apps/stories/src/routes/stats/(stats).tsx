@@ -52,10 +52,6 @@ const CompareButton: Component = () => {
 
 const Stats: ParentComponent = () => {
   const allStatsPersonal = allStats({ value: "all" });
-  const { setData } = useData();
-  createEffect(() => {
-    setData(allStatsPersonal.data);
-  });
 
   const [compOrder, setCompOrder] = createSignal(allStatsArr);
 
@@ -78,7 +74,12 @@ const Stats: ParentComponent = () => {
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
                     <CompareButton />
                     <Index each={compOrder()}>
-                      {(comp, i) => <CompSelector {...comp()} />}
+                      {(comp, i) => (
+                        <CompSelector
+                          {...comp()}
+                          data={allStatsPersonal.data}
+                        />
+                      )}
                     </Index>
                     <CompareButton />
                   </div>

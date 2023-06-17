@@ -176,8 +176,6 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
-  const { setDataA, setDataB } = useData();
-
   const [compOrder, setCompOrder] = createSignal(bydiagnosis);
 
   const statsA = allStats(
@@ -197,10 +195,7 @@ const CompareStats = () => {
     })
   );
 
-  createEffect(() => {
-    setDataA(statsA.data);
-    setDataB(statsB.data);
-  });
+
 
   return (
     <Suspense fallback={<div>wtf</div>}>
@@ -230,19 +225,19 @@ const CompareStats = () => {
                             <>
                               <div class="z-[5] flex w-full flex-col items-center justify-center bg-white xl:grid xl:grid-cols-2">
                                 <h5 class="xl:hidden">{A()}:</h5>
-                                <CompSelector {...comp()} data={"A"} />
+                                <CompSelector {...comp()} data={statsA.data} />
 
                                 <h5 class="xl:hidden">{B()}:</h5>
-                                <CompSelector {...comp()} data={"B"} />
+                                <CompSelector {...comp()} data={statsB.data} />
                               </div>
                             </>
                           }
                         >
                           <div class="z-[5] flex w-full flex-col items-center justify-center bg-white sm:grid sm:grid-cols-2">
                             <h5 class="sm:hidden">{A()}:</h5>
-                            <CompSelector {...comp()} data={"A"} />
+                            <CompSelector {...comp()} data={statsA.data} />
                             <h5 class="sm:hidden">{B()}:</h5>
-                            <CompSelector {...comp()} data={"B"} />
+                            <CompSelector {...comp()} data={statsB.data} />
                           </div>
                         </Show>
                       </>

@@ -1,4 +1,4 @@
-import { MainReturn } from "~/types/types";
+import { AgeOfOnsetByGender, Gender, MainReturn } from "~/types/types";
 
 export const weightBrackets = (data: MainReturn["weight_amount"]) => {
   if (!data) {
@@ -123,7 +123,7 @@ export const selector = (
     | "dataAgeOfRes"
     | "dataMultiSelect"
     | "weightBrackets",
-  rawData
+  rawData: Gender | AgeOfOnsetByGender
 ) => {
   switch (selection) {
     case "dataAgeOfRes":

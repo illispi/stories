@@ -2,21 +2,6 @@ import { createSignal, createContext, useContext } from "solid-js";
 
 const BarCounterContext = createContext();
 const PieCounterContext = createContext();
-const DataContext = createContext();
-
-export const DataProvider = (props) => {
-  const [data, setData] = createSignal(props.data || null);
-  const [dataA, setDataA] = createSignal(props.dataA || null);
-  const [dataB, setDataB] = createSignal(props.dataB || null);
-
-  return (
-    <DataContext.Provider
-      value={{ data, dataA, dataB, setData, setDataA, setDataB }}
-    >
-      {props.children}
-    </DataContext.Provider>
-  );
-};
 
 export const BarCounterProvider = (props) => {
   const [barChartCount, setBarChartCount] = createSignal(props.count || 0);
@@ -61,6 +46,5 @@ export const usePieCounter = () => {
 export const useBarCounter = () => {
   return useContext(BarCounterContext);
 };
-export const useData = () => {
-  return useContext(DataContext);
-};
+
+//NOTE How would do the chartist without context, get increment by using components

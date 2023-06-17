@@ -16,7 +16,6 @@ import {
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
 import { QueryClient } from "@tanstack/solid-query";
-import { DataProvider } from "./components/globalSignals";
 
 const queryClient = new QueryClient();
 
@@ -32,12 +31,10 @@ export default function Root() {
         <QueryProvider queryClient={queryClient}>
           <Suspense>
             <ErrorBoundary>
-              <DataProvider>
-                <NavBar />
-                <Routes>
-                  <FileRoutes />
-                </Routes>
-              </DataProvider>
+              <NavBar />
+              <Routes>
+                <FileRoutes />
+              </Routes>
             </ErrorBoundary>
           </Suspense>
           <Scripts />
