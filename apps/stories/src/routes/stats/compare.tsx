@@ -207,19 +207,23 @@ const CompareStats = () => {
           <PieCounterProvider count={0}>
             <Compared A={A} B={B} setA={setA} setB={setB} />
             <div class="mt-8 flex w-screen flex-col items-center justify-center">
-              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl lg:max-w-5xl">
-                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+              <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
+                <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
                   <h1 class="text-center font-semibold">
                     Statistics Comparision
                   </h1>
                 </div>
                 <div class="flex flex-col items-center justify-center">
-                  <div class=" z-[5] flex w-full flex-col items-center justify-center bg-white xl:grid xl:grid-cols-2">
-                    <div class="m-6 flex items-center justify-center rounded-full border-2 border-blue-800 text-lg">
-                      <h3 class="sticky top-24">{A()}</h3>
+                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white lg:grid lg:grid-cols-2">
+                    <div class="sticky top-20 hidden items-center justify-center bg-white lg:flex">
+                      <h3 class=" rounded-full border-2 border-blue-800 bg-white p-3 m-3 text-lg ">
+                        {A()}
+                      </h3>
                     </div>
-                    <div class="m-6 flex items-center justify-center rounded-full border-2 border-blue-800 text-lg">
-                      <h3 class="sticky top-24">{B()}</h3>
+                    <div class="sticky top-20 hidden items-center justify-center bg-white lg:flex">
+                      <h3 class=" rounded-full border-2 border-blue-800 bg-white p-3 m-3 text-lg">
+                        {B()}
+                      </h3>
                     </div>
                     <Index each={compOrder()}>
                       {(comp, i) => (
@@ -228,10 +232,10 @@ const CompareStats = () => {
                             when={comp().type !== "bar"}
                             fallback={
                               <>
-                                <h5 class="xl:hidden">{A()}:</h5>
+                                <h5 class="lg:hidden">{A()}:</h5>
                                 <CompSelector {...comp()} data={statsA.data} />
 
-                                <h5 class="xl:hidden">{B()}:</h5>
+                                <h5 class="lg:hidden">{B()}:</h5>
                                 <CompSelector {...comp()} data={statsB.data} />
                               </>
                             }
