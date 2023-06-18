@@ -123,9 +123,6 @@ const Compared: Component<{
         message={message()}
         customClasses="top-16"
       />
-      <CustomButton onClick={() => setSelection("gender")}>
-        By Gender
-      </CustomButton>
       <CustomButton
         onClick={() => {
           setSelection("diagnosis");
@@ -136,8 +133,10 @@ const Compared: Component<{
       >
         By Diagnosis
       </CustomButton>
+      <CustomButton onClick={() => setSelection("gender")}>
+        By Gender
+      </CustomButton>
       <Switch>
-        <Match when={selection() === "diagnosis"}>Placeholder</Match>
         <Match when={selection() === "gender"}>
           <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
             Male
@@ -158,14 +157,6 @@ const Compared: Component<{
       </Switch>
     </div>
   );
-};
-
-const showGender = (data) => {
-  console.log(data, "gender");
-
-  const keys = Object.keys(data);
-  const gender = keys.find((n) => data[n] > 0);
-  return gender;
 };
 
 const CompareStats = () => {
@@ -240,9 +231,9 @@ const CompareStats = () => {
                               </>
                             }
                           >
-                            <h5 class="sm:hidden">{A()}:</h5>
+                            <h5 class="lg:hidden">{A()}:</h5>
                             <CompSelector {...comp()} data={statsA.data} />
-                            <h5 class="sm:hidden">{B()}:</h5>
+                            <h5 class="lg:hidden">{B()}:</h5>
                             <CompSelector {...comp()} data={statsB.data} />
                           </Show>
                         </>
@@ -260,3 +251,5 @@ const CompareStats = () => {
 };
 
 export default CompareStats;
+
+//TODO A and B for text routes need to work as well

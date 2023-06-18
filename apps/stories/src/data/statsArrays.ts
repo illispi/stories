@@ -317,17 +317,17 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "text",
     stat: "what_others_should_know",
-    header: "Wish people knew about schizphrenia",
+    header: "Wish people knew about schizophrenia",
   },
   {
     type: "yesOrNo",
     stat: "not_have_schizophrenia",
-    header: "Would have chosen not to have schizphrenia",
+    header: "Would have chosen not to have schizophrenia",
   },
   {
     type: "text",
     stat: "not_have_schizophrenia_description",
-    header: "Reasoning for wanting (or not) having schizphrenia",
+    header: "Reasoning for wanting (or not) having schizophrenia",
   },
 ];
 
@@ -647,17 +647,17 @@ export const bydiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "text",
     stat: "what_others_should_know",
-    header: "Wish people knew about schizphrenia",
+    header: "Wish people knew about schizophrenia",
   },
   {
     type: "yesOrNo",
     stat: "not_have_schizophrenia",
-    header: "Would have chosen not to have schizphrenia",
+    header: "Would have chosen not to have schizophrenia",
   },
   {
     type: "text",
     stat: "not_have_schizophrenia_description",
-    header: "Reasoning for wanting (or not) having schizphrenia",
+    header: "Reasoning for wanting (or not) having schizophrenia",
   },
 ];
 
@@ -967,16 +967,16 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "text",
     stat: "what_others_should_know",
-    header: "Wish people knew about schizphrenia",
+    header: "Wish people knew about schizophrenia",
   },
   {
     type: "yesOrNo",
     stat: "not_have_schizophrenia",
-    header: "Would have chosen not to have schizphrenia",
+    header: "Would have chosen not to have schizophrenia",
   },
   {
     type: "text",
     stat: "not_have_schizophrenia_description",
-    header: "Reasoning for wanting (or not) having schizphrenia",
+    header: "Reasoning for wanting (or not) having schizophrenia",
   },
 ];
