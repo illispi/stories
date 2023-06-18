@@ -1,4 +1,4 @@
-import { Component, Index, Show, createEffect, createSignal } from "solid-js";
+import { Component, For, Index, Show, createEffect, createSignal } from "solid-js";
 import { A } from "solid-start";
 
 import { MainReturn } from "~/types/types";
@@ -19,14 +19,14 @@ export const TextComponent: Component<{
         >
           <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
             <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-            <Index each={props.data?.[props.stat]}>
+            <For each={props.data?.[props.stat]}>
               {(stat, i) => (
                 <div class="flex w-full max-w-xs flex-col items-center justify-center">
                   <h5 class="m-2 font-bold">{i + 1}.</h5>
-                  <p class="w-full">{stat()}</p>
+                  <p class="w-full">{stat}</p>
                 </div>
               )}
-            </Index>
+            </For>
 
             <A href={`${props.stat}`}>
               <div

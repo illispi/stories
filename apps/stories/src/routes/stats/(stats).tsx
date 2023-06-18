@@ -1,5 +1,5 @@
 import type { Component, ParentComponent } from "solid-js";
-import { ErrorBoundary, Index, Suspense, createSignal } from "solid-js";
+import { ErrorBoundary, For, Index, Suspense, createSignal } from "solid-js";
 import { A } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
@@ -51,14 +51,14 @@ const Stats: ParentComponent = () => {
                 <div class="flex flex-col items-center justify-center">
                   <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
                     <CompareButton />
-                    <Index each={compOrder()}>
+                    <For each={compOrder()}>
                       {(comp, i) => (
                         <CompSelector
-                          {...comp()}
+                          {...comp}
                           data={allStatsPersonal.data}
                         />
                       )}
-                    </Index>
+                    </For>
                     <CompareButton />
                   </div>
                 </div>

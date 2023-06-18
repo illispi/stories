@@ -167,7 +167,7 @@ const CompareStats = () => {
     "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
   >("schizoaffective");
 
-  const [compOrder, setCompOrder] = createSignal(bydiagnosis);
+  const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
 
   const statsA = allStats(
     () => ({
@@ -216,29 +216,29 @@ const CompareStats = () => {
                         {B()}
                       </h3>
                     </div>
-                    <Index each={compOrder()}>
+                    <For each={compOrder()}>
                       {(comp, i) => (
                         <>
                           <Show
-                            when={comp().type !== "bar"}
+                            when={comp.type !== "bar"}
                             fallback={
                               <>
                                 <h5 class="lg:hidden">{A()}:</h5>
-                                <CompSelector {...comp()} data={statsA.data} />
+                                <CompSelector {...comp} data={statsA.data} />
 
                                 <h5 class="lg:hidden">{B()}:</h5>
-                                <CompSelector {...comp()} data={statsB.data} />
+                                <CompSelector {...comp} data={statsB.data} />
                               </>
                             }
                           >
                             <h5 class="lg:hidden">{A()}:</h5>
-                            <CompSelector {...comp()} data={statsA.data} />
+                            <CompSelector {...comp} data={statsA.data} />
                             <h5 class="lg:hidden">{B()}:</h5>
-                            <CompSelector {...comp()} data={statsB.data} />
+                            <CompSelector {...comp} data={statsB.data} />
                           </Show>
                         </>
                       )}
-                    </Index>
+                    </For>
                   </div>
                 </div>
               </div>
