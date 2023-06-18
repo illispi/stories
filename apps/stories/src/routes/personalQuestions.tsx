@@ -43,7 +43,7 @@ const Questions: ParentComponent<{
       >
         <div class="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
           <Presence>
-            <Show when={props.page} keyed={true}>
+            <Show when={props.page === 0 ? true : props.page} keyed>
               <QuestionTransition direction={props.direction}>
                 <UnitQuestion
                   content={questions[props.page]}

@@ -4,10 +4,10 @@ import type { DB } from "../types/dbTypes";
 import "dotenv/config";
 
 const testPools = () => {
-  console.log("multipleTimes!!!!");
+  //NOTE log: ["error", "query"]
 
   return new Kysely<DB>({
-    log: ["error", "query"],
+    log: ["error"],
     dialect: new PostgresDialect({
       pool: new Pool({
         host: "127.0.0.1",
