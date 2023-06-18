@@ -22,7 +22,7 @@ const StatsText = () => {
       }
       fallback={<div>loading</div>}
     >
-      <div class="mt-8 flex w-screen flex-col items-center justify-center">
+      <div class="mt-8 flex  flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-xs flex-col items-center justify-center md:max-w-prose">
           <h4 class="m-2 my-8 text-center text-xl underline underline-offset-8">{`${
             questions[
