@@ -1,4 +1,11 @@
-import { Component, For, Index, Show, createEffect, createSignal } from "solid-js";
+import {
+  Component,
+  For,
+  Index,
+  Show,
+  createEffect,
+  createSignal,
+} from "solid-js";
 import { A } from "solid-start";
 
 import { MainReturn } from "~/types/types";
@@ -22,7 +29,7 @@ export const TextComponent: Component<{
             <For each={props.data?.[props.stat]}>
               {(stat, i) => (
                 <div class="flex w-full max-w-xs flex-col items-center justify-center">
-                  <h5 class="m-2 font-bold">{i + 1}.</h5>
+                  <h5 class="m-2 font-bold">{i() + 1}.</h5>
                   <p class="w-full">{stat}</p>
                 </div>
               )}

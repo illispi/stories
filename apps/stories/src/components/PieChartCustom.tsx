@@ -17,14 +17,22 @@ const PieChartCustom: Component<{
   labels?: boolean;
 }> = (props) => {
   let pie: PieChart;
+  let elRef: HTMLDivElement;
+  let observer: IntersectionObserver;
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
   const [count, { increment }] = usePieCounter();
 
   increment();
   const id = count().toString();
 
-  onMount(
-    () => {
+  onMount(() => {
+    const options = {
+      // root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+
+    observer = new IntersectionObserver(() => {
       pie = new PieChart(
         `#chartPie${id}`,
         {
@@ -40,19 +48,24 @@ const PieChartCustom: Component<{
           labelPosition: "outside",
         }
       );
-    }
+    }, options);
 
-    // pie.on("created", () =>
-    // {})
-  );
+    observer.observe(elRef);
+
+    false;
+  });
+
+  // pie.on("created", () =>
+  // {})
 
   createEffect(() => {
-    if (props.data) {
+    if (props.data && pie) {
       pie.update(props.data);
     }
   });
 
   onCleanup(() => {
+    observer.disconnect();
     pie?.detach;
   });
 
@@ -60,6 +73,7 @@ const PieChartCustom: Component<{
     <div>
       <div class="flex flex-col items-center justify-center">
         <div
+          ref={elRef}
           class={`h-64 w-64 ${!props.data ? `hidden` : ""}`}
           id={`chartPie${id}`}
         />
