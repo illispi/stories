@@ -16,29 +16,44 @@ const BarChartCustom: Component<{
   options?: Adds;
 }> = (props) => {
   let bar: BarChart;
+  let elRef: HTMLDivElement;
+  let observer: IntersectionObserver;
+
   const [count, { increment }] = useBarCounter();
   increment();
 
   const id = count().toString();
 
   onMount(() => {
-    bar = new BarChart(
-      `#chartBar${id}`,
-      {
-        series: props.data?.series ?? [2, 2],
-        labels: props.data?.labels ?? ["2", "2"],
-      },
-      { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
-    );
+    const options = {
+      // root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+
+    observer = new IntersectionObserver(() => {
+      bar = new BarChart(
+        `#chartBar${id}`,
+        {
+          series: props.data?.series ?? [2, 2],
+          labels: props.data?.labels ?? ["2", "2"],
+        },
+        { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
+      );
+    }, options);
+    observer.observe(elRef);
   });
 
   createEffect(() => {
-    if (props.data) {
+    if (props.data && bar) {
       bar.update(props.data);
     }
   });
 
-  onCleanup(() => bar?.detach);
+  onCleanup(() => {
+    observer.disconnect();
+    bar?.detach;
+  });
 
   return (
     <div>
@@ -47,6 +62,7 @@ const BarChartCustom: Component<{
         fallback={
           <div class="flex flex-col items-center justify-center">
             <div
+              ref={elRef}
               class={`h-80 w-96 lg:w-[500px] ${!props.data ? "hidden" : ""}`}
               id={`chartBar${id}`}
             />
@@ -73,6 +89,7 @@ const BarChartCustom: Component<{
       >
         <div class="flex flex-col items-center justify-center">
           <div
+            ref={elRef}
             class={`h-[${props.options?.height}px] w-96 lg:w-[500px] ${
               !props.data ? "hidden" : ""
             }`}

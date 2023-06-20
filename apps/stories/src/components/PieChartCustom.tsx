@@ -19,6 +19,7 @@ const PieChartCustom: Component<{
   let pie: PieChart;
   let elRef: HTMLDivElement;
   let observer: IntersectionObserver;
+
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
   const [count, { increment }] = usePieCounter();
 
@@ -52,7 +53,7 @@ const PieChartCustom: Component<{
 
     observer.observe(elRef);
 
-    false;
+    
   });
 
   // pie.on("created", () =>
