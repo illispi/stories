@@ -26,20 +26,22 @@ const BarChartCustom: Component<{
 
   onMount(() => {
     const options = {
-      // root: document.querySelector("#scrollArea"),
+      root: document.querySelector("#scrollArea"),
       rootMargin: "0px",
-      threshold: 1.0,
+      threshold: 0.1,
     };
 
-    observer = new IntersectionObserver(() => {
-      bar = new BarChart(
-        `#chartBar${id}`,
-        {
-          series: props.data?.series ?? [2, 2],
-          labels: props.data?.labels ?? ["2", "2"],
-        },
-        { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
-      );
+    observer = new IntersectionObserver((entires, observer) => {
+      if (!bar && entires[0].isIntersecting) {
+        bar = new BarChart(
+          `#chartBar${id}`,
+          {
+            series: props.data?.series ?? [2, 2],
+            labels: props.data?.labels ?? ["2", "2"],
+          },
+          { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
+        );
+      }
     }, options);
     observer.observe(elRef);
   });

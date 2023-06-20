@@ -28,32 +28,32 @@ const PieChartCustom: Component<{
 
   onMount(() => {
     const options = {
-      // root: document.querySelector("#scrollArea"),
+      root: document.querySelector("#scrollArea"),
       rootMargin: "0px",
-      threshold: 1.0,
+      threshold: 0.1,
     };
 
-    observer = new IntersectionObserver(() => {
-      pie = new PieChart(
-        `#chartPie${id}`,
-        {
-          series: props.data?.series ?? [1, 2],
-          labels: props.data?.labels ?? ["0", "1"],
-        },
-        {
-          donut: true,
-          donutWidth: 70,
-          startAngle: 270,
-          showLabel: true,
-          chartPadding: 30,
-          labelPosition: "outside",
-        }
-      );
+    observer = new IntersectionObserver((entries, observer) => {
+      if (!pie && entries[0].isIntersecting) {
+        pie = new PieChart(
+          `#chartPie${id}`,
+          {
+            series: props.data?.series ?? [1, 2],
+            labels: props.data?.labels ?? ["0", "1"],
+          },
+          {
+            donut: true,
+            donutWidth: 70,
+            startAngle: 270,
+            showLabel: true,
+            chartPadding: 30,
+            labelPosition: "outside",
+          }
+        );
+      }
     }, options);
 
     observer.observe(elRef);
-
-    
   });
 
   // pie.on("created", () =>
