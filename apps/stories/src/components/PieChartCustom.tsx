@@ -3,6 +3,7 @@ import {
   Component,
   createEffect,
   createSignal,
+  createUniqueId,
   For,
   onCleanup,
   onMount,
@@ -12,7 +13,6 @@ import "../styles/index.css";
 import type { ChartistData } from "../types/types";
 import { isServer } from "solid-js/web";
 
-let counter = 0;
 
 let observer: IntersectionObserver;
 
@@ -29,10 +29,13 @@ if (!isServer) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         setTrigger(entry.target);
+        // entry.target.
       }
     });
   }, options);
 }
+
+//BUG currently everytime trigger changes your run cEff on all components
 
 const PieChartCustom: Component<{
   data: ChartistData | null;
@@ -41,8 +44,8 @@ const PieChartCustom: Component<{
   let pie: PieChart;
 
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
-  counter++;
-  const id = counter.toString();
+
+  const id = createUniqueId()
   let elRef: Element;
 
   onMount(() => {
