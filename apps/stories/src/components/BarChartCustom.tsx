@@ -44,7 +44,7 @@ const BarChartCustom: Component<{
   });
 
   createEffect(() => {
-    if (elRef === trigger()) {
+    if (elRef === trigger() && !bar) {
       bar = new BarChart(
         `#chartBar${id}`,
         {

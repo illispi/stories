@@ -53,7 +53,7 @@ const PieChartCustom: Component<{
   // {})
 
   createEffect(() => {
-    if (elRef === trigger()) {
+    if (elRef === trigger() && !pie) {
       pie = new PieChart(
         `#chartPie${id}`,
         {
