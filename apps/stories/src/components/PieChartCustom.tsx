@@ -5,52 +5,46 @@ import {
   For,
   onCleanup,
   onMount,
-  Show
+  Show,
 } from "solid-js";
 import "../styles/index.css";
 import type { ChartistData } from "../types/types";
+import { isServer } from "solid-js/web";
 
 let counter = 0;
+
+let elRef: Element;
+let observer: IntersectionObserver;
+
+if (!isServer) {
+  const options = {
+    root: document.querySelector("#scrollArea"),
+    rootMargin: "0px",
+    threshold: 0.1,
+  };
+
+  observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        elRef = entry.target;
+      } else {
+        observer.unobserve(elRef);
+      }
+    });
+  }, options);
+}
 
 const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
 }> = (props) => {
   let pie: PieChart;
-  let elRef: HTMLDivElement;
-  let observer: IntersectionObserver;
 
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
   counter++;
   const id = counter.toString();
 
   onMount(() => {
-    const options = {
-      root: document.querySelector("#scrollArea"),
-      rootMargin: "0px",
-      threshold: 0.1,
-    };
-
-    observer = new IntersectionObserver((entries, observer) => {
-      if (!pie && entries[0].isIntersecting) {
-        pie = new PieChart(
-          `#chartPie${id}`,
-          {
-            series: props.data?.series ?? [1, 2],
-            labels: props.data?.labels ?? ["0", "1"],
-          },
-          {
-            donut: true,
-            donutWidth: 70,
-            startAngle: 270,
-            showLabel: true,
-            chartPadding: 30,
-            labelPosition: "outside",
-          }
-        );
-      }
-    }, options);
-
     observer.observe(elRef);
   });
 
@@ -58,6 +52,24 @@ const PieChartCustom: Component<{
   // {})
 
   createEffect(() => {
+    if (elRef) {
+      pie = new PieChart(
+        `#chartPie${id}`,
+        {
+          series: props.data?.series ?? [1, 2],
+          labels: props.data?.labels ?? ["0", "1"],
+        },
+        {
+          donut: true,
+          donutWidth: 70,
+          startAngle: 270,
+          showLabel: true,
+          chartPadding: 30,
+          labelPosition: "outside",
+        }
+      );
+    }
+
     if (props.data && pie) {
       pie.update(props.data);
     }

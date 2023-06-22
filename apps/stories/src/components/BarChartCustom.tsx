@@ -4,8 +4,28 @@ import type { Component } from "solid-js";
 import { Show, createEffect, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
+import { isServer } from "solid-js/web";
 
 let counter = 0;
+let elRef: Element;
+let observer: IntersectionObserver;
+
+if (!isServer) {
+  const options = {
+    root: document.querySelector("#scrollArea"),
+    rootMargin: "0px",
+    threshold: 0.1,
+  };
+  observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        elRef = entry.target;
+      } else {
+        observer.unobserve(elRef);
+      }
+    });
+  }, options);
+}
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
@@ -16,36 +36,26 @@ const BarChartCustom: Component<{
   options?: Adds;
 }> = (props) => {
   let bar: BarChart;
-  let elRef: HTMLDivElement;
-  let observer: IntersectionObserver;
 
   counter++;
 
   const id = counter.toString();
 
   onMount(() => {
-    const options = {
-      root: document.querySelector("#scrollArea"),
-      rootMargin: "0px",
-      threshold: 0.1,
-    };
-
-    observer = new IntersectionObserver((entires, observer) => {
-      if (!bar && entires[0].isIntersecting) {
-        bar = new BarChart(
-          `#chartBar${id}`,
-          {
-            series: props.data?.series ?? [2, 2],
-            labels: props.data?.labels ?? ["2", "2"],
-          },
-          { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
-        );
-      }
-    }, options);
     observer.observe(elRef);
   });
 
   createEffect(() => {
+    if (elRef) {
+      bar = new BarChart(
+        `#chartBar${id}`,
+        {
+          series: props.data?.series ?? [2, 2],
+          labels: props.data?.labels ?? ["2", "2"],
+        },
+        { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
+      );
+    }
     if (props.data && bar) {
       bar.update(props.data);
     }
