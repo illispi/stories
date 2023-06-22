@@ -2,6 +2,7 @@ import { PieChart } from "chartist";
 import {
   Component,
   createEffect,
+  createSignal,
   For,
   onCleanup,
   onMount,
@@ -13,8 +14,9 @@ import { isServer } from "solid-js/web";
 
 let counter = 0;
 
-let elRef: Element;
 let observer: IntersectionObserver;
+
+const [trigger, setTrigger] = createSignal(null);
 
 if (!isServer) {
   const options = {
@@ -26,9 +28,7 @@ if (!isServer) {
   observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        elRef = entry.target;
-      } else {
-        observer.unobserve(elRef);
+        setTrigger(entry.target);
       }
     });
   }, options);
@@ -43,6 +43,7 @@ const PieChartCustom: Component<{
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
   counter++;
   const id = counter.toString();
+  let elRef: Element;
 
   onMount(() => {
     observer.observe(elRef);
@@ -52,7 +53,7 @@ const PieChartCustom: Component<{
   // {})
 
   createEffect(() => {
-    if (elRef) {
+    if (elRef === trigger()) {
       pie = new PieChart(
         `#chartPie${id}`,
         {

@@ -1,14 +1,14 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { BarChart } from "chartist";
 import type { Component } from "solid-js";
-import { Show, createEffect, onCleanup, onMount } from "solid-js";
+import { Show, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 import { isServer } from "solid-js/web";
 
 let counter = 0;
-let elRef: Element;
 let observer: IntersectionObserver;
+const [trigger, setTrigger] = createSignal(null);
 
 if (!isServer) {
   const options = {
@@ -19,9 +19,7 @@ if (!isServer) {
   observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        elRef = entry.target;
-      } else {
-        observer.unobserve(elRef);
+        setTrigger(entry.target);
       }
     });
   }, options);
@@ -36,7 +34,7 @@ const BarChartCustom: Component<{
   options?: Adds;
 }> = (props) => {
   let bar: BarChart;
-
+  let elRef: Element;
   counter++;
 
   const id = counter.toString();
@@ -46,7 +44,7 @@ const BarChartCustom: Component<{
   });
 
   createEffect(() => {
-    if (elRef) {
+    if (elRef === trigger()) {
       bar = new BarChart(
         `#chartBar${id}`,
         {
