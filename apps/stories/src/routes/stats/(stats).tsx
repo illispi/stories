@@ -3,10 +3,6 @@ import { ErrorBoundary, For, Index, Suspense, createSignal } from "solid-js";
 import { A } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
-import {
-  BarCounterProvider,
-  PieCounterProvider,
-} from "~/components/globalSignals";
 import { allStatsArr } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
 
@@ -41,31 +37,24 @@ const Stats: ParentComponent = () => {
           return <div>err</div>;
         }}
       >
-        <BarCounterProvider count={0}>
-          <PieCounterProvider count={0}>
-            <div class="mt-8 flex  flex-col items-center justify-center">
-              <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-                <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                  <h1 class="text-center font-semibold">Statistics personal</h1>
-                </div>
-                <div class="flex flex-col items-center justify-center">
-                  <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                    <CompareButton />
-                    <For each={compOrder()}>
-                      {(comp, i) => (
-                        <CompSelector
-                          {...comp}
-                          data={allStatsPersonal.data}
-                        />
-                      )}
-                    </For>
-                    <CompareButton />
-                  </div>
-                </div>
+        <div class="mt-8 flex  flex-col items-center justify-center">
+          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+              <h1 class="text-center font-semibold">Statistics personal</h1>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+                <CompareButton />
+                <For each={compOrder()}>
+                  {(comp, i) => (
+                    <CompSelector {...comp} data={allStatsPersonal.data} />
+                  )}
+                </For>
+                <CompareButton />
               </div>
             </div>
-          </PieCounterProvider>
-        </BarCounterProvider>
+          </div>
+        </div>
       </ErrorBoundary>
     </Suspense>
   );

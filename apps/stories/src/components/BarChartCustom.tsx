@@ -1,11 +1,11 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
 import { BarChart } from "chartist";
 import type { Component } from "solid-js";
-import { Show, createEffect } from "solid-js";
-import { onCleanup, onMount } from "solid-js";
+import { Show, createEffect, onCleanup, onMount } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
-import { BarCounterProvider, useBarCounter } from "./globalSignals";
+
+let counter = 0;
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
@@ -19,10 +19,9 @@ const BarChartCustom: Component<{
   let elRef: HTMLDivElement;
   let observer: IntersectionObserver;
 
-  const [count, { increment }] = useBarCounter();
-  increment();
+  counter++;
 
-  const id = count().toString();
+  const id = counter.toString();
 
   onMount(() => {
     const options = {

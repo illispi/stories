@@ -2,15 +2,15 @@ import { PieChart } from "chartist";
 import {
   Component,
   createEffect,
-  createSignal,
   For,
   onCleanup,
   onMount,
-  Show,
+  Show
 } from "solid-js";
-import { PieCounterProvider, usePieCounter } from "~/components/globalSignals";
 import "../styles/index.css";
 import type { ChartistData } from "../types/types";
+
+let counter = 0;
 
 const PieChartCustom: Component<{
   data: ChartistData | null;
@@ -21,10 +21,8 @@ const PieChartCustom: Component<{
   let observer: IntersectionObserver;
 
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
-  const [count, { increment }] = usePieCounter();
-
-  increment();
-  const id = count().toString();
+  counter++;
+  const id = counter.toString();
 
   onMount(() => {
     const options = {

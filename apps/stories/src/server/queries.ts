@@ -9,8 +9,6 @@ import type { MainReturn } from "~/types/types";
 
 export const allStats = query$({
   queryFn: async ({ payload }) => {
-    console.log(payload);
-
     let stats;
 
     switch (payload.value) {
