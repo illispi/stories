@@ -56,12 +56,12 @@ const PieChartCustom: Component<{
   // {})
 
   createEffect(() => {
-    if (elRef === trigger() && !pie) {
+    if (elRef === trigger() && !pie && props.data) {
       pie = new PieChart(
         `#chartPie${id}`,
         {
-          series: props.data?.series ?? [1, 2],
-          labels: props.data?.labels ?? ["0", "1"],
+          series: props.data?.series,
+          labels: props.data?.labels,
         },
         {
           donut: true,

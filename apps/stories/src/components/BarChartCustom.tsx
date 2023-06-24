@@ -13,6 +13,7 @@ import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 import { isServer } from "solid-js/web";
 
+//BUG you cant have global variables in solidstart, causes memory issues
 
 let observer: IntersectionObserver;
 const [trigger, setTrigger] = createSignal(null);
@@ -50,12 +51,12 @@ const BarChartCustom: Component<{
   });
 
   createEffect(() => {
-    if (elRef === trigger() && !bar) {
+    if (elRef === trigger() && !bar && props.data) {
       bar = new BarChart(
         `#chartBar${id}`,
         {
-          series: props.data?.series ?? [2, 2],
-          labels: props.data?.labels ?? ["2", "2"],
+          series: props.data?.series,
+          labels: props.data?.labels,
         },
         { ...props.options, chartPadding: 30 } //BUG use mergeProps if you want defaults
       );
