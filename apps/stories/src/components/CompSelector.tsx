@@ -9,19 +9,19 @@ export const CompSelector = (props) => {
   return (
     <Switch>
       <Match when={props.type === "stat"}>
-        <Item {...props} />
+        <Item {...props}  />
       </Match>
       <Match when={props.type === "doughnut"}>
-        <DoughnutComponent {...props} />
+        <DoughnutComponent {...props}  />
       </Match>
       <Match when={props.type === "bar"}>
-        <BarComponent {...props} />
+        <BarComponent {...props}  />
       </Match>
       <Match when={props.type === "text"}>
-        <TextComponent {...props} />
+        <TextComponent {...props}  />
       </Match>
       <Match when={props.type === "yesOrNo"}>
-        <YesOrNoComponent {...props} />
+        <YesOrNoComponent {...props}  />
       </Match>
     </Switch>
   );

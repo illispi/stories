@@ -24,6 +24,7 @@ export const BarComponent: Component<{
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="mb-4 w-11/12">
         <BarChartCustom
+        {...props}
           data={selector(props.function, props.data?.[props.stat])}
           options={props.options}
         />
