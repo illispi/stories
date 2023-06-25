@@ -46,6 +46,7 @@
     "@solid-primitives/intersection-observer": "^2.1.2",
     "@solid-primitives/keyed": "^1.2.0",
     "@solid-primitives/presence": "^0.0.2",
+    "@solid-primitives/refs": "^1.0.4",
     "@solidjs/meta": "^0.28.5",
     "@solidjs/router": "^0.8.2",
     "@tanstack/solid-query": "5.0.0-alpha.55",

@@ -12,6 +12,7 @@ import {
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 import { isServer } from "solid-js/web";
+import { mergeRefs } from "@solid-primitives/refs";
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
@@ -20,16 +21,15 @@ interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
 const BarChartCustom: Component<{
   data: ChartistData | undefined;
   options?: Adds;
-  shown?: Element;
+  shown?: Element[];
   targets?: Element[];
 }> = (props) => {
   let bar: BarChart;
-
+  let ref;
   const id = createUniqueId();
 
   createEffect(() => {
-    if (props.targets?.includes(props.shown) && !bar && props.data) {
-      props.setShown(null);
+    if (props.shown?.includes(ref) && !bar && props.data) {
       bar = new BarChart(
         `#chartBar${id}`,
         {
@@ -55,7 +55,7 @@ const BarChartCustom: Component<{
         fallback={
           <div class="flex flex-col items-center justify-center">
             <div
-              ref={props.ref}
+              ref={mergeRefs(props.ref, (el) => (ref = el))}
               class={`h-80 w-96 lg:w-[500px] ${!props.data ? "hidden" : ""}`}
               id={`chartBar${id}`}
             />
@@ -82,7 +82,7 @@ const BarChartCustom: Component<{
       >
         <div class="flex flex-col items-center justify-center">
           <div
-            ref={props.ref}
+            ref={mergeRefs(props.ref, (el) => (ref = el))}
             class={`h-[${props.options?.height}px] w-96 lg:w-[500px] ${
               !props.data ? "hidden" : ""
             }`}

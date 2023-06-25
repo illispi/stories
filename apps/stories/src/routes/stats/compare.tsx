@@ -142,6 +142,8 @@ const CompareStats = () => {
   >("schizoaffective");
 
   const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
+
+  //BUG for shown store might be more effienct
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
@@ -239,9 +241,7 @@ const CompareStats = () => {
                               ref={(el: Element) =>
                                 setTargets((p) => [...p, el])
                               }
-                              shownEls={shown()}
-                              targets={targets()}
-                              setShown={setShown}
+                              shown={shown()}
                             />
 
                             <h5 class="lg:hidden">{B()}:</h5>
@@ -251,9 +251,7 @@ const CompareStats = () => {
                               ref={(el: Element) =>
                                 setTargets((p) => [...p, el])
                               }
-                              shownEls={shown()}
-                              targets={targets()}
-                              setShown={setShown}
+                              shown={shown()}
                             />
                           </>
                         }
@@ -265,18 +263,14 @@ const CompareStats = () => {
                           ref={(el: Element) => {
                             setTargets((p) => [...p, el]);
                           }}
-                          shownEls={shown()}
-                          targets={targets()}
-                          setShown={setShown}
+                          shown={shown()}
                         />
                         <h5 class="lg:hidden">{B()}:</h5>
                         <CompSelector
                           {...comp}
                           data={statsB.data}
                           ref={(el: Element) => setTargets((p) => [...p, el])}
-                          shownEls={shown()}
-                          targets={targets()}
-                          setShown={setShown}
+                          shown={shown()}
                         />
                       </Show>
                     </>

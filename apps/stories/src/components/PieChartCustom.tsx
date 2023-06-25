@@ -12,13 +12,14 @@ import {
 import "../styles/index.css";
 import type { ChartistData } from "../types/types";
 import { isServer } from "solid-js/web";
+import { mergeRefs, Ref } from "@solid-primitives/refs";
 
 //BUG currently everytime trigger changes your run cEff on all components
 
 const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
-  shown?: Element;
+  shown?: Element[];
   targets?: Element[];
 }> = (props) => {
   let pie: PieChart;
@@ -27,12 +28,13 @@ const PieChartCustom: Component<{
 
   const id = createUniqueId();
 
+  let ref;
+
   // pie.on("created", () =>
   // {})
 
   createEffect(() => {
-    if (!pie && props.targets?.includes(props.shown) && props.data) {
-      props.setShown(null);
+    if (!pie && props.shown?.includes(ref) && props.data) {
       pie = new PieChart(
         `#chartPie${id}`,
         {
@@ -63,7 +65,7 @@ const PieChartCustom: Component<{
     <div>
       <div class="flex flex-col items-center justify-center">
         <div
-          ref={props.ref}
+          ref={mergeRefs(props.ref, (el) => (ref = el))}
           class={`h-64 w-64 ${!props.data ? `hidden` : ""}`}
           id={`chartPie${id}`}
         />

@@ -41,6 +41,9 @@ importers:
       '@solid-primitives/presence':
         specifier: ^0.0.2
         version: 0.0.2(solid-js@1.7.6)
+      '@solid-primitives/refs':
+        specifier: ^1.0.4
+        version: 1.0.4(solid-js@1.7.6)
       '@solidjs/meta':
         specifier: ^0.28.5
         version: 0.28.5(solid-js@1.7.6)
