@@ -13,26 +13,6 @@ import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 import { isServer } from "solid-js/web";
 
-//BUG you cant have global variables in solidstart, causes memory issues
-
-let observer: IntersectionObserver;
-const [trigger, setTrigger] = createSignal(null);
-
-if (!isServer) {
-  const options = {
-    root: document.querySelector("#scrollArea"),
-    rootMargin: "0px",
-    threshold: 0.1,
-  };
-  observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setTrigger(entry.target);
-      }
-    });
-  }, options);
-}
-
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
 }
@@ -42,16 +22,13 @@ const BarChartCustom: Component<{
   options?: Adds;
 }> = (props) => {
   let bar: BarChart;
-  let elRef: Element;
 
   const id = createUniqueId();
 
-  onMount(() => {
-    observer.observe(elRef);
-  });
+  onMount(() => {});
 
   createEffect(() => {
-    if (elRef === trigger() && !bar && props.data) {
+    if (props.ref && !bar && props.data) {
       bar = new BarChart(
         `#chartBar${id}`,
         {
@@ -67,7 +44,6 @@ const BarChartCustom: Component<{
   });
 
   onCleanup(() => {
-    observer.disconnect();
     bar?.detach;
   });
 
@@ -78,7 +54,7 @@ const BarChartCustom: Component<{
         fallback={
           <div class="flex flex-col items-center justify-center">
             <div
-              ref={elRef}
+              ref={props.ref}
               class={`h-80 w-96 lg:w-[500px] ${!props.data ? "hidden" : ""}`}
               id={`chartBar${id}`}
             />
@@ -105,7 +81,7 @@ const BarChartCustom: Component<{
       >
         <div class="flex flex-col items-center justify-center">
           <div
-            ref={elRef}
+            ref={props.ref}
             class={`h-[${props.options?.height}px] w-96 lg:w-[500px] ${
               !props.data ? "hidden" : ""
             }`}

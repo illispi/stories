@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -32,6 +32,9 @@ importers:
       '@prpc/vite':
         specifier: ^0.3.21
         version: 0.3.21(rollup@3.23.1)
+      '@solid-primitives/intersection-observer':
+        specifier: ^2.1.2
+        version: 2.1.2(solid-js@1.7.6)
       '@solid-primitives/keyed':
         specifier: ^1.2.0
         version: 1.2.0(solid-js@1.7.6)
@@ -3808,6 +3811,15 @@ packages:
     dependencies:
       '@sinonjs/commons': 1.8.6
     dev: true
+
+  /@solid-primitives/intersection-observer@2.1.2(solid-js@1.7.6):
+    resolution: {integrity: sha512-liseMkMLwJeg1LtMNMWv91ZFZmBnbFJj+f2p+uXOVwdo7MIC7FMUJxzNplJRpBXZTh3sVazPSrOq2GwtFmXrCg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.0(solid-js@1.7.6)
+      solid-js: 1.7.6
+    dev: false
 
   /@solid-primitives/keyed@1.2.0(solid-js@1.7.6):
     resolution: {integrity: sha512-0DuTeJdxWjCTu73XnDZs24JzfXckBnpvCfQ6Mf/kTPKkMZJh7tjkBnZEk48ckrE9xmwat9stIdfrBmZctsepIw==}

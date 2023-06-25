@@ -13,50 +13,24 @@ import "../styles/index.css";
 import type { ChartistData } from "../types/types";
 import { isServer } from "solid-js/web";
 
-
-let observer: IntersectionObserver;
-
-const [trigger, setTrigger] = createSignal(null);
-
-if (!isServer) {
-  const options = {
-    root: document.querySelector("#scrollArea"),
-    rootMargin: "0px",
-    threshold: 0.1,
-  };
-
-  observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        setTrigger(entry.target);
-        // entry.target.
-      }
-    });
-  }, options);
-}
-
 //BUG currently everytime trigger changes your run cEff on all components
 
 const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
+  intersectingEl?: Element;
 }> = (props) => {
   let pie: PieChart;
 
   const colors = ["bg-[#aab2f7]", "bg-[#f77a9d]", "bg-[#f4c63d]"];
 
-  const id = createUniqueId()
-  let elRef: Element;
-
-  onMount(() => {
-    observer.observe(elRef);
-  });
+  const id = createUniqueId();
 
   // pie.on("created", () =>
   // {})
 
   createEffect(() => {
-    if (elRef === trigger() && !pie && props.data) {
+    if (props.ref === props.intersectingEl && !pie && props.data) {
       pie = new PieChart(
         `#chartPie${id}`,
         {
@@ -80,7 +54,6 @@ const PieChartCustom: Component<{
   });
 
   onCleanup(() => {
-    observer.disconnect();
     pie?.detach;
   });
 
@@ -88,7 +61,7 @@ const PieChartCustom: Component<{
     <div>
       <div class="flex flex-col items-center justify-center">
         <div
-          ref={elRef}
+          ref={props.ref}
           class={`h-64 w-64 ${!props.data ? `hidden` : ""}`}
           id={`chartPie${id}`}
         />

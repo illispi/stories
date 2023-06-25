@@ -43,6 +43,7 @@
     "@next-auth/kysely-adapter": "^0.0.0",
     "@prpc/solid": "^0.2.33",
     "@prpc/vite": "^0.3.21",
+    "@solid-primitives/intersection-observer": "^2.1.2",
     "@solid-primitives/keyed": "^1.2.0",
     "@solid-primitives/presence": "^0.0.2",
     "@solidjs/meta": "^0.28.5",

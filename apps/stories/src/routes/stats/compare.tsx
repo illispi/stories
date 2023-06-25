@@ -9,13 +9,17 @@ import {
   Show,
   Suspense,
   Switch,
+  createEffect,
   createSignal,
+  onCleanup,
+  onMount,
 } from "solid-js";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import { bydiagnosis } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
+import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   toggled?: boolean;
@@ -138,6 +142,42 @@ const CompareStats = () => {
   >("schizoaffective");
 
   const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
+  const [trigger, setTrigger] = createSignal<Element>();
+  const [targets, setTargets] = createSignal<Element[]>([]);
+
+  createIntersectionObserver(targets, (entries) => {
+    entries.forEach((e) => console.log(e.isIntersecting));
+  });
+
+  // let observer: IntersectionObserver;
+
+  // onMount(() => {
+  //   const options = {
+  //     root: document.querySelector("#scrollArea"),
+  //     rootMargin: "0px",
+  //     threshold: 0.1,
+  //   };
+
+  //   observer = new IntersectionObserver((entries, observer) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting) {
+  //         setTrigger(entry.target);
+  //         observer.unobserve(entry.target);
+  //       }
+  //     });
+  //   }, options);
+  // });
+
+  // createEffect(() => {
+  //   targets()?.forEach((el) => {
+  //     observer.observe(el);
+  //   });
+  //   console.log(targets());
+  // });
+
+  // onCleanup(() => {
+  //   observer.disconnect();
+  // });
 
   const statsA = allStats(
     () => ({
@@ -182,6 +222,7 @@ const CompareStats = () => {
                     {B()}
                   </h3>
                 </div>
+
                 <For each={compOrder()}>
                   {(comp, i) => (
                     <>
@@ -190,17 +231,43 @@ const CompareStats = () => {
                         fallback={
                           <>
                             <h5 class="lg:hidden">{A()}:</h5>
-                            <CompSelector {...comp} data={statsA.data} />
+                            <CompSelector
+                              {...comp}
+                              data={statsA.data}
+                              ref={(el: Element) =>
+                                setTargets((p) => [...p, el])
+                              }
+                              intersectingEl={trigger()}
+                            />
 
                             <h5 class="lg:hidden">{B()}:</h5>
-                            <CompSelector {...comp} data={statsB.data} />
+                            <CompSelector
+                              {...comp}
+                              data={statsB.data}
+                              ref={(el: Element) =>
+                                setTargets((p) => [...p, el])
+                              }
+                              intersectingEl={trigger()}
+                            />
                           </>
                         }
                       >
                         <h5 class="lg:hidden">{A()}:</h5>
-                        <CompSelector {...comp} data={statsA.data} />
+                        <CompSelector
+                          {...comp}
+                          data={statsA.data}
+                          ref={(el: Element) => {
+                            setTargets((p) => [...p, el]);
+                          }}
+                          intersectingEl={trigger()}
+                        />
                         <h5 class="lg:hidden">{B()}:</h5>
-                        <CompSelector {...comp} data={statsB.data} />
+                        <CompSelector
+                          {...comp}
+                          data={statsB.data}
+                          ref={(el: Element) => setTargets((p) => [...p, el])}
+                          intersectingEl={trigger()}
+                        />
                       </Show>
                     </>
                   )}
