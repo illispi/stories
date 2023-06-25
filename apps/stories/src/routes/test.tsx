@@ -1,22 +1,45 @@
 import { Motion, Presence } from "@motionone/solid";
+import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
+import { createSignal } from "solid-js";
 import { useRouteData } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import PieChartCustom from "~/components/PieChartCustom";
 import { personalStatsGet } from "~/server/server";
 
+const Tab = (props) => <p ref={props.ref}>This is a Paragraph</p>;
+
 const Test = () => {
+  const [targets, setTargets] = createSignal<Element[]>([]);
+
+  createIntersectionObserver(targets, (entries) => {
+    entries.forEach((e) => console.log(e.isIntersecting));
+  });
+
   return (
-    <Presence>
-      <Motion.div
-        class="fixed top-2 rounded-3xl border-4 border-red-600 bg-red-200 p-8 text-center shadow-xl"
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -100, opacity: 0 }}
-        transition={{ duration: 0.15 }}
-      >
-        <p>iifpowafopwa</p>
-      </Motion.div>
-    </Presence>
+    <>
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <div>efsgfes</div>
+    </>
   );
 };
 
