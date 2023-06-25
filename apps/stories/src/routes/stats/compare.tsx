@@ -142,42 +142,44 @@ const CompareStats = () => {
   >("schizoaffective");
 
   const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
-  const [trigger, setTrigger] = createSignal<Element>();
+  const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
-  createIntersectionObserver(targets, (entries) => {
-    entries.forEach((e) => console.log(e.isIntersecting));
+  // createIntersectionObserver(targets, (entries) => {
+  //   entries.forEach((e) => {
+  //     if (e.isIntersecting) {
+  //       setShown((els) => [...els, e.target]);
+  //       console.log(e.isIntersecting, shown());
+  //     }
+  //   });
+  // });
+
+  let observer: IntersectionObserver;
+
+  onMount(() => {
+    const options = {
+      root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 0.01,
+    };
+
+    observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setShown((els) => [...els, entry.target]);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+
+    targets()?.forEach((el) => {
+      observer.observe(el);
+    });
   });
 
-  // let observer: IntersectionObserver;
-
-  // onMount(() => {
-  //   const options = {
-  //     root: document.querySelector("#scrollArea"),
-  //     rootMargin: "0px",
-  //     threshold: 0.1,
-  //   };
-
-  //   observer = new IntersectionObserver((entries, observer) => {
-  //     entries.forEach((entry) => {
-  //       if (entry.isIntersecting) {
-  //         setTrigger(entry.target);
-  //         observer.unobserve(entry.target);
-  //       }
-  //     });
-  //   }, options);
-  // });
-
-  // createEffect(() => {
-  //   targets()?.forEach((el) => {
-  //     observer.observe(el);
-  //   });
-  //   console.log(targets());
-  // });
-
-  // onCleanup(() => {
-  //   observer.disconnect();
-  // });
+  onCleanup(() => {
+    observer.disconnect();
+  });
 
   const statsA = allStats(
     () => ({
@@ -237,7 +239,9 @@ const CompareStats = () => {
                               ref={(el: Element) =>
                                 setTargets((p) => [...p, el])
                               }
-                              intersectingEl={trigger()}
+                              shownEls={shown()}
+                              targets={targets()}
+                              setShown={setShown}
                             />
 
                             <h5 class="lg:hidden">{B()}:</h5>
@@ -247,7 +251,9 @@ const CompareStats = () => {
                               ref={(el: Element) =>
                                 setTargets((p) => [...p, el])
                               }
-                              intersectingEl={trigger()}
+                              shownEls={shown()}
+                              targets={targets()}
+                              setShown={setShown}
                             />
                           </>
                         }
@@ -259,14 +265,18 @@ const CompareStats = () => {
                           ref={(el: Element) => {
                             setTargets((p) => [...p, el]);
                           }}
-                          intersectingEl={trigger()}
+                          shownEls={shown()}
+                          targets={targets()}
+                          setShown={setShown}
                         />
                         <h5 class="lg:hidden">{B()}:</h5>
                         <CompSelector
                           {...comp}
                           data={statsB.data}
                           ref={(el: Element) => setTargets((p) => [...p, el])}
-                          intersectingEl={trigger()}
+                          shownEls={shown()}
+                          targets={targets()}
+                          setShown={setShown}
                         />
                       </Show>
                     </>

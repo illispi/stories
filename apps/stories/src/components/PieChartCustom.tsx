@@ -18,7 +18,8 @@ import { isServer } from "solid-js/web";
 const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
-  intersectingEl?: Element;
+  shown?: Element;
+  targets?: Element[];
 }> = (props) => {
   let pie: PieChart;
 
@@ -30,7 +31,8 @@ const PieChartCustom: Component<{
   // {})
 
   createEffect(() => {
-    if (props.ref === props.intersectingEl && !pie && props.data) {
+    if (!pie && props.targets?.includes(props.shown) && props.data) {
+      props.setShown(null);
       pie = new PieChart(
         `#chartPie${id}`,
         {

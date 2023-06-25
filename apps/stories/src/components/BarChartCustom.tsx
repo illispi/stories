@@ -20,15 +20,16 @@ interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
 const BarChartCustom: Component<{
   data: ChartistData | undefined;
   options?: Adds;
+  shown?: Element;
+  targets?: Element[];
 }> = (props) => {
   let bar: BarChart;
 
   const id = createUniqueId();
 
-  onMount(() => {});
-
   createEffect(() => {
-    if (props.ref && !bar && props.data) {
+    if (props.targets?.includes(props.shown) && !bar && props.data) {
+      props.setShown(null);
       bar = new BarChart(
         `#chartBar${id}`,
         {
