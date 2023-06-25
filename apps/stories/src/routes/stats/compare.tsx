@@ -147,16 +147,12 @@ const CompareStats = () => {
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
-  // createIntersectionObserver(targets, (entries) => {
-  //   entries.forEach((e) => {
-  //     if (e.isIntersecting) {
-  //       setShown((els) => [...els, e.target]);
-  //       console.log(e.isIntersecting, shown());
-  //     }
-  //   });
-  // });
-
-  let observer: IntersectionObserver;
+  const removeShown = (el: Element) => {
+    const index = shown().indexOf(el);
+    if (index > -1) {
+      setShown(() => shown().splice(index, 1));
+    }
+  };
 
   onMount(() => {
     const options = {
@@ -165,7 +161,7 @@ const CompareStats = () => {
       threshold: 0.01,
     };
 
-    observer = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setShown((els) => [...els, entry.target]);
@@ -177,10 +173,10 @@ const CompareStats = () => {
     targets()?.forEach((el) => {
       observer.observe(el);
     });
-  });
 
-  onCleanup(() => {
-    observer.disconnect();
+    onCleanup(() => {
+      observer.disconnect();
+    });
   });
 
   const statsA = allStats(
@@ -242,6 +238,7 @@ const CompareStats = () => {
                                 setTargets((p) => [...p, el])
                               }
                               shown={shown()}
+                              removeShown={removeShown}
                             />
 
                             <h5 class="lg:hidden">{B()}:</h5>
@@ -252,6 +249,7 @@ const CompareStats = () => {
                                 setTargets((p) => [...p, el])
                               }
                               shown={shown()}
+                              removeShown={removeShown}
                             />
                           </>
                         }
@@ -264,6 +262,7 @@ const CompareStats = () => {
                             setTargets((p) => [...p, el]);
                           }}
                           shown={shown()}
+                          removeShown={removeShown}
                         />
                         <h5 class="lg:hidden">{B()}:</h5>
                         <CompSelector
@@ -271,6 +270,7 @@ const CompareStats = () => {
                           data={statsB.data}
                           ref={(el: Element) => setTargets((p) => [...p, el])}
                           shown={shown()}
+                          removeShown={removeShown}
                         />
                       </Show>
                     </>

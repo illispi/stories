@@ -20,7 +20,7 @@ const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
   shown?: Element[];
-  targets?: Element[];
+  removeShown?: (el: Element) => void
 }> = (props) => {
   let pie: PieChart;
 
@@ -28,13 +28,14 @@ const PieChartCustom: Component<{
 
   const id = createUniqueId();
 
-  let ref;
+  let ref: Element;
 
   // pie.on("created", () =>
   // {})
 
   createEffect(() => {
     if (!pie && props.shown?.includes(ref) && props.data) {
+      props.removeShown(ref)
       pie = new PieChart(
         `#chartPie${id}`,
         {

@@ -22,14 +22,15 @@ const BarChartCustom: Component<{
   data: ChartistData | undefined;
   options?: Adds;
   shown?: Element[];
-  targets?: Element[];
+  removeShown?: (el: Element) => void;
 }> = (props) => {
   let bar: BarChart;
-  let ref;
+  let ref: Element;
   const id = createUniqueId();
 
   createEffect(() => {
     if (props.shown?.includes(ref) && !bar && props.data) {
+      props.removeShown(ref);
       bar = new BarChart(
         `#chartBar${id}`,
         {
