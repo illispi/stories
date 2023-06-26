@@ -1,12 +1,9 @@
-import { SolidAuth } from "@auth/solid-start";
-import type { SolidAuthConfig } from "@auth/solid-start";
 import Github from "@auth/core/providers/github";
+import Discord from "@auth/core/providers/discord";
+import type { SolidAuthConfig } from "@auth/solid-start";
+import { SolidAuth } from "@auth/solid-start";
 import { serverEnv } from "~/env/server";
 
-import { Kysely, PostgresDialect, sql } from "kysely";
-import { Pool } from "pg";
-
-import type { DB } from "~/types/dbTypes";
 import KyselyAdapter from "~/db/kyselyAdapter";
 import { db } from "~/server/server";
 
@@ -16,6 +13,23 @@ export const authOpts: SolidAuthConfig = {
     Github({
       clientId: serverEnv.GITHUB_ID,
       clientSecret: serverEnv.GITHUB_SECRET,
+      authorization: { params: { scope: "openid" } },
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+        };
+      },
+    }),
+    // @ts-expect-error Types Issue
+    Discord({
+      clientId: serverEnv.DISCORD_ID,
+      clientSecret: serverEnv.DISCORD_SECRET,
+      authorization: { params: { scope: "openid" } },
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+        };
+      },
     }),
   ],
   debug: false,

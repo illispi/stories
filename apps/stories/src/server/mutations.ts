@@ -35,5 +35,3 @@ export const postPersonalStats = mutation$({
   key: "postPersonalStats", // this will be used the mutation key
   schema: personalQuestionsSchema,
 }); // this will be used as the input type and input validation
-
-//BUG what if github and discord username is the same
