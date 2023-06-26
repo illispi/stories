@@ -44,8 +44,8 @@ export interface VerificationToken {
 }
 
 export interface DB {
-  account: Account
-  session: Session
-  user: User
+  Account: Account
+  Session: Session
+  User: User
   VerificationToken: VerificationToken
 }

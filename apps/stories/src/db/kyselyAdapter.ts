@@ -7,7 +7,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
   return {
     async createUser(user) {
       return await kysely
-        .insertInto("user")
+        .insertInto("User")
         .values({ ...user })
         .returningAll()
         .executeTakeFirst();
@@ -15,7 +15,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     async getUser(id) {
       return (
         (await kysely
-          .selectFrom("user")
+          .selectFrom("User")
           .selectAll()
           .where("id", "=", id)
           .executeTakeFirst()) ?? null
@@ -24,7 +24,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     async getUserByEmail(email) {
       return (
         (await kysely
-          .selectFrom("user")
+          .selectFrom("User")
           .selectAll()
           .where("email", "=", email)
           .executeTakeFirst()) ?? null
@@ -32,7 +32,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
     async getUserByAccount({ providerAccountId, provider }) {
       const account = await kysely
-        .selectFrom("account")
+        .selectFrom("Account")
         .selectAll()
         .where("providerAccountId", "=", providerAccountId)
         .where("provider", "=", provider)
@@ -43,7 +43,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
       }
       const user =
         (await kysely
-          .selectFrom("user")
+          .selectFrom("User")
           .selectAll()
           .where("id", "=", account?.userId)
           .executeTakeFirst()) ?? null;
@@ -51,7 +51,7 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
     async updateUser(user) {
       return await kysely
-        .updateTable("user")
+        .updateTable("User")
         .set({ ...user })
         .where("id", "=", user.id)
         .returningAll()
@@ -59,13 +59,13 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
     async deleteUser(userId) {
       return await kysely
-        .deleteFrom("user")
+        .deleteFrom("User")
         .where("id", "=", userId)
         .executeTakeFirst();
     },
     async linkAccount(account) {
       const pgDefault = await kysely
-        .insertInto("account")
+        .insertInto("Account")
         .values({ ...account })
         .returningAll()
         .executeTakeFirst();
@@ -79,14 +79,14 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
     async unlinkAccount({ providerAccountId, provider }) {
       return await kysely
-        .deleteFrom("account")
+        .deleteFrom("Account")
         .where("providerAccountId", "=", providerAccountId)
         .where("provider", "=", provider)
         .executeTakeFirst();
     },
     async createSession({ sessionToken, userId, expires }) {
       return await kysely
-        .insertInto("session")
+        .insertInto("Session")
         .values({ userId, sessionToken, expires })
         .returningAll()
         .executeTakeFirst();
@@ -94,8 +94,8 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     async getSessionAndUser(sessionToken) {
       const session =
         (await kysely
-          .selectFrom("session")
-          .selectAll("session")
+          .selectFrom("Session")
+          .selectAll("Session")
           .where("sessionToken", "=", sessionToken)
           .executeTakeFirst()) ?? null;
 
@@ -104,8 +104,8 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
       }
       const user =
         (await kysely
-          .selectFrom("user")
-          .selectAll("user")
+          .selectFrom("User")
+          .selectAll("User")
           .where("id", "=", session?.userId)
           .executeTakeFirst()) ?? null;
 
@@ -113,14 +113,14 @@ export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {
     },
     async updateSession({ sessionToken, expires }) {
       return await kysely
-        .updateTable("session")
+        .updateTable("Session")
         .set({ sessionToken, expires })
         .where("sessionToken", "=", sessionToken)
         .executeTakeFirst();
     },
     async deleteSession(sessionToken) {
       return await kysely
-        .deleteFrom("session")
+        .deleteFrom("Session")
         .where("sessionToken", "=", sessionToken)
         .executeTakeFirst();
     },

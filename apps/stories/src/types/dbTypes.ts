@@ -1,5 +1,3 @@
-
-
 export interface Account {
   id: string;
   type: string;
@@ -149,10 +147,10 @@ export interface VerificationToken {
 }
 
 export interface DB {
-  account: Account;
-  personal_questions: PersonalQuestions;
-  session: Session;
-  their_questions: TheirQuestions;
-  user: User;
+  Account: Account;
+  Personal_questions: PersonalQuestions;
+  Session: Session;
+  Their_questions: TheirQuestions;
+  User: User;
   VerificationToken: VerificationToken;
 }

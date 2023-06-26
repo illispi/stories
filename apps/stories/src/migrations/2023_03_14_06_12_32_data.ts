@@ -3,12 +3,12 @@ import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable("personal_questions")
+    .createTable("Personal_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
       "user",
       "uuid",
-      (col) => col.references("user.id").onDelete("cascade").notNull() //TODO add .unique() because user can have only one in final iteration
+      (col) => col.references("User.id").onDelete("cascade").notNull() //TODO add .unique() because user can have only one in final iteration
     )
     .addColumn("diagnosis", "text", (col) =>
       col
@@ -241,10 +241,10 @@ export async function up(db: Kysely<any>): Promise<void> {
   //TODO add modified_at and created_at and modified_at to these two schemas, also see from gallery web dev instructions
 
   await db.schema
-    .createTable("their_questions")
+    .createTable("Their_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn("user_id", "uuid", (col) =>
-      col.references("user.id").onDelete("cascade").notNull()
+      col.references("User.id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
       col
@@ -288,6 +288,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("their_questions").execute();
-  await db.schema.dropTable("personal_questions").execute();
+  await db.schema.dropTable("Their_questions").execute();
+  await db.schema.dropTable("Personal_questions").execute();
 }
+
+//NOTE make table names uppercase, especially user has problems since its official postgres table

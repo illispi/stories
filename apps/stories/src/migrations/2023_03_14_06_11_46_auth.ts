@@ -3,7 +3,7 @@ import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable("user")
+    .createTable("User")
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
@@ -14,7 +14,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 
   await db.schema
-    .createTable("account")
+    .createTable("Account")
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
@@ -31,12 +31,12 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn(
       "userId",
       "uuid",
-      (col) => col.references("user.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
+      (col) => col.references("User.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
     )
     .execute();
 
   await db.schema
-    .createTable("session")
+    .createTable("Session")
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
@@ -45,7 +45,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn(
       "userId",
       "uuid",
-      (col) => col.references("user.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
+      (col) => col.references("User.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
     )
     .execute();
 
@@ -58,8 +58,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("user").execute();
-  await db.schema.dropTable("account").execute();
-  await db.schema.dropTable("session").execute();
   await db.schema.dropTable("VerificationToken").execute();
+  await db.schema.dropTable("Session").execute();
+  await db.schema.dropTable("Account").execute();
+  await db.schema.dropTable("User").execute();
 }
