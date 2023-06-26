@@ -37,3 +37,6 @@ export const authOpts: SolidAuthConfig = {
 };
 
 export const { GET, POST } = SolidAuth(authOpts);
+
+
+//BUG in authjs for discord scopes https://github.com/nextauthjs/next-auth/issues/6873
