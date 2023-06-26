@@ -24,10 +24,10 @@ export const authOpts: SolidAuthConfig = {
     Discord({
       clientId: serverEnv.DISCORD_ID,
       clientSecret: serverEnv.DISCORD_SECRET,
-      authorization: { params: { scope: "openid" } },
+      authorization: "https://discord.com/api/oauth2/authorize?scope=identify",
       profile(profile) {
         return {
-          id: profile.id.toString(),
+          id: profile.id,
         };
       },
     }),
@@ -37,6 +37,5 @@ export const authOpts: SolidAuthConfig = {
 };
 
 export const { GET, POST } = SolidAuth(authOpts);
-
 
 //BUG in authjs for discord scopes https://github.com/nextauthjs/next-auth/issues/6873

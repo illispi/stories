@@ -67,3 +67,5 @@ async function migrateToLatest(dir: string[]) {
 }
 
 migrateToLatest(process.argv.slice(2));
+
+//BUG is migratedown supposed to be run multiple times
