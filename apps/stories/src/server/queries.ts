@@ -13,32 +13,32 @@ export const allStats = query$({
 
     switch (payload.value) {
       case "all":
-        stats = await db.selectFrom("personal_questions").selectAll().execute();
+        stats = await db.selectFrom("Personal_questions").selectAll().execute();
         break;
       case "female":
         stats = await db
-          .selectFrom("personal_questions")
+          .selectFrom("Personal_questions")
           .selectAll()
           .where("gender", "=", "female")
           .execute();
         break;
       case "other":
         stats = await db
-          .selectFrom("personal_questions")
+          .selectFrom("Personal_questions")
           .selectAll()
           .where("gender", "=", "other")
           .execute();
         break;
       case "male":
         stats = await db
-          .selectFrom("personal_questions")
+          .selectFrom("Personal_questions")
           .selectAll()
           .where("gender", "=", "male")
           .execute();
         break;
       case "schizophrenia":
         stats = await db
-          .selectFrom("personal_questions")
+          .selectFrom("Personal_questions")
           .selectAll()
           .where("diagnosis", "=", "schizophrenia")
           .execute();
@@ -46,7 +46,7 @@ export const allStats = query$({
         break;
       case "schizoaffective":
         stats = await db
-          .selectFrom("personal_questions")
+          .selectFrom("Personal_questions")
           .selectAll()
           .where("diagnosis", "=", "schizoaffective")
           .execute();
@@ -59,18 +59,18 @@ export const allStats = query$({
     const responsesTotal = stats.length;
 
     const maleAge = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "male")
       .execute();
 
     const femaleAge = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "female")
       .execute();
     const otherAge = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "other")
       .execute();
@@ -218,18 +218,18 @@ export const allStats = query$({
     //BUG below code soesnt work currently, and its not even used in frontend
 
     const maleSplit = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "male")
       .execute();
 
     const femaleSplit = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "female")
       .execute();
     const otherSplit = await db
-      .selectFrom("personal_questions")
+      .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "other")
       .execute();

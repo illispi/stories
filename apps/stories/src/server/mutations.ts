@@ -15,14 +15,14 @@ export const postPersonalStats = mutation$({
     }
 
     const user = await db
-      .selectFrom("user")
+      .selectFrom("User")
       .select("id")
       .where("name", "=", session.user?.name)
       .executeTakeFirstOrThrow();
 
     if (user?.id) {
       const insertion = await db
-        .insertInto("personal_questions")
+        .insertInto("Personal_questions")
         .values({ ...payload, user: user.id })
         .execute();
 

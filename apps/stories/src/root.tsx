@@ -15,9 +15,6 @@ import {
 } from "solid-start";
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
-import { QueryClient } from "@tanstack/solid-query";
-
-const queryClient = new QueryClient();
 
 export default function Root() {
   return (
@@ -28,7 +25,7 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body>
-        <QueryProvider queryClient={queryClient}>
+        <QueryProvider>
           <Suspense>
             <ErrorBoundary>
               <NavBar />
