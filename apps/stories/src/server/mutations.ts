@@ -1,14 +1,14 @@
-import { mutation$ } from "@prpc/solid";
+import { mutation$, response$ } from "@prpc/solid";
 import { z } from "zod";
 import { isServer } from "solid-js/web";
 import { personalQuestionsSchema } from "~/types/zodFromTypes";
-import { getSession } from "@auth/solid-start";
+import { SolidAuth, getSession } from "@auth/solid-start";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { db } from "./server";
-
 export const postPersonalStats = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
+    console.log(session, "session");
 
     if (!session) {
       return "no session found";
@@ -17,8 +17,10 @@ export const postPersonalStats = mutation$({
     const user = await db
       .selectFrom("User")
       .select("id")
-      .where("name", "=", session.user?.name)
+      .where("id", "=", session.user.id)
       .executeTakeFirstOrThrow();
+
+      console.log(user, "user")
 
     if (user?.id) {
       const insertion = await db

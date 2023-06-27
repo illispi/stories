@@ -6,6 +6,7 @@ import { serverEnv } from "~/env/server";
 
 import KyselyAdapter from "~/db/kyselyAdapter";
 import { db } from "~/server/server";
+import { Session } from "@auth/core/types";
 
 export const authOpts: SolidAuthConfig = {
   providers: [
@@ -34,6 +35,12 @@ export const authOpts: SolidAuthConfig = {
   ],
   debug: false,
   adapter: KyselyAdapter(db),
+  callbacks: {
+    async session({ session, user }) {
+      const r: Session = { user: { id: user.id }, expires: session.expires };
+      return r;
+    },
+  },
 };
 
 export const { GET, POST } = SolidAuth(authOpts);

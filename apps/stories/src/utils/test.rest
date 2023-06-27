@@ -13,3 +13,6 @@ content-type: text/plain; charset=utf-8
 //authorization: _e5_bv3vwnaZr4t7azr7W
 
 "1655539355428"
+
+###
+GET http://localhost:3000/api/auth/*solidauth
