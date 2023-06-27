@@ -15,6 +15,7 @@ import {
 } from "solid-start";
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
+import GlobalTransition from "./components/GlobalTransition";
 
 export default function Root() {
   return (
@@ -29,9 +30,11 @@ export default function Root() {
           <Suspense>
             <ErrorBoundary>
               <NavBar />
-              <Routes>
-                <FileRoutes />
-              </Routes>
+              <GlobalTransition>
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </GlobalTransition>
             </ErrorBoundary>
           </Suspense>
           <Scripts />

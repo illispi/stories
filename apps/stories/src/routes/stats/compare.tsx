@@ -143,7 +143,6 @@ const CompareStats = () => {
 
   const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
 
-  //BUG for shown store might be more effienct
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
@@ -197,91 +196,92 @@ const CompareStats = () => {
   );
 
   return (
-    <Suspense fallback={<div>wtf</div>}>
-      <ErrorBoundary
-        fallback={(err) => {
-          console.log(err);
-          return <div>err</div>;
-        }}
-      >
-        <Compared A={A} B={B} setA={setA} setB={setB} />
-        <div class="mt-8 flex  flex-col items-center justify-center">
-          <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
-            <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
-              <h1 class="text-center font-semibold">Statistics Comparision</h1>
-            </div>
-            <div class="flex flex-col items-center justify-center">
-              <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid lg:grid-cols-2">
-                <div class="sticky top-12 hidden items-center justify-center lg:flex">
-                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                    {A()}
-                  </h3>
-                </div>
-                <div class="sticky top-12 hidden items-center justify-center  lg:flex">
-                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                    {B()}
-                  </h3>
-                </div>
-
-                <For each={compOrder()}>
-                  {(comp, i) => (
-                    <>
-                      <Show
-                        when={comp.type !== "bar"}
-                        fallback={
-                          <>
-                            <h5 class="lg:hidden">{A()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsA.data}
-                              ref={(el: Element) =>
-                                setTargets((p) => [...p, el])
-                              }
-                              shown={shown()}
-                              removeShown={removeShown}
-                            />
-
-                            <h5 class="lg:hidden">{B()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsB.data}
-                              ref={(el: Element) =>
-                                setTargets((p) => [...p, el])
-                              }
-                              shown={shown()}
-                              removeShown={removeShown}
-                            />
-                          </>
-                        }
-                      >
-                        <h5 class="lg:hidden">{A()}:</h5>
-                        <CompSelector
-                          {...comp}
-                          data={statsA.data}
-                          ref={(el: Element) => {
-                            setTargets((p) => [...p, el]);
-                          }}
-                          shown={shown()}
-                          removeShown={removeShown}
-                        />
-                        <h5 class="lg:hidden">{B()}:</h5>
-                        <CompSelector
-                          {...comp}
-                          data={statsB.data}
-                          ref={(el: Element) => setTargets((p) => [...p, el])}
-                          shown={shown()}
-                          removeShown={removeShown}
-                        />
-                      </Show>
-                    </>
-                  )}
-                </For>
+    <div>
+      <Compared A={A} B={B} setA={setA} setB={setB} />
+      <div class="mt-8 flex  flex-col items-center justify-center">
+        <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
+          <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Statistics Comparision</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid lg:grid-cols-2">
+              <div class="sticky top-12 hidden items-center justify-center lg:flex">
+                <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                  {A()}
+                </h3>
               </div>
+              <div class="sticky top-12 hidden items-center justify-center  lg:flex">
+                <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                  {B()}
+                </h3>
+              </div>
+              <Suspense fallback={<div>Loading...</div>}>
+                <ErrorBoundary
+                  fallback={(err) => {
+                    console.log(err);
+                    return <div>err</div>;
+                  }}
+                >
+                  <For each={compOrder()}>
+                    {(comp, i) => (
+                      <>
+                        <Show
+                          when={comp.type !== "bar"}
+                          fallback={
+                            <>
+                              <h5 class="lg:hidden">{A()}:</h5>
+                              <CompSelector
+                                {...comp}
+                                data={statsA.data}
+                                ref={(el: Element) =>
+                                  setTargets((p) => [...p, el])
+                                }
+                                shown={shown()}
+                                removeShown={removeShown}
+                              />
+
+                              <h5 class="lg:hidden">{B()}:</h5>
+                              <CompSelector
+                                {...comp}
+                                data={statsB.data}
+                                ref={(el: Element) =>
+                                  setTargets((p) => [...p, el])
+                                }
+                                shown={shown()}
+                                removeShown={removeShown}
+                              />
+                            </>
+                          }
+                        >
+                          <h5 class="lg:hidden">{A()}:</h5>
+                          <CompSelector
+                            {...comp}
+                            data={statsA.data}
+                            ref={(el: Element) => {
+                              setTargets((p) => [...p, el]);
+                            }}
+                            shown={shown()}
+                            removeShown={removeShown}
+                          />
+                          <h5 class="lg:hidden">{B()}:</h5>
+                          <CompSelector
+                            {...comp}
+                            data={statsB.data}
+                            ref={(el: Element) => setTargets((p) => [...p, el])}
+                            shown={shown()}
+                            removeShown={removeShown}
+                          />
+                        </Show>
+                      </>
+                    )}
+                  </For>
+                </ErrorBoundary>
+              </Suspense>
             </div>
           </div>
         </div>
-      </ErrorBoundary>
-    </Suspense>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,13 @@
 import type { Component, ParentComponent } from "solid-js";
-import { ErrorBoundary, For, Index, Suspense, createSignal } from "solid-js";
+import {
+  ErrorBoundary,
+  For,
+  Index,
+  Suspense,
+  createSignal,
+  onCleanup,
+  onMount,
+} from "solid-js";
 import { A } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
@@ -29,34 +37,77 @@ const Stats: ParentComponent = () => {
 
   const [compOrder, setCompOrder] = createSignal(allStatsArr);
 
+  const [shown, setShown] = createSignal<Element[]>([]);
+  const [targets, setTargets] = createSignal<Element[]>([]);
+
+  const removeShown = (el: Element) => {
+    const index = shown().indexOf(el);
+    if (index > -1) {
+      setShown(() => shown().splice(index, 1));
+    }
+  };
+
+  onMount(() => {
+    const options = {
+      root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 0.01,
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setShown((els) => [...els, entry.target]);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+
+    targets()?.forEach((el) => {
+      observer.observe(el);
+    });
+
+    onCleanup(() => {
+      observer.disconnect();
+    });
+  });
+
   return (
-    <Suspense fallback={<div>Loading</div>}>
-      <ErrorBoundary
-        fallback={(err) => {
-          console.log(err);
-          return <div>err</div>;
-        }}
-      >
-        <div class="mt-8 flex  flex-col items-center justify-center">
-          <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-              <h1 class="text-center font-semibold">Statistics personal</h1>
-            </div>
-            <div class="flex flex-col items-center justify-center">
-              <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                <CompareButton />
-                <For each={compOrder()}>
-                  {(comp, i) => (
-                    <CompSelector {...comp} data={allStatsPersonal.data} />
-                  )}
-                </For>
-                <CompareButton />
-              </div>
+
+      <div class="mt-8 flex  flex-col items-center justify-center">
+        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Statistics personal</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+              <Suspense fallback={<div>Loading</div>}>
+                <ErrorBoundary
+                  fallback={(err) => {
+                    console.log(err);
+                    return <div>err</div>;
+                  }}
+                >
+                  <CompareButton />
+                  <For each={compOrder()}>
+                    {(comp, i) => (
+                      <CompSelector
+                        {...comp}
+                        data={allStatsPersonal.data}
+                        ref={(el: Element) => setTargets((p) => [...p, el])}
+                        shown={shown()}
+                        removeShown={removeShown}
+                      />
+                    )}
+                  </For>
+                  <CompareButton />
+                </ErrorBoundary>
+              </Suspense>
             </div>
           </div>
         </div>
-      </ErrorBoundary>
-    </Suspense>
+      </div>
+
   );
 };
 
