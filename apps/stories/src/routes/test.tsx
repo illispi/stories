@@ -37,7 +37,7 @@ const Test = () => {
       <Tab ref={(el) => setTargets((p) => [...p, el])} />
       <Tab ref={(el) => setTargets((p) => [...p, el])} />
       <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
+      <Tab ref={(el)) => setTargets((p) => [...p, el])} />
       <div>efsgfes</div>
     </>
   );

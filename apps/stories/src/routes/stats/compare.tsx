@@ -9,7 +9,9 @@ import {
   Show,
   Suspense,
   Switch,
+  batch,
   createEffect,
+  createRenderEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -51,8 +53,6 @@ const ToggleButton: Component<Props> = (props) => {
 };
 
 const Compared: Component<{
-  A: Accessor<CompareOptions>;
-  B: Accessor<CompareOptions>;
   setB: Setter<CompareOptions>;
   setA: Setter<CompareOptions>;
 }> = (props) => {
@@ -79,8 +79,10 @@ const Compared: Component<{
     } else {
       const filtered = arr.filter((e) => e[0] === true);
 
-      props.setA(filtered[0][1]);
-      props.setB(filtered[1][1]);
+      batch(() => {
+        props.setA(filtered[0][1]);
+        props.setB(filtered[1][1]);
+      });
 
       setMessage(null);
     }
@@ -97,8 +99,10 @@ const Compared: Component<{
         onClick={() => {
           setSelection("diagnosis");
 
-          props.setA("schizophrenia");
-          props.setB("schizoaffective");
+          batch(() => {
+            props.setA("schizophrenia");
+            props.setB("schizoaffective");
+          });
         }}
       >
         By Diagnosis
@@ -145,6 +149,15 @@ const CompareStats = () => {
     }
   };
 
+  //BUG targets keeps growing on setCompOrder change
+
+  createRenderEffect(() => {
+    A();
+    B();
+    setTargets([]);
+    console.log("test");
+  });
+
   createEffect(() => {
     if (A() === "schizoaffective" || A() === "schizophrenia") {
       setCompOrder(bydiagnosis);
@@ -153,7 +166,7 @@ const CompareStats = () => {
     }
   });
 
-  onMount(() => {
+  createEffect(() => {
     const options = {
       root: document.querySelector("#scrollArea"),
       rootMargin: "0px",
@@ -168,6 +181,8 @@ const CompareStats = () => {
         }
       });
     }, options);
+
+    console.log({ targets: targets() });
 
     targets()?.forEach((el) => {
       observer.observe(el);
@@ -197,7 +212,7 @@ const CompareStats = () => {
 
   return (
     <div>
-      <Compared A={A} B={B} setA={setA} setB={setB} />
+      <Compared setA={setA} setB={setB} />
       <div class="mt-8 flex  flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
           <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
