@@ -17,13 +17,22 @@ import {
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
-import { bydiagnosis } from "~/data/statsArrays";
+import { byGender, bydiagnosis } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
 import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
+import { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   toggled?: boolean;
 }
+
+type CompareOptions =
+  | "all"
+  | "schizophrenia"
+  | "schizoaffective"
+  | "female"
+  | "other"
+  | "male";
 
 const ToggleButton: Component<Props> = (props) => {
   return (
@@ -42,18 +51,10 @@ const ToggleButton: Component<Props> = (props) => {
 };
 
 const Compared: Component<{
-  A: Accessor<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >;
-  B: Accessor<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >;
-  setB: Setter<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >;
-  setA: Setter<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >;
+  A: Accessor<CompareOptions>;
+  B: Accessor<CompareOptions>;
+  setB: Setter<CompareOptions>;
+  setA: Setter<CompareOptions>;
 }> = (props) => {
   const [selection, setSelection] = createSignal<"diagnosis" | "gender">(
     "diagnosis"
@@ -62,15 +63,10 @@ const Compared: Component<{
   const [male, setMale] = createSignal(true);
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
-  const [message, setMessage] = createSignal(null);
-
-  //BUG this can sometimes get out of sync
-  // createEffect(() => {
-  //   console.log("male", male(), "female", female(), "other", other());
-  // });
+  const [message, setMessage] = createSignal<string | null>(null);
 
   const logic = () => {
-    const arr = [
+    const arr: [boolean, CompareOptions][] = [
       [male(), "male"],
       [female(), "female"],
       [other(), "other"],
@@ -134,12 +130,8 @@ const Compared: Component<{
 };
 
 const CompareStats = () => {
-  const [A, setA] = createSignal<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >("schizophrenia");
-  const [B, setB] = createSignal<
-    "all" | "schizophrenia" | "schizoaffective" | "female" | "other" | "male"
-  >("schizoaffective");
+  const [A, setA] = createSignal<CompareOptions>("schizophrenia");
+  const [B, setB] = createSignal<CompareOptions>("schizoaffective");
 
   const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
 
@@ -152,6 +144,14 @@ const CompareStats = () => {
       setShown(() => shown().splice(index, 1));
     }
   };
+
+  createEffect(() => {
+    if (A() === "schizoaffective" || A() === "schizophrenia") {
+      setCompOrder(bydiagnosis);
+    } else {
+      setCompOrder(byGender);
+    }
+  });
 
   onMount(() => {
     const options = {

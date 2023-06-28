@@ -37,7 +37,7 @@ export const authOpts: SolidAuthConfig = {
   adapter: KyselyAdapter(db),
   callbacks: {
     async session({ session, user }) {
-      const r: Session = { user: { id: user.id }, expires: session.expires };
+      const r = (session.user.id = user.id);
       return r;
     },
   },
@@ -46,3 +46,4 @@ export const authOpts: SolidAuthConfig = {
 export const { GET, POST } = SolidAuth(authOpts);
 
 //BUG in authjs for discord scopes https://github.com/nextauthjs/next-auth/issues/6873
+//TODO authjs has role based option in docs
