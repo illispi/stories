@@ -153,7 +153,7 @@ const CompareStats = () => {
 
   createRenderEffect(() => {
     A();
-    B();
+
     setTargets([]);
     console.log("test");
   });
@@ -189,6 +189,8 @@ const CompareStats = () => {
     });
 
     onCleanup(() => {
+      console.log("disconnect");
+
       observer.disconnect();
     });
   });
