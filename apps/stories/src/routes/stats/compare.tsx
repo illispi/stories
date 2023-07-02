@@ -39,11 +39,9 @@ type CompareOptions =
   | "male";
 
 const ToggleButton: Component<Props> = (props) => {
-  console.log(props.onClick);
-
   return (
     <CustomButton
-      onClick={(e) => props.onclick(e)}
+      onClick={(e) => props.onClick(e)}
       class={
         props.toggled ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : ""
       }
@@ -218,7 +216,6 @@ const CompareStats = () => {
     });
 
     onCleanup(() => {
-      console.log("disconnect");
       observer.disconnect();
     });
   });
