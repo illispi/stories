@@ -13,13 +13,15 @@ import {
   createEffect,
   createRenderEffect,
   createSignal,
+  on,
   onCleanup,
   onMount,
+  untrack,
 } from "solid-js";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
-import { byGender, bydiagnosis } from "~/data/statsArrays";
+import { byGender, byDiagnosis } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
 import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
 import { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
@@ -55,6 +57,7 @@ const ToggleButton: Component<Props> = (props) => {
 const Compared: Component<{
   setB: Setter<CompareOptions>;
   setA: Setter<CompareOptions>;
+  setCompOrder: Setter<(Stat | YesOrNo | Doughnut | Bar | Text)[]>;
 }> = (props) => {
   const [selection, setSelection] = createSignal<"diagnosis" | "gender">(
     "diagnosis"
@@ -80,6 +83,7 @@ const Compared: Component<{
       const filtered = arr.filter((e) => e[0] === true);
 
       batch(() => {
+        props.setCompOrder(byGender);
         props.setA(filtered[0][1]);
         props.setB(filtered[1][1]);
       });
@@ -100,6 +104,7 @@ const Compared: Component<{
           setSelection("diagnosis");
 
           batch(() => {
+            props.setCompOrder(byDiagnosis);
             props.setA("schizophrenia");
             props.setB("schizoaffective");
           });
@@ -137,7 +142,7 @@ const CompareStats = () => {
   const [A, setA] = createSignal<CompareOptions>("schizophrenia");
   const [B, setB] = createSignal<CompareOptions>("schizoaffective");
 
-  const [compOrder, setCompOrder] = createSignal(bydiagnosis); //BUG this needs to change to byGender also
+  const [compOrder, setCompOrder] = createSignal(byDiagnosis); //BUG this needs to change to byGender also
 
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
@@ -151,20 +156,20 @@ const CompareStats = () => {
 
   //BUG targets keeps growing on setCompOrder change
 
-  createRenderEffect(() => {
-    A();
+  // createRenderEffect(() => {
+  //   compOrder();
+  //   console.log("first");
 
-    setTargets([]);
-    console.log("test");
-  });
+  //   setTargets([]);
+  // });
 
-  createEffect(() => {
-    if (A() === "schizoaffective" || A() === "schizophrenia") {
-      setCompOrder(bydiagnosis);
-    } else {
-      setCompOrder(byGender);
-    }
-  });
+  // createEffect(() => {
+  //   if (A() === "schizoaffective" || A() === "schizophrenia") {
+  //     setCompOrder(bydiagnosis);
+  //   } else {
+  //     setCompOrder(byGender);
+  //   }
+  // });
 
   createEffect(() => {
     const options = {
@@ -190,7 +195,6 @@ const CompareStats = () => {
 
     onCleanup(() => {
       console.log("disconnect");
-
       observer.disconnect();
     });
   });
@@ -214,7 +218,7 @@ const CompareStats = () => {
 
   return (
     <div>
-      <Compared setA={setA} setB={setB} />
+      <Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
       <div class="mt-8 flex  flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
           <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
@@ -250,9 +254,12 @@ const CompareStats = () => {
                               <CompSelector
                                 {...comp}
                                 data={statsA.data}
-                                ref={(el: Element) =>
-                                  setTargets((p) => [...p, el])
-                                }
+                                ref={(el: Element) => {
+                                  setTargets((p) => [...p, el]);
+                                  onCleanup(() => {
+                                    setTargets([]);
+                                  });
+                                }}
                                 shown={shown()}
                                 removeShown={removeShown}
                               />
@@ -261,9 +268,12 @@ const CompareStats = () => {
                               <CompSelector
                                 {...comp}
                                 data={statsB.data}
-                                ref={(el: Element) =>
-                                  setTargets((p) => [...p, el])
-                                }
+                                ref={(el: Element) => {
+                                  setTargets((p) => [...p, el]);
+                                  onCleanup(() => {
+                                    setTargets([]);
+                                  });
+                                }}
                                 shown={shown()}
                                 removeShown={removeShown}
                               />
@@ -275,7 +285,12 @@ const CompareStats = () => {
                             {...comp}
                             data={statsA.data}
                             ref={(el: Element) => {
-                              setTargets((p) => [...p, el]);
+                              {
+                                setTargets((p) => [...p, el]);
+                                onCleanup(() => {
+                                  setTargets([]);
+                                });
+                              }
                             }}
                             shown={shown()}
                             removeShown={removeShown}
@@ -284,7 +299,12 @@ const CompareStats = () => {
                           <CompSelector
                             {...comp}
                             data={statsB.data}
-                            ref={(el: Element) => setTargets((p) => [...p, el])}
+                            ref={(el: Element) => {
+                              setTargets((p) => [...p, el]);
+                              onCleanup(() => {
+                                setTargets([]);
+                              });
+                            }}
                             shown={shown()}
                             removeShown={removeShown}
                           />

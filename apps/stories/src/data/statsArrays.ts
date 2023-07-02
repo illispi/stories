@@ -331,7 +331,7 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
 ];
 
-export const bydiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
+export const byDiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
 
   {
@@ -663,6 +663,14 @@ export const bydiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
 
 export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
+  {
+    type: "doughnut",
+    stat: "diagnosis",
+    header: "Share of diagnosis",
+    function: "dataSelection",
+  },
+
+  //BUG this duplicate is just for testing
   {
     type: "doughnut",
     stat: "diagnosis",
