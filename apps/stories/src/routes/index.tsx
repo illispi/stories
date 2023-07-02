@@ -30,10 +30,10 @@ const createSession = () => {
 
 const Home: Component = () => {
   return (
-    <div class="flex h-screen items-center justify-center">
-      Empty for now
+    <div class="flex flex-col h-screen items-center justify-around">
       <A href="/personalQuestions">Personal questions</A>
       <A href="/stats/compare">Compare</A>
+      <A href="/stats">Stats</A>
       <AuthShowcase />
     </div>
   );

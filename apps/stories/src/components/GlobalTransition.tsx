@@ -12,7 +12,7 @@ const GlobalTransition: Component<ParentProps> = (props) => {
     if (!el.isConnected) return done();
     el.animate(
       [
-        { opacity: 0, transform: "translate(100px)",easing: "ease-out" },
+        { opacity: 0, transform: "translate(100px)", easing: "ease-out" },
         { opacity: 1, transform: "translate(0)", easing: "ease-in" },
       ],
       { duration: 300 }
@@ -26,8 +26,8 @@ const GlobalTransition: Component<ParentProps> = (props) => {
 
     el.animate(
       [
-        { opacity: 1, transform: `translate(0)` },
-        { opacity: 0, transform: "translate(-100px)" },
+        { opacity: 1, transform: `translate(0)`, easing: "ease-out" },
+        { opacity: 0, transform: "translate(-100px)", easing: "ease-in" },
       ],
       { duration: 300 }
     )

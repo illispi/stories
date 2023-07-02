@@ -89,6 +89,8 @@ const Compared: Component<{
     }
   };
 
+  //TODO Make gender selection modal
+
   return (
     <div class="flex flex-col items-center mt-6 justify-between">
       <ModalPopUp
