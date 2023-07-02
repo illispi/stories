@@ -15,7 +15,7 @@ const GlobalTransition: Component<ParentProps> = (props) => {
         { opacity: 0, transform: "translate(100px)",easing: "ease-out" },
         { opacity: 1, transform: "translate(0)", easing: "ease-in" },
       ],
-      { duration: 400 }
+      { duration: 300 }
     )
       .finished.then(done)
       .catch(done);
@@ -29,7 +29,7 @@ const GlobalTransition: Component<ParentProps> = (props) => {
         { opacity: 1, transform: `translate(0)` },
         { opacity: 0, transform: "translate(-100px)" },
       ],
-      { duration: 400 }
+      { duration: 300 }
     )
       .finished.then(done)
       .catch(done);

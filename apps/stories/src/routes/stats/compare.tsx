@@ -209,8 +209,6 @@ const CompareStats = () => {
       });
     }, options);
 
-    console.log({ targets: targets() });
-
     targets()?.forEach((el) => {
       observer.observe(el);
     });
