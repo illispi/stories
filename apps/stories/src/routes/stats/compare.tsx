@@ -39,18 +39,17 @@ type CompareOptions =
   | "male";
 
 const ToggleButton: Component<Props> = (props) => {
+  console.log(props.onClick);
+
   return (
-    <button onClick={(e) => props.onClick(e)}>
-      <CustomButton
-        classChange={
-          props.toggled
-            ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900`
-            : null
-        }
-      >
-        {props.children}
-      </CustomButton>
-    </button>
+    <CustomButton
+      onClick={(e) => props.onclick(e)}
+      class={
+        props.toggled ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : ""
+      }
+    >
+      {props.children}
+    </CustomButton>
   );
 };
 
@@ -93,30 +92,55 @@ const Compared: Component<{
   };
 
   return (
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center mt-6 justify-between">
       <ModalPopUp
         setMessage={setMessage}
         message={message()}
         customClasses="top-16"
       />
-      <CustomButton
-        onClick={() => {
-          setSelection("diagnosis");
+      <div class="flex mb-4">
+        <CustomButton
+          class={
+            selection() === "diagnosis"
+              ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900 w-32`
+              : "w-32"
+          }
+          onClick={() => {
+            setSelection("diagnosis");
 
-          batch(() => {
-            props.setCompOrder(byDiagnosis);
-            props.setA("schizophrenia");
-            props.setB("schizoaffective");
-          });
-        }}
+            batch(() => {
+              props.setCompOrder(byDiagnosis);
+              props.setA("schizophrenia");
+              props.setB("schizoaffective");
+            });
+          }}
+        >
+          By Diagnosis
+        </CustomButton>
+        <CustomButton
+          class={
+            selection() !== "diagnosis"
+              ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900 w-32`
+              : "w-32"
+          }
+          onClick={() => {
+            setSelection("gender");
+            setMale(true);
+            setFemale(true);
+            setOther(false);
+            props.setCompOrder(byGender);
+            props.setA("male");
+            props.setB("female");
+          }}
+        >
+          By Gender
+        </CustomButton>
+      </div>
+      <div
+        class="flex flex-col justify-center items-center rounded-3xl bg-blue-50 border-2 p-3"
+        classList={{ ["hidden"]: selection() !== "gender" }}
       >
-        By Diagnosis
-      </CustomButton>
-      <CustomButton onClick={() => setSelection("gender")}>
-        By Gender
-      </CustomButton>
-      <Switch>
-        <Match when={selection() === "gender"}>
+        <div class="flex">
           <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
             Male
           </ToggleButton>
@@ -126,14 +150,14 @@ const Compared: Component<{
           <ToggleButton onClick={() => setOther(!other())} toggled={other()}>
             Other
           </ToggleButton>
-          <CustomButton
-            onClick={logic}
-            classChange={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
-          >
-            Compare
-          </CustomButton>
-        </Match>
-      </Switch>
+        </div>
+        <CustomButton
+          onClick={logic}
+          class={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
+        >
+          Compare
+        </CustomButton>
+      </div>
     </div>
   );
 };

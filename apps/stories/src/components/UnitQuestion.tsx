@@ -272,10 +272,10 @@ export const UnitQuestion: ParentComponent<{
                 <div class="m-2">
                   <CustomButton
                     onClick={() => handleSubmit({ [questionDB]: v })}
-                    classChange={
+                    class={
                       v === selection()
                         ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                        : null
+                        : ""
                     }
                   >
                     {firstLetterUpperCase(v)}
@@ -303,20 +303,20 @@ export const UnitQuestion: ParentComponent<{
               />
               <CustomButton
                 onClick={() => setMetric(false)}
-                classChange={
+                class={
                   !metric()
                     ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                    : null
+                    : ""
                 }
               >
                 Imperial (lbs)
               </CustomButton>
               <CustomButton
                 onClick={() => setMetric(true)}
-                classChange={
+                class={
                   metric()
                     ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                    : null
+                    : ""
                 }
               >
                 Metric (kg)
@@ -374,20 +374,20 @@ export const UnitQuestion: ParentComponent<{
           <div class="flex items-center justify-end ">
             <CustomButton
               // TODO might better to use state of yesOrNO instead of valueOfLS
-              classChange={
+              class={
                 yesOrNO() === true
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                  : null
+                  : ""
               }
               onClick={() => handleSubmit({ [questionDB]: true })}
             >
               Yes
             </CustomButton>
             <CustomButton
-              classChange={
+              class={
                 yesOrNO() === false
                   ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                  : null
+                  : ""
               }
               onClick={() =>
                 handleSubmit(
@@ -415,10 +415,10 @@ export const UnitQuestion: ParentComponent<{
               {(v) => (
                 <>
                   <CustomButton
-                    classChange={
+                    class={
                       multiSelections()[v[0]] === true
                         ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
-                        : null
+                        : ""
                     }
                     onClick={() => {
                       setMultiSelections(

@@ -1,4 +1,4 @@
 import { mount, StartClient } from "solid-start/entry-client";
-import "solid-devtools";
+//import "solid-devtools";
 
 mount(() => <StartClient />, document);

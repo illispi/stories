@@ -669,14 +669,6 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Share of diagnosis",
     function: "dataSelection",
   },
-
-  //BUG this duplicate is just for testing
-  {
-    type: "doughnut",
-    stat: "diagnosis",
-    header: "Share of diagnosis",
-    function: "dataSelection",
-  },
   {
     type: "bar",
     stat: "current_age",
