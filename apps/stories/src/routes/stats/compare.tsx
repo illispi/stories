@@ -166,22 +166,7 @@ const CompareStats = () => {
     }
   };
 
-  //BUG targets keeps growing on setCompOrder change
-
-  // createRenderEffect(() => {
-  //   compOrder();
-  //   console.log("first");
-
-  //   setTargets([]);
-  // });
-
-  // createEffect(() => {
-  //   if (A() === "schizoaffective" || A() === "schizophrenia") {
-  //     setCompOrder(bydiagnosis);
-  //   } else {
-  //     setCompOrder(byGender);
-  //   }
-  // });
+  let observer: IntersectionObserver;
 
   createEffect(() => {
     const options = {
@@ -190,7 +175,7 @@ const CompareStats = () => {
       threshold: 0.01,
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setShown((els) => [...els, entry.target]);
@@ -199,13 +184,14 @@ const CompareStats = () => {
       });
     }, options);
 
+
     targets()?.forEach((el) => {
       observer.observe(el);
     });
-
-    onCleanup(() => {
-      observer.disconnect();
-    });
+  });
+  onCleanup(() => {
+    setTargets([]);
+    observer.disconnect();
   });
 
   const statsA = allStats(
@@ -265,9 +251,6 @@ const CompareStats = () => {
                                 data={statsA.data}
                                 ref={(el: Element) => {
                                   setTargets((p) => [...p, el]);
-                                  onCleanup(() => {
-                                    setTargets([]);
-                                  });
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
@@ -279,9 +262,6 @@ const CompareStats = () => {
                                 data={statsB.data}
                                 ref={(el: Element) => {
                                   setTargets((p) => [...p, el]);
-                                  onCleanup(() => {
-                                    setTargets([]);
-                                  });
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
@@ -296,9 +276,6 @@ const CompareStats = () => {
                             ref={(el: Element) => {
                               {
                                 setTargets((p) => [...p, el]);
-                                onCleanup(() => {
-                                  setTargets([]);
-                                });
                               }
                             }}
                             shown={shown()}
@@ -310,9 +287,6 @@ const CompareStats = () => {
                             data={statsB.data}
                             ref={(el: Element) => {
                               setTargets((p) => [...p, el]);
-                              onCleanup(() => {
-                                setTargets([]);
-                              });
                             }}
                             shown={shown()}
                             removeShown={removeShown}
