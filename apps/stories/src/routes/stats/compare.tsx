@@ -79,7 +79,7 @@ const Compared: Component<{
 
       setMessage(null);
       setGenderModalVisible(false);
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "scroll";
     }
   };
 
@@ -126,17 +126,16 @@ const Compared: Component<{
         </CustomButton>
       </div>
 
-      <Show when={selection() === "gender"}>
-        <CustomButton
-          class="mt-4"
-          onclick={() => {
-            setGenderModalVisible(true);
-            document.body.style.overflow = "hidden";
-          }}
-        >
-          Change Genders
-        </CustomButton>
-      </Show>
+      <CustomButton
+        class="mt-4"
+        classList={{ ["invisible"]: selection() !== "gender" }}
+        onclick={() => {
+          setGenderModalVisible(true);
+          document.body.style.overflow = "hidden";
+        }}
+      >
+        Change Genders
+      </CustomButton>
 
       <Presence>
         <Show when={genderModalVisible()}>
@@ -149,7 +148,7 @@ const Compared: Component<{
             <div
               onClick={() => {
                 setGenderModalVisible(false);
-                document.body.style.overflow = "auto";
+                document.body.style.overflow = "scroll";
               }}
               class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
             />
@@ -160,7 +159,8 @@ const Compared: Component<{
                   class="bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
                   onClick={() => {
                     setGenderModalVisible(false);
-                    document.body.style.overflow = "auto";
+                    //BUG you need to remove the hidden not add scroll
+                    document.body.style.overflow = "scroll";
                   }}
                 >
                   <svg

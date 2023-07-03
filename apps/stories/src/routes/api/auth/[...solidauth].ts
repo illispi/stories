@@ -37,8 +37,9 @@ export const authOpts: SolidAuthConfig = {
   adapter: KyselyAdapter(db),
   callbacks: {
     async session({ session, user }) {
-      const r = (session.user.id = user.id);
-      return r;
+      session.user.id = user.id;
+
+      return session;
     },
   },
 };
