@@ -1,6 +1,6 @@
 import { resolveFirst } from "@solid-primitives/refs";
 import { createSwitchTransition } from "@solid-primitives/transition-group";
-import { Component, ParentProps } from "solid-js";
+import type { Component, ParentProps } from "solid-js";
 
 const GlobalTransition: Component<ParentProps> = (props) => {
   const el = resolveFirst(
@@ -23,7 +23,7 @@ const GlobalTransition: Component<ParentProps> = (props) => {
 
   const animateOut = (el: HTMLElement, done: VoidFunction) => {
     if (!el.isConnected) return done();
-
+    //BUG does these easing properties even work?
     el.animate(
       [
         { opacity: 1, transform: `translate(0)`, easing: "ease-out" },

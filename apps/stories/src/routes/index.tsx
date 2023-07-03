@@ -31,9 +31,18 @@ const createSession = () => {
 const Home: Component = () => {
   return (
     <div class="flex h-screen flex-col items-center justify-around">
-      <A href="/personalQuestions">Personal questions</A>
-      <A href="/stats/compare">Compare</A>
-      <A href="/stats">Stats</A>
+      <A
+        class="duration-150 ease-out active:scale-150"
+        href="/personalQuestions"
+      >
+        Personal questions
+      </A>
+      <A class="duration-150 ease-out active:scale-150" href="/stats/compare">
+        Compare
+      </A>
+      <A class="duration-150 ease-out active:scale-150" href="/stats">
+        Stats
+      </A>
       <AuthShowcase />
     </div>
   );

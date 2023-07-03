@@ -1,7 +1,6 @@
-import { createEffect, type Component, createSignal } from "solid-js";
-import { PersonalQuestions } from "~/types/zodFromTypes";
-import { useData } from "./globalSignals";
-import { MainReturn } from "~/types/types";
+import { type Component } from "solid-js";
+import type { MainReturn } from "~/types/types";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 export const Item: Component<{
   name: string;

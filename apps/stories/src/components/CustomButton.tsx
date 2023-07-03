@@ -13,7 +13,7 @@ const CustomButton: ParentComponent<Props> = (props) => {
     <button
       type={local.type === undefined ? "button" : local.type}
       class={twMerge(
-        "m-2 rounded-full p-3 font-semibold text-white transition-all hover:scale-110 active:scale-110 bg-blue-500 hover:bg-blue-600 active:bg-blue-600",
+        "m-2 rounded-full p-3 font-semibold text-white transition-all hover:scale-110 active:scale-125 duration-200 ease-out bg-blue-500 hover:bg-blue-600 active:bg-blue-600",
         local.class
       )}
       {...others}

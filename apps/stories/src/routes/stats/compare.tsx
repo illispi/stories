@@ -327,7 +327,7 @@ const CompareStats = () => {
                                 shown={shown()}
                                 removeShown={removeShown}
                               />
-                              <div class="my-12" />
+                              <div class="my-12 w-full border-2 border-b-black lg:hidden " />
                             </>
                           }
                         >
@@ -353,7 +353,7 @@ const CompareStats = () => {
                             shown={shown()}
                             removeShown={removeShown}
                           />
-                          <div class="my-12" />
+                          <div class="my-12 w-full border-2 border-b-black lg:hidden" />
                         </Show>
                       </>
                     )}
