@@ -125,10 +125,9 @@ const Compared: Component<{
           By Gender
         </CustomButton>
       </div>
-
+      {/* NOTE how to animate invisible */}
       <CustomButton
-        class="mt-4"
-        classList={{ ["invisible"]: selection() !== "gender" }}
+        class={`mt-4 ${selection() !== "gender" ? "invisible" : "block"}`}
         onclick={() => {
           setGenderModalVisible(true);
           document.body.style.overflow = "hidden";
