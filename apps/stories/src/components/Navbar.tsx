@@ -65,6 +65,7 @@ const Hamburger: Component<{
 const NavBar: Component = () => {
   const [menuOpen, setMenuOpen] = createSignal(false);
 
+
   return (
     <>
       <Title>Home</Title>

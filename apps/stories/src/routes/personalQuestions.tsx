@@ -1,14 +1,13 @@
 import { createEffect, createSignal, Show } from "solid-js";
 import type { ParentComponent } from "solid-js";
 import { Motion, Presence } from "@motionone/solid";
-import { Rerun } from "@solid-primitives/keyed";
 import CustomButton from "~/components/CustomButton";
 import { questions } from "~/data/personalQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
 
 const Counter: ParentComponent<{ page: number }> = (props) => {
   return (
-    <div class="my-4 flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
+    <div class="flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
       <h3 class="p-6 text-lg font-semibold">{`${Math.floor(
         ((props.page + 1) / questions.length) * 100
       )}%`}</h3>
@@ -23,7 +22,7 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
       transition={{ duration: 1.2 }}
-      class="absolute z-40 flex h-full w-full flex-col items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
+      class="absolute z-30 flex h-full w-full flex-col items-center justify-start overflow-hidden rounded-3xl bg-white shadow-xl shadow-slate-500"
     >
       {props.children}
     </Motion.div>
@@ -41,7 +40,7 @@ const Questions: ParentComponent<{
         fallback={<div>Done!!!</div>}
         when={props.page !== questions.length}
       >
-        <div class="relative z-0 flex h-4/6 max-h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
+        <div class="relative z-0 flex h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
           <Presence initial={false}>
             <Show when={props.page === 0 ? true : props.page} keyed>
               <QuestionTransition direction={props.direction}>
@@ -81,9 +80,9 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <div class="flex h-screen flex-col items-center justify-start">
+    <div class="flex h-[90vh] flex-col items-center justify-start">
       {/* BUG cant have hard coded widths */}
-      <div class="flex h-1/6 w-[320px] items-end justify-between p-2">
+      <div class="flex h-20 w-[320px] items-center justify-between p-2">
         <Counter page={page()} />
         <CustomButton
           type="button"

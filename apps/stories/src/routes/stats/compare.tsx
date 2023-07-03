@@ -141,7 +141,7 @@ const Compared: Component<{
       <Presence>
         <Show when={genderModalVisible()}>
           <Motion.div
-            class="relative z-50"
+            class="relative z-40"
             animate={{ opacity: [0, 1] }}
             transition={{ duration: 0.5, easing: "ease-in-out" }}
             exit={{ opacity: [1, 0] }}
