@@ -1,30 +1,22 @@
 import {
-  Accessor,
   Component,
   ErrorBoundary,
   For,
   JSX,
-  Match,
   Setter,
   Show,
   Suspense,
-  Switch,
   batch,
   createEffect,
-  createRenderEffect,
   createSignal,
-  on,
   onCleanup,
-  onMount,
-  untrack,
 } from "solid-js";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
-import { byGender, byDiagnosis } from "~/data/statsArrays";
+import { byDiagnosis, byGender } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
-import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
-import { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
+import { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   toggled?: boolean;
@@ -93,16 +85,12 @@ const Compared: Component<{
 
   return (
     <div class="flex flex-col items-center mt-6 justify-between">
-      <ModalPopUp
-        setMessage={setMessage}
-        message={message()}
-        customClasses="top-16"
-      />
+      <ModalPopUp setMessage={setMessage} message={message()} />
       <div class="flex mb-4">
         <CustomButton
           class={
             selection() === "diagnosis"
-              ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900 w-32`
+              ? `w-32 bg-blue-800 hover:bg-blue-900 active:bg-blue-900`
               : "w-32"
           }
           onClick={() => {
@@ -120,7 +108,7 @@ const Compared: Component<{
         <CustomButton
           class={
             selection() !== "diagnosis"
-              ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900 w-32`
+              ? `w-32 bg-blue-800 hover:bg-blue-900 active:bg-blue-900`
               : "w-32"
           }
           onClick={() => {
@@ -137,7 +125,7 @@ const Compared: Component<{
         </CustomButton>
       </div>
       <div
-        class="flex flex-col justify-center items-center rounded-3xl bg-blue-50 border-2 p-3"
+        class="flex flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3"
         classList={{ ["hidden"]: selection() !== "gender" }}
       >
         <div class="flex">

@@ -61,7 +61,7 @@ const ModalPopUp: ParentComponent<{
   setMessage: Setter<string | null>;
 }> = (props) => {
   const classes = twMerge(
-    "absolute top-48 left-1/2 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl",
+    "fixed top-16 left-1/2 w-64 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl",
     props.class
   );
 
