@@ -1,4 +1,4 @@
-import { Component, VoidComponent } from "solid-js";
+import type { Component, VoidComponent } from "solid-js";
 import { A } from "solid-start";
 import { createServerData$ } from "solid-start/server";
 import { getSession } from "@auth/solid-start";
@@ -30,7 +30,7 @@ const createSession = () => {
 
 const Home: Component = () => {
   return (
-    <div class="flex flex-col h-screen items-center justify-around">
+    <div class="flex h-screen flex-col items-center justify-around">
       <A href="/personalQuestions">Personal questions</A>
       <A href="/stats/compare">Compare</A>
       <A href="/stats">Stats</A>

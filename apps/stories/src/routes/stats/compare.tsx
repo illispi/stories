@@ -1,9 +1,8 @@
+import { Motion, Presence } from "@motionone/solid";
+import type { Component, JSX, Setter } from "solid-js";
 import {
-  Component,
   ErrorBoundary,
   For,
-  JSX,
-  Setter,
   Show,
   Suspense,
   batch,
@@ -16,7 +15,7 @@ import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import { byDiagnosis, byGender } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
-import { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
+import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   toggled?: boolean;
@@ -56,6 +55,7 @@ const Compared: Component<{
   const [female, setFemale] = createSignal(true);
   const [other, setOther] = createSignal(false);
   const [message, setMessage] = createSignal<string | null>(null);
+  const [genderModalVisible, setGenderModalVisible] = createSignal(false);
 
   const logic = () => {
     const arr: [boolean, CompareOptions][] = [
@@ -78,15 +78,15 @@ const Compared: Component<{
       });
 
       setMessage(null);
+      setGenderModalVisible(false);
+      document.body.style.overflow = "auto";
     }
   };
 
-  //TODO Make gender selection modal
-
   return (
-    <div class="flex flex-col items-center mt-6 justify-between">
+    <div class="my-6 flex flex-col items-center justify-between">
       <ModalPopUp setMessage={setMessage} message={message()} />
-      <div class="flex mb-4">
+      <div class="flex items-center justify-center">
         <CustomButton
           class={
             selection() === "diagnosis"
@@ -113,6 +113,7 @@ const Compared: Component<{
           }
           onClick={() => {
             setSelection("gender");
+
             setMale(true);
             setFemale(true);
             setOther(false);
@@ -124,28 +125,64 @@ const Compared: Component<{
           By Gender
         </CustomButton>
       </div>
-      <div
-        class="flex flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3"
-        classList={{ ["hidden"]: selection() !== "gender" }}
-      >
-        <div class="flex">
-          <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
-            Male
-          </ToggleButton>
-          <ToggleButton onClick={() => setFemale(!female())} toggled={female()}>
-            Female
-          </ToggleButton>
-          <ToggleButton onClick={() => setOther(!other())} toggled={other()}>
-            Other
-          </ToggleButton>
-        </div>
+
+      <Show when={selection() === "gender"}>
         <CustomButton
-          onClick={logic}
-          class={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
+          class="mt-4"
+          onclick={() => {
+            setGenderModalVisible(true);
+            document.body.style.overflow = "hidden";
+          }}
         >
-          Compare
+          Change Genders
         </CustomButton>
-      </div>
+      </Show>
+
+      <Presence>
+        <Show when={genderModalVisible()}>
+          <Motion.div
+            class="relative"
+            animate={{ opacity: [0, 1] }}
+            transition={{ duration: 0.5, easing: "ease-in-out" }}
+            exit={{ opacity: [1, 0] }}
+          >
+            <div
+              onClick={() => {
+                setGenderModalVisible(false);
+                document.body.style.overflow = "auto";
+              }}
+              class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black opacity-40"
+            />
+            <div class="absolute z-50 flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3 opacity-100">
+              <div class="flex">
+                <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
+                  Male
+                </ToggleButton>
+                <ToggleButton
+                  onClick={() => setFemale(!female())}
+                  toggled={female()}
+                >
+                  Female
+                </ToggleButton>
+                <ToggleButton
+                  onClick={() => setOther(!other())}
+                  toggled={other()}
+                >
+                  Other
+                </ToggleButton>
+              </div>
+              <CustomButton
+                onClick={() => {
+                  logic();
+                }}
+                class={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
+              >
+                Compare
+              </CustomButton>
+            </div>
+          </Motion.div>
+        </Show>
+      </Presence>
     </div>
   );
 };
@@ -184,7 +221,6 @@ const CompareStats = () => {
       });
     }, options);
 
-
     targets()?.forEach((el) => {
       observer.observe(el);
     });
@@ -214,19 +250,19 @@ const CompareStats = () => {
   return (
     <div>
       <Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
-      <div class="mt-8 flex  flex-col items-center justify-center">
+      <div class="flex flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
           <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
             <h1 class="text-center font-semibold">Statistics Comparision</h1>
           </div>
           <div class="flex flex-col items-center justify-center">
             <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid lg:grid-cols-2">
-              <div class="sticky top-12 hidden items-center justify-center lg:flex">
+              <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
                 <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
                   {A()}
                 </h3>
               </div>
-              <div class="sticky top-12 hidden items-center justify-center  lg:flex">
+              <div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
                 <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
                   {B()}
                 </h3>
@@ -239,7 +275,7 @@ const CompareStats = () => {
                   }}
                 >
                   <For each={compOrder()}>
-                    {(comp, i) => (
+                    {(comp) => (
                       <>
                         <Show
                           when={comp.type !== "bar"}

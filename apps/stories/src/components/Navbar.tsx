@@ -68,7 +68,7 @@ const NavBar: Component = () => {
   return (
     <>
       <Title>Home</Title>
-      <div class="sticky top-0 z-50 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
+      <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
         <A href={"/"}>
           <div class="mx-2 text-2xl font-semibold">
             Schizopoll

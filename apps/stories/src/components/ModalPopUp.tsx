@@ -1,6 +1,5 @@
-import { Presence, Motion } from "@motionone/solid";
 import type { Component, ParentComponent, ParentProps, Setter } from "solid-js";
-import { Show, createEffect, createSignal } from "solid-js";
+import { Show, createEffect } from "solid-js";
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import { createSwitchTransition } from "@solid-primitives/transition-group";
@@ -60,11 +59,6 @@ const ModalPopUp: ParentComponent<{
   class?: string;
   setMessage: Setter<string | null>;
 }> = (props) => {
-  const classes = twMerge(
-    "fixed top-16 left-1/2 w-64 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl",
-    props.class
-  );
-
   createEffect(() => {
     if (props.message) {
       setTimeout(() => {
@@ -77,7 +71,12 @@ const ModalPopUp: ParentComponent<{
     <Portal>
       <Transition>
         <Show when={props.message}>
-          <div class={classes}>
+          <div
+            class={twMerge(
+              "fixed top-16 left-1/2 w-64 z-50 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl",
+              props.class
+            )}
+          >
             <p>{props.message}</p>
           </div>
         </Show>
