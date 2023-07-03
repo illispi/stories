@@ -141,7 +141,7 @@ const Compared: Component<{
       <Presence>
         <Show when={genderModalVisible()}>
           <Motion.div
-            class="relative"
+            class="relative z-50"
             animate={{ opacity: [0, 1] }}
             transition={{ duration: 0.5, easing: "ease-in-out" }}
             exit={{ opacity: [1, 0] }}
@@ -151,9 +151,9 @@ const Compared: Component<{
                 setGenderModalVisible(false);
                 document.body.style.overflow = "auto";
               }}
-              class="fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center bg-black opacity-40"
+              class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
             />
-            <div class="absolute z-50 flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3 opacity-100">
+            <div class="absolute flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3 opacity-100">
               <div class="flex">
                 <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
                   Male
@@ -281,7 +281,7 @@ const CompareStats = () => {
                           when={comp.type !== "bar"}
                           fallback={
                             <>
-                              <h5 class="lg:hidden">{A()}:</h5>
+                              <h5 class="text-xl lg:hidden">{A()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsA.data}
@@ -292,7 +292,7 @@ const CompareStats = () => {
                                 removeShown={removeShown}
                               />
 
-                              <h5 class="lg:hidden">{B()}:</h5>
+                              <h5 class="text-xl lg:hidden">{B()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsB.data}
@@ -302,10 +302,11 @@ const CompareStats = () => {
                                 shown={shown()}
                                 removeShown={removeShown}
                               />
+                              <div class="my-12" />
                             </>
                           }
                         >
-                          <h5 class="lg:hidden">{A()}:</h5>
+                          <h5 class="text-xl lg:hidden">{A()}:</h5>
                           <CompSelector
                             {...comp}
                             data={statsA.data}
@@ -317,7 +318,7 @@ const CompareStats = () => {
                             shown={shown()}
                             removeShown={removeShown}
                           />
-                          <h5 class="lg:hidden">{B()}:</h5>
+                          <h5 class="text-xl lg:hidden">{B()}:</h5>
                           <CompSelector
                             {...comp}
                             data={statsB.data}
@@ -327,6 +328,7 @@ const CompareStats = () => {
                             shown={shown()}
                             removeShown={removeShown}
                           />
+                          <div class="my-12" />
                         </Show>
                       </>
                     )}
