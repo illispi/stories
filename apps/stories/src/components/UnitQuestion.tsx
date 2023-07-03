@@ -293,6 +293,7 @@ export const UnitQuestion: ParentComponent<{
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
               <input
+                autocomplete="off"
                 id="int"
                 type="tel"
                 value={number()}
@@ -333,6 +334,7 @@ export const UnitQuestion: ParentComponent<{
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
               <input
+                autocomplete="off"
                 id="int"
                 type="tel"
                 value={number()}
@@ -355,6 +357,7 @@ export const UnitQuestion: ParentComponent<{
           <form onSubmit={handleText}>
             <div class="flex flex-col items-center justify-end">
               <input
+                autocomplete="off"
                 id="int"
                 type="text"
                 value={text()}
