@@ -41,6 +41,7 @@ const Questions: ParentComponent<{
         when={props.page !== questions.length}
       >
         <div class="relative z-0 flex h-[600px] w-11/12 max-w-xs flex-col items-center justify-center">
+          {/*BUG During transition you should lock document from scrolling */}
           <Presence initial={false}>
             <Show when={props.page === 0 ? true : props.page} keyed>
               <QuestionTransition direction={props.direction}>

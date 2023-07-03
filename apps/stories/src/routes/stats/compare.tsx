@@ -153,7 +153,32 @@ const Compared: Component<{
               }}
               class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
             />
-            <div class="absolute flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-3 opacity-100">
+
+            <div class="absolute flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-5 pt-8 opacity-100">
+              <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
+                <CustomButton
+                  class="bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
+                  onClick={() => {
+                    setGenderModalVisible(false);
+                    document.body.style.overflow = "auto";
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="h-8 w-8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </CustomButton>
+              </div>
               <div class="flex">
                 <ToggleButton onClick={() => setMale(!male())} toggled={male()}>
                   Male
