@@ -32,15 +32,15 @@ const Home: Component = () => {
   return (
     <div class="flex h-screen flex-col items-center justify-around">
       <A
-        class="duration-150 ease-out active:scale-150"
+        class="duration-200 ease-out active:scale-125"
         href="/personalQuestions"
       >
         Personal questions
       </A>
-      <A class="duration-150 ease-out active:scale-150" href="/stats/compare">
+      <A class="duration-200 ease-out active:scale-125" href="/stats/compare">
         Compare
       </A>
-      <A class="duration-150 ease-out active:scale-150" href="/stats">
+      <A class="duration-200 ease-out active:scale-125" href="/stats">
         Stats
       </A>
       <AuthShowcase />

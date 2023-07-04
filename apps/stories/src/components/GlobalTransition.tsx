@@ -12,10 +12,10 @@ const GlobalTransition: Component<ParentProps> = (props) => {
     if (!el.isConnected) return done();
     el.animate(
       [
-        { opacity: 0, transform: "translate(100px)", easing: "ease-out" },
-        { opacity: 1, transform: "translate(0)", easing: "ease-in" },
+        { opacity: 0, transform: "translate(100px)" },
+        { opacity: 1, transform: "translate(0)" },
       ],
-      { duration: 300 }
+      { duration: 300, easing: "ease-out" }
     )
       .finished.then(done)
       .catch(done);
@@ -23,13 +23,12 @@ const GlobalTransition: Component<ParentProps> = (props) => {
 
   const animateOut = (el: HTMLElement, done: VoidFunction) => {
     if (!el.isConnected) return done();
-    //BUG does these easing properties even work?
     el.animate(
       [
-        { opacity: 1, transform: `translate(0)`, easing: "ease-out" },
-        { opacity: 0, transform: "translate(-100px)", easing: "ease-in" },
+        { opacity: 1, transform: "translate(0)" },
+        { opacity: 0, transform: "translate(-100px)" },
       ],
-      { duration: 300 }
+      { duration: 300, easing: "ease-in" }
     )
       .finished.then(done)
       .catch(done);

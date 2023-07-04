@@ -1,4 +1,4 @@
-import { createEffect, ParentComponent } from "solid-js";
+import type { ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
@@ -6,6 +6,7 @@ import { postPersonalStats } from "~/server/mutations";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
+import { z } from "zod";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (

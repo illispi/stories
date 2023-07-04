@@ -79,7 +79,7 @@ const Compared: Component<{
 
       setMessage(null);
       setGenderModalVisible(false);
-      document.body.style.overflow = "scroll";
+      document.body.style.overflow = "auto";
     }
   };
 
@@ -94,9 +94,8 @@ const Compared: Component<{
               : "w-32"
           }
           onClick={() => {
-            setSelection("diagnosis");
-
             batch(() => {
+              setSelection("diagnosis");
               props.setCompOrder(byDiagnosis);
               props.setA("schizophrenia");
               props.setB("schizoaffective");
@@ -147,7 +146,7 @@ const Compared: Component<{
             <div
               onClick={() => {
                 setGenderModalVisible(false);
-                document.body.style.overflow = "scroll";
+                document.body.style.overflow = "auto";
               }}
               class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
             />
@@ -158,8 +157,7 @@ const Compared: Component<{
                   class="bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
                   onClick={() => {
                     setGenderModalVisible(false);
-                    //BUG you need to remove the hidden not add scroll
-                    document.body.style.overflow = "scroll";
+                    document.body.style.overflow = "auto";
                   }}
                 >
                   <svg
@@ -227,8 +225,6 @@ const CompareStats = () => {
     }
   };
 
-  let observer: IntersectionObserver;
-
   createEffect(() => {
     const options = {
       root: document.querySelector("#scrollArea"),
@@ -236,7 +232,7 @@ const CompareStats = () => {
       threshold: 0.01,
     };
 
-    observer = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           setShown((els) => [...els, entry.target]);
@@ -248,10 +244,10 @@ const CompareStats = () => {
     targets()?.forEach((el) => {
       observer.observe(el);
     });
-  });
-  onCleanup(() => {
-    setTargets([]);
-    observer.disconnect();
+
+    onCleanup(() => {
+      observer.disconnect();
+    });
   });
 
   const statsA = allStats(
@@ -348,6 +344,11 @@ const CompareStats = () => {
                             data={statsB.data}
                             ref={(el: Element) => {
                               setTargets((p) => [...p, el]);
+                              onCleanup(() => {
+                                if (targets().length >= 0) {
+                                  setTargets([]);
+                                }
+                              });
                             }}
                             shown={shown()}
                             removeShown={removeShown}
