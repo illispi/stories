@@ -81,9 +81,9 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <div class="flex h-[90vh] flex-col items-center justify-start">
+    <div class="flex flex-col items-center justify-start">
       {/* BUG cant have hard coded widths */}
-      <div class="flex h-20 w-[320px] items-center justify-between p-2">
+      <div class="flex h-20 w-80 items-center justify-between p-2">
         <Counter page={page()} />
         <CustomButton
           type="button"

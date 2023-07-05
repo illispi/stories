@@ -10,16 +10,14 @@ import { z } from "zod";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
-    <div class="flex grow flex-col">
+    <>
       <div class="flex h-24 w-80 items-center justify-center bg-blue-300 p-8">
         <label class=" text-center font-semibold">{props.question}</label>
       </div>
-      <div class="relative flex grow flex-col items-center justify-start overflow-hidden overflow-y-auto">
-        <div class="absolute my-2 flex w-72 flex-col items-center justify-end ">
-          {props.children}
-        </div>
+      <div class="grow flex-col items-center justify-center overflow-hidden overflow-y-auto">
+        {props.children}
       </div>
-    </div>
+    </>
   );
 };
 
