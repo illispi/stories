@@ -11,10 +11,11 @@ import { z } from "zod";
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
     <>
-      <div class="flex h-24 w-80 items-center justify-center bg-blue-300 p-8">
-        <label class=" text-center font-semibold">{props.question}</label>
+      <div class="flex h-24 w-80 items-center justify-center rounded-t-3xl bg-blue-300 p-8">
+        <label class="text-center font-semibold">{props.question}</label>
       </div>
-      <div class="grow flex-col items-center justify-center overflow-hidden overflow-y-auto">
+      {/* NOTE mb-12 is bit of an hack to make form appear more centered */}
+      <div class="mb-12 flex h-full flex-col items-center justify-center overflow-hidden overflow-y-auto">
         {props.children}
       </div>
     </>
