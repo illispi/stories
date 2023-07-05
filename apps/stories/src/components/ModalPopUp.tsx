@@ -73,7 +73,7 @@ const ModalPopUp: ParentComponent<{
         <Show when={props.message}>
           <div
             class={twMerge(
-              "fixed top-16 left-1/2 w-64 z-50 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl",
+              "fixed top-16 left-1/2 w-64 z-50 -translate-x-1/2 rounded-3xl border-2 border-red-400 bg-red-100 p-8 text-center shadow-xl text-lg",
               props.class
             )}
           >

@@ -233,33 +233,90 @@ export const UnitQuestion: ParentComponent<{
     }
   };
 
-  const validateInt = (value: string) => {
-    return /^(0|[1-9]\d*)$/.test(value);
-  };
-
-  const handleNumber = (e) => {
+  const handleNumber = (
+    e: Event & { submitter: HTMLElement } & {
+      currentTarget: HTMLFormElement;
+      target: Element;
+    }
+  ) => {
     e.preventDefault();
-    //TODO cant be too old validation
 
-    if (validateInt(number())) {
-      handleSubmit({ [questionDB]: number() });
-      setError(null);
+    let numberSchema;
+
+    if (questionDB === "weight_amount") {
+      if (metric()) {
+        numberSchema = z
+          .number({
+            required_error: "Weight is required, 1-300 kilograms",
+            invalid_type_error: "Weight must be a number only",
+          })
+          .positive("Only positive numbers")
+          .finite()
+          .max(110, "Maximum weight increase is 300 kilos")
+          .min(5, "Minimum weight increase is 1 kilos")
+          .safe()
+          .int("Please provide whole number only (e.g 15, not 15.6)");
+      } else {
+        numberSchema = z
+          .number({
+            required_error: "Weight is required, 1-650 pounds",
+            invalid_type_error: "Weight must be a number only",
+          })
+          .positive("Only positive numbers")
+          .finite()
+          .max(650, "Maximum weight increase is 650 pounds")
+          .min(1, "Minimum weight increase is 1 pounds")
+          .safe()
+          .int("Please provide whole number only (e.g 15, not 15.6)");
+      }
     } else {
-      setError("Please provide whole numbers only");
+      //TODO Maybe handle if age is smaller than onset
+      numberSchema = z
+        .number({
+          required_error: "Age is required, 5-120",
+          invalid_type_error: "Age must be a number only",
+        })
+        .positive("Only positive numbers")
+        .finite()
+        .max(110, "Maximum age is 110")
+        .min(5, "Minimum age is 5")
+        .safe()
+        .int("Please provide whole number only (e.g 15, not 15.6)");
+    }
+
+    const result = numberSchema.safeParse(Number(number()));
+
+    if (!result.success) {
+      const formatted = result.error.format();
+      setError(formatted._errors[0]);
+    } else {
+      handleSubmit({ [questionDB]: result.data });
+      setError(null);
     }
   };
 
-  const handleText = (e) => {
+  const handleText = (
+    e: Event & { submitter: HTMLElement } & {
+      currentTarget: HTMLFormElement;
+      target: Element;
+    }
+  ) => {
     e.preventDefault();
-    if (text().length < 1000 && text().length !== 0) {
-      handleSubmit({ [questionDB]: text() });
-      setError(null);
+
+    const textFieldSchema = z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough');
+
+    const result = textFieldSchema.safeParse(text());
+
+    if (!result.success) {
+      const formatted = result.error.format();
+      setError(formatted._errors[0]);
     } else {
-      if (text().length >= 1000) {
-        setError("Maximum allowed character amount is 1000");
-      } else {
-        setError("Please provide some text");
-      }
+      handleSubmit({ [questionDB]: result.data });
+      setError(null);
     }
   };
 
@@ -275,7 +332,7 @@ export const UnitQuestion: ParentComponent<{
                     onClick={() => handleSubmit({ [questionDB]: v })}
                     class={
                       v === selection()
-                        ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                         : ""
                     }
                   >
@@ -296,7 +353,7 @@ export const UnitQuestion: ParentComponent<{
               <input
                 autocomplete="off"
                 id="int"
-                type="tel"
+                type="number"
                 value={number()}
                 onInput={(e) => {
                   setNumber(e.target.value);
@@ -307,7 +364,7 @@ export const UnitQuestion: ParentComponent<{
                 onClick={() => setMetric(false)}
                 class={
                   !metric()
-                    ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                    ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                     : ""
                 }
               >
@@ -317,7 +374,7 @@ export const UnitQuestion: ParentComponent<{
                 onClick={() => setMetric(true)}
                 class={
                   metric()
-                    ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                    ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                     : ""
                 }
               >
@@ -334,10 +391,22 @@ export const UnitQuestion: ParentComponent<{
         <Box question={question}>
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
+              {/* <input
+                autocomplete="off"
+                id="int"
+                type="number"
+                value={number()}
+                onInput={(e) => {
+                  e.currentTarget.value.match("^[0-9]*$")
+                    ? setNumber(e.currentTarget.value)
+                    : (e.currentTarget.value = number());
+                  setError(null);
+                }}
+              /> */}
               <input
                 autocomplete="off"
                 id="int"
-                type="tel"
+                type="number"
                 value={number()}
                 onInput={(e) => {
                   setNumber(e.target.value);
@@ -373,14 +442,13 @@ export const UnitQuestion: ParentComponent<{
         </Box>
       </Match>
       <Match when={questionType === "yesOrNo"}>
-        {" "}
         <Box question={question}>
           <div class="flex items-center justify-end ">
             <CustomButton
               // TODO might better to use state of yesOrNO instead of valueOfLS
               class={
                 yesOrNO() === true
-                  ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                  ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                   : ""
               }
               onClick={() => handleSubmit({ [questionDB]: true })}
@@ -390,7 +458,7 @@ export const UnitQuestion: ParentComponent<{
             <CustomButton
               class={
                 yesOrNO() === false
-                  ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                  ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                   : ""
               }
               onClick={() =>
@@ -421,7 +489,7 @@ export const UnitQuestion: ParentComponent<{
                   <CustomButton
                     class={
                       multiSelections()[v[0]] === true
-                        ? "bg-green-500 hover:bg-green-600 active:bg-green-600"
+                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                         : ""
                     }
                     onClick={() => {
