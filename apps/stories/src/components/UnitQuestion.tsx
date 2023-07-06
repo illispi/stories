@@ -14,8 +14,7 @@ const Box: ParentComponent<{ question: string }> = (props) => {
       <div class="flex h-24 w-80 items-center justify-center rounded-t-3xl bg-blue-300 p-8">
         <label class="text-center font-semibold">{props.question}</label>
       </div>
-      {/* NOTE mb-12 is bit of an hack to make form appear more centered */}
-      <div class="mb-12 flex h-full flex-col items-center justify-center overflow-hidden overflow-y-auto">
+      <div class="flex h-full flex-col items-center justify-center overflow-hidden overflow-y-auto">
         {props.children}
       </div>
     </>
@@ -350,7 +349,13 @@ export const UnitQuestion: ParentComponent<{
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
               <input
+                class="m-4 box-border rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
                 autocomplete="off"
+                placeholder={`${
+                  metric()
+                    ? "Weight gain in kilograms"
+                    : "Weight gain in pounds"
+                }`}
                 id="int"
                 type="number"
                 value={number()}
@@ -379,7 +384,9 @@ export const UnitQuestion: ParentComponent<{
               >
                 Metric (kg)
               </CustomButton>
-              <CustomButton type="submit">Next</CustomButton>
+              <CustomButton class="mt-12" type="submit">
+                Next
+              </CustomButton>
               <ModalPopUp message={error()} setMessage={setError} />
             </div>
           </form>
@@ -390,7 +397,8 @@ export const UnitQuestion: ParentComponent<{
         <Box question={question}>
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
-              {/* <input
+              {/*NOTE might want to do controlled inputs and not type="number"
+               <input
                 autocomplete="off"
                 id="int"
                 type="number"
@@ -403,6 +411,8 @@ export const UnitQuestion: ParentComponent<{
                 }}
               /> */}
               <input
+                class="m-4 box-border rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
+                placeholder="Age"
                 autocomplete="off"
                 id="int"
                 type="number"
@@ -425,10 +435,13 @@ export const UnitQuestion: ParentComponent<{
 
           <form onSubmit={handleText}>
             <div class="flex flex-col items-center justify-end">
-              <input
+              <textarea
+                rows={14}
+                cols={30}
+                class="m-4 box-border resize-none rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
+                placeholder="Text"
                 autocomplete="off"
                 id="int"
-                type="text"
                 value={text()}
                 onInput={(e) => {
                   setText(e.target.value);
@@ -447,8 +460,8 @@ export const UnitQuestion: ParentComponent<{
               // TODO might better to use state of yesOrNO instead of valueOfLS
               class={
                 yesOrNO() === true
-                  ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                  : ""
+                  ? "bg-green-500 p-5 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                  : " p-5"
               }
               onClick={() => handleSubmit({ [questionDB]: true })}
             >
@@ -457,8 +470,8 @@ export const UnitQuestion: ParentComponent<{
             <CustomButton
               class={
                 yesOrNO() === false
-                  ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                  : ""
+                  ? "bg-green-500 p-5 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                  : " p-5"
               }
               onClick={() =>
                 handleSubmit(
@@ -505,12 +518,17 @@ export const UnitQuestion: ParentComponent<{
                 </>
               )}
             </For>
-            <CustomButton onClick={() => handleMultiSubmit(multiSelections())}>
+            <CustomButton
+              class="mt-12"
+              onClick={() => handleMultiSubmit(multiSelections())}
+            >
               Next
             </CustomButton>
           </div>
         </Box>
       </Match>
+
+      {/* TODO When you press submit something should happen */}
       <Match when={questionType === "submit"}>
         <Box question={question}>
           <CustomButton onClick={submitResults}>Submit</CustomButton>

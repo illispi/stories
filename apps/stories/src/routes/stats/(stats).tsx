@@ -73,44 +73,43 @@ const Stats: ParentComponent = () => {
   });
 
   return (
-
-      <div class="mt-8 flex  flex-col items-center justify-center">
-        <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-            <h1 class="text-center font-semibold">Statistics personal</h1>
-          </div>
-          <div class="flex flex-col items-center justify-center">
-            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-              <Suspense fallback={<div>Loading</div>}>
-                <ErrorBoundary
-                  fallback={(err) => {
-                    console.log(err);
-                    return <div>err</div>;
-                  }}
-                >
-                  <CompareButton />
-                  <For each={compOrder()}>
-                    {(comp, i) => (
-                      <CompSelector
-                        {...comp}
-                        data={allStatsPersonal.data}
-                        ref={(el: Element) => setTargets((p) => [...p, el])}
-                        shown={shown()}
-                        removeShown={removeShown}
-                      />
-                    )}
-                  </For>
-                  <CompareButton />
-                </ErrorBoundary>
-              </Suspense>
-            </div>
+    <div class="mt-8 flex  flex-col items-center justify-center">
+      <div class="flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+        <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+          <h1 class="text-center font-semibold">Statistics personal</h1>
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+            <Suspense fallback={<div>Loading</div>}>
+              <ErrorBoundary
+                fallback={(err) => {
+                  console.log(err);
+                  return <div>err</div>;
+                }}
+              >
+                <CompareButton />
+                <For each={compOrder()}>
+                  {(comp, i) => (
+                    <CompSelector
+                      {...comp}
+                      data={allStatsPersonal.data}
+                      ref={(el: Element) => setTargets((p) => [...p, el])}
+                      shown={shown()}
+                      removeShown={removeShown}
+                    />
+                  )}
+                </For>
+                <CompareButton />
+              </ErrorBoundary>
+            </Suspense>
           </div>
         </div>
       </div>
-
+    </div>
   );
 };
 
 export default Stats;
 
 //TODO might want to change ask first if you have told anybody and then who
+//TODO what_others_Should_know and not_have_schizophrenia_description need custom logic in text to show yes and no separately, backend solution might be good

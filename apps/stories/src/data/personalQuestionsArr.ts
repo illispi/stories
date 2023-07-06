@@ -382,7 +382,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "not_have_schizophrenia",
   },
   {
-    question: "Why or why not?",
+    question: "Why or why not? (Chosen to have schizophrenia)",
     questionType: "text",
     questionDB: "not_have_schizophrenia_description",
   },
