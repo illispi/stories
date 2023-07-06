@@ -5,7 +5,7 @@ import {
   Suspense,
   createSignal,
   onCleanup,
-  onMount
+  onMount,
 } from "solid-js";
 import { A } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
@@ -16,7 +16,7 @@ import { allStats } from "~/server/queries";
 const CompareButton: Component = () => {
   return (
     <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
-      <A href={"compare"}>
+      <A noScroll={true} href={"compare"}>
         <CustomButton
           class="m-2 rounded-full bg-blue-500 p-5
       font-semibold text-white transition-all  hover:scale-110

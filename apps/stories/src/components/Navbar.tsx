@@ -12,7 +12,7 @@ import { A, Title } from "solid-start";
 const NavLinks: Component = () => {
   return (
     <div class="hidden items-center justify-center lg:flex">
-      <A href="/stats">
+      <A noScroll={true} href="/stats">
         <div class="mx-2 text-xl font-semibold">Statistics</div>
       </A>
     </div>
@@ -70,7 +70,7 @@ const NavBar: Component = () => {
     <>
       <Title>Home</Title>
       <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
-        <A href={"/"}>
+        <A noScroll={true}href={"/"}>
           <div class="mx-2 text-2xl font-semibold">
             Schizopoll
           </div>

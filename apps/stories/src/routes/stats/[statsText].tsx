@@ -10,7 +10,7 @@ const StatsText = () => {
 
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
-      <A href={`/stats`}>
+      <A noScroll={true} href={`/stats`}>
         <div
           class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
           text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
@@ -48,7 +48,7 @@ const StatsText = () => {
           </div>
         </ErrorBoundary>
       </Suspense>
-      <A href={`/stats`}>
+      <A noScroll={true} href={`/stats`}>
         <div
           class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
           text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
@@ -62,3 +62,4 @@ const StatsText = () => {
 
 export default StatsText;
 //TODO replace suspense with some component
+//TODO make backend for stats maybe with infinte pagination and store compare in localstorage if coming from there

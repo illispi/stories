@@ -32,15 +32,24 @@ const Home: Component = () => {
   return (
     <div class="flex h-screen flex-col items-center justify-around">
       <A
+        noScroll={true}
         class="duration-200 ease-out active:scale-125"
         href="/personalQuestions"
       >
         Personal questions
       </A>
-      <A class="duration-200 ease-out active:scale-125" href="/stats/compare">
+      <A
+        noScroll={true}
+        class="duration-200 ease-out active:scale-125"
+        href="/stats/compare"
+      >
         Compare
       </A>
-      <A class="duration-200 ease-out active:scale-125" href="/stats">
+      <A
+        noScroll={true}
+        class="duration-200 ease-out active:scale-125"
+        href="/stats"
+      >
         Stats
       </A>
       <AuthShowcase />
