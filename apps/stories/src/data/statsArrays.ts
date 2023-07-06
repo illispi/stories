@@ -1,4 +1,4 @@
-import { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
+import type { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 
 export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },

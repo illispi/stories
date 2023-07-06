@@ -2,11 +2,10 @@ import type { Component, ParentComponent } from "solid-js";
 import {
   ErrorBoundary,
   For,
-  Index,
   Suspense,
   createSignal,
   onCleanup,
-  onMount,
+  onMount
 } from "solid-js";
 import { A } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";

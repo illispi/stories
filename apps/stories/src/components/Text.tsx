@@ -1,16 +1,9 @@
-import {
-  Component,
-  For,
-  Index,
-  Show,
-  createEffect,
-  createSignal,
-} from "solid-js";
+import type { Component } from "solid-js";
+import { For, Show } from "solid-js";
 import { A } from "solid-start";
 
-import { MainReturn } from "~/types/types";
-import { PersonalQuestions } from "~/types/zodFromTypes";
-import { useData } from "./globalSignals";
+import type { MainReturn } from "~/types/types";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 export const TextComponent: Component<{
   header: string;
@@ -35,7 +28,7 @@ export const TextComponent: Component<{
               )}
             </For>
 
-            <A href={`${props.stat}`}>
+            <A href={`/stats/${props.stat}`}>
               <div
                 class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
         text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
