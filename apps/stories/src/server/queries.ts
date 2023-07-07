@@ -285,11 +285,19 @@ export const textPagination = query$({
     const stats = await db
       .selectFrom("Personal_questions")
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
+      .where(payload.stat as keyof PersonalQuestions, "!=", "null")
       .offset(payload.page * 50)
       .limit(50)
       .execute();
 
-    return stats;
+    const { count } = db.fn;
+
+    const totalLength = await db
+      .selectFrom("Personal_questions")
+      .select(count(payload.stat as keyof PersonalQuestions).as("count"))
+      .executeTakeFirst();
+
+    return { stats, total: Number(totalLength?.count) };
   },
   key: "textPagination",
   schema: z.object({ page: z.number(), stat: z.string() }),

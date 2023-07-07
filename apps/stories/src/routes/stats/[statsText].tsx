@@ -13,6 +13,8 @@ const StatsText = () => {
     stat: params.statsText,
   }));
 
+  console.log(texts.data);
+
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
       <CustomButton>Filter</CustomButton>
@@ -30,7 +32,7 @@ const StatsText = () => {
               ].question
             }`}</h4>
 
-            <For each={texts.data} fallback={<div>failure</div>}>
+            <For each={texts.data?.stats} fallback={<div>failure</div>}>
               {(stat, i) =>
                 stat ? (
                   <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
@@ -63,4 +65,4 @@ const StatsText = () => {
 export default StatsText;
 //TODO replace suspense with some component
 //TODO make backend for stats maybe with infinte pagination and store compare in localstorage if coming from there
-//TODO back navigate should remember position
+//TODO back navigate should remember position, and page shouldnt go to top before exit animation
