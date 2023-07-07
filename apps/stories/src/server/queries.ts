@@ -1,9 +1,9 @@
 import { query$ } from "@prpc/solid";
 import { z } from "zod";
-import { isServer } from "solid-js/web";
 import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
 import type { MainReturn } from "~/types/types";
+import { PersonalQuestions } from "~/types/zodFromTypes";
 
 //TODO remember to only update this every once in a while in production
 
@@ -56,7 +56,7 @@ export const allStats = query$({
         break;
     }
 
-    const responsesTotal = stats.length;
+    const responsesTotal: number = stats.length;
 
     const maleAge = await db
       .selectFrom("Personal_questions")
@@ -279,3 +279,18 @@ export const allStats = query$({
     ]),
   }), // this will be used as the query key (along with the input)
 }); // this will be used as the input type and input validation
+
+export const textPagination = query$({
+  queryFn: async ({ payload }) => {
+    const stats = await db
+      .selectFrom("Personal_questions")
+      .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
+      .offset(payload.page * 50)
+      .limit(50)
+      .execute();
+
+    return stats;
+  },
+  key: "textPagination",
+  schema: z.object({ page: z.number(), stat: z.string() }),
+});
