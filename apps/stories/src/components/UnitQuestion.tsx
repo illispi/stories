@@ -322,7 +322,7 @@ export const UnitQuestion: ParentComponent<{
     <Switch fallback={<div>Error</div>}>
       <Match when={questionType === "selection"}>
         <Box question={question}>
-          <div class="flex flex-col items-center justify-end ">
+          <div class="flex flex-col items-center justify-end">
             <For each={selections} fallback={<div>No selection found</div>}>
               {(v) => (
                 <div class="m-2">
@@ -349,7 +349,7 @@ export const UnitQuestion: ParentComponent<{
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
               <input
-                class="m-4 box-border rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
+                class="m-4 box-border p-4 focus-visible:outline-none"
                 autocomplete="off"
                 placeholder={`${
                   metric()
@@ -411,7 +411,7 @@ export const UnitQuestion: ParentComponent<{
                 }}
               /> */}
               <input
-                class="m-4 box-border rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
+                class="m-4 box-border p-4 focus-visible:outline-none"
                 placeholder="Age"
                 autocomplete="off"
                 id="int"
@@ -438,7 +438,7 @@ export const UnitQuestion: ParentComponent<{
               <textarea
                 rows={14}
                 cols={30}
-                class="m-4 box-border resize-none rounded-3xl border-2 p-4 shadow-md shadow-black focus-visible:outline-none"
+                class="m-4 box-border resize-none p-4 focus-visible:outline-none"
                 placeholder="Text"
                 autocomplete="off"
                 id="int"

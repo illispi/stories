@@ -149,10 +149,11 @@ export const questions: QuestionPersonal[] = [
     question: "Did the antipsychotic medication cause side effects",
     questionType: "yesOrNo",
     questionDB: "had_side_effs",
+    skip: "quitting",
   },
 
   {
-    question: "Did the antipsychotic medication cause any side effects?",
+    question: "What kind of side effects?",
     questionType: "multiSelect",
     questionDB: "side_effs_dizziness",
     multiSelect: [
@@ -363,7 +364,6 @@ export const questions: QuestionPersonal[] = [
     question: "Are you satisfied with life?",
     questionType: "yesOrNo",
     questionDB: "life_satisfaction",
-    skip: "what_others_should_know",
   },
   {
     question: "Why or why not are you satisfied with life",

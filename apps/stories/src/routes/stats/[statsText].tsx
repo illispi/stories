@@ -217,7 +217,5 @@ const StatsText = () => {
 
 export default StatsText;
 //TODO replace suspense with some component
-//TODO make backend for stats maybe with infinte pagination and store compare in localstorage if coming from there
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
-//BUG textarea two small on mobile
 //BUG if filtering pagination doesnt work
