@@ -292,10 +292,10 @@ export const textPagination = query$({
 
     const { count } = db.fn;
 
-    const totalLength = await db
+    const totalLength = (await db
       .selectFrom("Personal_questions")
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
-      .executeTakeFirst();
+      .executeTakeFirst()) ?? { count: 0 };
 
     return { stats, total: Number(totalLength?.count) };
   },
