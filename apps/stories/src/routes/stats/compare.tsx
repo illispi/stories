@@ -13,13 +13,11 @@ import {
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
+import ToggleButton from "~/components/ToggleButton";
 import { byDiagnosis, byGender } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 
-interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
-  toggled?: boolean;
-}
 
 type CompareOptions =
   | "all"
@@ -28,19 +26,8 @@ type CompareOptions =
   | "female"
   | "other"
   | "male";
+  
 
-const ToggleButton: Component<Props> = (props) => {
-  return (
-    <CustomButton
-      onClick={(e) => props.onClick(e)}
-      class={
-        props.toggled ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900` : ""
-      }
-    >
-      {props.children}
-    </CustomButton>
-  );
-};
 
 const Compared: Component<{
   setB: Setter<CompareOptions>;
