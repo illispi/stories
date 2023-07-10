@@ -30,7 +30,7 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
-  const [filteredTexts, setFilteredTexts] = createSignal(null);
+  const [filteredTexts, setFilteredTexts] = createSignal(texts.data?.stats);
 
   createEffect(() => {
     const filterGender = gender()
