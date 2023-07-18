@@ -16,12 +16,6 @@ import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 const StatsText = () => {
   const params = useParams<{ statsText: keyof PersonalQuestions }>();
-  const [page, setPage] = createSignal(0);
-  const texts = textPagination(() => ({
-    page: page(),
-    stat: params.statsText,
-  }));
-
   const [filter, setFilter] = createSignal(false);
   const [gender, setGender] = createSignal<"Female" | "Other" | "Male" | null>(
     null
@@ -30,19 +24,13 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
-  const [filteredTexts, setFilteredTexts] = createSignal(texts.data?.stats);
-
-  createEffect(() => {
-    const filterGender = gender()
-      ? texts.data?.stats.filter((el) => el.gender === gender()?.toLowerCase())
-      : texts.data?.stats;
-
-    const filtered = diagnosis()
-      ? filterGender.filter((el) => el.diagnosis === diagnosis()?.toLowerCase())
-      : filterGender;
-
-    setFilteredTexts(filtered);
-  });
+  const [page, setPage] = createSignal(0);
+  const texts = textPagination(() => ({
+    page: page(),
+    stat: params.statsText,
+    diagnosis: diagnosis(),
+    gender: gender(),
+  }));
 
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
@@ -171,7 +159,7 @@ const StatsText = () => {
               ].question
             }`}</h4>
 
-            <For each={filteredTexts()} fallback={<div>None found</div>}>
+            <For each={texts.data?.stats} fallback={<div>None found</div>}>
               {(stat, i) =>
                 stat ? (
                   <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">

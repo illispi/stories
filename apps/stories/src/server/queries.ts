@@ -4,9 +4,6 @@ import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import { PersonalQuestions } from "~/types/zodFromTypes";
-import PersonalQuestions from "~/routes/personalQuestions";
-import PersonalQuestions from "~/routes/personalQuestions";
-
 //TODO remember to only update this every once in a while in production
 
 export const allStats = query$({
@@ -290,11 +287,11 @@ export const textPagination = query$({
       .where(payload.stat as keyof PersonalQuestions, "!=", "null");
 
     if (payload.gender) {
-      stats = stats.where("gender", "==", payload.gender.toLowerCase());
+      stats = stats.where("gender", "=", payload.gender.toLowerCase());
     }
 
     if (payload.diagnosis) {
-      stats = stats.where("diagnosis", "==", payload.diagnosis.toLowerCase());
+      stats = stats.where("diagnosis", "=", payload.diagnosis.toLowerCase());
     }
 
     const statsFinal = await stats
