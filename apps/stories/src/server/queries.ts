@@ -4,6 +4,8 @@ import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import { PersonalQuestions } from "~/types/zodFromTypes";
+import PersonalQuestions from "~/routes/personalQuestions";
+import PersonalQuestions from "~/routes/personalQuestions";
 
 //TODO remember to only update this every once in a while in production
 
@@ -282,10 +284,20 @@ export const allStats = query$({
 
 export const textPagination = query$({
   queryFn: async ({ payload }) => {
-    const stats = await db
+    let stats = db
       .selectFrom("Personal_questions")
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
-      .where(payload.stat as keyof PersonalQuestions, "!=", "null")
+      .where(payload.stat as keyof PersonalQuestions, "!=", "null");
+
+    if (payload.gender) {
+      stats = stats.where("gender", "==", payload.gender.toLowerCase());
+    }
+
+    if (payload.diagnosis) {
+      stats = stats.where("diagnosis", "==", payload.diagnosis.toLowerCase());
+    }
+
+    const statsFinal = await stats
       .offset(payload.page * 50)
       .limit(50)
       .execute();
@@ -297,8 +309,13 @@ export const textPagination = query$({
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
       .executeTakeFirst()) ?? { count: 0 };
 
-    return { stats, total: Number(totalLength?.count) };
+    return { stats: statsFinal, total: Number(totalLength?.count) };
   },
   key: "textPagination",
-  schema: z.object({ page: z.number(), stat: z.string() }),
+  schema: z.object({
+    page: z.number(),
+    stat: z.string(),
+    gender: z.enum(["Female", "Other", "Male"]).nullable(),
+    diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
+  }),
 });
