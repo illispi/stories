@@ -223,6 +223,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("told_friends", "boolean")
     .addColumn("told_if_asked", "boolean")
     .addColumn("told_employer", "boolean")
+    //BUG is the told_nobody correct below
     .addColumn("responded_to_telling", "text", (col) =>
       col.check(sql`NOT (told_nobody AND responded_to_telling IS NULL)`)
     )
