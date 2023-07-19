@@ -1,44 +1,20 @@
-import { Motion, Presence } from "@motionone/solid";
-import { createIntersectionObserver } from "@solid-primitives/intersection-observer";
-import { createSignal } from "solid-js";
-import { useRouteData } from "solid-start";
-import { createServerData$ } from "solid-start/server";
-import PieChartCustom from "~/components/PieChartCustom";
-import { personalStatsGet } from "~/server/server";
-
-const Tab = (props) => <p ref={props.ref}>This is a Paragraph</p>;
+import CustomButton from "~/components/CustomButton";
+import { generateMock } from "@anatine/zod-mock";
+import { personalQuestionsSchema } from "~/types/zodFromTypes";
+import { postPersonalStats } from "~/server/mutations";
 
 const Test = () => {
-  const [targets, setTargets] = createSignal<Element[]>([]);
-
-  createIntersectionObserver(targets, (entries) => {
-    entries.forEach((e) => console.log(e.isIntersecting));
-  });
-
+  const sendStatsPersonal = postPersonalStats();
+  console.log(generateMock(personalQuestionsSchema))
   return (
     <>
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <Tab ref={(el) => setTargets((p) => [...p, el])} />
-      <div>efsgfes</div>
+      <CustomButton
+        onClick={() =>
+          sendStatsPersonal.mutateAsync(generateMock(personalQuestionsSchema))
+        }
+      >
+        Send data
+      </CustomButton>
     </>
   );
 };

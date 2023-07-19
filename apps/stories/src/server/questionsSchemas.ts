@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const personalQuestionsSchema = z
+export const personalQuestionsSchemaCustom = z
   .object({
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
     gender: z.enum(["other", "male", "female"]),
@@ -376,3 +376,5 @@ export const personalQuestionsSchema = z
       ? data.describe_hospital !== null
       : data.describe_hospital === null;
   });
+
+export type QuestionsPersonalZodTypes = z.infer<typeof personalQuestionsSchemaCustom>;
