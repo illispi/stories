@@ -20,6 +20,14 @@ export async function up(db: Kysely<any>): Promise<void> {
       "text",
       (col) => col.notNull().check(sql`gender in ('male', 'female', 'other')`) //NOTE check if this actually works first thing.
     )
+    .addColumn("relatives", "text", (col) =>
+      col
+        .notNull()
+        .check(
+          sql`relatives in ('parents', 'none', 'siblings', 'cousins', 'grandparents', 'other')`
+        )
+    )
+    .addColumn("lost_relationships", "boolean", (col) => col.notNull())
     .addColumn("current_age", "integer", (col) => col.notNull())
     .addColumn("age_of_onset", "integer", (col) => col.notNull())
     .addColumn("length_of_psychosis", "text", (col) =>

@@ -36,6 +36,19 @@ export const questions: QuestionPersonal[] = [
     questionDB: "current_age",
   },
   {
+    question: "Do you have relatives with this illness?",
+    questionType: "selection",
+    questionDB: "relatives",
+    selections: [
+      "none",
+      "parents",
+      "siblings",
+      "cousins",
+      "grandparents",
+      "other",
+    ],
+  },
+  {
     question: "What age were you when you first had a psychotic episode",
     questionType: "integer",
     questionDB: "age_of_onset",
@@ -359,6 +372,11 @@ export const questions: QuestionPersonal[] = [
     question: "How did they respond to you having schizophrenia?",
     questionType: "text",
     questionDB: "responded_to_telling",
+  },
+  {
+    question: "Did you lose any relatios due this illness?",
+    questionType: "yesOrNo",
+    questionDB: "lost_relationships",
   },
   {
     question: "Are you satisfied with life?",

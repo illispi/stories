@@ -173,6 +173,15 @@ export const personalQuestionsSchema = z
       .max(600, "Your text is too long! (Max. 600 characters)")
       .min(4, 'Your text is too short, even "okay" is enough')
       .nullable(),
+    lost_relationships: z.boolean(),
+    relatives: z.enum([
+      "parents",
+      "none",
+      "siblings",
+      "cousins",
+      "grandparents",
+      "other",
+    ]),
   })
   .refine((data) => {
     return data.hospitalized_on_first
