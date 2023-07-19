@@ -1,12 +1,5 @@
 import { Motion, Presence } from "@motionone/solid";
-import {
-  ErrorBoundary,
-  For,
-  Show,
-  Suspense,
-  createEffect,
-  createSignal,
-} from "solid-js";
+import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { useParams } from "solid-start";
 import CustomButton from "~/components/CustomButton";
 import ToggleButton from "~/components/ToggleButton";
@@ -206,4 +199,3 @@ const StatsText = () => {
 export default StatsText;
 //TODO replace suspense with some component
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
-//BUG if filtering pagination doesnt work

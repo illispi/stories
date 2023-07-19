@@ -3,7 +3,8 @@ import { z } from "zod";
 import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
 import type { MainReturn } from "~/types/types";
-import { PersonalQuestions } from "~/types/zodFromTypes";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
+import { personalQuestionsSchema } from "./questionsSchemas";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = query$({
@@ -301,12 +302,24 @@ export const textPagination = query$({
 
     const { count } = db.fn;
 
-    const totalLength = (await db
+    const length = await db
       .selectFrom("Personal_questions")
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
-      .executeTakeFirst()) ?? { count: 0 };
+      .executeTakeFirst();
 
-    return { stats: statsFinal, total: Number(totalLength?.count) };
+    const totalLength = Number(length?.count ?? "0");
+
+    //NOTE remove log below
+
+    console.log(
+      personalQuestionsSchema.parse({
+        hospitalized_on_first: true,
+        care_after_hospital: true,
+        what_kind_of_care_after: undefined,
+      })
+    );
+
+    return { stats: statsFinal, total: totalLength };
   },
   key: "textPagination",
   schema: z.object({
