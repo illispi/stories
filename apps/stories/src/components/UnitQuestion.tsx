@@ -250,8 +250,8 @@ export const UnitQuestion: ParentComponent<{
           })
           .positive("Only positive numbers")
           .finite()
-          .max(110, "Maximum weight increase is 300 kilos")
-          .min(5, "Minimum weight increase is 1 kilos")
+          .max(300, "Maximum weight increase is 300 kilos")
+          .min(1, "Minimum weight increase is 1 kilos")
           .safe()
           .int("Please provide whole number only (e.g 15, not 15.6)");
       } else {

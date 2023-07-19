@@ -127,7 +127,11 @@ export async function up(db: Kysely<any>): Promise<void> {
         .check(sql` NOT (quitting AND quitting_why IS NULL)`)
     )
     .addColumn("quitting_what_happened", "text", (col) =>
-      col.check(sql`NOT (quitting AND quitting_what_happened IS NULL)`)
+      col
+        .check(
+          sql`quitting_what_happened in ('relapsed', 'nothing', 'felt better')`
+        )
+        .check(sql`NOT (quitting AND quitting_what_happened IS NULL)`)
     )
     .addColumn("quitting_regret", "boolean", (col) =>
       col.check(sql`NOT (quitting AND quitting_regret IS NULL)`)
@@ -138,7 +142,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("smoking", "boolean", (col) => col.notNull())
     .addColumn("smoking_amount", "text", (col) =>
-      col.check(
+      col.check(sql`NOT (smoking AND smoking_amountt IS NULL)`).check(
         sql`smoking_amount in ('10 a day',
         '20 or more a day',
         'Less than 10 a day',
