@@ -11,19 +11,19 @@ export const TextComponent: Component<{
   data: MainReturn | undefined;
 }> = (props) => {
   return (
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center ">
       <Show when={props.data?.[props.stat]}>
         <Show
           when={props.data?.[props.stat].length > 0}
           fallback={<div>failure</div>}
         >
-          <div class="flex w-11/12 max-w-xs flex-col items-center justify-center">
+          <div class="flex w-11/12 max-w-xs flex-col items-center justify-center ">
             <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
             <For each={props.data?.[props.stat]}>
               {(stat, i) => (
                 <div class="flex w-full max-w-xs flex-col items-center justify-center">
                   <h5 class="m-2 font-bold">{i() + 1}.</h5>
-                  <p class="w-full">{stat}</p>
+                  <p class="w-full md:w-[400px] lg:w-[460px]">{stat}</p>
                 </div>
               )}
             </For>
@@ -42,3 +42,5 @@ export const TextComponent: Component<{
     </div>
   );
 };
+
+//TODO make text field wider on pc responsively not with this current one
