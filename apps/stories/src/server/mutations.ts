@@ -7,8 +7,6 @@ export const postPersonalStats = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
 
-    console.log(personalQuestionsSchema.safeParse(payload), "here");
-
     if (!session) {
       return "no session found";
     }
@@ -18,8 +16,6 @@ export const postPersonalStats = mutation$({
       .select("id")
       .where("id", "=", session.user.id)
       .executeTakeFirstOrThrow();
-
-    console.log(user, "user");
 
     if (user?.id) {
       const insertion = await db

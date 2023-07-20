@@ -192,7 +192,8 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question: "Were there any consequences to quitting the medication?",
-    questionType: "text",
+    questionType: "selection",
+    selections: ["relapsed", "nothing", "felt better"],
     questionDB: "quitting_what_happened",
   },
   {

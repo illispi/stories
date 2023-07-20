@@ -9,7 +9,6 @@ const Test = () => {
   const submit = () => {
     try {
       const test = createFakeData();
-      console.log(test);
 
       personalQuestionsSchema.parse(test);
       return test;

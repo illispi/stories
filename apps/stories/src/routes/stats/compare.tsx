@@ -18,7 +18,6 @@ import { byDiagnosis, byGender } from "~/data/statsArrays";
 import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 
-
 type CompareOptions =
   | "all"
   | "schizophrenia"
@@ -26,8 +25,6 @@ type CompareOptions =
   | "female"
   | "other"
   | "male";
-  
-
 
 const Compared: Component<{
   setB: Setter<CompareOptions>;

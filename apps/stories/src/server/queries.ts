@@ -309,16 +309,6 @@ export const textPagination = query$({
 
     const totalLength = Number(length?.count ?? "0");
 
-    //NOTE remove log below
-
-    console.log(
-      personalQuestionsSchema.parse({
-        hospitalized_on_first: true,
-        care_after_hospital: true,
-        what_kind_of_care_after: undefined,
-      })
-    );
-
     return { stats: statsFinal, total: totalLength };
   },
   key: "textPagination",

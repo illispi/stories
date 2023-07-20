@@ -121,6 +121,11 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Medications helped to psychosis symptoms",
   },
   {
+    type: "yesOrNo",
+    stat: "had_side_effs",
+    header: "Had side effects from medication",
+  },
+  {
     type: "bar",
     stat: "side_effs_dizziness",
     header: "Side effects from medication",
@@ -144,7 +149,8 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
-    type: "text",
+    type: "doughnut",
+    function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
   },
@@ -474,7 +480,8 @@ export const byDiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
-    type: "text",
+    type: "doughnut",
+    function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
   },
@@ -794,7 +801,8 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
-    type: "text",
+    type: "doughnut",
+    function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
   },
