@@ -296,8 +296,8 @@ export const textPagination = query$({
     }
 
     const statsFinal = await stats
-      .offset(payload.page * 50)
-      .limit(50)
+      .offset(payload.page * 25)
+      .limit(25)
       .execute();
 
     const { count } = db.fn;

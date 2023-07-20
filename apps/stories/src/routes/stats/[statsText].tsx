@@ -127,6 +127,7 @@ const StatsText = () => {
               </div>
               <CustomButton
                 onClick={() => {
+                  setPage(0);
                   setFilter(false);
                   document.body.style.overflow = "auto";
                 }}
@@ -171,18 +172,16 @@ const StatsText = () => {
                 Back
               </CustomButton>
               <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                Math.floor(texts.data?.total / 50) + 1
+                Math.floor(texts.data?.total / 25) + 1
               }`}</h5>
 
               <CustomButton
                 class={
-                  texts.data?.total / ((page() + 1) * 100) <= 1 ? "hidden" : ""
+                  texts.data?.total / ((page() + 1) * 25) <= 1 ? "hidden" : ""
                 }
                 onClick={() =>
                   setPage((prev) =>
-                    texts.data?.total / ((prev + 1) * 100) <= 1
-                      ? prev
-                      : prev + 1
+                    texts.data?.total / ((prev + 1) * 25) <= 1 ? prev : prev + 1
                   )
                 }
               >
@@ -199,3 +198,4 @@ const StatsText = () => {
 export default StatsText;
 //TODO replace suspense with some component
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
+//TODO only filter after pressing filter in modal, X/offscreen to clear filters and intermediate selection of filters before committing
