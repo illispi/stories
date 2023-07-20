@@ -5,7 +5,8 @@ import { postPersonalStats } from "~/server/mutations";
 
 const Test = () => {
   const sendStatsPersonal = postPersonalStats();
-  console.log(generateMock(personalQuestionsSchema))
+  const test = generateMock(personalQuestionsSchema);
+  console.log(personalQuestionsSchema.safeParse(test));
   return (
     <>
       <CustomButton

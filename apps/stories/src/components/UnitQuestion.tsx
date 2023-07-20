@@ -248,11 +248,8 @@ export const UnitQuestion: ParentComponent<{
             required_error: "Weight is required, 1-300 kilograms",
             invalid_type_error: "Weight must be a number only",
           })
-          .positive("Only positive numbers")
-          .finite()
           .max(300, "Maximum weight increase is 300 kilos")
           .min(1, "Minimum weight increase is 1 kilos")
-          .safe()
           .int("Please provide whole number only (e.g 15, not 15.6)");
       } else {
         numberSchema = z
@@ -260,11 +257,8 @@ export const UnitQuestion: ParentComponent<{
             required_error: "Weight is required, 1-650 pounds",
             invalid_type_error: "Weight must be a number only",
           })
-          .positive("Only positive numbers")
-          .finite()
           .max(650, "Maximum weight increase is 650 pounds")
           .min(1, "Minimum weight increase is 1 pounds")
-          .safe()
           .int("Please provide whole number only (e.g 15, not 15.6)");
       }
     } else {
@@ -274,11 +268,8 @@ export const UnitQuestion: ParentComponent<{
           required_error: "Age is required, 5-120",
           invalid_type_error: "Age must be a number only",
         })
-        .positive("Only positive numbers")
-        .finite()
         .max(110, "Maximum age is 110")
         .min(5, "Minimum age is 5")
-        .safe()
         .int("Please provide whole number only (e.g 15, not 15.6)");
     }
 

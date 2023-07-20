@@ -4,8 +4,9 @@ export const personalQuestionsSchemaCustom = z
   .object({
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
     gender: z.enum(["other", "male", "female"]),
-    current_age: z.number().int(),
-    age_of_onset: z.number().int(),
+    //BUG maybe refine that age_of_onset is smaller than current age
+    current_age: z.number().max(110).min(5).int(),
+    age_of_onset: z.number().max(110).min(5).int(),
     length_of_psychosis: z.enum([
       "few days",
       "few weeks",
@@ -19,13 +20,15 @@ export const personalQuestionsSchemaCustom = z
       .string()
       .trim()
       .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough'),
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
     care_after_hospital: z.boolean().nullable(),
     what_kind_of_care_after: z
       .string()
       .trim()
       .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough'),
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
     after_hospital_satisfaction: z.boolean().nullable(),
     psychosis_how_many: z.enum([
       "once",
@@ -74,15 +77,7 @@ export const personalQuestionsSchemaCustom = z
       .nullable(),
     quitting_regret: z.boolean().nullable(),
     gained_weight: z.boolean(),
-    weight_amount: z
-      .number()
-      .positive()
-      .finite()
-      .max(300)
-      .min(1)
-      .safe()
-      .int()
-      .nullable(),
+    weight_amount: z.number().max(300).min(1).int().nullable(),
     smoking: z.boolean(),
     smoking_amount: z
       .enum([
@@ -160,7 +155,12 @@ export const personalQuestionsSchemaCustom = z
       .min(4, 'Your text is too short, even "okay" is enough')
       .nullable(),
     life_satisfaction: z.boolean(),
-    life_satisfaction_description: z.boolean().nullable(),
+    life_satisfaction_description: z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
     what_others_should_know: z
       .string()
       .trim()
@@ -171,8 +171,8 @@ export const personalQuestionsSchemaCustom = z
       .string()
       .trim()
       .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough')
-      .nullable(),
+      .min(4, 'Your text is too short, even "okay" is enough'),
+
     lost_relationships: z.boolean(),
     relatives: z.enum([
       "parents",
@@ -377,4 +377,6 @@ export const personalQuestionsSchemaCustom = z
       : data.describe_hospital === null;
   });
 
-export type QuestionsPersonalZodTypes = z.infer<typeof personalQuestionsSchemaCustom>;
+export type QuestionsPersonalZodTypes = z.infer<
+  typeof personalQuestionsSchemaCustom
+>;

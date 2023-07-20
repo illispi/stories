@@ -244,9 +244,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("what_others_should_know", "text")
     .addColumn("not_have_schizophrenia", "boolean", (col) => col.notNull())
     .addColumn("not_have_schizophrenia_description", "text", (col) =>
-      col.check(
-        sql`NOT (not_have_schizophrenia AND not_have_schizophrenia_description IS NULL)`
-      )
+      col.notNull()
     )
     .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
     .execute();
