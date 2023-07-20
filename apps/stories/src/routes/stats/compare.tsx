@@ -260,7 +260,7 @@ const CompareStats = () => {
             <h1 class="text-center font-semibold">Statistics Comparision</h1>
           </div>
           <div class="flex flex-col items-center justify-center">
-            <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid lg:grid-cols-2">
+            <div class="z-[5] flex w-full flex-col items-start justify-center  lg:grid lg:grid-cols-2">
               <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
                 <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
                   {A()}

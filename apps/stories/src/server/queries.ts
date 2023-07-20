@@ -191,7 +191,7 @@ export const allStats = query$({
 
         for (
           let index = 0;
-          index <= (allTexts.length <= 8 ? allTexts.length : 8);
+          index <= (allTexts.length <= 5 ? allTexts.length : 5);
           index++
         ) {
           const element =
