@@ -183,199 +183,314 @@ export const personalQuestionsSchemaCustom = z
       "other",
     ]),
   })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.hospitalized_voluntarily !== null
-      : data.hospitalized_voluntarily === null;
-  })
-  .refine((data) => {
-    return data.life_satisfaction
-      ? data.life_satisfaction_description !== null
-      : data.life_satisfaction_description === null;
-  })
-  .refine((data) => {
-    return data.not_have_schizophrenia
-      ? data.not_have_schizophrenia_description !== null
-      : data.not_have_schizophrenia_description === null;
-  })
-  .refine((data) => {
-    return data.told_nobody
-      ? data.responded_to_telling !== null
-      : data.responded_to_telling === null;
-  })
-  .refine((data) => {
-    return data.goals_changed
-      ? data.goals_after !== null
-      : data.goals_after === null;
-  })
-  .refine((data) => {
-    return data.personality_changed
-      ? data.personality_after !== null
-      : data.personality_after === null;
-  })
-  .refine((data) => {
-    return data.cognitive_symptoms
-      ? data.disorganized_thinking !== null
-      : data.disorganized_thinking === null;
-  })
-  .refine((data) => {
-    return data.cognitive_symptoms
-      ? data.poor_memory !== null
-      : data.poor_memory === null;
-  })
-  .refine((data) => {
-    return data.cognitive_symptoms
-      ? data.poor_concentration !== null
-      : data.poor_concentration === null;
-  })
-  .refine((data) => {
-    return data.cognitive_symptoms
-      ? data.difficulty_understanding !== null
-      : data.difficulty_understanding === null;
-  })
-  .refine((data) => {
-    return data.cognitive_symptoms
-      ? data.slow_thinking !== null
-      : data.slow_thinking === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms
-      ? data.flat_expressions !== null
-      : data.flat_expressions === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms
-      ? data.lack_of_motivation !== null
-      : data.lack_of_motivation === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms ? data.apathy !== null : data.apathy === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms
-      ? data.no_interest_socially !== null
-      : data.no_interest_socially === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms
-      ? data.anhedonia !== null
-      : data.anhedonia === null;
-  })
-  .refine((data) => {
-    return data.negative_symptoms
-      ? data.poverty_of_speech !== null
-      : data.poverty_of_speech === null;
-  })
-  .refine((data) => {
-    return data.suicidal_thoughts
-      ? data.suicide_attempts !== null
-      : data.suicide_attempts === null;
-  })
-  .refine((data) => {
-    return data.smoking
-      ? data.smoking_amount !== null
-      : data.smoking_amount === null;
-  })
-  .refine((data) => {
-    return data.quitting
-      ? data.quitting_regret !== null
-      : data.quitting_regret === null;
-  })
-  .refine((data) => {
-    return data.gained_weight
-      ? data.weight_amount !== null
-      : data.weight_amount === null;
-  })
-  .refine((data) => {
-    return data.quitting
-      ? data.quitting_what_happened !== null
-      : data.quitting_what_happened === null;
-  })
-  .refine((data) => {
-    return data.quitting
-      ? data.quitting_why !== null
-      : data.quitting_why === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_movement_effects !== null
-      : data.side_effs_movement_effects === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_tardive !== null
-      : data.side_effs_tardive === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_sexual !== null
-      : data.side_effs_sexual === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_sedation !== null
-      : data.side_effs_sedation === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_weight_gain !== null
-      : data.side_effs_weight_gain === null;
-  })
-  .refine((data) => {
-    return data.had_side_effs
-      ? data.side_effs_dizziness !== null
-      : data.side_effs_dizziness === null;
-  })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.hospital_satisfaction !== null
-      : data.hospital_satisfaction === null;
-  })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.care_after_hospital !== null
-      : data.care_after_hospital === null;
-  })
-  .refine((data) => {
-    return data.prodromal_symptoms
-      ? data.prodromal_anxiety !== null
-      : data.prodromal_anxiety === null;
-  })
-  .refine((data) => {
-    return data.prodromal_symptoms
-      ? data.prodromal_depression !== null
-      : data.prodromal_depression === null;
-  })
-  .refine((data) => {
-    return data.prodromal_symptoms
-      ? data.prodromal_mood_swings !== null
-      : data.prodromal_mood_swings === null;
-  })
-  .refine((data) => {
-    return data.prodromal_symptoms
-      ? data.prodromal_sleep_disturbances !== null
-      : data.prodromal_sleep_disturbances === null;
-  })
-  .refine((data) => {
-    return data.prodromal_symptoms
-      ? data.prodromal_irritability !== null
-      : data.prodromal_irritability === null;
-  })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.care_after_hospital && data.what_kind_of_care_after !== null
-      : data.care_after_hospital && data.what_kind_of_care_after === null;
-  })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.care_after_hospital && data.after_hospital_satisfaction !== null
-      : data.care_after_hospital && data.after_hospital_satisfaction === null;
-  })
-  .refine((data) => {
-    return data.hospitalized_on_first
-      ? data.describe_hospital !== null
-      : data.describe_hospital === null;
-  });
+  .refine(
+    (data) => {
+      return data.hospitalized_on_first
+        ? data.hospitalized_voluntarily !== null
+        : data.hospitalized_voluntarily === null;
+    },
+    { message: "1" }
+  )
+  .refine(
+    (data) => {
+      return data.life_satisfaction
+        ? data.life_satisfaction_description !== null
+        : data.life_satisfaction_description === null;
+    },
+    { message: "2" }
+  )
+  .refine(
+    (data) => {
+      return data.told_nobody
+        ? data.responded_to_telling !== null
+        : data.responded_to_telling === null;
+    },
+    { message: "4" }
+  )
+  .refine(
+    (data) => {
+      return data.goals_changed
+        ? data.goals_after !== null
+        : data.goals_after === null;
+    },
+    { message: "5" }
+  )
+  .refine(
+    (data) => {
+      return data.personality_changed
+        ? data.personality_after !== null
+        : data.personality_after === null;
+    },
+    { message: "6" }
+  )
+  .refine(
+    (data) => {
+      return data.cognitive_symptoms
+        ? data.disorganized_thinking !== null
+        : data.disorganized_thinking === null;
+    },
+    { message: "7" }
+  )
+  .refine(
+    (data) => {
+      return data.cognitive_symptoms
+        ? data.poor_memory !== null
+        : data.poor_memory === null;
+    },
+    { message: "8" }
+  )
+  .refine(
+    (data) => {
+      return data.cognitive_symptoms
+        ? data.poor_concentration !== null
+        : data.poor_concentration === null;
+    },
+    { message: "9" }
+  )
+  .refine(
+    (data) => {
+      return data.cognitive_symptoms
+        ? data.difficulty_understanding !== null
+        : data.difficulty_understanding === null;
+    },
+    { message: "10" }
+  )
+  .refine(
+    (data) => {
+      return data.cognitive_symptoms
+        ? data.slow_thinking !== null
+        : data.slow_thinking === null;
+    },
+    { message: "11" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.flat_expressions !== null
+        : data.flat_expressions === null;
+    },
+    { message: "12" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.lack_of_motivation !== null
+        : data.lack_of_motivation === null;
+    },
+    { message: "13" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.apathy !== null
+        : data.apathy === null;
+    },
+    { message: "14" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.no_interest_socially !== null
+        : data.no_interest_socially === null;
+    },
+    { message: "15" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.anhedonia !== null
+        : data.anhedonia === null;
+    },
+    { message: "16" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.poverty_of_speech !== null
+        : data.poverty_of_speech === null;
+    },
+    { message: "17" }
+  )
+  .refine(
+    (data) => {
+      return data.suicidal_thoughts
+        ? data.suicide_attempts !== null
+        : data.suicide_attempts === null;
+    },
+    { message: "18" }
+  )
+  .refine(
+    (data) => {
+      return data.smoking
+        ? data.smoking_amount !== null
+        : data.smoking_amount === null;
+    },
+    { message: "19" }
+  )
+  .refine(
+    (data) => {
+      return data.quitting
+        ? data.quitting_regret !== null
+        : data.quitting_regret === null;
+    },
+    { message: "20" }
+  )
+  .refine(
+    (data) => {
+      return data.gained_weight
+        ? data.weight_amount !== null
+        : data.weight_amount === null;
+    },
+    { message: "21" }
+  )
+  .refine(
+    (data) => {
+      return data.quitting
+        ? data.quitting_what_happened !== null
+        : data.quitting_what_happened === null;
+    },
+    { message: "22" }
+  )
+  .refine(
+    (data) => {
+      return data.quitting
+        ? data.quitting_why !== null
+        : data.quitting_why === null;
+    },
+    { message: "23" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_movement_effects !== null
+        : data.side_effs_movement_effects === null;
+    },
+    { message: "24" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_tardive !== null
+        : data.side_effs_tardive === null;
+    },
+    { message: "25" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_sexual !== null
+        : data.side_effs_sexual === null;
+    },
+    { message: "26" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_sedation !== null
+        : data.side_effs_sedation === null;
+    },
+    { message: "27" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_weight_gain !== null
+        : data.side_effs_weight_gain === null;
+    },
+    { message: "28" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_dizziness !== null
+        : data.side_effs_dizziness === null;
+    },
+    { message: "29" }
+  )
+  .refine(
+    (data) => {
+      return data.hospitalized_on_first
+        ? data.hospital_satisfaction !== null
+        : data.hospital_satisfaction === null;
+    },
+    { message: "30" }
+  )
+  .refine(
+    (data) => {
+      return data.hospitalized_on_first
+        ? data.care_after_hospital !== null
+        : data.care_after_hospital === null;
+    },
+    { message: "31" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_anxiety !== null
+        : data.prodromal_anxiety === null;
+    },
+    { message: "32" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_depression !== null
+        : data.prodromal_depression === null;
+    },
+    { message: "33" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_mood_swings !== null
+        : data.prodromal_mood_swings === null;
+    },
+    { message: "34" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_sleep_disturbances !== null
+        : data.prodromal_sleep_disturbances === null;
+    },
+    { message: "35" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_irritability !== null
+        : data.prodromal_irritability === null;
+    },
+    { message: "36" }
+  )
+  .refine(
+    (data) => {
+      if (data.hospitalized_on_first && data.care_after_hospital) {
+        return data.what_kind_of_care_after !== null;
+      } else {
+        return data.what_kind_of_care_after === null;
+      }
+    },
+    { message: "37" }
+  )
+  .refine(
+    (data) => {
+      if (data.hospitalized_on_first && data.care_after_hospital) {
+        return data.after_hospital_satisfaction !== null;
+      } else {
+        return data.after_hospital_satisfaction === null;
+      }
+    },
+    { message: "38" }
+  )
+  .refine(
+    (data) => {
+      return data.hospitalized_on_first
+        ? data.describe_hospital !== null
+        : data.describe_hospital === null;
+    },
+    { message: "39" }
+  );
 
 export type QuestionsPersonalZodTypes = z.infer<
   typeof personalQuestionsSchemaCustom

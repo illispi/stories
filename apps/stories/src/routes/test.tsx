@@ -1,19 +1,26 @@
 import CustomButton from "~/components/CustomButton";
-import { generateMock } from "@anatine/zod-mock";
-import { personalQuestionsSchema } from "~/types/zodFromTypes";
 import { postPersonalStats } from "~/server/mutations";
+import { personalQuestionsSchema } from "~/types/zodFromTypes";
+import { createFakeData } from "~/utils/mockUpDb";
 
 const Test = () => {
   const sendStatsPersonal = postPersonalStats();
-  const test = generateMock(personalQuestionsSchema);
-  console.log(personalQuestionsSchema.safeParse(test));
+
+  const submit = () => {
+    try {
+      const test = createFakeData();
+      console.log(test);
+
+      personalQuestionsSchema.parse(test);
+      return test;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
-      <CustomButton
-        onClick={() =>
-          sendStatsPersonal.mutateAsync(generateMock(personalQuestionsSchema))
-        }
-      >
+      <CustomButton onClick={() => sendStatsPersonal.mutateAsync(submit)}>
         Send data
       </CustomButton>
     </>
