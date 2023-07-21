@@ -9,14 +9,14 @@ const Questionares: Component = () => {
         class="duration-200 ease-out active:scale-125"
         href="/questionares/personalQuestions"
       >
-        Personal Stats
+        Personal questions
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
         href="/questionares/theirQuestions"
       >
-        Their Stats
+        Their questions
       </A>
     </div>
   );

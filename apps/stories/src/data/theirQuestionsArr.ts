@@ -65,7 +65,7 @@ export const questions: QuestionTheir[] = [
     skip: "psychosis_how_many",
   },
   {
-    question: "Did you recieve after care following hospitalization?",
+    question: "Did they recieve after care following hospitalization?",
     questionType: "yesOrNo",
     questionDB: "care_after_hospital",
   },

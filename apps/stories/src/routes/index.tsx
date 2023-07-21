@@ -34,7 +34,7 @@ const Home: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/personalQuestions"
+        href="/questionares"
       >
         Personal questions
       </A>

@@ -69,17 +69,19 @@ const Questions: ParentComponent<{
 };
 
 const PersonalQuestions: ParentComponent = () => {
-  const params = useParams<{ personalQuestions: "personal" | "theirs" }>();
+  const params = useParams<{
+    personalQuestions: "personalQuestions" | "theirQuestions";
+  }>();
   const [page, setPage] = createSignal(-1);
   const [direction, setDirection] = createSignal(1);
 
   const questions =
-    params.personalQuestions === "personal"
+    params.personalQuestions === "personalQuestions"
       ? questionsPersonal
       : questionsTheirs;
 
   const LsName =
-    params.personalQuestions === "personal"
+    params.personalQuestions === "personalQuestions"
       ? "personalQuestions"
       : "theirQuestions";
 
