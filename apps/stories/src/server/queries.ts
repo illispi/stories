@@ -4,16 +4,20 @@ import { db } from "./server";
 import { questions } from "~/data/personalQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
-import { personalQuestionsSchema } from "./questionsSchemas";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = query$({
   queryFn: async ({ payload }) => {
     let stats;
 
+    console.log(payload, "payload");
+
     switch (payload.value) {
-      case "all":
+      case "personalStatsAll":
         stats = await db.selectFrom("Personal_questions").selectAll().execute();
+        break;
+      case "theirStatsAll":
+        stats = await db.selectFrom("Their_questions").selectAll().execute();
         break;
       case "female":
         stats = await db
@@ -270,7 +274,8 @@ export const allStats = query$({
   key: "allStats",
   schema: z.object({
     value: z.enum([
-      "all",
+      "personalStatsAll",
+      "theirStatsAll",
       "schizophrenia",
       "schizoaffective",
       "female",

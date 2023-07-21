@@ -48,9 +48,16 @@ const Home: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats"
+        href="/stats/personalStatsAll"
       >
-        Stats
+        Personal Stats
+      </A>
+      <A
+        noScroll={true}
+        class="duration-200 ease-out active:scale-125"
+        href="/stats/theirStatsAll"
+      >
+        Their Stats
       </A>
       <AuthShowcase />
     </div>

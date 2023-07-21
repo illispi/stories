@@ -19,7 +19,8 @@ import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 
 type CompareOptions =
-  | "all"
+  | "personalQuestionsAll"
+  | "theirQuestionsAll"
   | "schizophrenia"
   | "schizoaffective"
   | "female"
