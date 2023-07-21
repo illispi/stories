@@ -17,7 +17,7 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
-  console.log(params.statsText);
+  console.log(params.statsText, "why");
 
   const [page, setPage] = createSignal(0);
   const texts = textPagination(() => ({

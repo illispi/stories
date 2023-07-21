@@ -7,14 +7,14 @@ const Stats: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats/personalStatsAll"
+        href="/stats/prpc/personalStatsAll"
       >
         Personal Stats
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats/theirStatsAll"
+        href="/stats/prpc/theirStatsAll"
       >
         Their Stats
       </A>

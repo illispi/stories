@@ -36,11 +36,11 @@ const Stats: ParentComponent = () => {
     questions: "personalStatsAll" | "theirStatsAll";
   }>();
 
-  console.log(params.questions);
+  console.log(params.questions, "why");
 
-  const allStatsData = allStats(() => ({
+  const allStatsData = allStats({
     value: params.questions,
-  }));
+  });
 
   const [compOrder, setCompOrder] = createSignal(
     params.questions === "personalStatsAll" ? allStatsArr : allStatsTheir
