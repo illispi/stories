@@ -54,7 +54,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "age_of_onset",
   },
   {
-    question: "How long did the first psychotic episode last?",
+    question: "How long did your first psychotic episode last?",
     questionType: "selection",
     questionDB: "length_of_psychosis",
     selections: ["few days", "few weeks", "few months", "more than 6 months"],
@@ -125,7 +125,7 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question:
-      "What kind of symptoms did you have with your first psychotic episode?",
+      "What kind of symptoms did you have with your psychotic episodes?",
     questionType: "multiSelect",
     questionDB: "symptoms_hallucinations",
     multiSelect: [
@@ -193,7 +193,7 @@ export const questions: QuestionPersonal[] = [
   {
     question: "Were there any consequences to quitting the medication?",
     questionType: "selection",
-    selections: ["relapsed", "nothing", "felt better"],
+    selections: ["relapsed", "nothing", "improved"],
     questionDB: "quitting_what_happened",
   },
   {

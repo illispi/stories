@@ -492,9 +492,15 @@ export const personalQuestionsSchemaCustom = z
     { message: "39" }
   );
 
-export const theirQuestionsSchema = z
+export const theirQuestionsSchemaCustom = z
   .object({
     gender: z.enum(["male", "female", "other"]),
+    length_of_psychosis: z.enum([
+      "few days",
+      "few weeks",
+      "few months",
+      "more than 6 months",
+    ]),
     relation: z.enum(["relative", "friend", "acquintance"]),
     current_age: z.number().max(110).min(5).int(),
     age_of_onset: z.number().max(110).min(5).int(),
@@ -527,10 +533,14 @@ export const theirQuestionsSchema = z
     prodromal_mood_swings: z.boolean().nullable(),
     prodromal_sleep_disturbances: z.boolean().nullable(),
     prodromal_irritability: z.boolean().nullable(),
-    life_unemployed: z.boolean().nullable(),
-    life_disability: z.boolean().nullable(),
-    life_employed: z.boolean().nullable(),
-    life_student: z.boolean().nullable(),
+    life_situation: z.enum([
+      "unemployed",
+      "self employed",
+      "employed",
+      "disability",
+      "student",
+      "other",
+    ]),
     partner: z.boolean().nullable(),
     friends: z.boolean().nullable(),
     children: z.boolean().nullable(),

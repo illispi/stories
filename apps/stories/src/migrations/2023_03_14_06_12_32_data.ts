@@ -345,10 +345,13 @@ export async function up(db: Kysely<any>): Promise<void> {
         sql`NOT (prodromal_symptoms AND prodromal_irritability IS NULL) `
       )
     )
-    .addColumn("life_unemployed", "boolean") //TODO change to like in life_situation in personal questions
-    .addColumn("life_disability", "boolean")
-    .addColumn("life_employed", "boolean")
-    .addColumn("life_student", "boolean")
+    .addColumn("life_situation", "text", (col) =>
+      col
+        .check(
+          sql`life_situation in ('unemployed', 'self employed', 'employed', 'disability', 'student', 'other')`
+        )
+        .notNull()
+    )
     .addColumn("partner", "boolean") //NOTE can be null because might not know
     .addColumn("friends", "boolean")
     .addColumn("children", "boolean")
