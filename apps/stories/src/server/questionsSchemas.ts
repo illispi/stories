@@ -73,7 +73,7 @@ export const personalQuestionsSchemaCustom = z
       .nullable(),
     //NOTE Quitting what happened could be selction and not text
     quitting_what_happened: z
-      .enum(["relapsed", "nothing", "felt better"])
+      .enum(["relapsed", "nothing", "improved"])
       .nullable(),
     quitting_regret: z.boolean().nullable(),
     gained_weight: z.boolean(),
@@ -490,6 +490,233 @@ export const personalQuestionsSchemaCustom = z
         : data.describe_hospital === null;
     },
     { message: "39" }
+  );
+
+export const theirQuestionsSchema = z
+  .object({
+    gender: z.enum(["male", "female", "other"]),
+    relation: z.enum(["relative", "friend", "acquintance"]),
+    current_age: z.number().max(110).min(5).int(),
+    age_of_onset: z.number().max(110).min(5).int(),
+    med_efficacy: z.boolean().nullable(),
+    had_side_effs: z.boolean(),
+    side_effs_movement_effects: z.boolean().nullable(),
+    side_effs_dizziness: z.boolean().nullable(),
+    side_effs_weight_gain: z.boolean().nullable(),
+    side_effs_sedation: z.boolean().nullable(),
+    side_effs_tardive: z.boolean().nullable(),
+    side_effs_sexual: z.boolean().nullable(),
+    quitting: z.boolean(),
+    quitting_what_happened: z
+      .enum(["relapsed", "nothing", "improved"])
+      .nullable(),
+    negative_symptoms: z.boolean(),
+    flat_expressions: z.boolean().nullable(),
+    poverty_of_speech: z.boolean().nullable(),
+    anhedonia: z.boolean().nullable(),
+    no_interest_socially: z.boolean().nullable(),
+    apathy: z.boolean().nullable(),
+    lack_of_motivation: z.boolean().nullable(),
+    smoking: z.boolean().nullable(),
+    personality_before: z.string(),
+    personality_changed: z.boolean(),
+    personality_after: z.string().nullable(),
+    prodromal_symptoms: z.boolean(),
+    prodromal_anxiety: z.boolean().nullable(),
+    prodromal_depression: z.boolean().nullable(),
+    prodromal_mood_swings: z.boolean().nullable(),
+    prodromal_sleep_disturbances: z.boolean().nullable(),
+    prodromal_irritability: z.boolean().nullable(),
+    life_unemployed: z.boolean().nullable(),
+    life_disability: z.boolean().nullable(),
+    life_employed: z.boolean().nullable(),
+    life_student: z.boolean().nullable(),
+    partner: z.boolean().nullable(),
+    friends: z.boolean().nullable(),
+    children: z.boolean().nullable(),
+    relatives: z.enum([
+      "parents",
+      "none",
+      "siblings",
+      "cousins",
+      "grandparents",
+      "other",
+    ]),
+    symptoms_hallucinations: z.boolean().nullable(),
+    symptoms_delusions: z.boolean().nullable(),
+    symptoms_paranoia: z.boolean().nullable(),
+    symptoms_disorganized: z.boolean().nullable(),
+    what_others_should_know: z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough'),
+    diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
+    lost_relationships: z.boolean(),
+    has_been_hospitalized: z.boolean(),
+    care_after_hospital: z.boolean().nullable(),
+    psychosis_how_many: z.enum([
+      "once",
+      "twice",
+      "three times",
+      "four times",
+      "five or more",
+    ]),
+    gained_weight: z.enum(["yes", "no", "unknown"]),
+    cannabis: z.enum(["yes", "no", "unknown"]),
+    suicide_attempts: z.enum(["yes", "no", "unknown"]),
+  })
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_movement_effects !== null
+        : data.side_effs_movement_effects === null;
+    },
+    { message: "24" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_tardive !== null
+        : data.side_effs_tardive === null;
+    },
+    { message: "25" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_sexual !== null
+        : data.side_effs_sexual === null;
+    },
+    { message: "26" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_sedation !== null
+        : data.side_effs_sedation === null;
+    },
+    { message: "27" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_weight_gain !== null
+        : data.side_effs_weight_gain === null;
+    },
+    { message: "28" }
+  )
+  .refine(
+    (data) => {
+      return data.had_side_effs
+        ? data.side_effs_dizziness !== null
+        : data.side_effs_dizziness === null;
+    },
+    { message: "29" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.flat_expressions !== null
+        : data.flat_expressions === null;
+    },
+    { message: "12" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.lack_of_motivation !== null
+        : data.lack_of_motivation === null;
+    },
+    { message: "13" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.apathy !== null
+        : data.apathy === null;
+    },
+    { message: "14" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.no_interest_socially !== null
+        : data.no_interest_socially === null;
+    },
+    { message: "15" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.anhedonia !== null
+        : data.anhedonia === null;
+    },
+    { message: "16" }
+  )
+  .refine(
+    (data) => {
+      return data.negative_symptoms
+        ? data.poverty_of_speech !== null
+        : data.poverty_of_speech === null;
+    },
+    { message: "17" }
+  )
+  .refine(
+    (data) => {
+      return data.personality_changed
+        ? data.personality_after !== null
+        : data.personality_after === null;
+    },
+    { message: "6" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_anxiety !== null
+        : data.prodromal_anxiety === null;
+    },
+    { message: "32" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_depression !== null
+        : data.prodromal_depression === null;
+    },
+    { message: "33" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_mood_swings !== null
+        : data.prodromal_mood_swings === null;
+    },
+    { message: "34" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_sleep_disturbances !== null
+        : data.prodromal_sleep_disturbances === null;
+    },
+    { message: "35" }
+  )
+  .refine(
+    (data) => {
+      return data.prodromal_symptoms
+        ? data.prodromal_irritability !== null
+        : data.prodromal_irritability === null;
+    },
+    { message: "36" }
+  )
+  .refine(
+    (data) => {
+      return data.has_been_hospitalized
+        ? data.care_after_hospital !== null
+        : data.care_after_hospital === null;
+    },
+    { message: "31" }
   );
 
 export type QuestionsPersonalZodTypes = z.infer<

@@ -137,7 +137,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("quitting_what_happened", "text", (col) =>
       col
         .check(
-          sql`quitting_what_happened in ('relapsed', 'nothing', 'felt better')`
+          sql`quitting_what_happened in ('relapsed', 'nothing', 'improved')`
         )
         .check(sql`NOT (quitting AND quitting_what_happened IS NULL)`)
     )
@@ -268,18 +268,82 @@ export async function up(db: Kysely<any>): Promise<void> {
       (col) => col.notNull().check(sql`gender in ('male', 'female', 'other')`) //NOTE check if this actually works first thing.
     )
     .addColumn("age_of_onset", "integer", (col) => col.notNull())
-    .addColumn("treatment", "text")
-    .addColumn("symptoms_before_onset", "text")
-    .addColumn("symptoms_during_psychosis", "text")
+    .addColumn("current_age", "integer", (col) => col.notNull())
     .addColumn("med_efficacy", "boolean")
-    .addColumn("side_effects", "text")
-    .addColumn("quitting", "boolean")
+    .addColumn("had_side_effs", "boolean", (col) => col.notNull())
+    .addColumn("side_effs_movement_effects", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_movement_effects IS NULL)`)
+    )
+    .addColumn("side_effs_dizziness", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_dizziness IS NULL)`)
+    )
+    .addColumn("side_effs_weight_gain", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_weight_gain IS NULL)`)
+    )
+    .addColumn("side_effs_sedation", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_sedation IS NULL)`)
+    )
+    .addColumn("side_effs_tardive", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_tardive IS NULL)`)
+    )
+    .addColumn("side_effs_sexual", "boolean", (col) =>
+      col.check(sql`NOT (had_side_effs AND side_effs_sexual IS NULL)`)
+    )
+    .addColumn("quitting_what_happened", "text", (col) =>
+      col
+        .check(
+          sql`quitting_what_happened in ('relapsed', 'nothing', 'improved')`
+        )
+        .check(sql`NOT (quitting AND quitting_what_happened IS NULL)`)
+    )
+    .addColumn("quitting", "boolean", (col) => col.notNull())
     .addColumn("smoking", "boolean")
-    .addColumn("negative_symptoms", "text")
+    .addColumn("negative_symptoms", "boolean", (col) => col.notNull())
+    .addColumn("flat_expressions", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND flat_expressions IS NULL)`)
+    )
+    .addColumn("poverty_of_speech", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND poverty_of_speech IS NULL)`)
+    )
+    .addColumn("anhedonia", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND anhedonia IS NULL)`)
+    )
+    .addColumn("no_interest_socially", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND no_interest_socially IS NULL)`)
+    )
+    .addColumn("apathy", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND apathy IS NULL)`)
+    )
+    .addColumn("lack_of_motivation", "boolean", (col) =>
+      col.check(sql`NOT (negative_symptoms AND lack_of_motivation IS NULL)`)
+    )
     .addColumn("personality_before", "text", (col) => col.notNull())
     .addColumn("personality_changed", "boolean", (col) => col.notNull())
     .addColumn("personality_after", "text", (col) =>
       col.check(sql`NOT (personality_changed AND personality_after IS NULL)`)
+    )
+    .addColumn("prodromal_symptoms", "boolean", (col) => col.notNull())
+
+    .addColumn("prodromal_anxiety", "boolean", (col) =>
+      col.check(sql`NOT (prodromal_symptoms AND prodromal_anxiety IS NULL) `)
+    )
+    .addColumn("prodromal_depression", "boolean", (col) =>
+      col.check(sql`NOT (prodromal_symptoms AND prodromal_depression IS NULL) `)
+    )
+    .addColumn("prodromal_mood_swings", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_mood_swings IS NULL) `
+      )
+    )
+    .addColumn("prodromal_sleep_disturbances", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_sleep_disturbances IS NULL) `
+      )
+    )
+    .addColumn("prodromal_irritability", "boolean", (col) =>
+      col.check(
+        sql`NOT (prodromal_symptoms AND prodromal_irritability IS NULL) `
+      )
     )
     .addColumn("life_unemployed", "boolean") //TODO change to like in life_situation in personal questions
     .addColumn("life_disability", "boolean")
@@ -288,9 +352,52 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("partner", "boolean") //NOTE can be null because might not know
     .addColumn("friends", "boolean")
     .addColumn("children", "boolean")
-    .addColumn("goals_changed", "boolean", (col) => col.notNull())
-    .addColumn("goals_after", "text", (col) =>
-      col.check(sql`NOT (goals_changed AND goals_after IS NULL)`)
+    .addColumn("relatives", "text", (col) =>
+      col
+        .notNull()
+        .check(
+          sql`relatives in ('parents', 'none', 'siblings', 'cousins', 'grandparents', 'other')`
+        )
+    )
+    .addColumn("symptoms_hallucinations", "boolean")
+    .addColumn("symptoms_delusions", "boolean")
+    .addColumn("symptoms_paranoia", "boolean")
+    .addColumn("symptoms_disorganized", "boolean")
+    .addColumn("what_others_should_know", "text")
+    .addColumn("diagnosis", "text", (col) =>
+      col
+        .notNull()
+        .check(sql`diagnosis in ('schizophrenia', 'schizoaffective')`)
+    )
+    .addColumn("lost_relationships", "boolean", (col) => col.notNull())
+    .addColumn("length_of_psychosis", "text", (col) =>
+      col
+        .notNull()
+        .check(
+          sql`length_of_psychosis in ('few days', 'few weeks', 'few months', 'more than 6 months')`
+        )
+    )
+    .addColumn("care_after_hospital", "boolean", (col) =>
+      col.check(
+        sql`NOT (has_been_hospitalized AND care_after_hospital IS NULL) `
+      )
+    )
+    .addColumn("has_been_hospitalized", "boolean", (col) => col.notNull())
+    .addColumn("psychosis_how_many", "text", (col) =>
+      col
+        .notNull()
+        .check(
+          sql`psychosis_how_many in ('once', 'twice', 'three times', 'four times', 'five or more')`
+        )
+    )
+    .addColumn("gained_weight", "boolean", (col) =>
+      col.notNull().check(sql`gained_weight in ('yes', 'no', 'unknown')`)
+    )
+    .addColumn("cannabis", "boolean", (col) =>
+      col.notNull().check(sql`cannabis in ('yes', 'no', 'unknown')`)
+    )
+    .addColumn("suicide_attempts", "boolean", (col) =>
+      col.notNull().check(sql`suicide_attempts in ('yes', 'no', 'unknown')`)
     )
     .execute();
 

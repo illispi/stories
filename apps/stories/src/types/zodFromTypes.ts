@@ -52,6 +52,7 @@ export const theirQuestionsSchema = z.object({
   children: z.boolean().nullable(),
   goals_changed: z.boolean(),
   goals_after: z.string().nullable(),
+  relatives:
 });
 
 export const userSchema = z.object({
