@@ -9,6 +9,17 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
+    type: "bar",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+    function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
     type: "doughnut",
     stat: "gender",
     header: "Share of genders",
@@ -285,6 +296,11 @@ export const allStatsArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   {
     type: "yesOrNo",
+    stat: "lost_relationships",
+    header: "Has lost relationships due to schizophrenia",
+  },
+  {
+    type: "yesOrNo",
     stat: "goals_changed",
     header: "Life goals changed",
   },
@@ -368,6 +384,17 @@ export const byDiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "length_of_psychosis",
     header: "Length of first psychosis",
     function: "dataSelection",
+  },
+  {
+    type: "bar",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+    function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
   },
   {
     type: "yesOrNo",
@@ -685,6 +712,17 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   //TODO maybe add stat on age of onset if there
   {
+    type: "bar",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+    function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
     type: "doughnut",
     stat: "length_of_psychosis",
     header: "Length of first psychosis",
@@ -899,6 +937,11 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Personality after illness",
   },
   {
+    type: "yesOrNo",
+    stat: "lost_relationships",
+    header: "Has lost relationships due to schizophrenia",
+  },
+  {
     type: "text",
     stat: "other_help",
     header: "Things that have helped apart from medication",
@@ -934,6 +977,11 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "children",
     header: "Has children",
+  },
+  {
+    type: "yesOrNo",
+    stat: "lost_relationships",
+    header: "Has lost relationships due to schizophrenia",
   },
   {
     type: "yesOrNo",
@@ -986,5 +1034,197 @@ export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "text",
     stat: "not_have_schizophrenia_description",
     header: "Reasoning for wanting (or not) having schizophrenia",
+  },
+];
+
+export const allStatsTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
+  { type: "stat", stat: "total", name: "Total Responses" },
+  {
+    type: "doughnut",
+    stat: "diagnosis",
+    header: "Share of diagnosis",
+    function: "dataSelection",
+  },
+  {
+    type: "doughnut",
+    stat: "gender",
+    header: "Share of genders",
+    function: "dataGender",
+  },
+  {
+    type: "bar",
+    stat: "current_age",
+    header: "Age of responses",
+    function: "dataAgeOfRes",
+    options: { distributeSeries: true },
+  },
+  {
+    type: "bar",
+    stat: "ageOfOnsetByGender",
+    header: "Age of onset",
+    function: "dataOnset",
+  },
+  {
+    type: "doughnut",
+    stat: "length_of_psychosis",
+    header: "Length of typical psychosis",
+    function: "dataSelection",
+  },
+  {
+    type: "yesOrNo",
+    stat: "has_been_hospitalized",
+    header: "Hospitalized on psychosis",
+  },
+  {
+    type: "yesOrNo",
+    stat: "care_after_hospital",
+    header: "Recieved care after hospitalization",
+  },
+  {
+    type: "bar",
+    stat: "psychosis_how_many",
+    header: "How many psychosis",
+    function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
+    type: "yesOrNo",
+    stat: "prodromal_symptoms",
+    header: "Had prodromal symptoms",
+  },
+  {
+    type: "bar",
+    stat: "prodromal_anxiety",
+    header: "Prodromal symptoms",
+    function: "dataMultiSelect",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
+    type: "bar",
+    stat: "symptoms_hallucinations",
+    header: "First psychosis symptoms",
+    function: "dataMultiSelect",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
+    type: "yesOrNo",
+    stat: "med_efficacy",
+    header: "Medications helped to psychosis symptoms",
+  },
+  {
+    type: "yesOrNo",
+    stat: "had_side_effs",
+    header: "Had side effects from medication",
+  },
+  {
+    type: "bar",
+    stat: "side_effs_dizziness",
+    header: "Side effects from medication",
+    function: "dataMultiSelect",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 70 },
+    },
+  },
+  {
+    type: "yesOrNo",
+    stat: "quitting",
+    header: "Have quit medication",
+  },
+  {
+    type: "doughnut",
+    function: "dataSelection",
+    stat: "quitting_what_happened",
+    header: "Happened after quitting medication",
+  },
+  {
+    type: "yesOrNo",
+    stat: "gained_weight",
+    header: "Have gained weight after medication",
+  },
+  {
+    type: "yesOrNo",
+    stat: "smoking",
+    header: "Smoking",
+  },
+  {
+    type: "yesOrNo",
+    stat: "cannabis",
+    header: "Has used cannabis",
+  },
+  {
+    type: "yesOrNo",
+    stat: "suicide_attempts",
+    header: "Has attempted suicide",
+  },
+  {
+    type: "yesOrNo",
+    stat: "negative_symptoms",
+    header: "Has negative symptoms",
+  },
+  {
+    type: "bar",
+    stat: "flat_expressions",
+    header: "Negative symptoms",
+    function: "dataMultiSelect",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
+    type: "text",
+    stat: "personality_before",
+    header: "Personality before illness",
+  },
+  {
+    type: "yesOrNo",
+    stat: "personality_changed",
+    header: "Personality changed",
+  },
+  {
+    type: "text",
+    stat: "personality_after",
+    header: "Personality after illness",
+  },
+  {
+    type: "bar",
+    stat: "life_situation",
+    header: "Occupancy",
+    function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
+  },
+  {
+    type: "yesOrNo",
+    stat: "partner",
+    header: "Has partner",
+  },
+  {
+    type: "yesOrNo",
+    stat: "friends",
+    header: "Has friends",
+  },
+  {
+    type: "yesOrNo",
+    stat: "children",
+    header: "Has children",
   },
 ];
