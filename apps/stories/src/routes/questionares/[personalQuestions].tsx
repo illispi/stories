@@ -2,14 +2,21 @@ import { createEffect, createSignal, Show } from "solid-js";
 import type { ParentComponent } from "solid-js";
 import { Motion, Presence } from "@motionone/solid";
 import CustomButton from "~/components/CustomButton";
-import { questions } from "~/data/personalQuestionsArr";
+import type { QuestionPersonal } from "~/data/personalQuestionsArr";
+import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
+import type { QuestionTheir } from "~/data/theirQuestionsArr";
+import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
+import { useParams } from "solid-start";
 
-const Counter: ParentComponent<{ page: number }> = (props) => {
+const Counter: ParentComponent<{
+  page: number;
+  questions: QuestionPersonal[] | QuestionTheir[];
+}> = (props) => {
   return (
     <div class="flex max-h-12 items-center justify-center rounded-lg bg-blue-300 shadow-md">
       <h3 class="p-6 text-lg font-semibold">{`${Math.floor(
-        ((props.page + 1) / questions.length) * 100
+        ((props.page + 1) / props.questions.length) * 100
       )}%`}</h3>
     </div>
   );
@@ -33,12 +40,14 @@ const Questions: ParentComponent<{
   direction: number;
   page: number;
   paginate: (newDirection: number) => void;
+  questions: QuestionPersonal[] | QuestionTheir[];
+  LsName: "personalQuestions" | "theirQuestions";
 }> = (props) => {
   return (
     <Show fallback={<div>Loading....</div>} when={props.page >= 0}>
       <Show
         fallback={<div>Done!!!</div>}
-        when={props.page !== questions.length}
+        when={props.page !== props.questions.length}
       >
         <div class="relative z-0 h-[600px] w-11/12 max-w-xs flex-col">
           {/*BUG During transition you should lock document from scrolling */}
@@ -46,8 +55,9 @@ const Questions: ParentComponent<{
             <Show when={props.page === 0 ? true : props.page} keyed>
               <QuestionTransition direction={props.direction}>
                 <UnitQuestion
-                  content={questions[props.page]}
+                  content={props.questions[props.page]}
                   paginate={props.paginate}
+                  LsName={props.LsName}
                 />
               </QuestionTransition>
             </Show>
@@ -59,8 +69,19 @@ const Questions: ParentComponent<{
 };
 
 const PersonalQuestions: ParentComponent = () => {
+  const params = useParams<{ personalQuestions: "personal" | "theirs" }>();
   const [page, setPage] = createSignal(-1);
   const [direction, setDirection] = createSignal(1);
+
+  const questions =
+    params.personalQuestions === "personal"
+      ? questionsPersonal
+      : questionsTheirs;
+
+  const LsName =
+    params.personalQuestions === "personal"
+      ? "personalQuestions"
+      : "theirQuestions";
 
   //NOTE does this nedd to be memo or use on directive?
 
@@ -70,26 +91,26 @@ const PersonalQuestions: ParentComponent = () => {
   };
 
   createEffect(() => {
-    const pageNav = parseInt(localStorage.getItem("page") ?? "0");
+    const pageNav = parseInt(localStorage.getItem(`page_${LsName}`) ?? "0");
 
     if (page() < 0) {
       setPage(pageNav === 0 ? 0 : pageNav);
       setDirection(1);
     } else {
-      localStorage.setItem("page", JSON.stringify(page()));
+      localStorage.setItem(`page_${LsName}`, JSON.stringify(page()));
     }
   });
 
   return (
     <div class="flex flex-col items-center justify-start">
       <div class="flex h-20 w-80 items-center justify-between p-2">
-        <Counter page={page()} />
+        <Counter page={page()} questions={questions} />
         <CustomButton
           type="button"
           onClick={() => {
             if (page() >= 0) {
               const skipAmount = localStorage.getItem(
-                `to_${questions[page()].questionDB}`
+                `to_${questions[page()].questionDB}_${LsName}`
               );
 
               paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
@@ -100,7 +121,13 @@ const PersonalQuestions: ParentComponent = () => {
         </CustomButton>
       </div>
 
-      <Questions direction={direction()} page={page()} paginate={paginate} />
+      <Questions
+        direction={direction()}
+        page={page()}
+        paginate={paginate}
+        questions={questions}
+        LsName={LsName}
+      />
     </div>
   );
 };

@@ -3,10 +3,11 @@ import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
 import { postPersonalStats } from "~/server/mutations";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
+import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
 import { z } from "zod";
+import type { QuestionTheir } from "~/data/theirQuestionsArr";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -25,10 +26,11 @@ const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const LsName = "personalQuestions";
+
 
 export const UnitQuestion: ParentComponent<{
-  content: QuestionPersonal;
+  content: QuestionPersonal | QuestionTheir;
+  LsName: "personalQuestions" | "theirQuestions";
   paginate: (newDirection: number) => void;
 }> = (props) => {
   const sendStatsPersonal = postPersonalStats();
@@ -42,8 +44,8 @@ export const UnitQuestion: ParentComponent<{
     skip,
   } = props.content;
 
-  const questionsLs: PersonalQuestions = JSON.parse(
-    localStorage.getItem(LsName) ?? "{}"
+  const questionsLs: PersonalQuestions | TheirQuestions = JSON.parse(
+    localStorage.getItem(props.LsName) ?? "{}"
   );
 
   const valueOfLS = questionsLs[questionDB] ?? "";
@@ -132,7 +134,7 @@ export const UnitQuestion: ParentComponent<{
         //TODO remeber to refactor this as well to delete on skip no
 
         localStorage.setItem(
-          LsName,
+          props.LsName,
           JSON.stringify({ ...questionsLs, ...values })
         );
 
@@ -164,10 +166,10 @@ export const UnitQuestion: ParentComponent<{
       setSelection(value[questionDB] as string);
       setYesOrNO(value[questionDB] as boolean);
       localStorage.setItem(
-        LsName,
+        props.LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      const LsExistsJunctions = localStorage.getItem("junctions");
+      const LsExistsJunctions = localStorage.getItem(`junctions_${props.LsName}`);
       let junctions: Record<keyof PersonalQuestions, number> = LsExistsJunctions
         ? JSON.parse(LsExistsJunctions)
         : null;
@@ -184,10 +186,10 @@ export const UnitQuestion: ParentComponent<{
               questions.findIndex((e) => e.questionDB === skip) -
               questions.findIndex((e) => e.questionDB === questionDB),
           };
-          localStorage.setItem("junctions", JSON.stringify(junctions));
+          localStorage.setItem(`junctions_${props.LsName}`, JSON.stringify(junctions));
         } else {
           if (junctions && junctions[questionDB]) {
-            const LsTotal = localStorage.getItem(LsName);
+            const LsTotal = localStorage.getItem(props.LsName);
             const curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
 
             const indexOfItem = questions.findIndex(
@@ -211,16 +213,16 @@ export const UnitQuestion: ParentComponent<{
                 }
               });
 
-            localStorage.setItem(LsName, JSON.stringify(curQuestionsObject));
+            localStorage.setItem(props.LsName, JSON.stringify(curQuestionsObject));
             delete junctions[questionDB];
-            localStorage.setItem("junctions", JSON.stringify(junctions));
+            localStorage.setItem(`junctions_${props.LsName}`, JSON.stringify(junctions));
           }
         }
 
         if (skipAmount) {
-          localStorage.setItem(`to_${skip}`, JSON.stringify(skipAmount));
+          localStorage.setItem(`to_${skip}_${props.LsName}`, JSON.stringify(skipAmount));
         } else {
-          localStorage.removeItem(`to_${skip}`);
+          localStorage.removeItem(`to_${skip}_${props.LsName}`);
         }
       }
 
