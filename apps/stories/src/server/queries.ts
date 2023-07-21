@@ -10,8 +10,6 @@ export const allStats = query$({
   queryFn: async ({ payload }) => {
     let stats;
 
-    console.log(payload, "payload");
-
     switch (payload.value) {
       case "personalStatsAll":
         stats = await db.selectFrom("Personal_questions").selectAll().execute();
@@ -195,7 +193,7 @@ export const allStats = query$({
 
         for (
           let index = 0;
-          index <= (allTexts.length <= 5 ? allTexts.length : 5);
+          index <= (allTexts.length <= 5 ? allTexts.length : 4);
           index++
         ) {
           const element =
@@ -313,6 +311,8 @@ export const textPagination = query$({
       .executeTakeFirst();
 
     const totalLength = Number(length?.count ?? "0");
+
+    console.log({ stats: statsFinal, total: totalLength });
 
     return { stats: statsFinal, total: totalLength };
   },

@@ -28,7 +28,7 @@ export const TextComponent: Component<{
               )}
             </For>
 
-            <A href={`/stats/${props.stat}`}>
+            <A href={`/stats/texts/${props.stat}`}>
               <div
                 class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
         text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"

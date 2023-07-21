@@ -36,8 +36,6 @@ const AllStatsPage: ParentComponent = () => {
     allStats: "personalStatsAll" | "theirStatsAll";
   }>();
 
-  console.log(params.questions, JSON.stringify(params), "why");
-
   const allStatsData = allStats(
     () => ({
       value: params.allStats,
@@ -48,7 +46,7 @@ const AllStatsPage: ParentComponent = () => {
   );
 
   const [compOrder, setCompOrder] = createSignal(
-    params.questions === "personalStatsAll" ? allStatsArr : allStatsTheir
+    params.allStats === "personalStatsAll" ? allStatsArr : allStatsTheir
   );
 
   const [shown, setShown] = createSignal<Element[]>([]);
