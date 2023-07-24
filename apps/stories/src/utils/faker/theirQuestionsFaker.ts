@@ -1,13 +1,10 @@
 import { faker } from "@faker-js/faker";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
+import type { TheirQuestions } from "~/types/zodFromTypes";
 
 //TODO maybe test wrong values as well
 
-export const createFakeData = () => {
-  const hospitalized_on_first = faker.helpers.arrayElement([true, false]);
-  const care_after_hospital = hospitalized_on_first
-    ? faker.helpers.arrayElement([true, false])
-    : null;
+export const createFakeDataTheir = () => {
+  const has_been_hospitalized = faker.helpers.arrayElement([true, false]);
   const prodromal_symptoms = faker.helpers.arrayElement([true, false]);
   const had_side_effs = faker.helpers.arrayElement([true, false]);
   const quitting = faker.helpers.arrayElement([true, false]);
@@ -21,17 +18,7 @@ export const createFakeData = () => {
   const told_nobody = faker.helpers.arrayElement([true, false]);
   const life_satisfaction = faker.helpers.arrayElement([true, false]);
 
-  console.log(
-    hospitalized_on_first,
-    care_after_hospital,
-    hospitalized_on_first && care_after_hospital
-      ? faker.lorem
-          .paragraphs(20)
-          .substring(0, Math.floor(Math.random() * 595) + 4)
-      : null
-  );
-
-  const fakeData: PersonalQuestions = {
+  const fakeData: TheirQuestions = {
     diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
     gender: faker.helpers.arrayElement(["other", "male", "female"]),
     current_age: faker.number.int({ min: 5, max: 110 }),
@@ -42,29 +29,11 @@ export const createFakeData = () => {
       "few months",
       "more than 6 months",
     ]),
-    hospitalized_on_first: hospitalized_on_first,
-    hospitalized_voluntarily: hospitalized_on_first
+    relation: faker.helpers.arrayElement(["relative", "friend", "acquintance"]),
+    has_been_hospitalized: has_been_hospitalized,
+    care_after_hospital: has_been_hospitalized
       ? faker.helpers.arrayElement([true, false])
       : null,
-    hospital_satisfaction: hospitalized_on_first
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    describe_hospital: hospitalized_on_first
-      ? faker.lorem
-          .paragraphs(20)
-          .substring(0, Math.floor(Math.random() * 595) + 4)
-      : null,
-    care_after_hospital: care_after_hospital,
-    what_kind_of_care_after:
-      hospitalized_on_first && care_after_hospital
-        ? faker.lorem
-            .paragraphs(20)
-            .substring(0, Math.floor(Math.random() * 595) + 4)
-        : null,
-    after_hospital_satisfaction:
-      hospitalized_on_first && care_after_hospital
-        ? faker.helpers.arrayElement([true, false])
-        : null,
     psychosis_how_many: faker.helpers.arrayElement([
       "once",
       "twice",
@@ -93,18 +62,8 @@ export const createFakeData = () => {
     symptoms_delusions: faker.helpers.arrayElement([true, false, null]),
     symptoms_paranoia: faker.helpers.arrayElement([true, false, null]),
     symptoms_disorganized: faker.helpers.arrayElement([true, false, null]),
-    current_med: faker.helpers.arrayElement([
-      "risperidone (Risperdal)",
-      "quetiapine (Seroquel)",
-      "olanzapine (Zyprexa)",
-      "ziprasidone (Zeldox)",
-      "paliperidone (Invega)",
-      "aripiprazole (Abilify)",
-      "clozapine (Clozaril)",
-      "other",
-      "no medication",
-    ]),
-    efficacy_of_med: faker.helpers.arrayElement([true, false]),
+
+    med_efficacy: faker.helpers.arrayElement([true, false]),
     had_side_effs: had_side_effs,
     side_effs_movement_effects: had_side_effs
       ? faker.helpers.arrayElement([true, false])
@@ -125,38 +84,16 @@ export const createFakeData = () => {
       ? faker.helpers.arrayElement([true, false])
       : null,
     quitting: quitting,
-    quitting_why: quitting
-      ? faker.helpers.arrayElement([
-          "side effects",
-          "felt normal",
-          "affordability",
-          "other",
-        ])
-      : null,
     quitting_what_happened: quitting
-      ? faker.helpers.arrayElement(["relapsed", "nothing", "felt better"])
+      ? faker.helpers.arrayElement(["relapsed", "nothing", "improved"])
       : null,
-    quitting_regret: quitting
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    gained_weight: gained_weight,
-    weight_amount: gained_weight
-      ? faker.number.int({ min: 1, max: 300 })
-      : null,
-    smoking: smoking,
-    smoking_amount: smoking
-      ? faker.helpers.arrayElement([
-          "10 a day",
-          "20 or more a day",
-          "Less than 10 a day",
-          "Less than 10 a week",
-        ])
-      : null,
-    cannabis: faker.helpers.arrayElement([true, false]),
-    suicidal_thoughts: suicidal_thoughts,
-    suicide_attempts: suicidal_thoughts
-      ? faker.helpers.arrayElement([true, false])
-      : null,
+    gained_weight: faker.helpers.arrayElement([true, false]),
+
+    smoking: faker.helpers.arrayElement([true, false]),
+
+    cannabis: faker.helpers.arrayElement(["no", "yes", "unknown"]),
+    suicide_attempts: faker.helpers.arrayElement(["no", "yes", "unknown"]),
+
     negative_symptoms: negative_symptoms,
     flat_expressions: negative_symptoms
       ? faker.helpers.arrayElement([true, false])
@@ -176,22 +113,6 @@ export const createFakeData = () => {
     lack_of_motivation: negative_symptoms
       ? faker.helpers.arrayElement([true, false])
       : null,
-    cognitive_symptoms: cognitive_symptoms,
-    disorganized_thinking: cognitive_symptoms
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    slow_thinking: cognitive_symptoms
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    difficulty_understanding: cognitive_symptoms
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    poor_concentration: cognitive_symptoms
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    poor_memory: cognitive_symptoms
-      ? faker.helpers.arrayElement([true, false])
-      : null,
     personality_before: faker.lorem
       .paragraphs(20)
       .substring(0, Math.floor(Math.random() * 595) + 4),
@@ -201,14 +122,6 @@ export const createFakeData = () => {
           .paragraphs(20)
           .substring(0, Math.floor(Math.random() * 595) + 4)
       : null,
-    other_help: faker.lorem
-      .paragraphs(20)
-      .substring(0, Math.floor(Math.random() * 595) + 4),
-    worst_symptom: faker.helpers.arrayElement([
-      "negative symptoms",
-      "positive symptoms",
-      "cognitive symptoms",
-    ]),
     life_situation: faker.helpers.arrayElement([
       "unemployed",
       "self employed",
@@ -220,36 +133,10 @@ export const createFakeData = () => {
     partner: faker.helpers.arrayElement([true, false]),
     friends: faker.helpers.arrayElement([true, false]),
     children: faker.helpers.arrayElement([true, false]),
-    goals_changed: goals_changed,
-    goals_after: goals_changed
-      ? faker.lorem
-          .paragraphs(20)
-          .substring(0, Math.floor(Math.random() * 595) + 4)
-      : null,
-    told_family: faker.helpers.arrayElement([true, false]),
-    told_nobody: told_nobody,
-    told_friends: faker.helpers.arrayElement([true, false]),
-    told_if_asked: faker.helpers.arrayElement([true, false]),
-    told_employer: faker.helpers.arrayElement([true, false]),
-    responded_to_telling: told_nobody
-      ? faker.lorem
-          .paragraphs(20)
-          .substring(0, Math.floor(Math.random() * 595) + 4)
-      : null,
-    life_satisfaction: life_satisfaction,
-    life_satisfaction_description: life_satisfaction
-      ? faker.lorem
-          .paragraphs(20)
-          .substring(0, Math.floor(Math.random() * 595) + 4)
-      : null,
     what_others_should_know: faker.lorem
       .paragraphs(20)
       .substring(0, Math.floor(Math.random() * 595) + 4),
-    not_have_schizophrenia: faker.helpers.arrayElement([true, false]),
-    not_have_schizophrenia_description: faker.lorem
-      .paragraphs(20)
-      .substring(0, Math.floor(Math.random() * 595) + 4),
-    lost_relationships: faker.helpers.arrayElement([true, false]),
+    lost_relationships: faker.helpers.arrayElement(["no", "yes", "unknown"]),
     relatives: faker.helpers.arrayElement([
       "parents",
       "none",

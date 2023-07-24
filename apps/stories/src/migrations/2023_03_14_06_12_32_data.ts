@@ -412,3 +412,4 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 
 //NOTE make table names uppercase, especially user has problems since its official postgres table
+//TODO maybe add their questions hospital care and after care satisfaction, and what they think they enjoy their life or not
