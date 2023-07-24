@@ -10,7 +10,8 @@ import {
 import { A, useParams } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
-import { allStatsArr, allStatsTheir } from "~/data/statsArrays";
+import { allStatsPersonalArr } from "~/data/stats/allStatsArr";
+import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
 import { allStats } from "~/server/queries";
 
 const CompareButton: Component = () => {
@@ -46,7 +47,9 @@ const AllStatsPage: ParentComponent = () => {
   );
 
   const [compOrder, setCompOrder] = createSignal(
-    params.allStats === "personalStatsAll" ? allStatsArr : allStatsTheir
+    params.allStats === "personalStatsAll"
+      ? allStatsPersonalArr
+      : allStatsTheirArr
   );
 
   const [shown, setShown] = createSignal<Element[]>([]);

@@ -52,7 +52,7 @@ export const postTheriStats = mutation$({
     if (user?.id) {
       const insertion = await db
         .insertInto("Their_questions")
-        .values({ ...payload, user: user.id })
+        .values({ ...payload, user: user.id }) //NOTE this TS error should disappear once you migrate down and up again
         .execute();
 
       if (insertion) {
@@ -61,7 +61,6 @@ export const postTheriStats = mutation$({
     }
     return "failed to insert";
   },
-  key: "postPersonalStats",
+  key: "postTheirStats",
   schema: theirQuestionsSchema,
 });
-

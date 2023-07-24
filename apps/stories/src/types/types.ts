@@ -1,6 +1,5 @@
-import { JSXElement } from "solid-js";
-import { PersonalQuestions } from "./zodFromTypes";
-import { AxisOptions, BarChartOptions } from "chartist";
+import type { AxisOptions, BarChartOptions } from "chartist";
+import type { PersonalQuestions } from "./zodFromTypes";
 
 export interface ChartistData {
   labels: string[];
@@ -9,6 +8,11 @@ export interface ChartistData {
 
 export interface YesOrNo {
   type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  stat: keyof MainReturn;
+  header: string;
+}
+export interface Unknown {
+  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
   stat: keyof MainReturn;
   header: string;
 }

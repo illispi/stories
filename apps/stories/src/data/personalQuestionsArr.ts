@@ -375,7 +375,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "responded_to_telling",
   },
   {
-    question: "Did you lose any relatios due this illness?",
+    question: "Did you lose any relationships due to this illness?",
     questionType: "yesOrNo",
     questionDB: "lost_relationships",
   },

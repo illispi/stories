@@ -8,17 +8,15 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn(
       "user",
       "uuid",
-      (col) => col.references("User.id").onDelete("cascade").notNull() //TODO add .unique() because user can have only one in final iteration
+      (col) => col.references("User.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
         .check(sql`diagnosis in ('schizophrenia', 'schizoaffective')`)
     )
-    .addColumn(
-      "gender",
-      "text",
-      (col) => col.notNull().check(sql`gender in ('male', 'female', 'other')`) //NOTE check if this actually works first thing.
+    .addColumn("gender", "text", (col) =>
+      col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
     .addColumn("relatives", "text", (col) =>
       col
@@ -254,7 +252,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("Their_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("user_id", "uuid", (col) =>
+    .addColumn("user", "uuid", (col) =>
       col.references("User.id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
@@ -372,7 +370,9 @@ export async function up(db: Kysely<any>): Promise<void> {
         .notNull()
         .check(sql`diagnosis in ('schizophrenia', 'schizoaffective')`)
     )
-    .addColumn("lost_relationships", "boolean", (col) => col.notNull())
+    .addColumn("lost_relationships", "text", (col) =>
+      col.notNull().check(sql`cannabis in ('yes', 'no', 'unknown')`)
+    )
     .addColumn("length_of_psychosis", "text", (col) =>
       col
         .notNull()
@@ -393,13 +393,11 @@ export async function up(db: Kysely<any>): Promise<void> {
           sql`psychosis_how_many in ('once', 'twice', 'three times', 'four times', 'five or more')`
         )
     )
-    .addColumn("gained_weight", "boolean", (col) =>
-      col.notNull().check(sql`gained_weight in ('yes', 'no', 'unknown')`)
-    )
-    .addColumn("cannabis", "boolean", (col) =>
+    .addColumn("gained_weight", "boolean", (col) => col.notNull())
+    .addColumn("cannabis", "text", (col) =>
       col.notNull().check(sql`cannabis in ('yes', 'no', 'unknown')`)
     )
-    .addColumn("suicide_attempts", "boolean", (col) =>
+    .addColumn("suicide_attempts", "text", (col) =>
       col.notNull().check(sql`suicide_attempts in ('yes', 'no', 'unknown')`)
     )
     .execute();

@@ -1,7 +1,8 @@
 import { query$ } from "@prpc/solid";
 import { z } from "zod";
 import { db } from "./server";
-import { questions } from "~/data/personalQuestionsArr";
+import { questions as personalQuestions } from "~/data/personalQuestionsArr";
+import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 //TODO remember to only update this every once in a while in production
@@ -9,6 +10,9 @@ import type { PersonalQuestions } from "~/types/zodFromTypes";
 export const allStats = query$({
   queryFn: async ({ payload }) => {
     let stats;
+
+    const questions =
+      payload.value === "personalStatsAll" ? personalQuestions : theirQuestions;
 
     switch (payload.value) {
       case "personalStatsAll":
@@ -179,6 +183,14 @@ export const allStats = query$({
       } else if (e.questionType === "selection") {
         const selections = {};
         e.selections?.forEach((i) => {
+          selections[i] = filterSensitive.filter(
+            (d) => d[e.questionDB] === i
+          ).length;
+        });
+        automatic[e.questionDB] = selections;
+      } else if (e.questionType === "unknown") {
+        const selections = {};
+        ["yes", "no", "unknown"].forEach((i) => {
           selections[i] = filterSensitive.filter(
             (d) => d[e.questionDB] === i
           ).length;

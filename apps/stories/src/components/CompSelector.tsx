@@ -23,6 +23,9 @@ export const CompSelector = (props) => {
       <Match when={props.type === "yesOrNo"}>
         <YesOrNoComponent {...props}  />
       </Match>
+      <Match when={props.type === "unknown"}>
+        <DoughnutComponent {...props}  />
+      </Match>
     </Switch>
   );
 };

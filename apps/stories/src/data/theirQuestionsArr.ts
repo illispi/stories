@@ -8,6 +8,7 @@ export interface QuestionTheir {
     | "text"
     | "yesOrNo"
     | "multiSelect"
+    | "unknown"
     | "submit";
   questionDB: keyof TheirQuestions;
   selections?: string[];
@@ -29,9 +30,21 @@ export const questions: QuestionTheir[] = [
     selections: ["female", "male", "other"],
   },
   {
+    question: "What is your relation to them?",
+    questionType: "selection",
+    questionDB: "relation",
+    selections: ["relative", "friend", "acquintance"],
+  },
+  {
     question: "How old are they (estimnate is enough)?",
     questionType: "integer",
     questionDB: "current_age",
+  },
+  {
+    question:
+      "What age were they when they first had a psychotic episode (estimate)",
+    questionType: "integer",
+    questionDB: "age_of_onset",
   },
   {
     question: "Do they have relatives with this illness?",
@@ -156,12 +169,12 @@ export const questions: QuestionTheir[] = [
   },
   {
     question: "Have they ever used cannabis?",
-    questionType: "yesOrNo",
+    questionType: "unknown",
     questionDB: "cannabis",
   },
   {
     question: "Have they ever attempted suicide?",
-    questionType: "yesOrNo",
+    questionType: "unknown",
     questionDB: "suicide_attempts",
   },
   {
@@ -229,7 +242,12 @@ export const questions: QuestionTheir[] = [
     questionDB: "children",
   },
   {
-    question: "What do you wish people knew about their schizophrenia?",
+    question: "Did they lose any relationships due to illness?",
+    questionType: "unknown",
+    questionDB: "lost_relationships",
+  },
+  {
+    question: "What do you wish people knew about their illness?",
     questionType: "text",
     questionDB: "what_others_should_know",
   },

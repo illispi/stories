@@ -2,7 +2,7 @@ import type { ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
-import { postPersonalStats } from "~/server/mutations";
+import { postPersonalStats, postTheriStats } from "~/server/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
@@ -26,14 +26,15 @@ const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-
-
 export const UnitQuestion: ParentComponent<{
   content: QuestionPersonal | QuestionTheir;
   LsName: "personalQuestions" | "theirQuestions";
   paginate: (newDirection: number) => void;
 }> = (props) => {
-  const sendStatsPersonal = postPersonalStats();
+  const sendStats =
+    props.LsName === "personalQuestions"
+      ? postPersonalStats()
+      : postTheriStats();
 
   const {
     question,
@@ -112,7 +113,7 @@ export const UnitQuestion: ParentComponent<{
       .filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
       .forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-    sendStatsPersonal.mutateAsync(questionsLs);
+    sendStats.mutateAsync(questionsLs);
   };
 
   const handleMultiSubmit = (
@@ -169,7 +170,9 @@ export const UnitQuestion: ParentComponent<{
         props.LsName,
         JSON.stringify({ ...questionsLs, ...value })
       );
-      const LsExistsJunctions = localStorage.getItem(`junctions_${props.LsName}`);
+      const LsExistsJunctions = localStorage.getItem(
+        `junctions_${props.LsName}`
+      );
       let junctions: Record<keyof PersonalQuestions, number> = LsExistsJunctions
         ? JSON.parse(LsExistsJunctions)
         : null;
@@ -186,7 +189,10 @@ export const UnitQuestion: ParentComponent<{
               questions.findIndex((e) => e.questionDB === skip) -
               questions.findIndex((e) => e.questionDB === questionDB),
           };
-          localStorage.setItem(`junctions_${props.LsName}`, JSON.stringify(junctions));
+          localStorage.setItem(
+            `junctions_${props.LsName}`,
+            JSON.stringify(junctions)
+          );
         } else {
           if (junctions && junctions[questionDB]) {
             const LsTotal = localStorage.getItem(props.LsName);
@@ -213,14 +219,23 @@ export const UnitQuestion: ParentComponent<{
                 }
               });
 
-            localStorage.setItem(props.LsName, JSON.stringify(curQuestionsObject));
+            localStorage.setItem(
+              props.LsName,
+              JSON.stringify(curQuestionsObject)
+            );
             delete junctions[questionDB];
-            localStorage.setItem(`junctions_${props.LsName}`, JSON.stringify(junctions));
+            localStorage.setItem(
+              `junctions_${props.LsName}`,
+              JSON.stringify(junctions)
+            );
           }
         }
 
         if (skipAmount) {
-          localStorage.setItem(`to_${skip}_${props.LsName}`, JSON.stringify(skipAmount));
+          localStorage.setItem(
+            `to_${skip}_${props.LsName}`,
+            JSON.stringify(skipAmount)
+          );
         } else {
           localStorage.removeItem(`to_${skip}_${props.LsName}`);
         }
@@ -317,6 +332,31 @@ export const UnitQuestion: ParentComponent<{
         <Box question={question}>
           <div class="flex flex-col items-center justify-end">
             <For each={selections} fallback={<div>No selection found</div>}>
+              {(v) => (
+                <div class="m-2">
+                  <CustomButton
+                    onClick={() => handleSubmit({ [questionDB]: v })}
+                    class={
+                      v === selection()
+                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                        : ""
+                    }
+                  >
+                    {firstLetterUpperCase(v)}
+                  </CustomButton>
+                </div>
+              )}
+            </For>
+          </div>
+        </Box>
+      </Match>
+      <Match when={questionType === "unknown"}>
+        <Box question={question}>
+          <div class="flex flex-col items-center justify-end">
+            <For
+              each={["yes", "no", "unknown"]}
+              fallback={<div>No selection found</div>}
+            >
               {(v) => (
                 <div class="m-2">
                   <CustomButton

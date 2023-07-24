@@ -1,11 +1,23 @@
+//import { DB } from 'kysely-codegen'
+
+import type { ColumnType } from "kysely";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
+
+export type Int8 = ColumnType<string, string | number | bigint, string | number | bigint>;
+
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
 export interface Account {
-  id: string;
+  id: Generated<string>;
   type: string;
   provider: string;
   providerAccountId: string;
   refresh_token: string | null;
   access_token: string | null;
-  expires_at: string | null;
+  expires_at: Int8 | null;
   token_type: string | null;
   scope: string | null;
   id_token: string | null;
@@ -14,10 +26,12 @@ export interface Account {
 }
 
 export interface PersonalQuestions {
-  id: number;
+  id: Generated<number>;
   user: string;
   diagnosis: string;
   gender: string;
+  relatives: string;
+  lost_relationships: boolean;
   current_age: number;
   age_of_onset: number;
   length_of_psychosis: string;
@@ -94,18 +108,18 @@ export interface PersonalQuestions {
   what_others_should_know: string | null;
   not_have_schizophrenia: boolean;
   not_have_schizophrenia_description: string | null;
-  created_at: Date | null;
+  created_at: Generated<Timestamp | null>;
 }
 
 export interface Session {
-  id: string;
+  id: Generated<string>;
   sessionToken: string;
-  expires: Date;
+  expires: Timestamp;
   userId: string | null;
 }
 
 export interface TheirQuestions {
-  id: number;
+  id: Generated<number>;
   user_id: string;
   relation: string;
   gender: string;
@@ -133,17 +147,17 @@ export interface TheirQuestions {
 }
 
 export interface User {
-  id: string;
+  id: Generated<string>;
   name: string | null;
   email: string | null;
-  emailVerified: Date | null;
+  emailVerified: Timestamp | null;
   image: string | null;
 }
 
 export interface VerificationToken {
   identifier: string | null;
   token: string | null;
-  expires: Date | null;
+  expires: Timestamp | null;
 }
 
 export interface DB {
@@ -154,3 +168,4 @@ export interface DB {
   User: User;
   VerificationToken: VerificationToken;
 }
+

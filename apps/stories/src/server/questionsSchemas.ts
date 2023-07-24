@@ -562,7 +562,7 @@ export const theirQuestionsSchemaCustom = z
       .max(600, "Your text is too long! (Max. 600 characters)")
       .min(4, 'Your text is too short, even "okay" is enough'),
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
-    lost_relationships: z.boolean(),
+    lost_relationships:  z.enum(["yes", "no", "unknown"]),
     has_been_hospitalized: z.boolean(),
     care_after_hospital: z.boolean().nullable(),
     psychosis_how_many: z.enum([
@@ -572,7 +572,7 @@ export const theirQuestionsSchemaCustom = z
       "four times",
       "five or more",
     ]),
-    gained_weight: z.enum(["yes", "no", "unknown"]),
+    gained_weight: z.boolean(),
     cannabis: z.enum(["yes", "no", "unknown"]),
     suicide_attempts: z.enum(["yes", "no", "unknown"]),
   })

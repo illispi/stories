@@ -1,5 +1,5 @@
 import { Motion, Presence } from "@motionone/solid";
-import type { Component, JSX, Setter } from "solid-js";
+import type { Component, Setter } from "solid-js";
 import {
   ErrorBoundary,
   For,
@@ -14,7 +14,8 @@ import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import ToggleButton from "~/components/ToggleButton";
-import { byDiagnosis, byGender } from "~/data/statsArrays";
+import { byGender } from "~/data/stats/byGender";
+import { byDiagnosis } from "~/data/stats/byDiagnosis";
 import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 

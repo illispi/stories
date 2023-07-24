@@ -1,6 +1,6 @@
-import { Component, Show, createEffect, createSignal } from "solid-js";
-import { MainReturn } from "~/types/types";
-import { PersonalQuestions } from "~/types/zodFromTypes";
+import type { Component } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
+import type { MainReturn } from "~/types/types";
 import PieChartCustom from "./PieChartCustom";
 
 export const YesOrNoComponent: Component<{
