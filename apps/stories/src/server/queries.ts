@@ -298,7 +298,11 @@ export const allStats = query$({
 export const textPagination = query$({
   queryFn: async ({ payload }) => {
     let stats = db
-      .selectFrom("Personal_questions")
+      .selectFrom(
+        payload.personalOrTheir === "personal"
+          ? "Personal_questions"
+          : "Their_questions"
+      )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
       .where(payload.stat as keyof PersonalQuestions, "!=", "null");
 
@@ -318,13 +322,15 @@ export const textPagination = query$({
     const { count } = db.fn;
 
     const length = await db
-      .selectFrom("Personal_questions")
+      .selectFrom(
+        payload.personalOrTheir === "personal"
+          ? "Personal_questions"
+          : "Their_questions"
+      )
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
       .executeTakeFirst();
 
     const totalLength = Number(length?.count ?? "0");
-
-    console.log({ stats: statsFinal, total: totalLength });
 
     return { stats: statsFinal, total: totalLength };
   },
@@ -334,5 +340,6 @@ export const textPagination = query$({
     stat: z.string(),
     gender: z.enum(["Female", "Other", "Male"]).nullable(),
     diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
+    personalOrTheir: z.enum(["personal", "their"]),
   }),
 });

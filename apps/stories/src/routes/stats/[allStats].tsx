@@ -52,6 +52,10 @@ const AllStatsPage: ParentComponent = () => {
       : allStatsTheirArr
   );
 
+  const [selector, setselector] = createSignal(
+    params.allStats === "personalStatsAll" ? "personal" : "their"
+  );
+
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
@@ -111,6 +115,7 @@ const AllStatsPage: ParentComponent = () => {
                       ref={(el: Element) => setTargets((p) => [...p, el])}
                       shown={shown()}
                       removeShown={removeShown}
+                      selector={selector()}
                     />
                   )}
                 </For>

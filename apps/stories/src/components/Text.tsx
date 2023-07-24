@@ -9,6 +9,7 @@ export const TextComponent: Component<{
   header: string;
   stat: keyof PersonalQuestions;
   data: MainReturn | undefined;
+  selector: "personal" | "their";
 }> = (props) => {
   return (
     <div class="flex flex-col items-center justify-center ">
@@ -28,7 +29,7 @@ export const TextComponent: Component<{
               )}
             </For>
 
-            <A href={`/stats/texts/${props.stat}`}>
+            <A href={`/stats/texts/${props.selector}/${props.stat}`}>
               <div
                 class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
         text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"

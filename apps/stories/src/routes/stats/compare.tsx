@@ -357,4 +357,4 @@ const CompareStats = () => {
 export default CompareStats;
 
 //TODO A and B for text routes need to work as well
-//TODO consider singular header for question at least in mobile
+//TODO their questions compare as well

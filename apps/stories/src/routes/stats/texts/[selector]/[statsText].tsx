@@ -8,7 +8,10 @@ import { textPagination } from "~/server/queries";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 const StatsText = () => {
-  const params = useParams<{ statsText: keyof PersonalQuestions }>();
+  const params = useParams<{
+    statsText: keyof PersonalQuestions;
+    selector: "personal" | "their";
+  }>();
   const [filter, setFilter] = createSignal(false);
   const [gender, setGender] = createSignal<"Female" | "Other" | "Male" | null>(
     null
@@ -17,13 +20,13 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
-
   const [page, setPage] = createSignal(0);
   const texts = textPagination(() => ({
     page: page(),
     stat: params.statsText,
     diagnosis: diagnosis(),
     gender: gender(),
+    personalOrTheir: params.selector,
   }));
 
   return (
