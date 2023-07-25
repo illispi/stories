@@ -4,6 +4,7 @@ import { createServerData$ } from "solid-start/server";
 import { getSession } from "@auth/solid-start";
 import { authOpts } from "./api/auth/[...solidauth]";
 import { signOut, signIn } from "@auth/solid-start/client";
+import { route } from "routes-gen";
 
 const AuthShowcase: VoidComponent = () => {
   const sessionData = createSession();
@@ -34,7 +35,7 @@ const Home: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/questionares"
+        href={route("/questionares")}
       >
         Personal questions
       </A>
@@ -48,7 +49,7 @@ const Home: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats"
+        href={route("/questionares")}
       >
         Stats
       </A>

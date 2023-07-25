@@ -1,3 +1,4 @@
+import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 import { A } from "solid-start";
@@ -29,7 +30,12 @@ export const TextComponent: Component<{
               )}
             </For>
 
-            <A href={`/stats/texts/${props.selector}/${props.stat}`}>
+            <A
+              href={route("/stats/texts/:selector/:statsText", {
+                selector: props.selector,
+                statsText: props.stat,
+              })}
+            >
               <div
                 class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
         text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"

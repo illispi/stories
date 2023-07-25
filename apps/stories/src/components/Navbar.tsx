@@ -1,18 +1,18 @@
-import {
-  type ParentComponent,
-  Switch,
-  Match,
-  createSignal,
-  Component,
+import type {
   Accessor,
-  Setter,
+  Component,
+  Setter} from "solid-js";
+import {
+  createSignal
 } from "solid-js";
 import { A, Title } from "solid-start";
+import { route } from "routes-gen";
+
 
 const NavLinks: Component = () => {
   return (
     <div class="hidden items-center justify-center lg:flex">
-      <A noScroll={true} href="/stats">
+      <A noScroll={true} href={route("/stats")}>
         <div class="mx-2 text-xl font-semibold">Statistics</div>
       </A>
     </div>
@@ -70,7 +70,7 @@ const NavBar: Component = () => {
     <>
       <Title>Home</Title>
       <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
-        <A noScroll={true}href={"/"}>
+        <A noScroll={true}href={route("/")}>
           <div class="mx-2 text-2xl font-semibold">
             Schizopoll
           </div>

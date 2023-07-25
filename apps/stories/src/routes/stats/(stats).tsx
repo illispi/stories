@@ -1,3 +1,4 @@
+import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { A } from "solid-start";
 
@@ -7,14 +8,14 @@ const Stats: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats/personalStatsAll"
+        href={route("/stats/:allStats", { allStats: "personalStatsAll" })}
       >
         Personal Stats
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats/theirStatsAll"
+        href={route("/stats/:allStats", { allStats: "theirStatsAll" })}
       >
         Their Stats
       </A>
