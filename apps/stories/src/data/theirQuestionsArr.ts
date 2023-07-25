@@ -36,7 +36,7 @@ export const questions: QuestionTheir[] = [
     selections: ["relative", "friend", "acquintance"],
   },
   {
-    question: "How old are they (estimnate is enough)?",
+    question: "How old are they (estimate)?",
     questionType: "integer",
     questionDB: "current_age",
   },
@@ -58,12 +58,6 @@ export const questions: QuestionTheir[] = [
       "grandparents",
       "other",
     ],
-  },
-  {
-    question:
-      "What age were they when they first had a psychotic episode (estimate)",
-    questionType: "integer",
-    questionDB: "age_of_onset",
   },
   {
     question: "How long did their psychotic episodes last?",

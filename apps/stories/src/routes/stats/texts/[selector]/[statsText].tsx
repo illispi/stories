@@ -170,7 +170,7 @@ const StatsText = () => {
             </For>
             <div class="m-16 flex w-full items-center justify-around">
               <CustomButton
-                class={page() === 0 ? "hidden" : ""}
+                class={page() === 0 ? "invisible" : ""}
                 onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
               >
                 Back
@@ -181,7 +181,9 @@ const StatsText = () => {
 
               <CustomButton
                 class={
-                  texts.data?.total / ((page() + 1) * 25) <= 1 ? "hidden" : ""
+                  texts.data?.total / ((page() + 1) * 25) <= 1
+                    ? "invisible"
+                    : ""
                 }
                 onClick={() =>
                   setPage((prev) =>
