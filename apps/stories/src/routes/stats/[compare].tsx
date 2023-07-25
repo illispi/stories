@@ -18,10 +18,10 @@ import { byGender } from "~/data/stats/byGender";
 import { byDiagnosis } from "~/data/stats/byDiagnosis";
 import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
+import { useParams } from "solid-start";
 
 type CompareOptions =
-  | "personalQuestionsAll"
-  | "theirQuestionsAll"
+  | "all"
   | "schizophrenia"
   | "schizoaffective"
   | "female"
@@ -196,6 +196,10 @@ const Compared: Component<{
 };
 
 const CompareStats = () => {
+  const params = useParams<{
+    compare: "Personal_questions" | "Their_questions";
+  }>();
+
   const [A, setA] = createSignal<CompareOptions>("schizophrenia");
   const [B, setB] = createSignal<CompareOptions>("schizoaffective");
 
@@ -239,6 +243,7 @@ const CompareStats = () => {
   const statsA = allStats(
     () => ({
       value: A(),
+      pOrT: params.compare,
     }),
     () => ({
       placeholderData: (prev) => prev, //NOTE why is this necessary, log something in effect
@@ -247,6 +252,7 @@ const CompareStats = () => {
   const statsB = allStats(
     () => ({
       value: B(),
+      pOrT: params.compare,
     }),
     () => ({
       placeholderData: (prev) => prev,

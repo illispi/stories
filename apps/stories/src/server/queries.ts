@@ -12,39 +12,38 @@ export const allStats = query$({
     let stats;
 
     const questions =
-      payload.value === "personalStatsAll" ? personalQuestions : theirQuestions;
+      payload.pOrT === "Personal_questions"
+        ? personalQuestions
+        : theirQuestions;
 
     switch (payload.value) {
-      case "personalStatsAll":
-        stats = await db.selectFrom("Personal_questions").selectAll().execute();
-        break;
-      case "theirStatsAll":
-        stats = await db.selectFrom("Their_questions").selectAll().execute();
+      case "all":
+        stats = await db.selectFrom(payload.pOrT).selectAll().execute();
         break;
       case "female":
         stats = await db
-          .selectFrom("Personal_questions")
+          .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "female")
           .execute();
         break;
       case "other":
         stats = await db
-          .selectFrom("Personal_questions")
+          .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "other")
           .execute();
         break;
       case "male":
         stats = await db
-          .selectFrom("Personal_questions")
+          .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "male")
           .execute();
         break;
       case "schizophrenia":
         stats = await db
-          .selectFrom("Personal_questions")
+          .selectFrom(payload.pOrT)
           .selectAll()
           .where("diagnosis", "=", "schizophrenia")
           .execute();
@@ -52,7 +51,7 @@ export const allStats = query$({
         break;
       case "schizoaffective":
         stats = await db
-          .selectFrom("Personal_questions")
+          .selectFrom(payload.pOrT)
           .selectAll()
           .where("diagnosis", "=", "schizoaffective")
           .execute();
@@ -62,7 +61,7 @@ export const allStats = query$({
         break;
     }
 
-    const responsesTotal: number = stats.length;
+    const responsesTotal: number = stats.length; //TODO use postgres count here
 
     const maleAge = await db
       .selectFrom("Personal_questions")
@@ -284,14 +283,14 @@ export const allStats = query$({
   key: "allStats",
   schema: z.object({
     value: z.enum([
-      "personalStatsAll",
-      "theirStatsAll",
+      "all",
       "schizophrenia",
       "schizoaffective",
       "female",
       "other",
       "male",
     ]),
+    pOrT: z.enum(["Personal_questions", "Their_questions"]),
   }), // this will be used as the query key (along with the input)
 }); // this will be used as the input type and input validation
 

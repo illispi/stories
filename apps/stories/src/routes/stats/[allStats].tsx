@@ -34,12 +34,13 @@ const CompareButton: Component = () => {
 
 const AllStatsPage: ParentComponent = () => {
   const params = useParams<{
-    allStats: "personalStatsAll" | "theirStatsAll";
+    allStats: "Personal_questions" | "Their_questions";
   }>();
 
   const allStatsData = allStats(
     () => ({
-      value: params.allStats,
+      value: "all",
+      pOrT: params.allStats,
     }),
     () => ({
       placeholderData: (prev) => prev,
@@ -47,13 +48,13 @@ const AllStatsPage: ParentComponent = () => {
   );
 
   const [compOrder, setCompOrder] = createSignal(
-    params.allStats === "personalStatsAll"
+    params.allStats === "Personal_questions"
       ? allStatsPersonalArr
       : allStatsTheirArr
   );
 
   const [selector, setselector] = createSignal(
-    params.allStats === "personalStatsAll" ? "personal" : "their"
+    params.allStats === "Personal_questions" ? "personal" : "their"
   );
 
   const [shown, setShown] = createSignal<Element[]>([]);
