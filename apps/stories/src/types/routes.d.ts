@@ -5,8 +5,10 @@ declare module "routes-gen" {
     "/questionares": Record<string, never>;
     "/questionares/:personalQuestions": { "personalQuestions": string };
     "/stats": Record<string, never>;
-    "/stats/:allStats": { "allStats": string };
+    "/stats/all": Record<string, never>;
+    "/stats/all/:allStats": { "allStats": string };
     "/stats/compare": Record<string, never>;
+    "/stats/compare/:compare": { "compare": string };
     "/stats/texts/:selector/:statsText": { "selector": string, "statsText": string };
   };
 
@@ -17,8 +19,10 @@ declare module "routes-gen" {
       | ["/questionares"]
       | ["/questionares/:personalQuestions", RouteParams["/questionares/:personalQuestions"]]
       | ["/stats"]
-      | ["/stats/:allStats", RouteParams["/stats/:allStats"]]
+      | ["/stats/all"]
+      | ["/stats/all/:allStats", RouteParams["/stats/all/:allStats"]]
       | ["/stats/compare"]
+      | ["/stats/compare/:compare", RouteParams["/stats/compare/:compare"]]
       | ["/stats/texts/:selector/:statsText", RouteParams["/stats/texts/:selector/:statsText"]]
   >(...args: T): typeof args[0];
 }

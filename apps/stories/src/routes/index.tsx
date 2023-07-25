@@ -37,19 +37,20 @@ const Home: Component = () => {
         class="duration-200 ease-out active:scale-125"
         href={route("/questionares")}
       >
-        Personal questions
+        Poll
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href="/stats/compare"
+        href={route("/stats/compare")}
       >
         Compare
       </A>
+
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/questionares")}
+        href={route("/stats/all")}
       >
         Stats
       </A>

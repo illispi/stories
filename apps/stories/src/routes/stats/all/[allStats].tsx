@@ -1,3 +1,4 @@
+import { route } from "routes-gen";
 import type { Component, ParentComponent } from "solid-js";
 import {
   ErrorBoundary,
@@ -15,9 +16,12 @@ import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
 import { allStats } from "~/server/queries";
 
 const CompareButton: Component = () => {
+  const params = useParams<{
+    allStats: "Personal_questions" | "Their_questions";
+  }>();
   return (
     <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
-      <A noScroll={true} href={"compare"}>
+      <A noScroll={true} href={route("/stats/compare/:compare", {compare: params.allStats})}>
         <CustomButton
           class="m-2 rounded-full bg-blue-500 p-5
       font-semibold text-white transition-all  hover:scale-110
