@@ -320,16 +320,26 @@ export const textPagination = query$({
 
     const { count } = db.fn;
 
-    const length = await db
+    //NOTE there has to better way than this to get count than duplicate functions
+
+    let length = db
       .selectFrom(
         payload.personalOrTheir === "personal"
           ? "Personal_questions"
           : "Their_questions"
       )
-      .select(count(payload.stat as keyof PersonalQuestions).as("count"))
-      .executeTakeFirst();
+      .select(count(payload.stat as keyof PersonalQuestions).as("count"));
 
-    const totalLength = Number(length?.count ?? "0");
+    if (payload.gender) {
+      length = length.where("gender", "=", payload.gender.toLowerCase());
+    }
+
+    if (payload.diagnosis) {
+      length = length.where("diagnosis", "=", payload.diagnosis.toLowerCase());
+    }
+    const finalLength = await length.executeTakeFirst();
+
+    const totalLength = Number(finalLength?.count ?? "0");
 
     return { stats: statsFinal, total: totalLength };
   },
