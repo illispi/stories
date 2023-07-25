@@ -19,7 +19,7 @@ export interface QuestionPersonal {
 
 export const questions: QuestionPersonal[] = [
   {
-    question: "What is your diagonosis?",
+    question: "What is your diagnosis?",
     questionType: "selection",
     questionDB: "diagnosis",
     selections: ["schizophrenia", "schizoaffective"],

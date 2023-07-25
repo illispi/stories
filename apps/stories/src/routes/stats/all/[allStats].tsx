@@ -31,7 +31,7 @@ const CompareButton: Component = () => {
         </CustomButton>
       </A>
       <div class="m-2" />
-      <p>Allows to compare statistics between genders and diagonosis</p>
+      <p>Allows to compare statistics between genders and diagnosis</p>
     </div>
   );
 };

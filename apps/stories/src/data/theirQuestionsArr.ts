@@ -18,7 +18,7 @@ export interface QuestionTheir {
 
 export const questions: QuestionTheir[] = [
   {
-    question: "What is their diagonosis?",
+    question: "What is their diagnosis?",
     questionType: "selection",
     questionDB: "diagnosis",
     selections: ["schizophrenia", "schizoaffective"],
