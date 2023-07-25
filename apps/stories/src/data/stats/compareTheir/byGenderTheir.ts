@@ -9,12 +9,6 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
-    type: "doughnut",
-    stat: "gender",
-    header: "Share of genders",
-    function: "dataGender",
-  },
-  {
     type: "bar",
     stat: "current_age",
     header: "Age of responses",
