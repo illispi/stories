@@ -204,3 +204,4 @@ export default StatsText;
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
 //TODO only filter after pressing filter in modal, X/offscreen to clear filters and intermediate selection of filters before committing
 //TODO scroll to top on page switch
+//TODO usetransition in filter
