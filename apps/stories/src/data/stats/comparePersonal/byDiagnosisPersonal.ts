@@ -1,6 +1,6 @@
 import type { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 
-export const byDiagnosis: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
+export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
 
   {

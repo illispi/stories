@@ -1,7 +1,7 @@
 import type { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 
 
-export const byGender: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
+export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
   {
     type: "doughnut",

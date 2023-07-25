@@ -14,11 +14,13 @@ import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import ToggleButton from "~/components/ToggleButton";
-import { byGender } from "~/data/stats/byGender";
-import { byDiagnosis } from "~/data/stats/byDiagnosis";
 import { allStats } from "~/server/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 import { useParams } from "solid-start";
+import { byGenderPersonal } from "~/data/stats/comparePersonal/byGenderPersonal";
+import { byGenderTheir } from "~/data/stats/compareTheir/byGenderTheir";
+import { byDiagnosisPersonal } from "~/data/stats/comparePersonal/byDiagnosisPersonal";
+import { byDiagnosisTheir } from "~/data/stats/compareTheir/byDiagnosisTheir";
 
 type CompareOptions =
   | "all"
@@ -36,6 +38,16 @@ const Compared: Component<{
   const [selection, setSelection] = createSignal<"diagnosis" | "gender">(
     "diagnosis"
   );
+
+  const params = useParams<{
+    compare: "Personal_questions" | "Their_questions";
+  }>();
+  const byGender =
+    params.compare === "Personal_questions" ? byGenderPersonal : byGenderTheir;
+  const byDiagnosis =
+    params.compare === "Personal_questions"
+      ? byDiagnosisPersonal
+      : byDiagnosisTheir;
 
   const [male, setMale] = createSignal(true);
   const [female, setFemale] = createSignal(true);
@@ -199,6 +211,10 @@ const CompareStats = () => {
   const params = useParams<{
     compare: "Personal_questions" | "Their_questions";
   }>();
+  const byDiagnosis =
+    params.compare === "Personal_questions"
+      ? byDiagnosisPersonal
+      : byDiagnosisTheir;
 
   const [A, setA] = createSignal<CompareOptions>("schizophrenia");
   const [B, setB] = createSignal<CompareOptions>("schizoaffective");
