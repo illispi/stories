@@ -20,9 +20,14 @@ const Transition: Component<ParentProps> = (props) => {
             {
               opacity: 0,
               transform: "translate(-50%, -100px)",
-              easing: "ease-in",
+              easing: "ease-out",
             },
-            { opacity: 1, transform: `translate(-50%, 0)`, easing: "ease-out" },
+            {
+              opacity: 1,
+              transform: "translate(-50%, 5px)",
+              easing: "ease-in-out",
+            },
+            { opacity: 1, transform: `translate(-50%, 0)` },
           ],
           { duration: 300 }
         )
@@ -36,11 +41,10 @@ const Transition: Component<ParentProps> = (props) => {
 
       el.animate(
         [
-          { opacity: 1, transform: `translate(-50%, 0)`, easing: "ease-out" },
+          { opacity: 1, transform: `translate(-50%, 0)`, easing: "ease-in" },
           {
             opacity: 0,
             transform: "translate(-50%, -100px)",
-            easing: "ease-in",
           },
         ],
         { duration: 300 }

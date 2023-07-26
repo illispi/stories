@@ -12,7 +12,7 @@ const GlobalTransition: Component<ParentProps> = (props) => {
     if (!el.isConnected) return done();
     el.animate(
       [
-        { opacity: 0, transform: "translate(100px)" },
+        { opacity: 0, transform: "translate(100px)" }, //NOTE see docs on mdn easing might better in keyframes, see modalpopup.tsx
         { opacity: 1, transform: "translate(0)" },
       ],
       { duration: 300, easing: "ease-out" }
