@@ -12,10 +12,9 @@ const GlobalTransition: Component<ParentProps> = (props) => {
     if (!el.isConnected) return done();
     el.animate(
       [
-        { opacity: 0, transform: "translate(100px)" }, //NOTE see docs on mdn easing might better in keyframes, see modalpopup.tsx
-        { opacity: 1, transform: "translate(0)" },
+        { opacity: 0, transform: "translate(100px)", easing: "ease-out" },         { opacity: 1, transform: "translate(0)" },
       ],
-      { duration: 300, easing: "ease-out" }
+      { duration: 300 }
     )
       .finished.then(done)
       .catch(done);
@@ -25,10 +24,10 @@ const GlobalTransition: Component<ParentProps> = (props) => {
     if (!el.isConnected) return done();
     el.animate(
       [
-        { opacity: 1, transform: "translate(0)" },
+        { opacity: 1, transform: "translate(0)", easing: "ease-in" },
         { opacity: 0, transform: "translate(-100px)" },
       ],
-      { duration: 300, easing: "ease-in" }
+      { duration: 300 }
     )
       .finished.then(done)
       .catch(done);
