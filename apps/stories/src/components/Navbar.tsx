@@ -13,7 +13,7 @@ const Hamburger: Component<{
   const isRouting = useIsRouting();
 
   createEffect(() => {
-    isRouting();
+    isRouting(); //NOTE is this necessary
 
     window.addEventListener("popstate", function (event) {
       if (searchParams.nav === "true") {
@@ -29,6 +29,7 @@ const Hamburger: Component<{
     <div class="relative">
       <div class="flex items-center justify-center transition-transform active:scale-125">
         <button
+          class="transition-transform duration-200 ease-out hover:scale-125"
           onClick={() => {
             if (searchParams.nav === "true") {
               setSearchParams({ nav: null });
@@ -76,7 +77,7 @@ const Hamburger: Component<{
       <div
         class={`fixed right-0 top-14 z-30 flex  ${
           searchParams.nav === "true" ? `translate-x-0` : `translate-x-full`
-        } w-80 flex-col transition-transform duration-300`}
+        } h-screen w-80 flex-col transition-transform duration-300 ease-in-out`}
       >
         Content
         <AuthShowcase />
