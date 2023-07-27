@@ -1,20 +1,44 @@
-import type { Accessor, Component, Setter } from "solid-js";
-import { Show, createSignal } from "solid-js";
-import { A, Title } from "solid-start";
 import { route } from "routes-gen";
-import { Presence, Motion } from "@motionone/solid";
+import type { Accessor, Component, Setter } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
+import { A, Title, useIsRouting, useSearchParams } from "solid-start";
 import AuthShowcase from "./Auth";
 
 const Hamburger: Component<{
   menuOpen: Accessor<boolean>;
   setMenuOpen: Setter<boolean>;
 }> = (props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const isRouting = useIsRouting();
+
+  createEffect(() => {
+    isRouting();
+
+    window.addEventListener("popstate", function (event) {
+      if (searchParams.nav === "true") {
+        setSearchParams({ nav: null });
+      }
+    });
+
+    //TODO if open and close nav and then go back history is gone
+    //BUG on mobile refresh has nav on bit weird position, might be able to solve with start disabled, see personalQuestions.tsx motion.one
+  });
+
   return (
     <div class="relative">
       <div class="flex items-center justify-center transition-transform active:scale-125">
-        <button onClick={() => props.setMenuOpen(!props.menuOpen())}>
+        <button
+          onClick={() => {
+            if (searchParams.nav === "true") {
+              setSearchParams({ nav: null });
+            } else {
+              setSearchParams({ nav: true });
+            }
+          }}
+        >
           <Show
-            when={props.menuOpen()}
+            when={searchParams.nav === "true"}
             fallback={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +75,7 @@ const Hamburger: Component<{
       </div>
       <div
         class={`fixed right-0 top-14 z-30 flex  ${
-          props.menuOpen() ? `translate-x-0` : `translate-x-full`
+          searchParams.nav === "true" ? `translate-x-0` : `translate-x-full`
         } w-80 flex-col transition-transform duration-300`}
       >
         Content
