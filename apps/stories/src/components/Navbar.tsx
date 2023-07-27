@@ -76,8 +76,10 @@ const Hamburger: Component<{
       </div>
       <div
         class={`fixed right-0 top-14 z-30 flex  ${
-          searchParams.nav === "true" ? `translate-x-0` : `translate-x-full`
-        } h-screen w-80 flex-col transition-transform duration-300 ease-in-out`}
+          searchParams.nav === "true"
+            ? `translate-x-0 opacity-100`
+            : `-translate-x-20 opacity-0 md:translate-x-full`
+        } h-screen w-80 flex-col transition-all duration-300 ease-in-out`}
       >
         Content
         <AuthShowcase />
