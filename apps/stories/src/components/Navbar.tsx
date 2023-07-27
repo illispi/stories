@@ -49,20 +49,14 @@ const Hamburger: Component<{
           </Show>
         </button>
       </div>
-      <Presence>
-        <Show when={props.menuOpen()}>
-          <Motion.div
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 100, opacity: 0 }}
-            transition={{ duration: 1.2 }}
-            class="absolute z-30 flex -translate-x-full flex-col rounded-3xl bg-white shadow-xl shadow-slate-500"
-          >
-            Content
-            <AuthShowcase />
-          </Motion.div>
-        </Show>
-      </Presence>
+      <div
+        class={`fixed right-0 top-14 z-30 flex  ${
+          props.menuOpen() ? `translate-x-0` : `translate-x-full`
+        } w-80 flex-col transition-transform duration-300`}
+      >
+        Content
+        <AuthShowcase />
+      </div>
     </div>
   );
 };
