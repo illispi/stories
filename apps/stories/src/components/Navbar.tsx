@@ -98,7 +98,7 @@ const Hamburger: Component<{
           searchParams.nav === "true"
             ? `translate-x-0 opacity-100 ease-out`
             : `translate-x-full opacity-0 ease-in`
-        } h-screen w-80 flex-col bg-amber-200 transition-all duration-300`}
+        } h-screen w-80 flex-col bg-orange-200 transition-all duration-300`}
       >
         <Auth />
         <Show when={sessionData()}>
