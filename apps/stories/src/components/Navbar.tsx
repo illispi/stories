@@ -1,20 +1,34 @@
 import { route } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
-import { A, Title, useIsRouting, useSearchParams } from "solid-start";
-import AuthShowcase from "./Auth";
+import { A, Title, useSearchParams } from "solid-start";
+import Auth from "./Auth";
+import { createServerData$ } from "solid-start/server";
+import { getSession } from "@auth/solid-start";
+import { authOpts } from "~/routes/api/auth/[...solidauth]";
+
+const createSession = () => {
+  return createServerData$(async (_, event) => {
+    return await getSession(event.request, authOpts);
+  });
+};
+
+const MenuItem = (props) => {
+  return (
+    <>
+      <A href={props.route}>{props.content}</A>
+    </>
+  );
+};
 
 const Hamburger: Component<{
   menuOpen: Accessor<boolean>;
   setMenuOpen: Setter<boolean>;
 }> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const isRouting = useIsRouting();
+  const sessionData = createSession();
 
   createEffect(() => {
-    isRouting(); //NOTE is this necessary
-
     window.addEventListener("popstate", function (event) {
       if (searchParams.nav === "true") {
         setSearchParams({ nav: null });
@@ -75,14 +89,16 @@ const Hamburger: Component<{
         </button>
       </div>
       <div
-        class={`fixed right-0 top-14 z-30 flex  ${
+        class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-2 p-10 ${
           searchParams.nav === "true"
-            ? `translate-x-0 opacity-100`
-            : `-translate-x-20 opacity-0 md:translate-x-full`
-        } h-screen w-80 flex-col transition-all duration-300 ease-in-out`}
+            ? `translate-x-0 opacity-100 ease-out`
+            : `translate-x-full opacity-0 ease-in`
+        } h-screen w-80 flex-col bg-purple-200 transition-all duration-300`}
       >
-        Content
-        <AuthShowcase />
+        <Auth />
+        <Show when={sessionData()}>
+          <MenuItem content="Your data" />
+        </Show>
       </div>
     </div>
   );
