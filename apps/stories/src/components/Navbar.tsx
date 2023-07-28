@@ -16,7 +16,12 @@ const createSession = () => {
 const MenuItem = (props) => {
   return (
     <>
-      <A href={props.route}>{props.content}</A>
+      <A
+        class={`text-3xl font-light uppercase transition-all hover:scale-110 ${props.class}`}
+        href={props.route}
+      >
+        {props.content}
+      </A>
     </>
   );
 };
@@ -89,16 +94,41 @@ const Hamburger: Component<{
         </button>
       </div>
       <div
-        class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-2 p-10 ${
+        class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-6 p-8 ${
           searchParams.nav === "true"
             ? `translate-x-0 opacity-100 ease-out`
             : `translate-x-full opacity-0 ease-in`
-        } h-screen w-80 flex-col bg-purple-200 transition-all duration-300`}
+        } h-screen w-80 flex-col bg-amber-200 transition-all duration-300`}
       >
         <Auth />
         <Show when={sessionData()}>
-          <MenuItem content="Your data" />
+          <MenuItem route={"/"} content="Your data" />
         </Show>
+        <div class="w-full border-b-2 border-black" />
+        <MenuItem class="mt-8" route={"/"} content="results" />
+        <MenuItem route={"/"} content="poll" />
+        <MenuItem route={"/"} content="Articles" />
+        <button
+          class="p-16 transition-all hover:scale-125"
+          onClick={() => {
+            setSearchParams({ nav: null });
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="0.6"
+            stroke="currentColor"
+            class="h-16 w-16"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );
