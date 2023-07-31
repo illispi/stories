@@ -1,6 +1,6 @@
 import type { Kysely } from "kysely";
-import { Adapter } from "next-auth/adapters";
-import { DB } from "../types/dbTypes";
+import type { Adapter } from "next-auth/adapters";
+import type { DB } from "../types/dbTypes";
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function KyselyAdapter(kysely: Kysely<DB>): Adapter {

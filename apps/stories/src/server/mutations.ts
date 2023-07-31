@@ -1,4 +1,4 @@
-import { getSession } from "@auth/solid-start";
+import { getSession } from "@solid-auth/base";
 import { mutation$ } from "@prpc/solid";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import {

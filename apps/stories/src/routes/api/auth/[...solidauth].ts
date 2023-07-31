@@ -5,7 +5,15 @@ import { serverEnv } from "~/env/server";
 
 import KyselyAdapter from "~/db/kyselyAdapter";
 import { db } from "~/server/server";
-import { Session } from "@auth/core/types";
+// session-type.d.ts
+import type { DefaultSession } from "@auth/core/types";
+
+
+declare module "@auth/core/types" {
+  export interface Session extends DefaultSession {
+    user?: User & { role: "admin" | "user" }
+  }
+}
 
 export const authOpts: SolidAuthConfig = {
   providers: [
@@ -17,6 +25,7 @@ export const authOpts: SolidAuthConfig = {
       profile(profile) {
         return {
           id: profile.id.toString(),
+          role: "user"
         };
       },
     }),
@@ -28,6 +37,7 @@ export const authOpts: SolidAuthConfig = {
       profile(profile) {
         return {
           id: profile.id,
+          role: "user"
         };
       },
     }),
@@ -37,6 +47,7 @@ export const authOpts: SolidAuthConfig = {
   callbacks: {
     async session({ session, user }) {
       session.user.id = user.id;
+      session.user.role = user.role
 
       return session;
     },

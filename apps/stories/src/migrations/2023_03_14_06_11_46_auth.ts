@@ -8,6 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("name", "text")
+    .addColumn("role", "text")
     .addColumn("email", "text", (col) => col.unique())
     .addColumn("emailVerified", "timestamp")
     .addColumn("image", "text")
