@@ -1,5 +1,5 @@
-import { getSession } from "@auth/solid-start";
-import { signIn, signOut } from "@auth/solid-start/client";
+import { getSession } from "@solid-auth/base";
+import { signIn, signOut } from "@solid-auth/base";
 import type { VoidComponent } from "solid-js";
 import { createServerData$ } from "solid-start/server";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";

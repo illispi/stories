@@ -1,7 +1,6 @@
 import Github from "@auth/core/providers/github";
 import Discord from "@auth/core/providers/discord";
-import type { SolidAuthConfig } from "@auth/solid-start";
-import { SolidAuth } from "@auth/solid-start";
+import { SolidAuth, type SolidAuthConfig } from "@solid-auth/base";
 import { serverEnv } from "~/env/server";
 
 import KyselyAdapter from "~/db/kyselyAdapter";

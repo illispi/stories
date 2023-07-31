@@ -40,13 +40,14 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "@auth/core": "^0.8.1",
+    "@auth/core": "^0.10.0",
     "@auth/solid-start": "^0.1.1",
     "@motionone/solid": "^10.16.2",
     "@next-auth/kysely-adapter": "^0.0.0",
     "@prpc/solid": "^0.2.33",
     "@prpc/vite": "^0.3.21",
     "@routes-gen/solid-start": "^0.1.1",
+    "@solid-auth/base": "^2.0.3",
     "@solid-primitives/intersection-observer": "^2.1.2",
     "@solid-primitives/keyed": "^1.2.0",
     "@solid-primitives/presence": "^0.0.2",

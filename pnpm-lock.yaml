@@ -15,11 +15,11 @@ importers:
   apps/stories:
     dependencies:
       '@auth/core':
-        specifier: ^0.8.1
-        version: 0.8.1
+        specifier: ^0.10.0
+        version: 0.10.0
       '@auth/solid-start':
         specifier: ^0.1.1
-        version: 0.1.1(@auth/core@0.8.1)(solid-js@1.7.6)(solid-start@0.2.26)
+        version: 0.1.1(@auth/core@0.10.0)(solid-js@1.7.6)(solid-start@0.2.26)
       '@motionone/solid':
         specifier: ^10.16.2
         version: 10.16.2(solid-js@1.7.6)
@@ -35,6 +35,9 @@ importers:
       '@routes-gen/solid-start':
         specifier: ^0.1.1
         version: 0.1.1(solid-start@0.2.26)
+      '@solid-auth/base':
+        specifier: ^2.0.3
+        version: 2.0.3(@auth/core@0.10.0)(solid-js@1.7.6)(solid-start@0.2.26)
       '@solid-primitives/intersection-observer':
         specifier: ^2.1.2
         version: 2.1.2(solid-js@1.7.6)
@@ -265,8 +268,8 @@ packages:
   /@antfu/utils@0.7.4:
     resolution: {integrity: sha512-qe8Nmh9rYI/HIspLSTwtbMFPj6dISG6+dJnOguTlPNXtCvS2uezdxscVBb7/3DrmNbQK49TDqpkSQ1chbRGdpQ==}
 
-  /@auth/core@0.8.1:
-    resolution: {integrity: sha512-WudBmZudZ/cvykxHV5hIwrYsd7AlETQ535O7w3sSiiumT28+U9GvBb8oSRtfzxpW9rym3lAdfeTJqGA8U4FecQ==}
+  /@auth/core@0.10.0:
+    resolution: {integrity: sha512-mmvAzFUcDHG0m6avQ6/sYI3wtQtt3Tjbk4wCr27OlCeNnlzqK8lDQJIDFbJOTXEu/dNUx8sUQ0xMp7A6GAaHQw==}
     peerDependencies:
       nodemailer: ^6.8.0
     peerDependenciesMeta:
@@ -281,14 +284,14 @@ packages:
       preact-render-to-string: 5.2.3(preact@10.11.3)
     dev: false
 
-  /@auth/solid-start@0.1.1(@auth/core@0.8.1)(solid-js@1.7.6)(solid-start@0.2.26):
+  /@auth/solid-start@0.1.1(@auth/core@0.10.0)(solid-js@1.7.6)(solid-start@0.2.26):
     resolution: {integrity: sha512-WMWBH/RbQTs5oFBoOjtJgKKZv3QlZQkyiAj1UnKWJ2+3UbuNQAhDBM4ppZD54CdbF/Wb1LVXjUNI6LBbopUK6g==}
     peerDependencies:
       '@auth/core': ~0.2.2 || ^0.2.2
       solid-js: ^1.5.7
       solid-start: ^0.2.14
     dependencies:
-      '@auth/core': 0.8.1
+      '@auth/core': 0.10.0
       solid-js: 1.7.6
       solid-start: 0.2.26(@solidjs/meta@0.28.5)(@solidjs/router@0.8.2)(solid-js@1.7.6)(solid-start-node@0.2.26)(vite@4.3.9)
     dev: false
@@ -3834,6 +3837,18 @@ packages:
     dependencies:
       '@sinonjs/commons': 1.8.6
     dev: true
+
+  /@solid-auth/base@2.0.3(@auth/core@0.10.0)(solid-js@1.7.6)(solid-start@0.2.26):
+    resolution: {integrity: sha512-WauEsk4SI6OtEYCeK9sGcIErRxO3+Cv+xw3ss7sd/oepoJ7m7cNkusq8RsiB302l4SOgB6nkIHIqvjwmm/yQpQ==}
+    peerDependencies:
+      '@auth/core': 0.5.1
+      solid-js: ^1.5.7
+      solid-start: ^0.2.15
+    dependencies:
+      '@auth/core': 0.10.0
+      solid-js: 1.7.6
+      solid-start: 0.2.26(@solidjs/meta@0.28.5)(@solidjs/router@0.8.2)(solid-js@1.7.6)(solid-start-node@0.2.26)(vite@4.3.9)
+    dev: false
 
   /@solid-devtools/debugger@0.22.1(solid-js@1.7.6):
     resolution: {integrity: sha512-y/8Y7rKZPqP5cN4uHVySTHtX5KSfYcKnBVzmVmzaiZhqzQwqu6goc7EgSq3hM1MJYkcLWcfBodMTdJpa4LqhHQ==}

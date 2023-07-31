@@ -1,4 +1,4 @@
-import { route } from "routes-gen";
+import { RouteParams, route } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
 import { A, Title, useSearchParams } from "solid-start";
@@ -13,7 +13,7 @@ const createSession = () => {
   });
 };
 
-const MenuItem = (props) => {
+const MenuItem: Component<{route: RouteParams, content: string}> = (props) => {
   return (
     <>
       <A
