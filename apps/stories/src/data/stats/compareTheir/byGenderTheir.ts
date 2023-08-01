@@ -23,14 +23,27 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
-    type: "yesOrNo",
+    type: "unknown",
     stat: "has_been_hospitalized",
     header: "Hospitalized on psychosis",
+    function: "dataSelection",
+  },
+  {
+    type: "unknown",
+    stat: "hospital_satisfaction",
+    header: "Were satisfied with hospital care",
+    function: "dataSelection",
   },
   {
     type: "yesOrNo",
     stat: "care_after_hospital",
     header: "Recieved care after hospitalization",
+  },
+  {
+    type: "unknown",
+    stat: "after_hospital_satisfaction",
+    header: "Were satisfied with after care",
+    function: "dataSelection",
   },
   {
     type: "bar",
@@ -186,5 +199,11 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "lost_relationships",
     function: "dataSelection",
     header: "Has lost relationships due to illness",
+  },
+  {
+    type: "unknown",
+    stat: "happy",
+    function: "dataSelection",
+    header: "Are happy",
   },
 ];

@@ -72,9 +72,19 @@ export const questions: QuestionTheir[] = [
     skip: "psychosis_how_many",
   },
   {
+    question: "Have they been satisfied with hospital care?",
+    questionType: "unknown",
+    questionDB: "hospital_satisfaction",
+  },
+  {
     question: "Did they recieve after care following hospitalization?",
     questionType: "yesOrNo",
     questionDB: "care_after_hospital",
+  },
+  {
+    question: "Have they been satisfied with after hospital care",
+    questionType: "unknown",
+    questionDB: "after_hospital_satisfaction",
   },
   {
     question: "How many times have they had major psychosis? (estimate)",
@@ -244,6 +254,11 @@ export const questions: QuestionTheir[] = [
     question: "What do you wish people knew about their illness?",
     questionType: "text",
     questionDB: "what_others_should_know",
+  },
+  {
+    question: "Do you think they are happy with their life?",
+    questionType: "unknown",
+    questionDB: "happy",
   },
   {
     question: "Are you ready to submit",

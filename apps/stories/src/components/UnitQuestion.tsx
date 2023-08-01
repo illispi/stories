@@ -360,7 +360,24 @@ export const UnitQuestion: ParentComponent<{
               {(v) => (
                 <div class="m-2">
                   <CustomButton
-                    onClick={() => handleSubmit({ [questionDB]: v })}
+                    onClick={() => {
+                      if (v === "no") {
+                        handleSubmit(
+                          { [questionDB]: v },
+                          skip
+                            ? questions.findIndex(
+                                (e) => e.questionDB === skip
+                              ) -
+                                questions.findIndex(
+                                  (e) => e.questionDB === questionDB
+                                ) -
+                                1
+                            : undefined
+                        );
+                      } else {
+                        handleSubmit({ [questionDB]: v });
+                      }
+                    }}
                     class={
                       v === selection()
                         ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
