@@ -6,7 +6,7 @@ import { useRouteData } from "solid-start";
 import { createServerData$, redirect } from "solid-start/server";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 
-const Protected = (Comp: IProtectedComponent) => {
+const ProtectedAdmin = (Comp: IProtectedComponent) => {
   const routeData = () => {
     return createServerData$(
       async (_, event) => {
@@ -35,4 +35,4 @@ const Protected = (Comp: IProtectedComponent) => {
 
 type IProtectedComponent = Component<Session>;
 
-export default Protected;
+export default ProtectedAdmin;

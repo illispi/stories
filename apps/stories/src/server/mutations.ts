@@ -17,13 +17,13 @@ export const postPersonalStats = mutation$({
     const user = await db
       .selectFrom("User")
       .select("id")
-      .where("id", "=", session.user.id)
+      .where("id", "=", session.user?.id)
       .executeTakeFirstOrThrow();
 
     if (user?.id) {
       const insertion = await db
         .insertInto("Personal_questions")
-        .values({ ...payload, user: user.id })
+        .values({ ...payload, user: user.id, accepted: false })
         .execute();
 
       if (insertion) {
@@ -35,7 +35,7 @@ export const postPersonalStats = mutation$({
   key: "postPersonalStats",
   schema: personalQuestionsSchema,
 });
-export const postTheriStats = mutation$({
+export const postTheirStats = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
 
@@ -46,13 +46,13 @@ export const postTheriStats = mutation$({
     const user = await db
       .selectFrom("User")
       .select("id")
-      .where("id", "=", session.user.id)
+      .where("id", "=", session.user?.id)
       .executeTakeFirstOrThrow();
 
     if (user?.id) {
       const insertion = await db
         .insertInto("Their_questions")
-        .values({ ...payload, user: user.id }) //NOTE this TS error should disappear once you migrate down and up again
+        .values({ ...payload, user: user.id, accepted: false }) //NOTE this TS error should disappear once you migrate down and up again
         .execute();
 
       if (insertion) {

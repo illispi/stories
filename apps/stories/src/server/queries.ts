@@ -18,13 +18,18 @@ export const allStats = query$({
 
     switch (payload.value) {
       case "all":
-        stats = await db.selectFrom(payload.pOrT).selectAll().execute();
+        stats = await db
+          .selectFrom(payload.pOrT)
+          .selectAll()
+          .where("accepted", "=", true)
+          .execute();
         break;
       case "female":
         stats = await db
           .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "female")
+          .where("accepted", "=", true)
           .execute();
         break;
       case "other":
@@ -32,6 +37,7 @@ export const allStats = query$({
           .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "other")
+          .where("accepted", "=", true)
           .execute();
         break;
       case "male":
@@ -39,6 +45,7 @@ export const allStats = query$({
           .selectFrom(payload.pOrT)
           .selectAll()
           .where("gender", "=", "male")
+          .where("accepted", "=", true)
           .execute();
         break;
       case "schizophrenia":
@@ -46,6 +53,7 @@ export const allStats = query$({
           .selectFrom(payload.pOrT)
           .selectAll()
           .where("diagnosis", "=", "schizophrenia")
+          .where("accepted", "=", true)
           .execute();
 
         break;
@@ -54,6 +62,7 @@ export const allStats = query$({
           .selectFrom(payload.pOrT)
           .selectAll()
           .where("diagnosis", "=", "schizoaffective")
+          .where("accepted", "=", true)
           .execute();
         break;
 
@@ -67,17 +76,20 @@ export const allStats = query$({
       .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "male")
+      .where("accepted", "=", true)
       .execute();
 
     const femaleAge = await db
       .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "female")
+      .where("accepted", "=", true)
       .execute();
     const otherAge = await db
       .selectFrom("Personal_questions")
       .select(["age_of_onset"])
       .where("gender", "=", "other")
+      .where("accepted", "=", true)
       .execute();
 
     const filterSensitive = stats.map((e: typeof stats[0]) => {
@@ -234,17 +246,20 @@ export const allStats = query$({
       .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "male")
+      .where("accepted", "=", true)
       .execute();
 
     const femaleSplit = await db
       .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "female")
+      .where("accepted", "=", true)
       .execute();
     const otherSplit = await db
       .selectFrom("Personal_questions")
       .select(["length_of_psychosis"])
       .where("gender", "=", "other")
+      .where("accepted", "=", true)
       .execute();
 
     //BUG above seems to return too little
@@ -303,7 +318,8 @@ export const textPagination = query$({
           : "Their_questions"
       )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
-      .where(payload.stat as keyof PersonalQuestions, "!=", "null");
+      .where(payload.stat as keyof PersonalQuestions, "!=", "null")
+      .where("accepted", "=", true);
 
     if (payload.gender) {
       stats = stats.where("gender", "=", payload.gender.toLowerCase());
@@ -328,7 +344,8 @@ export const textPagination = query$({
           ? "Personal_questions"
           : "Their_questions"
       )
-      .select(count(payload.stat as keyof PersonalQuestions).as("count"));
+      .select(count(payload.stat as keyof PersonalQuestions).as("count"))
+      .where("accepted", "=", true);
 
     if (payload.gender) {
       length = length.where("gender", "=", payload.gender.toLowerCase());

@@ -2,7 +2,7 @@ import type { ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions } from "~/data/personalQuestionsArr";
-import { postPersonalStats, postTheriStats } from "~/server/mutations";
+import { postPersonalStats, postTheirStats } from "~/server/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
@@ -34,7 +34,7 @@ export const UnitQuestion: ParentComponent<{
   const sendStats =
     props.LsName === "personalQuestions"
       ? postPersonalStats()
-      : postTheriStats();
+      : postTheirStats();
 
   const {
     question,

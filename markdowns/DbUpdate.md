@@ -10,5 +10,4 @@
    1. pnpm ts-to-zod --skipValidation src/types/dbTypes.ts src/types/zodFromTypes.ts
 4. Copy zodFromTypes to zodSchemasAndTypes and copy last bit infers from orig. zodSchemasAndTypes and comment out users for now
 
-
-
+pnpm routes-gen -d @routes-gen/solid-start

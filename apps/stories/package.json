@@ -7,7 +7,9 @@
     "lint": "eslint --fix \"**/*.{ts,tsx,js,jsx}\"",
     "migrate:latest": "tsx ./src/utils/migrate.ts",
     "migrate:down": "tsx ./src/utils/migrate.ts down",
-    "new:migration": "tsx ./src/utils/migrationFilename.ts"
+    "new:migration": "tsx ./src/utils/migrationFilename.ts",
+    "routes": "pnpm routes-gen -d @routes-gen/solid-start",
+    "postgresTypes": "pnpm kysely-codegen --dialect postgres"
   },
   "type": "module",
   "devDependencies": {

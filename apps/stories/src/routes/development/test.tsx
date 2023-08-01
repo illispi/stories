@@ -1,5 +1,5 @@
 import CustomButton from "~/components/CustomButton";
-import { postPersonalStats, postTheriStats } from "~/server/mutations";
+import { postPersonalStats, postTheirStats } from "~/server/mutations";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
@@ -9,7 +9,7 @@ import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 
 const Test = () => {
   const sendStatsPersonal = postPersonalStats();
-  const sendStatsTheir = postTheriStats();
+  const sendStatsTheir = postTheirStats();
 
   const submitPersonal = () => {
     try {
