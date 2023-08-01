@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const theirQuestionsSchemaCustom = z
@@ -71,8 +70,8 @@ export const theirQuestionsSchemaCustom = z
       .max(600, "Your text is too long! (Max. 600 characters)")
       .min(4, 'Your text is too short, even "okay" is enough'),
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
-    lost_relationships:  z.enum(["yes", "no", "unknown"]),
-    has_been_hospitalized: z.boolean(),
+    lost_relationships: z.enum(["yes", "no", "unknown"]),
+
     care_after_hospital: z.boolean().nullable(),
     psychosis_how_many: z.enum([
       "once",
@@ -84,6 +83,11 @@ export const theirQuestionsSchemaCustom = z
     gained_weight: z.boolean(),
     cannabis: z.enum(["yes", "no", "unknown"]),
     suicide_attempts: z.enum(["yes", "no", "unknown"]),
+    //TODO these below four need to be updated in everywhere
+    has_been_hospitalized: z.enum(["yes", "no", "unknown"]),
+    hospital_satisfaction: z.enum(["yes", "no", "unknown"]).nullable(),
+    after_hospital_satisfaction: z.enum(["yes", "no", "unknown"]).nullable(),
+    happy: z.enum(["yes", "no", "unknown"]),
   })
   .refine(
     (data) => {

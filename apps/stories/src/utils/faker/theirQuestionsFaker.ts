@@ -4,19 +4,22 @@ import type { TheirQuestions } from "~/types/zodFromTypes";
 //TODO maybe test wrong values as well
 
 export const createFakeDataTheir = () => {
-  const has_been_hospitalized = faker.helpers.arrayElement([true, false]);
+  const has_been_hospitalized = faker.helpers.arrayElement([
+    "no",
+    "yes",
+    "unknown",
+  ]);
+  const care_after_hospital =
+    has_been_hospitalized === "yes"
+      ? faker.helpers.arrayElement([true, false])
+      : null;
   const prodromal_symptoms = faker.helpers.arrayElement([true, false]);
   const had_side_effs = faker.helpers.arrayElement([true, false]);
   const quitting = faker.helpers.arrayElement([true, false]);
-  const gained_weight = faker.helpers.arrayElement([true, false]);
-  const smoking = faker.helpers.arrayElement([true, false]);
-  const suicidal_thoughts = faker.helpers.arrayElement([true, false]);
+
   const negative_symptoms = faker.helpers.arrayElement([true, false]);
-  const cognitive_symptoms = faker.helpers.arrayElement([true, false]);
+
   const personality_changed = faker.helpers.arrayElement([true, false]);
-  const goals_changed = faker.helpers.arrayElement([true, false]);
-  const told_nobody = faker.helpers.arrayElement([true, false]);
-  const life_satisfaction = faker.helpers.arrayElement([true, false]);
 
   const fakeData: TheirQuestions = {
     diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
@@ -31,9 +34,17 @@ export const createFakeDataTheir = () => {
     ]),
     relation: faker.helpers.arrayElement(["relative", "friend", "acquintance"]),
     has_been_hospitalized: has_been_hospitalized,
-    care_after_hospital: has_been_hospitalized
-      ? faker.helpers.arrayElement([true, false])
+    hospital_satisfaction:
+      has_been_hospitalized === "yes"
+        ? faker.helpers.arrayElement(["no", "yes", "unknown"])
+        : null,
+    happy: faker.helpers.arrayElement(["no", "yes", "unknown"]),
+
+    care_after_hospital: care_after_hospital,
+    after_hospital_satisfaction: care_after_hospital
+      ? faker.helpers.arrayElement(["no", "yes", "unknown"])
       : null,
+
     psychosis_how_many: faker.helpers.arrayElement([
       "once",
       "twice",

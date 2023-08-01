@@ -387,7 +387,22 @@ export async function up(db: Kysely<any>): Promise<void> {
         sql`NOT (has_been_hospitalized AND care_after_hospital IS NULL) `
       )
     )
-    .addColumn("has_been_hospitalized", "boolean", (col) => col.notNull())
+    .addColumn("has_been_hospitalized", "text", (col) =>
+      col
+        .notNull()
+        .check(sql`has_been_hospitalized in ('yes', 'no', 'unknown')`)
+    )
+    .addColumn("hospital_satisfaction", "text", (col) =>
+      col
+        .check(sql`hospital_satisfaction in ('yes', 'no', 'unknown')`)
+    )
+    .addColumn("after_hospital_satisfaction", "text", (col) =>
+      col
+        .check(sql`after_hospital_satisfaction in ('yes', 'no', 'unknown')`)
+    )
+    .addColumn("happy", "text", (col) =>
+      col.notNull().check(sql`happy in ('yes', 'no', 'unknown')`)
+    )
     .addColumn("psychosis_how_many", "text", (col) =>
       col
         .notNull()
@@ -412,6 +427,3 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("Their_questions").execute();
   await db.schema.dropTable("Personal_questions").execute();
 }
-
-//NOTE make table names uppercase, especially user has problems since its official postgres table
-//TODO maybe add their questions hospital care and after care satisfaction, and what they think they enjoy their life or not

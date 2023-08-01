@@ -67,7 +67,7 @@ export const questions: QuestionTheir[] = [
   },
   {
     question: "Have they been hospitalized for psychotic episode?",
-    questionType: "yesOrNo",
+    questionType: "unknown",
     questionDB: "has_been_hospitalized",
     skip: "psychosis_how_many",
   },
