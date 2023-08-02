@@ -382,23 +382,17 @@ export async function up(db: Kysely<any>): Promise<void> {
           sql`length_of_psychosis in ('few days', 'few weeks', 'few months', 'more than 6 months')`
         )
     )
-    .addColumn("care_after_hospital", "boolean", (col) =>
-      col.check(
-        sql`NOT (has_been_hospitalized AND care_after_hospital IS NULL) `
-      )
-    )
+    .addColumn("care_after_hospital", "boolean")
     .addColumn("has_been_hospitalized", "text", (col) =>
       col
         .notNull()
         .check(sql`has_been_hospitalized in ('yes', 'no', 'unknown')`)
     )
     .addColumn("hospital_satisfaction", "text", (col) =>
-      col
-        .check(sql`hospital_satisfaction in ('yes', 'no', 'unknown')`)
+      col.check(sql`hospital_satisfaction in ('yes', 'no', 'unknown')`)
     )
     .addColumn("after_hospital_satisfaction", "text", (col) =>
-      col
-        .check(sql`after_hospital_satisfaction in ('yes', 'no', 'unknown')`)
+      col.check(sql`after_hospital_satisfaction in ('yes', 'no', 'unknown')`)
     )
     .addColumn("happy", "text", (col) =>
       col.notNull().check(sql`happy in ('yes', 'no', 'unknown')`)

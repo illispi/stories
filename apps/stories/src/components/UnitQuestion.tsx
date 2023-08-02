@@ -1,7 +1,8 @@
 import type { ParentComponent } from "solid-js";
 import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
-import { questions } from "~/data/personalQuestionsArr";
+import { questions as questionsP } from "~/data/personalQuestionsArr";
+import { questions as questionsT } from "~/data/theirQuestionsArr";
 import { postPersonalStats, postTheirStats } from "~/server/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
@@ -35,6 +36,9 @@ export const UnitQuestion: ParentComponent<{
     props.LsName === "personalQuestions"
       ? postPersonalStats()
       : postTheirStats();
+
+  const questions =
+    props.LsName === "personalQuestions" ? questionsP : questionsT;
 
   const {
     question,
@@ -177,10 +181,11 @@ export const UnitQuestion: ParentComponent<{
         ? JSON.parse(LsExistsJunctions)
         : null;
 
-      if (questionType === "yesOrNo") {
+      if (questionType === "yesOrNo" || questionType === "unknown") {
         if (
-          value[questionDB] === true &&
-          typeof value[questionDB] === "boolean" &&
+          (value[questionDB] === true ||
+            value[questionDB] === "yes" ||
+            value[questionDB] === "unknown") &&
           skip
         ) {
           junctions = {
