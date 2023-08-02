@@ -187,7 +187,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.hospitalized_on_first
         ? data.hospitalized_voluntarily !== null
-        : !data?.hospitalized_voluntarily
+        : !data?.hospitalized_voluntarily;
     },
     { message: "1" }
   )
@@ -195,7 +195,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.life_satisfaction
         ? data.life_satisfaction_description !== null
-        : !data?.life_satisfaction_description
+        : !data?.life_satisfaction_description;
     },
     { message: "2" }
   )
@@ -203,7 +203,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.told_nobody
         ? data.responded_to_telling !== null
-        : !data?.responded_to_telling
+        : !data?.responded_to_telling;
     },
     { message: "4" }
   )
@@ -211,7 +211,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.goals_changed
         ? data.goals_after !== null
-        : !data?.goals_after
+        : !data?.goals_after;
     },
     { message: "5" }
   )
@@ -219,7 +219,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.personality_changed
         ? data.personality_after !== null
-        : !data?.personality_after
+        : !data?.personality_after;
     },
     { message: "6" }
   )
@@ -227,7 +227,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.cognitive_symptoms
         ? data.disorganized_thinking !== null
-        : !data?.disorganized_thinking
+        : !data?.disorganized_thinking;
     },
     { message: "7" }
   )
@@ -235,7 +235,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.cognitive_symptoms
         ? data.poor_memory !== null
-        : !data?.poor_memory
+        : !data?.poor_memory;
     },
     { message: "8" }
   )
@@ -243,7 +243,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.cognitive_symptoms
         ? data.poor_concentration !== null
-        : !data?.poor_concentration
+        : !data?.poor_concentration;
     },
     { message: "9" }
   )
@@ -251,7 +251,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.cognitive_symptoms
         ? data.difficulty_understanding !== null
-        : !data?.difficulty_understanding
+        : !data?.difficulty_understanding;
     },
     { message: "10" }
   )
@@ -259,7 +259,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.cognitive_symptoms
         ? data.slow_thinking !== null
-        : !data?.slow_thinking
+        : !data?.slow_thinking;
     },
     { message: "11" }
   )
@@ -267,7 +267,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.flat_expressions !== null
-        : !data?.flat_expressions
+        : !data?.flat_expressions;
     },
     { message: "12" }
   )
@@ -275,15 +275,13 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.lack_of_motivation !== null
-        : !data?.lack_of_motivation
+        : !data?.lack_of_motivation;
     },
     { message: "13" }
   )
   .refine(
     (data) => {
-      return data.negative_symptoms
-        ? data.apathy !== null
-        : !data?.apathy
+      return data.negative_symptoms ? data.apathy !== null : !data?.apathy;
     },
     { message: "14" }
   )
@@ -291,7 +289,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.no_interest_socially !== null
-        : !data?.no_interest_socially
+        : !data?.no_interest_socially;
     },
     { message: "15" }
   )
@@ -299,7 +297,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.anhedonia !== null
-        : !data?.anhedonia
+        : !data?.anhedonia;
     },
     { message: "16" }
   )
@@ -307,7 +305,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.poverty_of_speech !== null
-        : !data?.poverty_of_speech
+        : !data?.poverty_of_speech;
     },
     { message: "17" }
   )
@@ -315,7 +313,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.suicidal_thoughts
         ? data.suicide_attempts !== null
-        : !data?.suicide_attempts
+        : !data?.suicide_attempts;
     },
     { message: "18" }
   )
@@ -323,7 +321,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.smoking
         ? data.smoking_amount !== null
-        : !data?.smoking_amount
+        : !data?.smoking_amount;
     },
     { message: "19" }
   )
@@ -331,7 +329,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.quitting
         ? data.quitting_regret !== null
-        : !data?.quitting_regret
+        : !data?.quitting_regret;
     },
     { message: "20" }
   )
@@ -339,7 +337,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.gained_weight
         ? data.weight_amount !== null
-        : !data?.weight_amount
+        : !data?.weight_amount;
     },
     { message: "21" }
   )
@@ -347,15 +345,13 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.quitting
         ? data.quitting_what_happened !== null
-        : !data?.quitting_what_happened
+        : !data?.quitting_what_happened;
     },
     { message: "22" }
   )
   .refine(
     (data) => {
-      return data.quitting
-        ? data.quitting_why !== null
-        : !data?.quitting_why
+      return data.quitting ? data.quitting_why !== null : !data?.quitting_why;
     },
     { message: "23" }
   )
@@ -363,7 +359,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_movement_effects !== null
-        : !data?.side_effs_movement_effects
+        : !data?.side_effs_movement_effects;
     },
     { message: "24" }
   )
@@ -371,7 +367,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_tardive !== null
-        : !data?.side_effs_tardive
+        : !data?.side_effs_tardive;
     },
     { message: "25" }
   )
@@ -379,7 +375,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_sexual !== null
-        : !data?.side_effs_sexual
+        : !data?.side_effs_sexual;
     },
     { message: "26" }
   )
@@ -387,7 +383,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_sedation !== null
-        : !data?.side_effs_sedation
+        : !data?.side_effs_sedation;
     },
     { message: "27" }
   )
@@ -395,7 +391,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_weight_gain !== null
-        : !data?.side_effs_weight_gain
+        : !data?.side_effs_weight_gain;
     },
     { message: "28" }
   )
@@ -403,7 +399,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_dizziness !== null
-        : !data?.side_effs_dizziness
+        : !data?.side_effs_dizziness;
     },
     { message: "29" }
   )
@@ -411,7 +407,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.hospitalized_on_first
         ? data.hospital_satisfaction !== null
-        : !data?.hospital_satisfaction
+        : !data?.hospital_satisfaction;
     },
     { message: "30" }
   )
@@ -419,7 +415,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.hospitalized_on_first
         ? data.care_after_hospital !== null
-        : !data?.care_after_hospital
+        : !data?.care_after_hospital;
     },
     { message: "31" }
   )
@@ -427,7 +423,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_anxiety !== null
-        : !data?.prodromal_anxiety ||
+        : !data?.prodromal_anxiety;
     },
     { message: "32" }
   )
@@ -435,7 +431,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_depression !== null
-        : !data?.prodromal_depression
+        : !data?.prodromal_depression;
     },
     { message: "33" }
   )
@@ -443,7 +439,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_mood_swings !== null
-        : !data?.prodromal_mood_swings
+        : !data?.prodromal_mood_swings;
     },
     { message: "34" }
   )
@@ -451,7 +447,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_sleep_disturbances !== null
-        : !data?.prodromal_sleep_disturbances
+        : !data?.prodromal_sleep_disturbances;
     },
     { message: "35" }
   )
@@ -459,7 +455,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_irritability !== null
-        : !data?.prodromal_irritability
+        : !data?.prodromal_irritability;
     },
     { message: "36" }
   )
@@ -468,7 +464,7 @@ export const personalQuestionsSchemaCustom = z
       if (data.hospitalized_on_first && data.care_after_hospital) {
         return data.what_kind_of_care_after !== null;
       } else {
-        return !data?.what_kind_of_care_after
+        return !data?.what_kind_of_care_after;
       }
     },
     { message: "37" }
@@ -478,7 +474,7 @@ export const personalQuestionsSchemaCustom = z
       if (data.hospitalized_on_first && data.care_after_hospital) {
         return data.after_hospital_satisfaction !== null;
       } else {
-        return !data?.after_hospital_satisfaction
+        return !data?.after_hospital_satisfaction;
       }
     },
     { message: "38" }
@@ -487,7 +483,7 @@ export const personalQuestionsSchemaCustom = z
     (data) => {
       return data.hospitalized_on_first
         ? data.describe_hospital !== null
-        : !data?.describe_hospital
+        : !data?.describe_hospital;
     },
     { message: "39" }
   );

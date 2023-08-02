@@ -56,6 +56,8 @@ export const listSubmissions = adminProcedure.query$({
         .offset(payload.page * 50)
         .limit(50)
         .execute();
+
+        return {personal: personalPoll, their: theirPoll};
     } else {
       return "Access denied";
     }
