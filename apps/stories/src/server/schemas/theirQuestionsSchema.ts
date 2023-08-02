@@ -93,7 +93,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_movement_effects !== null
-        : data.side_effs_movement_effects === null;
+        : !data?.side_effs_movement_effects;
     },
     { message: "24" }
   )
@@ -101,7 +101,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_tardive !== null
-        : data.side_effs_tardive === null;
+        : !data?.side_effs_tardive;
     },
     { message: "25" }
   )
@@ -109,7 +109,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_sexual !== null
-        : data.side_effs_sexual === null;
+        : !data?.side_effs_sexual;
     },
     { message: "26" }
   )
@@ -117,7 +117,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_sedation !== null
-        : data.side_effs_sedation === null;
+        : !data?.side_effs_sedation;
     },
     { message: "27" }
   )
@@ -125,7 +125,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_weight_gain !== null
-        : data.side_effs_weight_gain === null;
+        : !data?.side_effs_weight_gain;
     },
     { message: "28" }
   )
@@ -133,7 +133,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.had_side_effs
         ? data.side_effs_dizziness !== null
-        : data.side_effs_dizziness === null;
+        : !data?.side_effs_dizziness;
     },
     { message: "29" }
   )
@@ -141,7 +141,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.flat_expressions !== null
-        : data.flat_expressions === null;
+        : !data?.flat_expressions;
     },
     { message: "12" }
   )
@@ -149,15 +149,13 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.lack_of_motivation !== null
-        : data.lack_of_motivation === null;
+        : !data?.lack_of_motivation;
     },
     { message: "13" }
   )
   .refine(
     (data) => {
-      return data.negative_symptoms
-        ? data.apathy !== null
-        : data.apathy === null;
+      return data.negative_symptoms ? data.apathy !== null : !data?.apathy;
     },
     { message: "14" }
   )
@@ -165,7 +163,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.no_interest_socially !== null
-        : data.no_interest_socially === null;
+        : !data?.no_interest_socially;
     },
     { message: "15" }
   )
@@ -173,7 +171,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.anhedonia !== null
-        : data.anhedonia === null;
+        : !data?.anhedonia;
     },
     { message: "16" }
   )
@@ -181,7 +179,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.negative_symptoms
         ? data.poverty_of_speech !== null
-        : data.poverty_of_speech === null;
+        : !data?.poverty_of_speech;
     },
     { message: "17" }
   )
@@ -189,7 +187,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.personality_changed
         ? data.personality_after !== null
-        : data.personality_after === null;
+        : !data?.personality_after;
     },
     { message: "6" }
   )
@@ -197,7 +195,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_anxiety !== null
-        : data.prodromal_anxiety === null;
+        : !data?.prodromal_anxiety;
     },
     { message: "32" }
   )
@@ -205,7 +203,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_depression !== null
-        : data.prodromal_depression === null;
+        : !data?.prodromal_depression;
     },
     { message: "33" }
   )
@@ -213,7 +211,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_mood_swings !== null
-        : data.prodromal_mood_swings === null;
+        : !data?.prodromal_mood_swings;
     },
     { message: "34" }
   )
@@ -221,7 +219,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_sleep_disturbances !== null
-        : data.prodromal_sleep_disturbances === null;
+        : !data?.prodromal_sleep_disturbances;
     },
     { message: "35" }
   )
@@ -229,7 +227,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.prodromal_symptoms
         ? data.prodromal_irritability !== null
-        : data.prodromal_irritability === null;
+        : !data?.prodromal_irritability;
     },
     { message: "36" }
   )
@@ -237,7 +235,7 @@ export const theirQuestionsSchemaCustom = z
     (data) => {
       return data.has_been_hospitalized
         ? data.care_after_hospital !== null
-        : data.care_after_hospital === null;
+        : !data?.care_after_hospital;
     },
     { message: "31" }
   );
