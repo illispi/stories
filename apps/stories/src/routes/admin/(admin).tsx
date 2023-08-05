@@ -3,6 +3,7 @@ import { A } from "solid-start";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
+  console.log(session);
   return (
     <div class="flex h-screen flex-col items-center justify-around">
       <A
