@@ -9,7 +9,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal(false);
   const [pOrT, setPOrT] = createSignal<
     "Personal_questions" | "Their_questions"
-  >("Their_questions");
+  >("Personal_questions");
   const [page, setPage] = createSignal(0);
 
   const submissions = listSubmissions(() => ({
@@ -20,7 +20,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
 
   return (
     <>
-      <div class="flex flex-col items-center gap-2">
+      <div class="flex flex-col items-center">
         <Suspense fallback={<div>Loading...</div>}>
           <ErrorBoundary
             fallback={(e) => (
@@ -30,15 +30,46 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
               </Show>
             )}
           >
-            <div class="flex flex-col gap-8">
+            <div class="my-10 flex items-center justify-between gap-4 p-4">
+              <CustomButton
+                class={`${
+                  pOrT() === "Personal_questions" ? "bg-blue-900" : ""
+                }`}
+                onClick={() => setPOrT("Personal_questions")}
+              >
+                {`Personal`}
+              </CustomButton>
+              <CustomButton
+                class={`${accepted() === true ? "bg-blue-900" : ""}`}
+                onClick={() => setAccepted(!accepted())}
+              >
+                Accepted
+              </CustomButton>
+              <CustomButton
+                class={`${pOrT() === "Their_questions" ? "bg-blue-900" : ""}`}
+                onClick={() => setPOrT("Their_questions")}
+              >
+                {`Their`}
+              </CustomButton>
+            </div>
+            <div class="flex max-w-xs flex-col gap-8 xl:max-w-2xl">
               <For each={submissions.data?.poll}>
-                {(entry) => (
-                  <div class="flex flex-col gap-2">
+                {(entry, index) => (
+                  <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
+                    <div class="m-8 flex items-center justify-between">
+                      <h3 class="text-xl font-bold">{index()}</h3>
+                      <Show
+                        when={accepted()}
+                        fallback={<CustomButton>Accept</CustomButton>}
+                      >
+                        <CustomButton>Remove</CustomButton>
+                      </Show>
+                    </div>
                     <For each={Object.keys(entry)}>
                       {(keys) => (
                         <>
-                          <h4>{keys}</h4>
-                          <p>{entry[keys]}</p>
+                          <h4 class="w-full text-lg font-bold">{keys}</h4>
+                          <p class="w-full">{entry[keys]}</p>
                         </>
                       )}
                     </For>
