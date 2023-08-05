@@ -3,7 +3,7 @@ import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import { accept, listSubmissions } from "~/server/admin";
+import { accept, fake, listSubmissions } from "~/server/admin";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal(false);

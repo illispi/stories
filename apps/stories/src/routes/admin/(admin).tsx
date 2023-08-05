@@ -20,6 +20,13 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
       >
         Articles
       </A>
+      <A
+        noScroll={true}
+        class="duration-200 ease-out active:scale-125"
+        href={route("/admin/fake")}
+      >
+        Fake
+      </A>
     </div>
   );
 });
