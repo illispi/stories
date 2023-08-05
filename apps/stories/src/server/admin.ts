@@ -1,4 +1,4 @@
-import { middleware$, query$, reuseable$ } from "@prpc/solid";
+import { middleware$, mutation$, query$, reuseable$ } from "@prpc/solid";
 import { db } from "./server";
 import { z } from "zod";
 import { getSession } from "@solid-auth/base";
@@ -45,6 +45,7 @@ export const listSubmissions = query$({
       const personalQuery = db
         .selectFrom("Personal_questions")
         .select([
+          "id",
           "describe_hospital",
           "what_kind_of_care_after",
           "personality_before",
@@ -60,6 +61,7 @@ export const listSubmissions = query$({
       const theirQuery = db
         .selectFrom("Their_questions")
         .select([
+          "id",
           "personality_before",
           "personality_after",
           "what_others_should_know",
@@ -67,6 +69,8 @@ export const listSubmissions = query$({
 
       const pOrTQuery =
         payload.pOrT === "Personal_questions" ? personalQuery : theirQuery;
+
+      //TODO Use try and catch here and then return error with serverError
 
       const poll = await pOrTQuery
         .where("accepted", "=", payload.accepted)
@@ -94,5 +98,39 @@ export const listSubmissions = query$({
     page: z.number().int(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
     accepted: z.boolean(),
+  }),
+});
+
+export const accept = mutation$({
+  mutationFn: async ({ payload }) => {
+    const session = await getSession(request$, authOpts);
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("User")
+      .select("role")
+      .where("id", "=", session.user?.id)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role) {
+      await db
+        .updateTable(payload.pOrT)
+        .set({
+          accepted: true,
+        })
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "accept",
+  schema: z.object({
+    id: z.number(),
+    pOrT: z.enum(["Personal_questions", "Their_questions"]),
   }),
 });

@@ -3,7 +3,7 @@ import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import { listSubmissions } from "~/server/admin";
+import { accept, listSubmissions } from "~/server/admin";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal(false);
@@ -17,6 +17,8 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
     accepted: accepted(),
     pOrT: pOrT(),
   }));
+
+  const acceptMut = accept();
 
   return (
     <>
@@ -60,7 +62,19 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                       <h3 class="text-xl font-bold">{index()}</h3>
                       <Show
                         when={accepted()}
-                        fallback={<CustomButton>Accept</CustomButton>}
+                        fallback={
+                          <CustomButton
+                            onclick={() => {
+                              acceptMut.mutateAsync({
+                                id: entry.id,
+                                pOrT: pOrT(),
+                              });
+                              submissions.refetch();
+                            }}
+                          >
+                            Accept
+                          </CustomButton>
+                        }
                       >
                         <CustomButton>Remove</CustomButton>
                       </Show>
