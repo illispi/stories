@@ -11,6 +11,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       (col) => col.references("User.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
     .addColumn("accepted", "boolean", (col) => col.notNull())
+    .addColumn("fake", "boolean", (col) => col.notNull())
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
@@ -262,6 +263,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .notNull()
     )
     .addColumn("accepted", "boolean", (col) => col.notNull())
+    .addColumn("fake", "boolean", (col) => col.notNull())
     .addColumn(
       "gender",
       "text",

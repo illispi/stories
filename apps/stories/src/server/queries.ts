@@ -319,7 +319,7 @@ export const textPagination = query$({
       )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
       .where(payload.stat as keyof PersonalQuestions, "!=", "null")
-      .where("accepted", "=", true);
+      .where("accepted", "=", true)
 
     if (payload.gender) {
       stats = stats.where("gender", "=", payload.gender.toLowerCase());

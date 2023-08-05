@@ -23,7 +23,7 @@ export const postPersonalStats = mutation$({
     if (user?.id) {
       const insertion = await db
         .insertInto("Personal_questions")
-        .values({ ...payload, user: user.id, accepted: false })
+        .values({ ...payload, user: user.id, accepted: false, fake: false })
         .execute();
 
       if (insertion) {
@@ -52,7 +52,7 @@ export const postTheirStats = mutation$({
     if (user?.id) {
       const insertion = await db
         .insertInto("Their_questions")
-        .values({ ...payload, user: user.id, accepted: false }) //NOTE this TS error should disappear once you migrate down and up again
+        .values({ ...payload, user: user.id, accepted: false, fake: false }) //NOTE this TS error should disappear once you migrate down and up again
         .execute();
 
       if (insertion) {

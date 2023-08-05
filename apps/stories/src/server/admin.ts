@@ -4,6 +4,12 @@ import { z } from "zod";
 import { getSession } from "@solid-auth/base";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { ServerError } from "solid-start";
+import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
+import {
+  personalQuestionsSchema,
+  theirQuestionsSchema,
+} from "~/types/zodFromTypes";
+import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 
 // const adminCheck = middleware$(async ({ request$ }) => {
 //   const session = await getSession(request$, authOpts);
@@ -131,6 +137,71 @@ export const accept = mutation$({
   key: "accept",
   schema: z.object({
     id: z.number(),
+    pOrT: z.enum(["Personal_questions", "Their_questions"]),
+  }),
+});
+
+export const fake = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const session = await getSession(request$, authOpts);
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("User")
+      .select("role")
+      .where("id", "=", session.user?.id)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role) {
+      const user = await db
+        .selectFrom("User")
+        .select("id")
+        .where("id", "=", session.user?.id)
+        .executeTakeFirstOrThrow();
+
+      if (payload.pOrT === "Personal_questions") {
+        const fakeData = createFakeDataPersonal();
+        try {
+          personalQuestionsSchema.parse(fakeData);
+          await db
+            .insertInto(payload.pOrT)
+            .values({
+              ...fakeData,
+              user: user.id,
+              accepted: false,
+              fake: true,
+            })
+            .execute();
+        } catch (error) {
+          throw new ServerError(error);
+        }
+      } else if (payload.pOrT === "Their_questions") {
+        const fakeData = createFakeDataTheir();
+        try {
+          theirQuestionsSchema.parse(fakeData);
+          await db
+            .insertInto(payload.pOrT)
+            .values({
+              ...fakeData,
+              user: user.id,
+              accepted: false,
+              fake: true,
+            })
+            .execute();
+        } catch (error) {
+          throw new ServerError(error);
+        }
+      }
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "accept",
+  schema: z.object({
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
   }),
 });
