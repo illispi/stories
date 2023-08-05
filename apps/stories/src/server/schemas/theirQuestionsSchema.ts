@@ -233,7 +233,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.has_been_hospitalized
+      return data.has_been_hospitalized === "yes"
         ? data.care_after_hospital !== null
         : !data?.care_after_hospital;
     },

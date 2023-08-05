@@ -3,7 +3,7 @@ import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import { accept, fake, listSubmissions } from "~/server/admin";
+import { accept, listSubmissions } from "~/server/admin";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal(false);
@@ -54,7 +54,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                 {`Their`}
               </CustomButton>
             </div>
-            <div class="flex max-w-xs flex-col gap-8 xl:max-w-2xl">
+            <div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
               <For each={submissions.data?.poll}>
                 {(entry, index) => (
                   <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
@@ -65,11 +65,13 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                         fallback={
                           <CustomButton
                             onclick={() => {
-                              acceptMut.mutateAsync({
-                                id: entry.id,
-                                pOrT: pOrT(),
-                              });
-                              submissions.refetch();
+                              acceptMut.mutateAsync(
+                                {
+                                  id: entry.id,
+                                  pOrT: pOrT(),
+                                },
+                                { onSuccess: () => submissions.refetch() }
+                              );
                             }}
                           >
                             Accept
