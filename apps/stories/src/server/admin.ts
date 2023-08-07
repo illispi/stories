@@ -107,8 +107,8 @@ export const listSubmissions = query$({
   }),
 });
 
-export const accept = mutation$({
-  mutationFn: async ({ payload }) => {
+export const acceptSubmission = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
 
     if (!session) {
@@ -134,7 +134,38 @@ export const accept = mutation$({
       throw new ServerError("Access denied");
     }
   },
-  key: "accept",
+  key: "acceptSubmission",
+  schema: z.object({
+    id: z.number(),
+    pOrT: z.enum(["Personal_questions", "Their_questions"]),
+  }),
+});
+
+export const removeSubmission = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const session = await getSession(request$, authOpts);
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("User")
+      .select("role")
+      .where("id", "=", session.user?.id)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role) {
+      await db
+        .deleteFrom(payload.pOrT)
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "removeSubmission",
   schema: z.object({
     id: z.number(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
