@@ -32,29 +32,28 @@ const Modal: Component<{
 }> = (props) => {
   return (
     <dialog open>
-      <div class="z-50 h-screen w-screen bg-black opacity-50">
-        <div class="fixed left-1/2 top-1/2 h-40 w-40 border-2 border-red-700 bg-white p-8">
-          <CustomButton
-            onClick={() => {
-              props.setShowModal(false);
-              props.setEntryEdit(null);
-            }}
-          >
-            Cancel
-          </CustomButton>
-          <CustomButton
-            onClick={() => {
-              props.removeMut.mutateAsync({
-                id: props.entry,
-                pOrT: props.pOrT(),
-              });
-              props.setShowModal(false);
-              props.setEntryEdit(null);
-            }}
-          >
-            Remove
-          </CustomButton>
-        </div>
+      <div class="z-40 h-screen w-screen bg-black opacity-50" />
+      <div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
+        <CustomButton
+          onClick={() => {
+            props.removeMut.mutateAsync({
+              id: props.entry,
+              pOrT: props.pOrT(),
+            });
+            props.setShowModal(false);
+            props.setEntryEdit(null);
+          }}
+        >
+          Remove
+        </CustomButton>
+        <CustomButton
+          onClick={() => {
+            props.setShowModal(false);
+            props.setEntryEdit(null);
+          }}
+        >
+          Cancel
+        </CustomButton>
       </div>
     </dialog>
   );
@@ -159,6 +158,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                             >
                               Accept
                             </CustomButton>
+
                             <CustomButton
                               onclick={() => {
                                 setEntryEdit(entry.id);
@@ -179,7 +179,6 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                           Remove
                         </CustomButton>
                       </Show>
-                      S
                     </div>
                     <For each={Object.keys(entry)}>
                       {(keys) => (
