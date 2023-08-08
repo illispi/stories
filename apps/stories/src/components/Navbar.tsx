@@ -13,7 +13,7 @@ const createSession = () => {
   });
 };
 
-const MenuItem: Component<{route: RouteParams, content: string}> = (props) => {
+const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (
     <>
       <A
@@ -102,12 +102,12 @@ const Hamburger: Component<{
       >
         <Auth />
         <Show when={sessionData()}>
-          <MenuItem route={"/"} content="Your data" />
+          <MenuItem route={route("/user/data")} content="Your data" />
         </Show>
         <div class="w-full border-b-2 border-black" />
-        <MenuItem class="mt-8" route={"/"} content="results" />
-        <MenuItem route={"/"} content="poll" />
-        <MenuItem route={"/"} content="Articles" />
+        <MenuItem class="mt-8" route={route("/stats")} content="results" />
+        <MenuItem route={route("/questionares")} content="poll" />
+        <MenuItem route={route("/articles")} content="Articles" />
         <button
           class="p-16 transition-all hover:scale-125"
           onClick={() => {

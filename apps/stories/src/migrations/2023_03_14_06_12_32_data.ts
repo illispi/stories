@@ -11,7 +11,6 @@ export async function up(db: Kysely<any>): Promise<void> {
       (col) => col.references("User.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
     .addColumn("accepted", "boolean", (col) => col.notNull())
-    .addColumn("fake", "boolean", (col) => col.notNull())
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
@@ -263,7 +262,6 @@ export async function up(db: Kysely<any>): Promise<void> {
         .notNull()
     )
     .addColumn("accepted", "boolean", (col) => col.notNull())
-    .addColumn("fake", "boolean", (col) => col.notNull())
     .addColumn(
       "gender",
       "text",
@@ -417,6 +415,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   //TODO add indexes
   //TODO how do i enforce 1 to 1 relationship for the personal?
+  //TODO copy of this for fake data
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
