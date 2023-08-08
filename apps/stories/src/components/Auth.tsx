@@ -16,7 +16,11 @@ const Auth: VoidComponent = () => {
   return (
     <CustomButton
       class="w-44"
-      onClick={sessionData() ? () => void signOut() : () => void signIn()}
+      onClick={
+        sessionData()
+          ? () => void signOut({ redirectTo: "/", redirect: true })
+          : () => void signIn()
+      }
     >
       {sessionData() ? "Sign out" : "Sign in/up"}
     </CustomButton>

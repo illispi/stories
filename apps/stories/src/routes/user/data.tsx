@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/solid-query";
 import { ErrorBoundary, Show, Suspense } from "solid-js";
 import { ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
@@ -11,11 +10,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   //TODO DELETE PERSONAL AND MULTIPLE THEIR
   //TODO EDIT TOO PERSONAL TEXT
 
-  const removeAccAndDataMut = removeAccountAndData(() => ({
-    onSuccess: () => {
-      return <Navigate href="/" />;
-    },
-  }));
+  const removeAccAndDataMut = removeAccountAndData();
 
   return (
     <div class="flex flex-col items-center justify-start">
@@ -28,6 +23,9 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </Show>
           )}
         >
+          <Show when={removeAccAndDataMut.isSuccess}>
+            <Navigate href={"/"} />
+          </Show>
           <CustomButton
             onClick={() => {
               removeAccAndDataMut.mutateAsync();
