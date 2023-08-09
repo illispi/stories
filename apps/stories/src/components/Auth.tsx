@@ -1,13 +1,16 @@
-import { getSession } from "@solid-mediakit/auth";
-import { signIn, signOut } from "@solid-mediakit/auth/client";
 import type { VoidComponent } from "solid-js";
 import { createServerData$ } from "solid-start/server";
-import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import CustomButton from "./CustomButton";
+import { auth } from "~/auth/lucia";
 
 const createSession = () => {
   return createServerData$(async (_, event) => {
-    return await getSession(event.request, authOpts);
+    const authRequest = auth.handleRequest(event.request);
+    const session = await authRequest.validate();
+    if (!session) {
+      return false;
+    }
+    return session.user;
   });
 };
 
@@ -16,11 +19,11 @@ const Auth: VoidComponent = () => {
   return (
     <CustomButton
       class="w-44"
-      onClick={
-        sessionData()
-          ? () => void signOut({ redirectTo: "/", redirect: true })
-          : () => void signIn()
-      }
+      // onClick={
+      //   sessionData()
+      //     ? () => void signOut({ redirectTo: "/", redirect: true })
+      //     : () => void signIn()
+      // }
     >
       {sessionData() ? "Sign out" : "Sign in/up"}
     </CustomButton>

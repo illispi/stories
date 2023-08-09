@@ -20,6 +20,12 @@ importers:
       '@auth/kysely-adapter':
         specifier: ^0.1.0
         version: 0.1.0(kysely@0.26.1)
+      '@lucia-auth/adapter-postgresql':
+        specifier: ^2.0.0
+        version: 2.0.0(lucia@2.2.0)(pg@8.11.2)
+      '@lucia-auth/oauth':
+        specifier: ^2.1.1
+        version: 2.1.1(lucia@2.2.0)
       '@motionone/solid':
         specifier: ^10.16.2
         version: 10.16.2(solid-js@1.7.9)
@@ -65,6 +71,9 @@ importers:
       kysely:
         specifier: ^0.26.1
         version: 0.26.1
+      lucia:
+        specifier: ^2.2.0
+        version: 2.2.0
       pg:
         specifier: ^8.11.2
         version: 8.11.2
@@ -2066,6 +2075,30 @@ packages:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
+
+  /@lucia-auth/adapter-postgresql@2.0.0(lucia@2.2.0)(pg@8.11.2):
+    resolution: {integrity: sha512-1HUOjJPbCxvhFcHjjr6LypflBtGCS5fsXsK++SsyKn3bVj6Z6XwgxMhvLTJlvwXEQxGL1c9HJE81mIZHaHT4+w==}
+    peerDependencies:
+      lucia: ^2.0.0
+      pg: ^8.8.0
+      postgres: ^3.3.0
+    peerDependenciesMeta:
+      pg:
+        optional: true
+      postgres:
+        optional: true
+    dependencies:
+      lucia: 2.2.0
+      pg: 8.11.2
+    dev: false
+
+  /@lucia-auth/oauth@2.1.1(lucia@2.2.0):
+    resolution: {integrity: sha512-spgYssLCpUzfNuCJNKpZuOrU31SlpXMIvLpBGshotYfKETV3/ubiIUPGK6woPPN7Fhh0rNUgrTGvJ7cfM9DQ5w==}
+    peerDependencies:
+      lucia: ^2.0.0
+    dependencies:
+      lucia: 2.2.0
+    dev: false
 
   /@motionone/animation@10.15.1:
     resolution: {integrity: sha512-mZcJxLjHor+bhcPuIFErMDNyrdb2vJur8lSfMCsuCB4UyV8ILZLvK+t+pg56erv8ud9xQGK/1OGPt10agPrCyQ==}
@@ -5790,6 +5823,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lucia@2.2.0:
+    resolution: {integrity: sha512-bCKSbWGpUQl+YbWaIy4t9eqqZQwKa5XKTBMTAjhAWwg9rEgPWu6L7vH55SueRsvB+2XNa2NA71ASdBUyS2fwLA==}
+    dev: false
 
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}

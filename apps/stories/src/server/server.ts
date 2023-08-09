@@ -3,61 +3,42 @@ import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen";
 import { Pool } from "pg";
 
-// import { KyselyAuth } from "@auth/kysely-adapter";
-
-// import type { GeneratedAlways } from "kysely";
-
-// interface Database {
-//   User: {
-//     id: GeneratedAlways<string>;
-//     name: string | null;
-//     email: string;
-//     emailVerified: Date | null;
-//     image: string | null;
-//     role: string;
-//   };
-//   Account: {
-//     id: GeneratedAlways<string>;
-//     userId: string;
-//     type: string;
-//     provider: string;
-//     providerAccountId: string;
-//     refresh_token: string | null;
-//     access_token: string | null;
-//     expires_at: number | null;
-//     token_type: string | null;
-//     scope: string | null;
-//     id_token: string | null;
-//     session_state: string | null;
-//   };
-//   Session: {
-//     id: GeneratedAlways<string>;
-//     userId: string;
-//     sessionToken: string;
-//     expires: Date;
-//   };
-//   VerificationToken: {
-//     identifier: string;
-//     token: string;
-//     expires: Date;
-//   };
-// }
-
-const testPools = () => {
-  //NOTE log: ["error", "query"]
-
-  return new Kysely<DB>({
-    log: ["error"],
-    dialect: new PostgresDialect({
-      pool: new Pool({
-        host: "127.0.0.1",
-        database: "stories_dev",
-        password: process.env.PSQL_PASSWORD,
-        user: process.env.PSQL_USERNAME,
-        port: 5432,
-      }),
-    }),
-  });
+type Database = {
+  user: UserTable;
+  key: KeyTable;
+  session: SessionTable;
 };
 
-export const db = testPools();
+type UserTable = {
+  id: string;
+};
+
+type KeyTable = {
+  id: string;
+  user_id: string;
+  hashed_password: string | null;
+};
+
+type SessionTable = {
+  id: string;
+  user_id: string;
+  active_expires: bigint;
+  idle_expires: bigint;
+};
+
+export const pool = new Pool({
+  host: "127.0.0.1",
+  database: "stories_dev",
+  password: process.env.PSQL_PASSWORD,
+  user: process.env.PSQL_USERNAME,
+  port: 5432,
+});
+
+const dialect = new PostgresDialect({
+  pool,
+});
+
+export const db = new Kysely<Database & DB>({
+  log: ["error"],
+  dialect,
+});

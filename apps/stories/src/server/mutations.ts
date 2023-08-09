@@ -1,36 +1,45 @@
 import { getSession } from "@solid-mediakit/auth";
 import { mutation$ } from "@prpc/solid";
-import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
 } from "~/types/zodFromTypes";
+
+import { auth } from "./lucia.js";
+import { LuciaError } from "lucia";
 import { db } from "./server";
 export const postPersonalStats = mutation$({
   mutationFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    try {
+      const session = await auth.validateSession(request$);
+      if (session.fresh) {
+        // expiration extended
+        const sessionCookie = auth.createSessionCookie(session);
+        setSessionCookie(session);
+        const user = await db
+          .selectFrom("User")
+          .select("id")
+          .where("id", "=", session.user?.id)
+          .executeTakeFirstOrThrow();
 
-    if (!session) {
-      return "no session found";
-    }
+        if (user?.id) {
+          const insertion = await db
+            .insertInto("Personal_questions")
+            .values({ ...payload, user: user.id, accepted: false, fake: false })
+            .execute();
 
-    const user = await db
-      .selectFrom("User")
-      .select("id")
-      .where("id", "=", session.user?.id)
-      .executeTakeFirstOrThrow();
-
-    if (user?.id) {
-      const insertion = await db
-        .insertInto("Personal_questions")
-        .values({ ...payload, user: user.id, accepted: false, fake: false })
-        .execute();
-
-      if (insertion) {
-        return "Added succesfully";
+          if (insertion) {
+            return "Added succesfully";
+          }
+        }
       }
+    } catch (e) {
+      if (e instanceof LuciaError && e.message === `AUTH_INVALID_SESSION_ID`) {
+        // invalid session
+        deleteSessionCookie();
+      }
+      // unexpected database errors
     }
-    return "failed to insert";
   },
   key: "postPersonalStats",
   schema: personalQuestionsSchema,
