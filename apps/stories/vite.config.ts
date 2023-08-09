@@ -4,6 +4,7 @@ import { PluginOption, defineConfig } from "vite";
 import prpc from "@prpc/vite";
 import devtools from "solid-devtools/vite";
 import { visualizer } from "rollup-plugin-visualizer";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig(() => {
   dotenv.config();
@@ -18,6 +19,7 @@ export default defineConfig(() => {
       //   filename: "analyse.html", // will be saved in project's root
       // }) as PluginOption,
       prpc(),
+      process.env.NODE_ENV === "development" ? [basicSsl()] : [],
       // devtools({
       //   /* features options - all disabled by default */
       //   autoname: true, // e.g. enable autoname

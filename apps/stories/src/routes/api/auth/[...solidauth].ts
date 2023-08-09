@@ -43,6 +43,7 @@ export const authOpts: SolidAuthConfig = {
   ],
   debug: false,
   adapter: KyselyAdapter(db),
+  useSecureCookies: true,
   callbacks: {
     async session({ session, user }) {
       session.user.id = user.id;

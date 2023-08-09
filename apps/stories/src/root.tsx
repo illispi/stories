@@ -15,7 +15,7 @@ import {
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
 import GlobalTransition from "./components/GlobalTransition";
-import { SessionProvider } from "@solid-auth/base/client";
+import { SessionProvider } from "@solid-mediakit/auth/client";
 
 export default function Root() {
   return (

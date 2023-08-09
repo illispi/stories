@@ -14,12 +14,12 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
             fakeForDevMut.mutateAsync({ pOrT: "Personal_questions" })
           }
         >
-          Personal
+          Personal for dev
         </CustomButton>
         <CustomButton
           onClick={() => fakeForDevMut.mutateAsync({ pOrT: "Their_questions" })}
         >
-          Their
+          Their for dev
         </CustomButton>
       </div>
     </Suspense>

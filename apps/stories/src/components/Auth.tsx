@@ -1,5 +1,5 @@
 import { getSession } from "@solid-mediakit/auth";
-import { signIn, signOut } from "@solid-auth/base/client";
+import { signIn, signOut } from "@solid-mediakit/auth/client";
 import type { VoidComponent } from "solid-js";
 import { createServerData$ } from "solid-start/server";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
