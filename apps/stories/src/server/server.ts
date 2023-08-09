@@ -1,51 +1,52 @@
 import "dotenv/config";
-import { PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen";
 import { Pool } from "pg";
 
-import { KyselyAuth } from "@auth/kysely-adapter";
+// import { KyselyAuth } from "@auth/kysely-adapter";
 
-import type { GeneratedAlways } from "kysely";
+// import type { GeneratedAlways } from "kysely";
 
-interface Database {
-  User: {
-    id: GeneratedAlways<string>;
-    name: string | null;
-    email: string;
-    emailVerified: Date | null;
-    image: string | null;
-  };
-  Account: {
-    id: GeneratedAlways<string>;
-    userId: string;
-    type: string;
-    provider: string;
-    providerAccountId: string;
-    refresh_token: string | null;
-    access_token: string | null;
-    expires_at: number | null;
-    token_type: string | null;
-    scope: string | null;
-    id_token: string | null;
-    session_state: string | null;
-  };
-  Session: {
-    id: GeneratedAlways<string>;
-    userId: string;
-    sessionToken: string;
-    expires: Date;
-  };
-  VerificationToken: {
-    identifier: string;
-    token: string;
-    expires: Date;
-  };
-}
+// interface Database {
+//   User: {
+//     id: GeneratedAlways<string>;
+//     name: string | null;
+//     email: string;
+//     emailVerified: Date | null;
+//     image: string | null;
+//     role: string;
+//   };
+//   Account: {
+//     id: GeneratedAlways<string>;
+//     userId: string;
+//     type: string;
+//     provider: string;
+//     providerAccountId: string;
+//     refresh_token: string | null;
+//     access_token: string | null;
+//     expires_at: number | null;
+//     token_type: string | null;
+//     scope: string | null;
+//     id_token: string | null;
+//     session_state: string | null;
+//   };
+//   Session: {
+//     id: GeneratedAlways<string>;
+//     userId: string;
+//     sessionToken: string;
+//     expires: Date;
+//   };
+//   VerificationToken: {
+//     identifier: string;
+//     token: string;
+//     expires: Date;
+//   };
+// }
 
 const testPools = () => {
   //NOTE log: ["error", "query"]
 
-  return new KyselyAuth<Database, DB>({
+  return new Kysely<DB>({
     log: ["error"],
     dialect: new PostgresDialect({
       pool: new Pool({

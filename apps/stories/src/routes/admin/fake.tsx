@@ -1,20 +1,23 @@
 import { Suspense } from "solid-js";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import { fake } from "~/server/admin";
+import { fakeForDev, fakeForFake } from "~/server/admin";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const fakeMut = fake();
+  const fakeForFakeMut = fakeForFake();
+  const fakeForDevMut = fakeForDev();
   return (
     <Suspense>
       <div class="flex flex-col items-center gap-2">
         <CustomButton
-          onClick={() => fakeMut.mutateAsync({ pOrT: "Personal_questions" })}
+          onClick={() =>
+            fakeForDevMut.mutateAsync({ pOrT: "Personal_questions" })
+          }
         >
           Personal
         </CustomButton>
         <CustomButton
-          onClick={() => fakeMut.mutateAsync({ pOrT: "Their_questions" })}
+          onClick={() => fakeForDevMut.mutateAsync({ pOrT: "Their_questions" })}
         >
           Their
         </CustomButton>

@@ -1,4 +1,4 @@
-import type { Kysely} from "kysely";
+import type { Kysely } from "kysely";
 import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -8,6 +8,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("name", "text")
+    .addColumn("role", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.unique())
     .addColumn("emailVerified", "timestamptz")
     .addColumn("image", "text")

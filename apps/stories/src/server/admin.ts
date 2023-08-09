@@ -172,7 +172,65 @@ export const removeSubmission = mutation$({
   }),
 });
 
-export const fake = mutation$({
+export const fakeForFake = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const session = await getSession(request$, authOpts);
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("User")
+      .select("role")
+      .where("id", "=", session.user?.id)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role) {
+      const user = await db
+        .selectFrom("User")
+        .select("id")
+        .where("id", "=", session.user?.id)
+        .executeTakeFirstOrThrow();
+
+      if (payload.pOrT === "Personal_questions_fake") {
+        const fakeData = createFakeDataPersonal();
+        try {
+          personalQuestionsSchema.parse(fakeData);
+          await db
+            .insertInto(payload.pOrT)
+            .values({
+              ...fakeData,
+            })
+            .execute();
+        } catch (error) {
+          throw new ServerError(error);
+        }
+      } else if (payload.pOrT === "Their_questions_fake") {
+        const fakeData = createFakeDataTheir();
+        try {
+          theirQuestionsSchema.parse(fakeData);
+          await db
+            .insertInto(payload.pOrT)
+            .values({
+              ...fakeData,
+            })
+            .execute();
+        } catch (error) {
+          throw new ServerError(error);
+        }
+      }
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "accept",
+  schema: z.object({
+    pOrT: z.enum(["Personal_questions_fake", "Their_questions_fake"]),
+  }),
+});
+export const fakeForDev = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const session = await getSession(request$, authOpts);
 
@@ -203,7 +261,6 @@ export const fake = mutation$({
               ...fakeData,
               user: user.id,
               accepted: false,
-              fake: true,
             })
             .execute();
         } catch (error) {
@@ -219,7 +276,6 @@ export const fake = mutation$({
               ...fakeData,
               user: user.id,
               accepted: false,
-              fake: true,
             })
             .execute();
         } catch (error) {
