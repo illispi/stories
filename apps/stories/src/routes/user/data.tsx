@@ -9,6 +9,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   //TODO DELETE ACCOUNT
   //TODO DELETE PERSONAL AND MULTIPLE THEIR
   //TODO EDIT TOO PERSONAL TEXT
+  //TODO UPDATE DEPS AND KYSELY ADAPTER
 
   const removeAccAndDataMut = removeAccountAndData();
 

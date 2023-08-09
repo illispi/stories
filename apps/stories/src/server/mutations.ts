@@ -1,4 +1,4 @@
-import { getSession } from "@solid-auth/base";
+import { getSession } from "@solid-mediakit/auth";
 import { mutation$ } from "@prpc/solid";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import {

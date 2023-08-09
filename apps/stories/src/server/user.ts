@@ -1,5 +1,5 @@
 import { mutation$ } from "@prpc/solid";
-import { getSession } from "@solid-auth/base";
+import { getSession } from "@solid-mediakit/auth";
 import { ServerError } from "solid-start";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { db } from "./server";

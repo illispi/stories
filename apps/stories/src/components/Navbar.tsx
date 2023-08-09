@@ -4,7 +4,7 @@ import { Show, createEffect, createSignal } from "solid-js";
 import { A, Title, useSearchParams } from "solid-start";
 import Auth from "./Auth";
 import { createServerData$ } from "solid-start/server";
-import { getSession } from "@solid-auth/base";
+import { getSession } from "@solid-mediakit/auth";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 
 const createSession = () => {

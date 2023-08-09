@@ -1,5 +1,5 @@
 import { type Session } from "@auth/core/types";
-import { getSession } from "@solid-auth/base";
+import { getSession } from '@solid-mediakit/auth';
 import type { Component} from "solid-js";
 import { Show } from "solid-js";
 import { useRouteData } from "solid-start";

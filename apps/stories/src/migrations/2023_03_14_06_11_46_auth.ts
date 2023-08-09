@@ -1,4 +1,4 @@
-import type { Kysely } from "kysely";
+import type { Kysely} from "kysely";
 import { sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
@@ -8,9 +8,8 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
     .addColumn("name", "text")
-    .addColumn("role", "text")
     .addColumn("email", "text", (col) => col.unique())
-    .addColumn("emailVerified", "timestamp")
+    .addColumn("emailVerified", "timestamptz")
     .addColumn("image", "text")
     .execute();
 
@@ -19,21 +18,19 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
+    .addColumn("userId", "uuid", (col) =>
+      col.references("User.id").onDelete("cascade").notNull()
+    )
     .addColumn("type", "text", (col) => col.notNull())
     .addColumn("provider", "text", (col) => col.notNull())
     .addColumn("providerAccountId", "text", (col) => col.notNull())
     .addColumn("refresh_token", "text")
     .addColumn("access_token", "text")
-    .addColumn("expires_at", "int8")
+    .addColumn("expires_at", "bigint")
     .addColumn("token_type", "text")
     .addColumn("scope", "text")
     .addColumn("id_token", "text")
     .addColumn("session_state", "text")
-    .addColumn(
-      "userId",
-      "uuid",
-      (col) => col.references("User.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
-    )
     .execute();
 
   await db.schema
@@ -41,26 +38,36 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "uuid", (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`)
     )
-    .addColumn("sessionToken", "text", (col) => col.unique().notNull())
-    .addColumn("expires", "timestamp", (col) => col.notNull())
-    .addColumn(
-      "userId",
-      "uuid",
-      (col) => col.references("User.id").onDelete("cascade").unique() //NOTE this should work alas this is child table
+    .addColumn("userId", "uuid", (col) =>
+      col.references("User.id").onDelete("cascade").notNull()
     )
+    .addColumn("sessionToken", "text", (col) => col.notNull().unique())
+    .addColumn("expires", "timestamptz", (col) => col.notNull())
     .execute();
 
   await db.schema
     .createTable("VerificationToken")
-    .addColumn("identifier", "text")
-    .addColumn("token", "text", (col) => col.unique())
-    .addColumn("expires", "timestamp")
+    .addColumn("identifier", "text", (col) => col.notNull())
+    .addColumn("token", "text", (col) => col.notNull().unique())
+    .addColumn("expires", "timestamptz", (col) => col.notNull())
+    .execute();
+
+  await db.schema
+    .createIndex("Account_userId_index")
+    .on("Account")
+    .column("userId")
+    .execute();
+
+  await db.schema
+    .createIndex("Session_userId_index")
+    .on("Session")
+    .column("userId")
     .execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("VerificationToken").execute();
-  await db.schema.dropTable("Session").execute();
-  await db.schema.dropTable("Account").execute();
-  await db.schema.dropTable("User").execute();
+  await db.schema.dropTable("Account").ifExists().execute();
+  await db.schema.dropTable("Session").ifExists().execute();
+  await db.schema.dropTable("User").ifExists().execute();
+  await db.schema.dropTable("VerificationToken").ifExists().execute();
 }

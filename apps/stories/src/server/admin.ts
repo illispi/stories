@@ -1,7 +1,7 @@
 import { middleware$, mutation$, query$, reuseable$ } from "@prpc/solid";
 import { db } from "./server";
 import { z } from "zod";
-import { getSession } from "@solid-auth/base";
+import { getSession } from "@solid-mediakit/auth";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { ServerError } from "solid-start";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";

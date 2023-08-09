@@ -1,4 +1,4 @@
-import { getSession } from "@solid-auth/base";
+import { getSession } from "@solid-mediakit/auth";
 import { signIn, signOut } from "@solid-auth/base/client";
 import type { VoidComponent } from "solid-js";
 import { createServerData$ } from "solid-start/server";

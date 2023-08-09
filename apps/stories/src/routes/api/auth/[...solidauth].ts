@@ -1,9 +1,8 @@
 import Github from "@auth/core/providers/github";
 import Discord from "@auth/core/providers/discord";
-import { SolidAuth, type SolidAuthConfig } from "@solid-auth/base";
+import { SolidAuth, type SolidAuthConfig } from '@solid-mediakit/auth';
 import { serverEnv } from "~/env/server";
-
-import KyselyAdapter from "~/db/kyselyAdapter";
+import { KyselyAdapter } from "@auth/kysely-adapter";
 import { db } from "~/server/server";
 // session-type.d.ts
 import type { DefaultSession } from "@auth/core/types";
