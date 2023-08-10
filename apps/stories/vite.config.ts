@@ -8,7 +8,7 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig(() => {
   dotenv.config();
-  //[ssr: process.env.NODE_ENV === "Development" ? false : true }
+  //[ssr: process.env.NODE_ENV === "DEV" ? false : true }
   return {
     plugins: [
       // visualizer({
@@ -26,7 +26,7 @@ export default defineConfig(() => {
       // }),
       solid({ ssr: true }),
     ],
-    server: { host: true },
+    server: { host: true, https: true },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
   };

@@ -4,10 +4,14 @@ import { ServerError } from "solid-start";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
 import { db } from "./server";
 import { z } from "zod";
+import { auth } from "~/auth/lucia";
 
 export const removeAccountAndData = mutation$({
   mutationFn: async ({ request$ }) => {
-    const session = await getSession(request$, authOpts);
+    
+
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");

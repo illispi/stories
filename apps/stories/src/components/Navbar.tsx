@@ -1,15 +1,20 @@
-import { RouteParams, route } from "routes-gen";
+import { route } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
-import { Show, createEffect, createSignal } from "solid-js";
-import { A, Title, useSearchParams } from "solid-start";
-import Auth from "./Auth";
+import { Show, Suspense, createEffect, createSignal } from "solid-js";
+import { A, ErrorBoundary, Title, useSearchParams } from "solid-start";
 import { createServerData$ } from "solid-start/server";
-import { getSession } from "@solid-mediakit/auth";
-import { authOpts } from "~/routes/api/auth/[...solidauth]";
+import Auth from "./Auth";
+import { auth } from "~/auth/lucia";
 
-const createSession = () => {
+export const getSession = () => {
   return createServerData$(async (_, event) => {
-    return await getSession(event.request, authOpts);
+    const authRequest = auth.handleRequest(event.request);
+    const session = await authRequest.validate();
+    if (session) {
+      return session;
+    } else {
+      return null;
+    }
   });
 };
 
@@ -31,7 +36,7 @@ const Hamburger: Component<{
   setMenuOpen: Setter<boolean>;
 }> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sessionData = createSession();
+  const sessionData = getSession();
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {
@@ -101,9 +106,18 @@ const Hamburger: Component<{
         } h-screen w-80 flex-col bg-orange-200 transition-all duration-300`}
       >
         <Auth />
-        <Show when={sessionData()}>
-          <MenuItem route={route("/user/data")} content="Your data" />
-        </Show>
+        <Suspense>
+          <ErrorBoundary
+            fallback={(err) => {
+              console.log(err);
+              return <div>err</div>;
+            }}
+          >
+            <Show when={sessionData}>
+              <MenuItem route={route("/user/data")} content="Your data" />
+            </Show>
+          </ErrorBoundary>
+        </Suspense>
         <div class="w-full border-b-2 border-black" />
         <MenuItem class="mt-8" route={route("/stats")} content="results" />
         <MenuItem route={route("/questionares")} content="poll" />

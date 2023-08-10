@@ -15,7 +15,6 @@ import {
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
 import GlobalTransition from "./components/GlobalTransition";
-import { SessionProvider } from "@solid-mediakit/auth/client";
 
 export default function Root() {
   return (
@@ -26,21 +25,19 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body>
-        <SessionProvider>
-          <QueryProvider>
-            <Suspense>
-              <ErrorBoundary>
-                <NavBar />
-                <GlobalTransition>
-                  <Routes>
-                    <FileRoutes />
-                  </Routes>
-                </GlobalTransition>
-              </ErrorBoundary>
-            </Suspense>
-            <Scripts />
-          </QueryProvider>
-        </SessionProvider>
+        <QueryProvider>
+          <Suspense>
+            <ErrorBoundary>
+              <NavBar />
+              <GlobalTransition>
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </GlobalTransition>
+            </ErrorBoundary>
+          </Suspense>
+          <Scripts />
+        </QueryProvider>
       </Body>
     </Html>
   );

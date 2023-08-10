@@ -1,18 +1,18 @@
-import { middleware$, mutation$, query$, reuseable$ } from "@prpc/solid";
-import { db } from "./server";
-import { z } from "zod";
-import { getSession } from "@solid-mediakit/auth";
-import { authOpts } from "~/routes/api/auth/[...solidauth]";
+import { mutation$, query$ } from "@prpc/solid";
 import { ServerError } from "solid-start";
-import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
+import { z } from "zod";
+import { auth } from "~/auth/lucia";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
 } from "~/types/zodFromTypes";
+import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
+import { db } from "./server";
 
 // const adminCheck = middleware$(async ({ request$ }) => {
-//   const session = await getSession(request$, authOpts);
+//   const authRequest = auth.handleRequest(request$);
+//const session = await authRequest.validate();
 
 //   if (!session) {
 //     return "no session found";
@@ -33,7 +33,8 @@ import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 
 export const listSubmissions = query$({
   queryFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");
@@ -109,7 +110,8 @@ export const listSubmissions = query$({
 
 export const acceptSubmission = mutation$({
   mutationFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");
@@ -143,7 +145,8 @@ export const acceptSubmission = mutation$({
 
 export const removeSubmission = mutation$({
   mutationFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");
@@ -174,7 +177,8 @@ export const removeSubmission = mutation$({
 
 export const fakeForFake = mutation$({
   mutationFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");
@@ -187,11 +191,6 @@ export const fakeForFake = mutation$({
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
-      const user = await db
-        .selectFrom("User")
-        .select("id")
-        .where("id", "=", session.user?.id)
-        .executeTakeFirstOrThrow();
 
       if (payload.pOrT === "Personal_questions_fake") {
         const fakeData = createFakeDataPersonal();
@@ -232,7 +231,8 @@ export const fakeForFake = mutation$({
 });
 export const fakeForDev = mutation$({
   mutationFn: async ({ payload, request$ }) => {
-    const session = await getSession(request$, authOpts);
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
     if (!session) {
       throw new ServerError("Session not found");
