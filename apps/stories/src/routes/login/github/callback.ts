@@ -22,7 +22,6 @@ export const GET = async (event: APIEvent) => {
     });
   }
   try {
-    console.log("first", code);
     const { existingUser, createUser } = await githubAuth.validateCallback(
       code
     );
@@ -53,7 +52,6 @@ export const GET = async (event: APIEvent) => {
   } catch (e) {
     if (e instanceof OAuthRequestError) {
       // invalid code
-      console.log(e);
       return new Response(null, {
         status: 400,
       });

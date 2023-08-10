@@ -7,7 +7,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("id", "serial", (col) => col.primaryKey())
     .addColumn(
       "user",
-      "uuid",
+      "text",
       (col) => col.references("auth_user.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
     .addColumn("accepted", "boolean", (col) => col.notNull())
@@ -253,7 +253,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("Their_questions")
     .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("user", "uuid", (col) =>
+    .addColumn("user", "text", (col) =>
       col.references("auth_user.id").onDelete("cascade").notNull()
     )
     .addColumn("relation", "text", (col) =>
