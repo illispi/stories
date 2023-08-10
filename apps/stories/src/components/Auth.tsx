@@ -2,30 +2,26 @@ import type { VoidComponent } from "solid-js";
 import { createServerData$ } from "solid-start/server";
 import CustomButton from "./CustomButton";
 import { auth } from "~/auth/lucia";
+import { A } from "solid-start";
 
-const createSession = () => {
+const getSession = () => {
   return createServerData$(async (_, event) => {
     const authRequest = auth.handleRequest(event.request);
     const session = await authRequest.validate();
     if (!session) {
-      return false;
+      return null;
     }
-    return session.user;
+    return session;
   });
 };
 
 const Auth: VoidComponent = () => {
-  const sessionData = createSession();
+  const sessionData = getSession();
   return (
     <CustomButton
       class="w-44"
-      // onClick={
-      //   sessionData()
-      //     ? () => void signOut({ redirectTo: "/", redirect: true })
-      //     : () => void signIn()
-      // }
     >
-      {sessionData() ? "Sign out" : "Sign in/up"}
+      <A href="/login">{sessionData() ? "Sign out" : "Sign in/up"}</A>
     </CustomButton>
   );
 };

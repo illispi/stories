@@ -1,23 +1,20 @@
-import { type Session } from "@auth/core/types";
-import { getSession } from '@solid-mediakit/auth';
-import type { Component} from "solid-js";
+import type { Component } from "solid-js";
 import { Show } from "solid-js";
 import { useRouteData } from "solid-start";
 import { createServerData$, redirect } from "solid-start/server";
-import { authOpts } from "~/routes/api/auth/[...solidauth]";
+import { auth } from "~/auth/lucia";
 
 const ProtectedAdmin = (Comp: IProtectedComponent) => {
   const routeData = () => {
-    return createServerData$(
-      async (_, event) => {
-        const session = await getSession(event.request, authOpts);
-        if (!session || !session.user || session?.user.role !== "admin") {
-          throw redirect("/");
-        }
+    return createServerData$(async (_, event) => {
+      const authRequest = auth.handleRequest(event.request);
+      const session = await authRequest.validate();
+      if (session && session.user.role === "admin") {
         return session;
-      },
-      { key: () => ["auth_user"] }
-    );
+      } else {
+        return redirect("/");
+      }
+    });
   };
 
   return {
@@ -33,6 +30,6 @@ const ProtectedAdmin = (Comp: IProtectedComponent) => {
   };
 };
 
-type IProtectedComponent = Component<Session>;
+type IProtectedComponent = Component;
 
 export default ProtectedAdmin;
