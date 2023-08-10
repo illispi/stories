@@ -8,13 +8,13 @@
 // 	});
 // };
 
-const Page = () => {
+const Login = () => {
   return (
-    <>
+    <div class="flex h-full w-full flex-col items-center justify-center">
       <h1>Sign in</h1>
       <a href="/login/github">Sign in with Github</a>
-    </>
+    </div>
   );
 };
 
-export default Page;
+export default Login;

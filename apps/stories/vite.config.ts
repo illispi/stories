@@ -19,14 +19,17 @@ export default defineConfig(() => {
       //   filename: "analyse.html", // will be saved in project's root
       // }) as PluginOption,
       prpc(),
-      process.env.NODE_ENV === "development" ? [basicSsl()] : [],
+
+      //TEST process.env.NODE_ENV === "development" ? [basicSsl()] : [],
+
       // devtools({
       //   /* features options - all disabled by default */
       //   autoname: true, // e.g. enable autoname
       // }),
       solid({ ssr: true }),
     ],
-    server: { host: true, https: true },
+    server: { host: true },
+    //TEST server: { host: true, https: true },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
   };

@@ -18,7 +18,7 @@ export const GET = async (event: APIEvent) => {
       Location: url.toString(),
       "Set-Cookie": serializeCookie("github_oauth_state", state, {
         httpOnly: true,
-        secure: true, //process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production" ? true : false,
         path: "/",
         maxAge: 60 * 60,
       }),

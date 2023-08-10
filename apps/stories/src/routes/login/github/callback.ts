@@ -22,10 +22,10 @@ export const GET = async (event: APIEvent) => {
     });
   }
   try {
-    const {
-      existingUser,
-      createUser,
-    } = await githubAuth.validateCallback(code);
+    console.log("first", code);
+    const { existingUser, createUser } = await githubAuth.validateCallback(
+      code
+    );
 
     const getUser = async () => {
       if (existingUser) return existingUser;
@@ -40,7 +40,7 @@ export const GET = async (event: APIEvent) => {
     const user = await getUser();
     const session = await auth.createSession({
       userId: user.userId,
-      attributes: {},
+      attributes: { role: user.role },
     });
     const sessionCookie = auth.createSessionCookie(session);
     return new Response(null, {
@@ -53,6 +53,7 @@ export const GET = async (event: APIEvent) => {
   } catch (e) {
     if (e instanceof OAuthRequestError) {
       // invalid code
+      console.log(e);
       return new Response(null, {
         status: 400,
       });
@@ -62,4 +63,3 @@ export const GET = async (event: APIEvent) => {
     });
   }
 };
-//NOTE does this need to be just .ts
