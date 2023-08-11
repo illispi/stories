@@ -9,7 +9,8 @@ const ProtectedAdmin = (Comp: IProtectedComponent) => {
     return createServerData$(async (_, event) => {
       const authRequest = auth.handleRequest(event.request);
       const session = await authRequest.validate();
-      if (session && session.user.role === "admin") {
+      const user = await auth.getUser(session?.user.userId);
+      if (session && user.role === "admin") {
         return session;
       } else {
         return redirect("/");
@@ -33,3 +34,5 @@ const ProtectedAdmin = (Comp: IProtectedComponent) => {
 type IProtectedComponent = Component;
 
 export default ProtectedAdmin;
+
+//TODO test that user cant access admin

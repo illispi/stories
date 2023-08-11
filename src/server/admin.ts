@@ -19,9 +19,9 @@ import { db } from "./server";
 //   }
 
 //   const admin = await db
-//     .selectFrom("User")
+//     .selectFrom("auth_user")
 //     .select("role")
-//     .where("id", "=", session.user?.id)
+//     .where("id", "=", session.user?.userId)
 //     .executeTakeFirstOrThrow();
 
 //   return {
@@ -41,9 +41,9 @@ export const listSubmissions = query$({
     }
 
     const admin = await db
-      .selectFrom("User")
+      .selectFrom("auth_user")
       .select("role")
-      .where("id", "=", session.user?.id)
+      .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
@@ -118,9 +118,9 @@ export const acceptSubmission = mutation$({
     }
 
     const admin = await db
-      .selectFrom("User")
+      .selectFrom("auth_user")
       .select("role")
-      .where("id", "=", session.user?.id)
+      .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
@@ -153,9 +153,9 @@ export const removeSubmission = mutation$({
     }
 
     const admin = await db
-      .selectFrom("User")
+      .selectFrom("auth_user")
       .select("role")
-      .where("id", "=", session.user?.id)
+      .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
@@ -185,13 +185,12 @@ export const fakeForFake = mutation$({
     }
 
     const admin = await db
-      .selectFrom("User")
+      .selectFrom("auth_user")
       .select("role")
-      .where("id", "=", session.user?.id)
+      .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
-
       if (payload.pOrT === "Personal_questions_fake") {
         const fakeData = createFakeDataPersonal();
         try {
@@ -239,16 +238,16 @@ export const fakeForDev = mutation$({
     }
 
     const admin = await db
-      .selectFrom("User")
+      .selectFrom("auth_user")
       .select("role")
-      .where("id", "=", session.user?.id)
+      .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
     if (admin.role) {
       const user = await db
-        .selectFrom("User")
+        .selectFrom("auth_user")
         .select("id")
-        .where("id", "=", session.user?.id)
+        .where("id", "=", session.user?.userId)
         .executeTakeFirstOrThrow();
 
       if (payload.pOrT === "Personal_questions") {

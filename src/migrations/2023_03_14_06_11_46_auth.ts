@@ -25,7 +25,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     )
     .addColumn("active_expires", "bigint", (col) => col.notNull())
     .addColumn("idle_expires", "bigint", (col) => col.notNull())
-    .addColumn("role", "text")
     .execute();
 }
 

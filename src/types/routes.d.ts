@@ -6,15 +6,16 @@ declare module "routes-gen" {
     "/admin/fake": Record<string, never>;
     "/admin/questions": Record<string, never>;
     "/development/test": Record<string, never>;
+    "/login": Record<string, never>;
     "/questionares": Record<string, never>;
     "/questionares/:personalQuestions": { "personalQuestions": string };
     "/stats": Record<string, never>;
-    "/user/data": Record<string, never>;
-    "/stats/all": Record<string, never>;
-    "/stats/all/:allStats": { "allStats": string };
     "/stats/compare": Record<string, never>;
     "/stats/compare/:compare": { "compare": string };
+    "/stats/pollResults": Record<string, never>;
+    "/stats/pollResults/:pOrT/:fakeOrReal": { "pOrT": string, "fakeOrReal": string };
     "/stats/texts/:selector/:statsText": { "selector": string, "statsText": string };
+    "/user/data": Record<string, never>;
   };
 
   export function route<
@@ -25,14 +26,15 @@ declare module "routes-gen" {
       | ["/admin/fake"]
       | ["/admin/questions"]
       | ["/development/test"]
+      | ["/login"]
       | ["/questionares"]
       | ["/questionares/:personalQuestions", RouteParams["/questionares/:personalQuestions"]]
       | ["/stats"]
-      | ["/user/data"]
-      | ["/stats/all"]
-      | ["/stats/all/:allStats", RouteParams["/stats/all/:allStats"]]
       | ["/stats/compare"]
       | ["/stats/compare/:compare", RouteParams["/stats/compare/:compare"]]
+      | ["/stats/pollResults"]
+      | ["/stats/pollResults/:pOrT/:fakeOrReal", RouteParams["/stats/pollResults/:pOrT/:fakeOrReal"]]
       | ["/stats/texts/:selector/:statsText", RouteParams["/stats/texts/:selector/:statsText"]]
+      | ["/user/data"]
   >(...args: T): typeof args[0];
 }

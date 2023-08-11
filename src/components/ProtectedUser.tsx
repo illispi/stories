@@ -9,10 +9,10 @@ const ProtectedUser = (Comp: IProtectedComponent) => {
     return createServerData$(async (_, event) => {
       const authRequest = auth.handleRequest(event.request);
       const session = await authRequest.validate();
-      if (session && session.user.role === "user") {
-        return session
+      if (session) {
+        return session;
       } else {
-        return redirect('/');
+        return redirect("/");
       }
     });
   };

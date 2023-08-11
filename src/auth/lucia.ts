@@ -19,6 +19,11 @@ export const auth = lucia({
   sessionCookie: {
     expires: false,
   },
+  getUserAttributes: (databaseUser) => {
+    return {
+      role: databaseUser.role,
+    };
+  },
 });
 
 export const githubAuth = github(auth, {
@@ -27,3 +32,5 @@ export const githubAuth = github(auth, {
 });
 
 export type Auth = typeof auth;
+
+//BUG check that session role gets now set on register and login

@@ -8,22 +8,28 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/all/:allStats", { allStats: "Personal_questions" })}
+        href={route("/stats/pollResults/:pOrT/:fakeOrReal", {
+          pOrT: "Personal_questions",
+          fakeOrReal: "real"
+        })}
       >
         Personal Stats
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/all/:allStats", { allStats: "Their_questions" })}
+        href={route("/stats/pollResults/:pOrT/:fakeOrReal", {
+          pOrT: "Their_questions",
+          fakeOrReal: "real"
+        })}
       >
         Their Stats
       </A>
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/all/:allStats", {
-          allStats: "Personal_questions",
+        href={route("/stats/pollResults/:pOrT/:fakeOrReal", {
+          pOrT: "Personal_questions",
           fakeOrReal: "fake",
         })}
       >
@@ -32,8 +38,8 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/all/:allStats", {
-          allStats: "Their_questions",
+        href={route("/stats/pollResults/:pOrT/:fakeOrReal", {
+          pOrT: "Their_questions",
           fakeOrReal: "fake",
         })}
       >
