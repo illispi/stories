@@ -7,7 +7,9 @@ const Home: Component = () => {
     <div class="grid w-full grid-cols-1 justify-items-center lg:grid-cols-2">
       <div class="col-span-2 row-span-2 h-[66vh] w-full bg-gradient-angle from-blue-400 to-fuchsia-600 ">
         <div class="flex h-full flex-col items-center justify-around lg:flex-row">
-          <h1>Polls and shared articles about schizophrenia</h1>
+          <h1 class="text-center text-2xl text-white lg:w-4/12 lg:text-left lg:text-4xl xl:text-6xl">
+            Poll and shared articles about schizophrenia
+          </h1>
           <img
             class="w-full lg:w-5/12"
             src="/public/hero_image.png"
