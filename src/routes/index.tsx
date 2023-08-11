@@ -6,13 +6,13 @@ const Home: Component = () => {
   return (
     <div class="grid w-full grid-cols-1 justify-items-center lg:grid-cols-2">
       <div class="col-span-2 row-span-2 h-[66vh] w-full bg-gradient-angle from-blue-400 to-fuchsia-600 ">
-        <div class="flex h-full flex-col items-center justify-around lg:flex-row">
-          <h1 class="text-center text-2xl text-white lg:w-4/12 lg:text-left lg:text-4xl xl:text-6xl">
-            Poll and shared articles about schizophrenia
+        <div class="flex h-full flex-col items-center justify-evenly lg:flex-row">
+          <h1 class="text-center text-2xl text-white lg:w-4/12 lg:text-4xl">
+            User poll & shared articles about schizophrenia
           </h1>
           <img
-            class="w-full lg:w-5/12"
-            src="/public/hero_image.png"
+            class="w-full max-w-sm lg:max-w-xl"
+            src="/hero_image.png"
             alt="Picture of poll"
           />
         </div>
