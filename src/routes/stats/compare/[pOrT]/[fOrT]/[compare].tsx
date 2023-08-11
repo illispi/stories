@@ -209,10 +209,11 @@ const Compared: Component<{
 
 const CompareStats = () => {
   const params = useParams<{
-    compare: "Personal_questions" | "Their_questions";
+    pOrT: "Personal_questions" | "Their_questions";
+    : "real" | "fake";
   }>();
   const byDiagnosis =
-    params.compare === "Personal_questions"
+    params.pOrT === "Personal_questions"
       ? byDiagnosisPersonal
       : byDiagnosisTheir;
 
@@ -259,7 +260,8 @@ const CompareStats = () => {
   const statsA = allStats(
     () => ({
       value: A(),
-      pOrT: params.compare,
+      pOrT: params.pOrT,
+      fake: params.fake,
     }),
     () => ({
       placeholderData: (prev) => prev, //NOTE why is this necessary, log something in effect
@@ -268,7 +270,8 @@ const CompareStats = () => {
   const statsB = allStats(
     () => ({
       value: B(),
-      pOrT: params.compare,
+      pOrT: params.pOrT,
+      fake: params.fake,
     }),
     () => ({
       placeholderData: (prev) => prev,

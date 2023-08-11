@@ -42,14 +42,14 @@ const CompareButton: Component = () => {
 const AllStatsPage: ParentComponent = () => {
   const params = useParams<{
     pOrT: "Personal_questions" | "Their_questions";
-    fakeOrReal: "fake" | "real";
+    fOrT: "fake" | "real";
   }>();
 
   const allStatsData = allStats(
     () => ({
       value: "all",
       pOrT: params.pOrT,
-      fake: params.fakeOrReal,
+      fake: params.fOrT,
     }),
     () => ({
       placeholderData: (prev) => prev,

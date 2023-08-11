@@ -8,7 +8,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:compare", {
+        href={route("", {
           compare: "Personal_questions",
         })}
       >
@@ -17,7 +17,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:compare", { compare: "Their_questions" })}
+        href={route("", { compare: "Their_questions" })}
       >
         Their Stats
       </A>
