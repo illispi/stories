@@ -210,7 +210,7 @@ const Compared: Component<{
 const CompareStats = () => {
   const params = useParams<{
     pOrT: "Personal_questions" | "Their_questions";
-    : "real" | "fake";
+    fOrT: "real" | "fake";
   }>();
   const byDiagnosis =
     params.pOrT === "Personal_questions"
@@ -261,7 +261,7 @@ const CompareStats = () => {
     () => ({
       value: A(),
       pOrT: params.pOrT,
-      fake: params.fake,
+      fake: params.fOrT,
     }),
     () => ({
       placeholderData: (prev) => prev, //NOTE why is this necessary, log something in effect
@@ -271,7 +271,7 @@ const CompareStats = () => {
     () => ({
       value: B(),
       pOrT: params.pOrT,
-      fake: params.fake,
+      fake: params.fOrT,
     }),
     () => ({
       placeholderData: (prev) => prev,
