@@ -18,52 +18,70 @@ export const allStats = query$({
 
     switch (payload.value) {
       case "all":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
         break;
       case "female":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("gender", "=", "female")
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("gender", "=", "female")
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
         break;
       case "other":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("gender", "=", "other")
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("gender", "=", "other")
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
         break;
       case "male":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("gender", "=", "male")
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("gender", "=", "male")
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
         break;
       case "schizophrenia":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("diagnosis", "=", "schizophrenia")
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("diagnosis", "=", "schizophrenia")
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
 
         break;
       case "schizoaffective":
-        stats = await db
-          .selectFrom(payload.pOrT)
-          .selectAll()
-          .where("diagnosis", "=", "schizoaffective")
-          .where("accepted", "=", true)
-          .execute();
+        stats =
+          payload.fake === "real"
+            ? await db
+                .selectFrom(payload.pOrT)
+                .selectAll()
+                .where("diagnosis", "=", "schizoaffective")
+                .where("accepted", "=", true)
+                .execute()
+            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
         break;
 
       default:
@@ -92,7 +110,7 @@ export const allStats = query$({
       .where("accepted", "=", true)
       .execute();
 
-    const filterSensitive = stats.map((e: typeof stats[0]) => {
+    const filterSensitive = stats.map((e: (typeof stats)[0]) => {
       const { user, created_at, id, ...filtered } = e;
       return filtered;
     });
@@ -306,6 +324,7 @@ export const allStats = query$({
       "male",
     ]),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
+    fake: z.enum(["real", "fake"]),
   }), // this will be used as the query key (along with the input)
 }); // this will be used as the input type and input validation
 
@@ -319,7 +338,7 @@ export const textPagination = query$({
       )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
       .where(payload.stat as keyof PersonalQuestions, "!=", "null")
-      .where("accepted", "=", true)
+      .where("accepted", "=", true);
 
     if (payload.gender) {
       stats = stats.where("gender", "=", payload.gender.toLowerCase());

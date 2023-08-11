@@ -21,7 +21,10 @@ const CompareButton: Component = () => {
   }>();
   return (
     <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
-      <A noScroll={true} href={route("/stats/compare/:compare", {compare: params.allStats})}>
+      <A
+        noScroll={true}
+        href={route("/stats/compare/:compare", { compare: params.allStats })}
+      >
         <CustomButton
           class="m-2 rounded-full bg-blue-500 p-5
       font-semibold text-white transition-all  hover:scale-110
@@ -38,13 +41,15 @@ const CompareButton: Component = () => {
 
 const AllStatsPage: ParentComponent = () => {
   const params = useParams<{
-    allStats: "Personal_questions" | "Their_questions";
+    pOrT: "Personal_questions" | "Their_questions";
+    fakeOrReal: "fake" | "real";
   }>();
 
   const allStatsData = allStats(
     () => ({
       value: "all",
-      pOrT: params.allStats,
+      pOrT: params.pOrT,
+      fake: params.fakeOrReal,
     }),
     () => ({
       placeholderData: (prev) => prev,
@@ -52,13 +57,13 @@ const AllStatsPage: ParentComponent = () => {
   );
 
   const [compOrder, setCompOrder] = createSignal(
-    params.allStats === "Personal_questions"
+    params.pOrT === "Personal_questions"
       ? allStatsPersonalArr
       : allStatsTheirArr
   );
 
   const [selector, setselector] = createSignal(
-    params.allStats === "Personal_questions" ? "personal" : "their"
+    params.pOrT === "Personal_questions" ? "personal" : "their"
   );
 
   const [shown, setShown] = createSignal<Element[]>([]);

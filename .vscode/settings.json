@@ -1,4 +1,3 @@
 {
-    "todo-tree.tree.scanMode": "workspace only",
-     "prettier.prettierPath": "./node_modules/prettier"
+  "todo-tree.tree.scanMode": "workspace only"
 }
