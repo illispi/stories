@@ -53,7 +53,7 @@ const Hamburger: Component<{
     <div class="relative">
       <div class="flex items-center justify-center transition-transform active:scale-125">
         <button
-          class="transition-transform duration-200 ease-out hover:scale-125"
+          class="p-3 transition-transform duration-200 ease-out hover:scale-125"
           onClick={() => {
             if (searchParams.nav === "true") {
               setSearchParams({ nav: null });
@@ -154,8 +154,8 @@ const NavBar: Component = () => {
   return (
     <>
       <Title>Home</Title>
-      <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300 p-3">
-        <A noScroll={true} href={route("/")}>
+      <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
+        <A class=" p-3" noScroll={true} href={route("/")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32px"
