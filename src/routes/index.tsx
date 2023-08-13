@@ -10,11 +10,11 @@ const Home: Component = () => {
           <h1 class="m-12 max-w-sm text-center font-mono text-2xl text-white md:text-3xl lg:hidden">
             User poll & shared articles about schizophrenia
           </h1>
-          <div class="hidden h-5/6 flex-col justify-around lg:flex">
+          <div class="my-72 hidden h-5/6 flex-col justify-center lg:flex">
             <h1 class="m-12 text-center font-mono text-white lg:text-4xl 2xl:max-w-2xl 2xl:text-5xl">
               User poll & shared articles about schizophrenia
             </h1>
-            <div class="mx-12 flex items-center justify-center">
+            <div class="m-12 flex items-center justify-center">
               <A
                 class="m-8 w-1/2 rounded-full border border-black bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
@@ -30,7 +30,7 @@ const Home: Component = () => {
             </div>
           </div>
           <img
-            class="md:w-7/12 lg:w-11/12"
+            class="mb-40 mt-10 md:w-7/12 lg:w-full"
             src="/hero_image.png"
             alt="Picture of poll"
           />
