@@ -5,7 +5,7 @@ import InfoBox from "~/components/InfoBox";
 
 const Home: Component = () => {
   return (
-    <div class="grid w-full grid-cols-1 justify-items-center lg:grid-cols-2">
+    <div class="w-full">
       <div class="col-span-2 row-span-2 flex w-full items-center justify-center bg-gradient-angle from-blue-400 to-fuchsia-500 ">
         <div class="grid grid-cols-1 items-center justify-items-center lg:grid-cols-2 xl:max-w-[1800px]">
           <h1 class="mb-12 mt-24 max-w-md text-center font-mono text-3xl text-white lg:hidden">
@@ -63,28 +63,30 @@ const Home: Component = () => {
           </div>
         </div>
       </div>
-      <InfoBox
-        header="Useful statistics from poll filled by patients or relatives"
-        text="You can fill out a comprehensive poll about schizophrenia related
+      <div class="my-16 grid w-full grid-cols-1 justify-items-center gap-16 lg:grid-cols-2">
+        <InfoBox
+          header="Useful statistics from poll filled by patients or relatives"
+          text="You can fill out a comprehensive poll about schizophrenia related
           illness whether you are a patient, relative or even someone you know."
-        link="Take poll"
-        route={route("/questionares")}
-      />
-      <InfoBox
-        header="Share articles or interviews about schizophrenia"
-        text="From Google it can be bit hard to find articles or experiences with
+          link="Take poll"
+          route={route("/questionares")}
+        />
+        <InfoBox
+          header="Share articles or interviews about schizophrenia"
+          text="From Google it can be bit hard to find articles or experiences with
         people with schizophrenia. Here you can share articles that are
         relevant to schizophrenia."
-        link="Share article"
-        route={route("/articles")}
-      />
-      <InfoBox
-        header="Compare between diagnosis or gender"
-        text="Gain insight how symptoms or experiences differ between schizophrenia
+          link="Share article"
+          route={route("/articles")}
+        />
+        <InfoBox
+          header="Compare between diagnosis or gender"
+          text="Gain insight how symptoms or experiences differ between schizophrenia
         or schizophrenia and between genders"
-        link="Compare"
-        route={route("/compare")}
-      />
+          link="Compare"
+          route={route("/compare")}
+        />
+      </div>
     </div>
   );
 };
