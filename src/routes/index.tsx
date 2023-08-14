@@ -29,19 +29,19 @@ const Home: Component = () => {
               </A>
             </div>
           </div>
-          <div class="grid grid-cols-1 justify-items-center gap-16 p-16 lg:grid-cols-2">
+          <div class="grid w-full auto-cols-max grid-flow-col justify-items-center gap-8 overflow-x-auto p-8 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:gap-12 lg:p-12">
             <img
-              class="rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
               src="/first.png"
               alt="Picture of poll"
             />
             <img
-              class="rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
               src="/second.png"
               alt="Picture of poll"
             />
             <img
-              class="col-span-2 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              class="col-span-2 max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
               src="/third.png"
               alt="Picture of poll"
             />
