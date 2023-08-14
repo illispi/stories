@@ -127,7 +127,7 @@ export const acceptSubmission = mutation$({
       await db
         .updateTable(payload.pOrT)
         .set({
-          accepted: true,
+          accepted: "accepted",
         })
         .where("id", "=", payload.id)
         .executeTakeFirst();
@@ -143,7 +143,7 @@ export const acceptSubmission = mutation$({
   }),
 });
 
-export const removeSubmission = mutation$({
+export const declineSubmission = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const authRequest = auth.handleRequest(request$);
     const session = await authRequest.validate();
@@ -160,7 +160,10 @@ export const removeSubmission = mutation$({
 
     if (admin.role) {
       await db
-        .deleteFrom(payload.pOrT)
+        .updateTable(payload.pOrT)
+        .set({
+          accepted: "declined",
+        })
         .where("id", "=", payload.id)
         .executeTakeFirst();
     } else {

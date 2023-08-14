@@ -20,7 +20,7 @@ export const postPersonalStats = mutation$({
       if (user?.id) {
         const insertion = await db
           .insertInto("Personal_questions")
-          .values({ ...payload, user: user.id, accepted: false })
+          .values({ ...payload, user: user.id, accepted: "pending" })
           .execute();
 
         if (insertion) {
@@ -46,7 +46,7 @@ export const postTheirStats = mutation$({
       if (user?.id) {
         const insertion = await db
           .insertInto("Their_questions")
-          .values({ ...payload, user: user.id, accepted: false })
+          .values({ ...payload, user: user.id, accepted: "pending" })
           .execute();
 
         if (insertion) {

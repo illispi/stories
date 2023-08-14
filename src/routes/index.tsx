@@ -16,13 +16,13 @@ const Home: Component = () => {
             </h1>
             <div class="m-12 flex items-center justify-center">
               <A
-                class="m-8 w-1/2 rounded-full border border-black bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 w-1/2 rounded-full border border-fuchsia-500 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Take poll
               </A>
               <A
-                class="m-8 w-1/2 rounded-full border border-black bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 w-1/2 rounded-full border border-fuchsia-500 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Share article
