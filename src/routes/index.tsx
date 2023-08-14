@@ -67,13 +67,13 @@ const Home: Component = () => {
         <InfoBox
           header="Useful statistics from poll filled by patients or relatives"
           text="You can fill out a comprehensive poll about schizophrenia related
-          illness whether you are a patient, relative or even someone you know."
-          link="Take poll"
+          illness whether you are a patient, relative or even distantly familiar of someone with schizophrenia."
+          link="Take the poll"
           route={route("/questionares")}
         />
         <InfoBox
           header="Share articles or interviews about schizophrenia"
-          text="From Google it can be bit hard to find articles or experiences with
+          text="From Google it can be bit hard to find articles or experiences of
         people with schizophrenia. Here you can share articles that are
         relevant to schizophrenia."
           link="Share article"
