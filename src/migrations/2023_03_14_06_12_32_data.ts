@@ -10,7 +10,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       "text",
       (col) => col.references("auth_user.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
-    .addColumn("accepted", "text", col => col.defaultTo("unRead").notNull())
+    .addColumn("accepted", "text", (col) => col.defaultTo("pending").notNull())
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
@@ -261,7 +261,9 @@ export async function up(db: Kysely<any>): Promise<void> {
         .check(sql`relation in ('relative', 'friend', 'acquintance')`)
         .notNull()
     )
-    .addColumn("accepted", "boolean", (col) => col.notNull())
+    .addColumn("accepted", "boolean", (col) =>
+      col.defaultTo("pending").notNull()
+    )
     .addColumn(
       "gender",
       "text",

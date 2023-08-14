@@ -104,7 +104,7 @@ export const listSubmissions = query$({
   schema: z.object({
     page: z.number().int(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
-    accepted: z.boolean(),
+    accepted: z.enum(["accepted", "pending"]),
   }),
 });
 
@@ -262,7 +262,7 @@ export const fakeForDev = mutation$({
             .values({
               ...fakeData,
               user: user.id,
-              accepted: false,
+              accepted: "pending",
             })
             .execute();
         } catch (error) {
@@ -277,7 +277,7 @@ export const fakeForDev = mutation$({
             .values({
               ...fakeData,
               user: user.id,
-              accepted: false,
+              accepted: "pending",
             })
             .execute();
         } catch (error) {
