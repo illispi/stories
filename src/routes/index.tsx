@@ -16,24 +16,36 @@ const Home: Component = () => {
             </h1>
             <div class="m-12 flex items-center justify-center">
               <A
-                class="m-8 w-1/2 rounded-full border border-fuchsia-500 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 w-1/2 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Take poll
               </A>
               <A
-                class="m-8 w-1/2 rounded-full border border-fuchsia-500 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-500 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 w-1/2 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Share article
               </A>
             </div>
           </div>
-          <img
-            class="mb-40 mt-10 md:w-7/12 lg:w-full"
-            src="/hero_image.png"
-            alt="Picture of poll"
-          />
+          <div class="grid grid-cols-1 justify-items-center gap-16 p-16 lg:grid-cols-2">
+            <img
+              class="rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              src="/first.png"
+              alt="Picture of poll"
+            />
+            <img
+              class="rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              src="/second.png"
+              alt="Picture of poll"
+            />
+            <img
+              class="col-span-2 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
+              src="/third.png"
+              alt="Picture of poll"
+            />
+          </div>
         </div>
       </div>
       <A
