@@ -24,7 +24,7 @@ const Home: Component = () => {
               </A>
               <A
                 class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                href={route("/questionares")}
+                href={route("/articles")}
               >
                 Share article
               </A>
@@ -49,14 +49,14 @@ const Home: Component = () => {
           </div>
           <div class="my-16 flex w-full max-w-md items-center justify-center gap-4 p-6 lg:hidden">
             <A
-              class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              class="flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href={route("/questionares")}
             >
               Take poll
             </A>
             <A
-              class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-              href={route("/questionares")}
+              class="flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/articles")}
             >
               Share article
             </A>
@@ -80,9 +80,15 @@ const Home: Component = () => {
           route={route("/articles")}
         />
         <InfoBox
+          header="Take a look at the poll results"
+          text="People have done the poll, have a look at it."
+          link="View poll results"
+          route={route("/pollResults")}
+        />
+        <InfoBox
           header="Compare between diagnosis or gender"
           text="Gain insight on how symptoms or experiences differ between schizophrenia
-        or schizoaffective and between genders"
+        or schizoaffective and between genders."
           link="Compare"
           route={route("/compare")}
         />

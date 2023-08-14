@@ -15,6 +15,7 @@ import {
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
 import GlobalTransition from "./components/GlobalTransition";
+import Footer from "./components/Footer";
 
 export default function Root() {
   return (
@@ -34,6 +35,7 @@ export default function Root() {
                   <FileRoutes />
                 </Routes>
               </GlobalTransition>
+              <Footer />
             </ErrorBoundary>
           </Suspense>
           <Scripts />

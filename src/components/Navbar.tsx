@@ -158,14 +158,11 @@ const NavBar: Component = () => {
         <A class=" p-3" noScroll={true} href={route("/")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="32px"
-            height="32px"
-            viewBox="0 0 20 20"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
           >
-            <path
-              fill="currentColor"
-              d="m16 8.5l1.53 1.53l-1.06 1.06L10 4.62l-6.47 6.47l-1.06-1.06L10 2.5l4 4v-2h2v4zm-6-2.46l6 5.99V18H4v-5.97zM12 17v-5H8v5h4z"
-            />
+            <path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
           </svg>
         </A>
 

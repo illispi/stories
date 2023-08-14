@@ -5,6 +5,7 @@ declare module "routes-gen" {
     "/admin/articles": Record<string, never>;
     "/admin/fake": Record<string, never>;
     "/admin/questions": Record<string, never>;
+    "/articles": Record<string, never>;
     "/compare": Record<string, never>;
     "/compare/:pOrT/:fOrT/compare": { "pOrT": string, "fOrT": string };
     "/login": Record<string, never>;
@@ -24,6 +25,7 @@ declare module "routes-gen" {
       | ["/admin/articles"]
       | ["/admin/fake"]
       | ["/admin/questions"]
+      | ["/articles"]
       | ["/compare"]
       | ["/compare/:pOrT/:fOrT/compare", RouteParams["/compare/:pOrT/:fOrT/compare"]]
       | ["/login"]
