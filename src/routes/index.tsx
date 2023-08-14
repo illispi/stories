@@ -1,6 +1,7 @@
 import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { A } from "solid-start";
+import InfoBox from "~/components/InfoBox";
 
 const Home: Component = () => {
   return (
@@ -14,15 +15,15 @@ const Home: Component = () => {
             <h1 class="m-12 text-center font-mono text-white lg:text-4xl 2xl:max-w-4xl 2xl:text-5xl">
               User poll & shared articles about schizophrenia
             </h1>
-            <div class="m-12 flex items-center justify-center">
+            <div class="m-12 flex max-w-3xl items-center justify-center">
               <A
-                class="m-8 w-1/2 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Take poll
               </A>
               <A
-                class="m-8 w-1/2 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares")}
               >
                 Share article
@@ -48,14 +49,12 @@ const Home: Component = () => {
           </div>
           <div class="my-16 flex w-full max-w-md items-center justify-center gap-4 p-6 lg:hidden">
             <A
-              // eslint-disable-next-line tailwindcss/no-custom-classname
               class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href={route("/questionares")}
             >
               Take poll
             </A>
             <A
-              // eslint-disable-next-line tailwindcss/no-custom-classname
               class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href={route("/questionares")}
             >
@@ -64,28 +63,28 @@ const Home: Component = () => {
           </div>
         </div>
       </div>
-      <A
-        noScroll={true}
-        class="duration-200 ease-out active:scale-125"
-        href={route("/questionares")}
-      >
-        Poll
-      </A>
-      <A
-        noScroll={true}
-        class="duration-200 ease-out active:scale-125"
-        href={route("/compare")}
-      >
-        Compare
-      </A>
-
-      <A
-        noScroll={true}
-        class="duration-200 ease-out active:scale-125"
-        href={route("/pollResults")}
-      >
-        Stats
-      </A>
+      <InfoBox
+        header="Useful statistics from poll filled by patients or relatives"
+        text="You can fill out a comprehensive poll about schizophrenia related
+          illness whether you are a patient, relative or even someone you know."
+        link="Take poll"
+        route={route("/questionares")}
+      />
+      <InfoBox
+        header="Share articles or interviews about schizophrenia"
+        text="From Google it can be bit hard to find articles or experiences with
+        people with schizophrenia. Here you can share articles that are
+        relevant to schizophrenia."
+        link="Share article"
+        route={route("/articles")}
+      />
+      <InfoBox
+        header="Compare between diagnosis or gender"
+        text="Gain insight how symptoms or experiences differ between schizophrenia
+        or schizophrenia and between genders"
+        link="Compare"
+        route={route("/compare")}
+      />
     </div>
   );
 };
