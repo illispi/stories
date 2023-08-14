@@ -16,76 +16,118 @@ export const allStats = query$({
         ? personalQuestions
         : theirQuestions;
 
-    switch (payload.value) {
-      case "all":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
-        break;
-      case "female":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("gender", "=", "female")
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
-        break;
-      case "other":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("gender", "=", "other")
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
-        break;
-      case "male":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("gender", "=", "male")
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
-        break;
-      case "schizophrenia":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("diagnosis", "=", "schizophrenia")
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
+    if ((payload.fake = "fake")) {
+      switch (payload.value) {
+        case "all":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .execute();
 
-        break;
-      case "schizoaffective":
-        stats =
-          payload.fake === "real"
-            ? await db
-                .selectFrom(payload.pOrT)
-                .selectAll()
-                .where("diagnosis", "=", "schizoaffective")
-                .where("accepted", "=", "accepted")
-                .execute()
-            : await db.selectFrom(`${payload.pOrT}_fake`).selectAll().execute();
-        break;
+          break;
+        case "female":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .where("gender", "=", "female")
+            .execute();
 
-      default:
-        break;
+          break;
+        case "other":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .where("gender", "=", "other")
+            .execute();
+
+          break;
+        case "male":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .where("gender", "=", "male")
+            .execute();
+
+          break;
+        case "schizophrenia":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .where("diagnosis", "=", "schizophrenia")
+            .execute();
+
+          break;
+        case "schizoaffective":
+          stats = await db
+            .selectFrom(`${payload.pOrT}_fake`)
+            .selectAll()
+            .where("diagnosis", "=", "schizoaffective")
+            .execute();
+
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      switch (payload.value) {
+        case "all":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+        case "female":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("gender", "=", "female")
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+        case "other":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("gender", "=", "other")
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+        case "male":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("gender", "=", "male")
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+        case "schizophrenia":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("diagnosis", "=", "schizophrenia")
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+        case "schizoaffective":
+          stats = await db
+            .selectFrom(payload.pOrT)
+            .selectAll()
+            .where("diagnosis", "=", "schizoaffective")
+            .where("accepted", "=", "accepted")
+            .execute();
+
+          break;
+
+        default:
+          break;
+      }
     }
 
     const responsesTotal: number = stats.length; //TODO use postgres count here

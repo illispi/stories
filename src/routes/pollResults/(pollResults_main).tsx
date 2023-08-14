@@ -8,7 +8,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/pollResults/:pOrT/:fOrT/pollResults", {
+        href={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Personal_questions",
           fOrT: "real"
         })}
@@ -18,7 +18,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/pollResults/:pOrT/:fOrT/pollResults", {
+        href={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Their_questions",
           fOrT: "real"
         })}
@@ -28,7 +28,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/pollResults/:pOrT/:fOrT/pollResults", {
+        href={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Personal_questions",
           fOrT: "fake",
         })}
@@ -38,7 +38,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/pollResults/:pOrT/:fOrT/pollResults", {
+        href={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Their_questions",
           fOrT: "fake",
         })}

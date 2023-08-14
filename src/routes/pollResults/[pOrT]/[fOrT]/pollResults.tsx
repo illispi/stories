@@ -17,13 +17,17 @@ import { allStats } from "~/server/queries";
 
 const CompareButton: Component = () => {
   const params = useParams<{
-    allStats: "Personal_questions" | "Their_questions";
+    pOrT: "Personal_questions" | "Their_questions";
+    fOrR: "real" | "fake";
   }>();
   return (
     <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
       <A
         noScroll={true}
-        href={route("/stats/compare/:compare", { compare: params.allStats })}
+        href={route("/compare/:pOrT/:fOrT/compare", {
+          pOrT: params.pOrT,
+          fOrT: params.fOrR,
+        })}
       >
         <CustomButton
           class="m-2 rounded-full bg-blue-500 p-5

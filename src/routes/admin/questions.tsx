@@ -6,12 +6,14 @@ import ProtectedAdmin from "~/components/ProtectedAdmin";
 import {
   acceptSubmission,
   listSubmissions,
-  removeSubmission,
+  declineSubmission,
 } from "~/server/admin";
 import { useQueryClient } from "@tanstack/solid-query";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const [accepted, setAccepted] = createSignal(false);
+  const [accepted, setAccepted] = createSignal<
+    "pending" | "declined" | "accepted"
+  >("pending");
   const [pOrT, setPOrT] = createSignal<
     "Personal_questions" | "Their_questions"
   >("Personal_questions");
@@ -31,7 +33,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["listSubmissions"] }),
   }));
-  const removeMut = removeSubmission(() => ({
+  const declineMut = declineSubmission(() => ({
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["listSubmissions"] }),
   }));
@@ -54,7 +56,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                 <div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
                   <CustomButton
                     onClick={() => {
-                      removeMut.mutateAsync({
+                      declineMut.mutateAsync({
                         id: entryEdit(),
                         pOrT: pOrT(),
                       });
@@ -88,11 +90,15 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
               </CustomButton>
               <CustomButton
                 class={`${
-                  accepted() === true
+                  accepted() === "accepted"
                     ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
                     : ""
                 }`}
-                onClick={() => setAccepted(!accepted())}
+                onClick={() =>
+                  setAccepted(
+                    accepted() === "accepted" ? "pending" : "accepted"
+                  )
+                }
               >
                 Accepted
               </CustomButton>

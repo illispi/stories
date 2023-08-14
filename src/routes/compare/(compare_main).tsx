@@ -8,7 +8,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:pOrT/:fOrT/compare", {
+        href={route("/compare/:pOrT/:fOrT/compare", {
           pOrT: "Personal_questions",
           fOrT: "real",
         })}
@@ -18,7 +18,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:pOrT/:fOrT/compare", {
+        href={route("/compare/:pOrT/:fOrT/compare", {
           pOrT: "Their_questions",
           fOrT: "real",
         })}
@@ -28,7 +28,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:pOrT/:fOrT/compare", {
+        href={route("/compare/:pOrT/:fOrT/compare", {
           pOrT: "Personal_questions",
           fOrT: "fake",
         })}
@@ -38,7 +38,7 @@ const All: Component = () => {
       <A
         noScroll={true}
         class="duration-200 ease-out active:scale-125"
-        href={route("/stats/compare/:pOrT/:fOrT/compare", {
+        href={route("/compare/:pOrT/:fOrT/compare", {
           pOrT: "Their_questions",
           fOrT: "fake",
         })}

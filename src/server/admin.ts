@@ -104,7 +104,7 @@ export const listSubmissions = query$({
   schema: z.object({
     page: z.number().int(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
-    accepted: z.enum(["accepted", "pending"]),
+    accepted: z.enum(["accepted", "pending", "declined"]),
   }),
 });
 

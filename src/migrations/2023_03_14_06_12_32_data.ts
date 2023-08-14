@@ -261,9 +261,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .check(sql`relation in ('relative', 'friend', 'acquintance')`)
         .notNull()
     )
-    .addColumn("accepted", "boolean", (col) =>
-      col.defaultTo("pending").notNull()
-    )
+    .addColumn("accepted", "text", (col) => col.defaultTo("pending").notNull())
     .addColumn(
       "gender",
       "text",

@@ -5,16 +5,15 @@ declare module "routes-gen" {
     "/admin/articles": Record<string, never>;
     "/admin/fake": Record<string, never>;
     "/admin/questions": Record<string, never>;
-    "/development/test": Record<string, never>;
+    "/compare": Record<string, never>;
+    "/compare/:pOrT/:fOrT/compare": { "pOrT": string, "fOrT": string };
     "/login": Record<string, never>;
+    "/pollResults": Record<string, never>;
+    "/pollResults/:pOrT/:fOrT/pollResults": { "pOrT": string, "fOrT": string };
     "/questionares": Record<string, never>;
     "/questionares/:personalQuestions": { "personalQuestions": string };
     "/stats": Record<string, never>;
-    "/stats/compare": Record<string, never>;
-    "/stats/compare/:pOrT/:fOrT/compare": { "pOrT": string, "fOrT": string };
-    "/stats/pollResults": Record<string, never>;
-    "/stats/pollResults/:pOrT/:fOrT/pollResults": { "pOrT": string, "fOrT": string };
-    "/stats/texts/:selector/:statsText": { "selector": string, "statsText": string };
+    "/texts/:selector/:statsText": { "selector": string, "statsText": string };
     "/user/data": Record<string, never>;
   };
 
@@ -25,16 +24,15 @@ declare module "routes-gen" {
       | ["/admin/articles"]
       | ["/admin/fake"]
       | ["/admin/questions"]
-      | ["/development/test"]
+      | ["/compare"]
+      | ["/compare/:pOrT/:fOrT/compare", RouteParams["/compare/:pOrT/:fOrT/compare"]]
       | ["/login"]
+      | ["/pollResults"]
+      | ["/pollResults/:pOrT/:fOrT/pollResults", RouteParams["/pollResults/:pOrT/:fOrT/pollResults"]]
       | ["/questionares"]
       | ["/questionares/:personalQuestions", RouteParams["/questionares/:personalQuestions"]]
       | ["/stats"]
-      | ["/stats/compare"]
-      | ["/stats/compare/:pOrT/:fOrT/compare", RouteParams["/stats/compare/:pOrT/:fOrT/compare"]]
-      | ["/stats/pollResults"]
-      | ["/stats/pollResults/:pOrT/:fOrT/pollResults", RouteParams["/stats/pollResults/:pOrT/:fOrT/pollResults"]]
-      | ["/stats/texts/:selector/:statsText", RouteParams["/stats/texts/:selector/:statsText"]]
+      | ["/texts/:selector/:statsText", RouteParams["/texts/:selector/:statsText"]]
       | ["/user/data"]
   >(...args: T): typeof args[0];
 }
