@@ -10,8 +10,8 @@ const Home: Component = () => {
           <h1 class="mb-12 mt-24 max-w-md text-center font-mono text-3xl text-white lg:hidden">
             User poll & shared articles about schizophrenia
           </h1>
-          <div class="my-64 hidden h-5/6 flex-col justify-center lg:flex">
-            <h1 class="m-12 text-center font-mono text-white lg:text-4xl 2xl:max-w-2xl 2xl:text-5xl">
+          <div class="my-64 hidden h-5/6 flex-col justify-evenly lg:flex">
+            <h1 class="m-12 text-center font-mono text-white lg:text-4xl 2xl:max-w-4xl 2xl:text-5xl">
               User poll & shared articles about schizophrenia
             </h1>
             <div class="m-12 flex items-center justify-center">
@@ -45,6 +45,22 @@ const Home: Component = () => {
               src="/third.png"
               alt="Picture of poll"
             />
+          </div>
+          <div class="my-16 flex w-full max-w-md items-center justify-center gap-4 p-6 lg:hidden">
+            <A
+              // eslint-disable-next-line tailwindcss/no-custom-classname
+              class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/questionares")}
+            >
+              Take poll
+            </A>
+            <A
+              // eslint-disable-next-line tailwindcss/no-custom-classname
+              class="flex-1 rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/questionares")}
+            >
+              Share article
+            </A>
           </div>
         </div>
       </div>
