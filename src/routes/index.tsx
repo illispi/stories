@@ -5,7 +5,7 @@ import InfoBox from "~/components/InfoBox";
 
 const Home: Component = () => {
   return (
-    <div class="w-full">
+    <div class="flex w-full flex-col items-center justify-center">
       <div class="col-span-2 row-span-2 flex w-full items-center justify-center bg-gradient-angle from-blue-400 to-fuchsia-500 ">
         <div class="grid grid-cols-1 items-center justify-items-center lg:grid-cols-2 xl:max-w-[1800px]">
           <h1 class="mb-12 mt-24 max-w-md text-center font-mono text-3xl text-white lg:hidden">
@@ -63,7 +63,7 @@ const Home: Component = () => {
           </div>
         </div>
       </div>
-      <div class="my-16 grid w-full grid-cols-1 justify-items-center gap-16 lg:grid-cols-2">
+      <div class="my-16 grid max-w-[1800px] grid-cols-1 justify-items-center gap-16 lg:grid-cols-2">
         <InfoBox
           header="Useful statistics from poll filled by patients or relatives"
           text="You can fill out a comprehensive poll about schizophrenia related
@@ -81,8 +81,8 @@ const Home: Component = () => {
         />
         <InfoBox
           header="Compare between diagnosis or gender"
-          text="Gain insight how symptoms or experiences differ between schizophrenia
-        or schizophrenia and between genders"
+          text="Gain insight on how symptoms or experiences differ between schizophrenia
+        or schizoaffective and between genders"
           link="Compare"
           route={route("/compare")}
         />
