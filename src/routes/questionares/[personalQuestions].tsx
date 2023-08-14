@@ -29,7 +29,7 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
       transition={{ duration: 1.2 }}
-      class="absolute z-30 flex h-full w-full flex-col rounded-3xl bg-white shadow-xl shadow-slate-500"
+      class="absolute z-30 flex h-full w-full flex-col rounded-3xl border border-blue-200 bg-white shadow-xl shadow-blue-200"
     >
       {props.children}
     </Motion.div>
@@ -104,32 +104,34 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <div class="flex flex-col items-center justify-start">
-      <div class="flex h-20 w-80 items-center justify-between p-2">
-        <Counter page={page()} questions={questions} />
-        <CustomButton
-          type="button"
-          onClick={() => {
-            if (page() >= 0) {
-              const skipAmount = localStorage.getItem(
-                `to_${questions[page()].questionDB}_${LsName}`
-              );
+    <div class="flex h-screen w-full lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+      <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
+        <div class="flex h-20 w-80 items-center justify-between p-2">
+          <Counter page={page()} questions={questions} />
+          <CustomButton
+            type="button"
+            onClick={() => {
+              if (page() >= 0) {
+                const skipAmount = localStorage.getItem(
+                  `to_${questions[page()].questionDB}_${LsName}`
+                );
 
-              paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
-            }
-          }}
-        >
-          Previous
-        </CustomButton>
+                paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
+              }
+            }}
+          >
+            Previous
+          </CustomButton>
+        </div>
+
+        <Questions
+          direction={direction()}
+          page={page()}
+          paginate={paginate}
+          questions={questions}
+          LsName={LsName}
+        />
       </div>
-
-      <Questions
-        direction={direction()}
-        page={page()}
-        paginate={paginate}
-        questions={questions}
-        LsName={LsName}
-      />
     </div>
   );
 };
