@@ -4,7 +4,7 @@ import InfoBox from "~/components/InfoBox";
 
 const Compare: Component = () => (
   <div class="flex h-full w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-    <h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Polls</h1>
+    <h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Comparison</h1>
     <div class="mb-16 flex h-full w-11/12 max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
       <InfoBox
         header="Compare personal poll results"

@@ -8,7 +8,7 @@ const PollResults: Component = () => (
     <div class="mb-16 flex h-full w-11/12 max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
       <InfoBox
         header="Personal experiences with schizophrenia"
-        link="The poll results"
+        link="Personal poll results"
         text="See various stats from the poll conducted by people who have psychosis related illness"
         route={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Personal_questions",
@@ -22,7 +22,7 @@ const PollResults: Component = () => (
       </div>
       <InfoBox
         header="Experiences of relatives or someone familiar with schizophrenia"
-        link="The poll results"
+        link="Relative poll results"
         text="See results from different poll filled by relatives, friends, or even someone familiar with people with schizophrenia"
         route={route("/pollResults/:pOrT/:fOrT/pollResults", {
           pOrT: "Their_questions",
