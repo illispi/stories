@@ -29,7 +29,7 @@ const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
       transition={{ duration: 1.2 }}
-      class="absolute z-30 flex h-full w-full flex-col rounded-3xl border border-blue-200 bg-white shadow-xl shadow-blue-200"
+      class="absolute z-30 flex h-full w-full flex-col rounded-3xl border-2 border-blue-300 bg-white"
     >
       {props.children}
     </Motion.div>

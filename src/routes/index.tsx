@@ -11,7 +11,7 @@ const Home: Component = () => {
           <h1 class="mb-12 mt-24 max-w-md text-center font-mono text-3xl text-white lg:hidden">
             User poll & shared articles about schizophrenia
           </h1>
-          <div class="my-64 hidden h-5/6 flex-col justify-evenly lg:flex">
+          <div class="my-32 hidden h-5/6 flex-col justify-evenly lg:flex">
             <h1 class="m-12 text-center font-mono text-white lg:text-4xl 2xl:max-w-4xl 2xl:text-5xl">
               User poll & shared articles about schizophrenia
             </h1>
@@ -64,7 +64,7 @@ const Home: Component = () => {
         </div>
       </div>
       <div class="flex w-full items-center justify-center bg-slate-100">
-        <div class="grid max-w-screen-2xl grid-cols-1 justify-items-center gap-16 py-16 lg:grid-cols-2">
+        <div class="grid w-11/12 max-w-screen-2xl grid-cols-1 justify-items-center gap-12 py-16 lg:grid-cols-2">
           <InfoBox
             header="Useful statistics from poll filled by patients or relatives"
             text="You can fill out a comprehensive poll about schizophrenia related
@@ -83,7 +83,7 @@ const Home: Component = () => {
           <InfoBox
             header="Take a look at the poll results"
             text="People have done the poll, have a look at the results."
-            link="View poll results"
+            link="View the poll results"
             route={route("/pollResults")}
           />
           <InfoBox
