@@ -19,13 +19,6 @@ import Footer from "./components/Footer";
 import { Transition } from "solid-transition-group";
 
 export default function Root() {
-  createEffect(() => {
-    window.addEventListener(
-      "popstate",
-      () => (document.body.dataset.nav = "true")
-    );
-  });
-
   return (
     <Html lang="en">
       <Head>
@@ -40,11 +33,7 @@ export default function Root() {
               <NavBar />
               <Transition
                 onBeforeEnter={() => {
-                  if (document.body.dataset.nav === "true") {
-                    document.body.dataset.nav = "false";
-                  } else {
-                    window.scrollTo(0, 0);
-                  }
+                  window.scrollTo(0, 0);
                 }}
                 onEnter={(el, done) => {
                   const a = el.animate(
