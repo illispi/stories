@@ -1,6 +1,6 @@
 // @refresh reload
 import "./root.css";
-import { Suspense } from "solid-js";
+import { Suspense, createEffect, createSignal, onMount } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -14,10 +14,18 @@ import {
 } from "solid-start";
 import NavBar from "./components/Navbar";
 import { QueryProvider } from "@prpc/solid";
-import GlobalTransition from "./components/GlobalTransition";
+// import GlobalTransition from "./components/GlobalTransition";
 import Footer from "./components/Footer";
+import { Transition } from "solid-transition-group";
 
 export default function Root() {
+  createEffect(() => {
+    window.addEventListener(
+      "popstate",
+      () => (document.body.dataset.nav = "true")
+    );
+  });
+
   return (
     <Html lang="en">
       <Head>
@@ -30,11 +38,52 @@ export default function Root() {
           <Suspense>
             <ErrorBoundary>
               <NavBar />
-              <GlobalTransition>
+              <Transition
+                onBeforeEnter={() => {
+                  if (document.body.dataset.nav === "true") {
+                    document.body.dataset.nav = "false";
+                  } else {
+                    window.scrollTo(0, 0);
+                  }
+                }}
+                onEnter={(el, done) => {
+                  const a = el.animate(
+                    [
+                      {
+                        opacity: 0,
+                        transform: "translate(100px)",
+                        easing: "ease-out",
+                      },
+                      { opacity: 1, transform: "translate(0)" },
+                    ],
+                    {
+                      duration: 300,
+                    }
+                  );
+                  a.finished.then(done);
+                }}
+                onExit={(el, done) => {
+                  const a = el.animate(
+                    [
+                      {
+                        opacity: 1,
+                        transform: "translate(0)",
+                        easing: "ease-in",
+                      },
+                      { opacity: 0, transform: "translate(-100px)" },
+                    ],
+                    {
+                      duration: 300,
+                    }
+                  );
+                  a.finished.then(done);
+                }}
+                mode="outin"
+              >
                 <Routes>
                   <FileRoutes />
                 </Routes>
-              </GlobalTransition>
+              </Transition>
               <Footer />
             </ErrorBoundary>
           </Suspense>

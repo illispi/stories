@@ -68,6 +68,9 @@ dependencies:
   solid-start:
     specifier: ^0.3.3
     version: 0.3.3(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.7.11)(solid-start-node@0.3.3)(vite@4.4.9)
+  solid-transition-group:
+    specifier: ^0.2.3
+    version: 0.2.3(solid-js@1.7.11)
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -6656,6 +6659,17 @@ packages:
     transitivePeerDependencies:
       - '@nuxt/kit'
       - supports-color
+
+  /solid-transition-group@0.2.3(solid-js@1.7.11):
+    resolution: {integrity: sha512-iB72c9N5Kz9ykRqIXl0lQohOau4t0dhel9kjwFvx81UZJbVwaChMuBuyhiZmK24b8aKEK0w3uFM96ZxzcyZGdg==}
+    engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/refs': 1.0.5(solid-js@1.7.11)
+      '@solid-primitives/transition-group': 1.0.3(solid-js@1.7.11)
+      solid-js: 1.7.11
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}

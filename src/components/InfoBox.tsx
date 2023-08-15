@@ -14,6 +14,7 @@ const InfoBox: Component<{
       <A
         class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
         href={props.route}
+        noScroll={false}
       >
         {props.link}
       </A>

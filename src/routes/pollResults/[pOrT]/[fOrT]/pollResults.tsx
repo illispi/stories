@@ -5,6 +5,7 @@ import {
   For,
   Show,
   Suspense,
+  createRenderEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -12,7 +13,6 @@ import {
 import { A, useParams } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
-import InfoBox from "~/components/InfoBox";
 import { allStatsPersonalArr } from "~/data/stats/allStatsArr";
 import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
 import { allStats } from "~/server/queries";
@@ -83,6 +83,8 @@ const AllStatsPage: ParentComponent = () => {
   };
 
   onMount(() => {
+    
+
     const options = {
       root: document.querySelector("#scrollArea"),
       rootMargin: "0px",
