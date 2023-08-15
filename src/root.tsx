@@ -19,6 +19,11 @@ import Footer from "./components/Footer";
 import { Transition } from "solid-transition-group";
 
 export default function Root() {
+  createEffect(() => {
+    window.addEventListener("popstate", () => {
+      document.body.dataset.nav = "true";
+    });
+  });
   return (
     <Html lang="en">
       <Head>
@@ -32,10 +37,27 @@ export default function Root() {
             <ErrorBoundary>
               <NavBar />
               <Transition
-                onBeforeEnter={() => {
-                  window.scrollTo(0, 0);
+                onBeforeExit={() => {
+                  document.body.dataset.scrollY = String(window.scrollY);
                 }}
                 onEnter={(el, done) => {
+                  if (document.body.dataset.nav === "true") {
+                    document.body.dataset.nav = "false";
+                    console.log(
+                      "scrollingTo",
+                      document.body.dataset.scrollYPrev
+                    );
+                    window.scrollTo(
+                      0,
+                      Number(document.body.dataset.scrollYPrev)
+                    );
+                  } else {
+                    console.log("scrollingTo", "0");
+                    document.body.dataset.scrollYPrev =
+                      document.body.dataset.scrollY;
+                    window.scrollTo(0, 0);
+                  }
+
                   const a = el.animate(
                     [
                       {
