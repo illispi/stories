@@ -109,81 +109,81 @@ const AllStatsPage: ParentComponent = () => {
 
   return (
     <div class="flex h-full w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-      <Suspense fallback={<div>Loading</div>}>
+      {/* <Suspense fallback={<div>Loading</div>}>
         <ErrorBoundary
           fallback={(err) => {
             console.log(err);
             return <div>err</div>;
           }}
-        >
-          <Show
-            when={allStatsData.data?.total >= 5}
-            fallback={
-              <div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
-                <h2 class="text-center text-2xl font-bold lg:text-3xl">
-                  {`${allStatsData.data?.total}/5`}
-                </h2>
-                <p class="text-center text-lg">
-                  Poll needs to be done by at least 5 people
-                </p>
-                <A
-                  class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                  href={route("/questionares/:personalQuestions", {
-                    personalQuestions:
-                      params.pOrT === "Personal_questions"
-                        ? "personalQuestions"
-                        : "theirQuestions",
-                  })}
-                >
-                  Do the poll now
-                </A>
-                <A
-                  class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                  href={route("/pollResults/:pOrT/:fOrT/pollResults", {
-                    fOrT: "fake",
-                    pOrT: params.pOrT,
-                  })}
-                >
-                  View results with fake data
-                </A>
-              </div>
-            }
-          >
-            <div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-              <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-                <h1 class="text-center font-semibold">Statistics personal</h1>
-              </div>
-              <div class="flex flex-col items-center justify-center">
-                <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
-                  <Suspense fallback={<div>Loading</div>}>
+        > */}
+      <Show
+        when={allStatsData.data?.total >= 5}
+        fallback={
+          <div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              {`${allStatsData.data?.total}/5`}
+            </h2>
+            <p class="text-center text-lg">
+              Poll needs to be done by at least 5 people
+            </p>
+            <A
+              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/questionares/:personalQuestions", {
+                personalQuestions:
+                  params.pOrT === "Personal_questions"
+                    ? "personalQuestions"
+                    : "theirQuestions",
+              })}
+            >
+              Do the poll now
+            </A>
+            <A
+              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/pollResults/:pOrT/:fOrT/pollResults", {
+                fOrT: "fake",
+                pOrT: params.pOrT,
+              })}
+            >
+              View results with fake data
+            </A>
+          </div>
+        }
+      >
+        <div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Statistics personal</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center bg-white">
+              {/* <Suspense fallback={<div>Loading</div>}>
                     <ErrorBoundary
                       fallback={(err) => {
                         console.log(err);
                         return <div>err</div>;
                       }}
-                    >
-                      <CompareButton />
-                      <For each={compOrder()}>
-                        {(comp, i) => (
-                          <CompSelector
-                            {...comp}
-                            data={allStatsData.data}
-                            ref={(el: Element) => setTargets((p) => [...p, el])}
-                            shown={shown()}
-                            removeShown={removeShown}
-                            selector={selector()}
-                          />
-                        )}
-                      </For>
-                      <CompareButton />
-                    </ErrorBoundary>
-                  </Suspense>
-                </div>
-              </div>
+                    > */}
+              <CompareButton />
+              <For each={compOrder()}>
+                {(comp, i) => (
+                  <CompSelector
+                    {...comp}
+                    data={allStatsData.data}
+                    ref={(el: Element) => setTargets((p) => [...p, el])}
+                    shown={shown()}
+                    removeShown={removeShown}
+                    selector={selector()}
+                  />
+                )}
+              </For>
+              <CompareButton />
+              {/* </ErrorBoundary>
+                  </Suspense> */}
             </div>
-          </Show>
-        </ErrorBoundary>
-      </Suspense>
+          </div>
+        </div>
+      </Show>
+      {/* </ErrorBoundary>
+      </Suspense> */}
     </div>
   );
 };
