@@ -16,7 +16,7 @@ export const allStats = query$({
         ? personalQuestions
         : theirQuestions;
 
-    if ((payload.fake === "fake")) {
+    if (payload.fake === "fake") {
       switch (payload.value) {
         case "all":
           stats = await db

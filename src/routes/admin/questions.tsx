@@ -120,7 +120,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                     <div class="m-8 flex items-center justify-between">
                       <h3 class="text-xl font-bold">{index()}</h3>
                       <Show
-                        when={accepted()}
+                        when={accepted() === "accepted"}
                         fallback={
                           <>
                             <CustomButton
