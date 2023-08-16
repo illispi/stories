@@ -19,7 +19,7 @@ export const listSubmissions = query$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (admin.role) {
+    if (admin.role === "admin") {
       //TODO update selects when you update database
 
       const personalQuery = db
@@ -54,8 +54,8 @@ export const listSubmissions = query$({
 
       const poll = await pOrTQuery
         .where("accepted", "=", payload.accepted)
-        .offset(payload.page * 50)
-        .limit(50)
+        .offset(payload.page * 25)
+        .limit(25)
         .execute();
 
       const { countAll } = db.fn;
@@ -77,6 +77,45 @@ export const listSubmissions = query$({
   schema: z.object({
     page: z.number().int(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
-    accepted: z.enum(["accepted", "pending", "declined"]),
+    accepted: z.enum(["accepted", "pending"]),
+  }),
+});
+export const listArticles = query$({
+  queryFn: async ({ payload, request$ }) => {
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("auth_user")
+      .select("role")
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role === "admin") {
+      const articles = await db
+        .selectFrom("Articles")
+        .select(({ fn }) => [
+          "link",
+          "description", "id",
+          fn.count<number>("Articles.id").as("count"),
+        ])
+        .where("accepted", "=", "pending")
+        .limit(25)
+        .offset(payload.page * 25)
+        .execute();
+
+      return articles;
+    } else {
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "listSubmissions",
+  schema: z.object({
+    page: z.number().int(),
+    accepted: z.enum(["accepted", "pending"]),
   }),
 });

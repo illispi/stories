@@ -32,6 +32,73 @@ import { Faker, faker } from "@faker-js/faker";
 
 // export const adminProcedure = reuseable$(adminCheck);
 
+export const acceptArticle = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("auth_user")
+      .select("role")
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role === "admin") {
+      await db
+        .updateTable("Articles")
+        .set({
+          accepted: "accepted",
+        })
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "acceptArticle",
+  schema: z.object({
+    id: z.number(),
+  }),
+});
+export const declineArticle = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("auth_user")
+      .select("role")
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role === "admin") {
+      await db
+        .updateTable("Articles")
+        .set({
+          accepted: "declined",
+        })
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "acceptArticle",
+  schema: z.object({
+    id: z.number(),
+  }),
+});
+
 export const acceptSubmission = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const authRequest = auth.handleRequest(request$);

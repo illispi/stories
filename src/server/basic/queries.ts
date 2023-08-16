@@ -440,7 +440,7 @@ export const articlesPagination = query$({
         fn.count<number>("Articles.id").as("count"),
       ])
       .where("accepted", "=", "accepted")
-      .limit(50)
+      .limit(25)
       .offset(payload.page * 25)
       .execute();
 
@@ -448,6 +448,6 @@ export const articlesPagination = query$({
   },
   key: "linkPagination",
   schema: z.object({
-    page: z.number(),
+    page: z.number().int(),
   }),
 });
