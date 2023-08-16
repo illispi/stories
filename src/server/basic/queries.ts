@@ -439,6 +439,7 @@ export const articlesPagination = query$({
         "description",
         fn.count<number>("Articles.id").as("count"),
       ])
+      .groupBy("Articles.id")
       .where("accepted", "=", "accepted")
       .limit(25)
       .offset(payload.page * 25)

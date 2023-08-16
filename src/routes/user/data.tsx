@@ -3,7 +3,7 @@ import { ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedUser from "~/components/ProtectedUser";
-import { removeAccountAndData } from "~/server/user";
+import { removeAccountAndData } from "~/server/user/userMutations";
 
 export const { routeData, Page } = ProtectedUser((session) => {
   //TODO DELETE ACCOUNT

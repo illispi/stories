@@ -98,11 +98,13 @@ export const listArticles = query$({
     if (admin.role === "admin") {
       const articles = await db
         .selectFrom("Articles")
-        .select(({ fn }) => [
+        .select((eb) => [
           "link",
-          "description", "id",
-          fn.count<number>("Articles.id").as("count"),
+          "description",
+          "id",
+          eb.fn.count<number>("Articles.id").as("count"),
         ])
+        .groupBy("Articles.id") //BUG this needs group by but shows count of 1
         .where("accepted", "=", "pending")
         .limit(25)
         .offset(payload.page * 25)
@@ -113,7 +115,7 @@ export const listArticles = query$({
       throw new ServerError("Access denied");
     }
   },
-  key: "listSubmissions",
+  key: "listArticles",
   schema: z.object({
     page: z.number().int(),
     accepted: z.enum(["accepted", "pending"]),
