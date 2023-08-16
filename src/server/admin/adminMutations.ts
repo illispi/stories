@@ -9,6 +9,7 @@ import {
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 import { db } from "../server";
+import { Faker, faker } from "@faker-js/faker";
 
 // const adminCheck = middleware$(async ({ request$ }) => {
 //   const authRequest = auth.handleRequest(request$);
@@ -25,88 +26,11 @@ import { db } from "../server";
 //     .executeTakeFirstOrThrow();
 
 //   return {
-//     admin: Boolean(admin.role),
+//     admin: Boolean(admin.role === "admin"),
 //   };
 // });
 
 // export const adminProcedure = reuseable$(adminCheck);
-
-export const listSubmissions = query$({
-  queryFn: async ({ payload, request$ }) => {
-    const authRequest = auth.handleRequest(request$);
-    const session = await authRequest.validate();
-
-    if (!session) {
-      throw new ServerError("Session not found");
-    }
-
-    const admin = await db
-      .selectFrom("auth_user")
-      .select("role")
-      .where("id", "=", session.user?.userId)
-      .executeTakeFirstOrThrow();
-
-    if (admin.role) {
-      //TODO update selects when you update database
-
-      const personalQuery = db
-        .selectFrom("Personal_questions")
-        .select([
-          "id",
-          "describe_hospital",
-          "what_kind_of_care_after",
-          "personality_before",
-          "personality_after",
-          "other_help",
-          "goals_after",
-          "responded_to_telling",
-          "life_satisfaction_description",
-          "what_others_should_know",
-          "not_have_schizophrenia_description",
-        ]);
-
-      const theirQuery = db
-        .selectFrom("Their_questions")
-        .select([
-          "id",
-          "personality_before",
-          "personality_after",
-          "what_others_should_know",
-        ]);
-
-      const pOrTQuery =
-        payload.pOrT === "Personal_questions" ? personalQuery : theirQuery;
-
-      //TODO Use try and catch here and then return error with serverError
-
-      const poll = await pOrTQuery
-        .where("accepted", "=", payload.accepted)
-        .offset(payload.page * 50)
-        .limit(50)
-        .execute();
-
-      const { countAll } = db.fn;
-
-      const { count } = (await db
-        .selectFrom(payload.pOrT)
-        .select(countAll().as("count"))
-        .where("accepted", "=", payload.accepted)
-        .executeTakeFirst()) ?? { count: 0 };
-
-      const total = Number(count);
-
-      return { poll, total };
-    } else {
-      throw new ServerError("Access denied");
-    }
-  },
-  key: "listSubmissions",
-  schema: z.object({
-    page: z.number().int(),
-    pOrT: z.enum(["Personal_questions", "Their_questions"]),
-    accepted: z.enum(["accepted", "pending", "declined"]),
-  }),
-});
 
 export const acceptSubmission = mutation$({
   mutationFn: async ({ payload, request$ }) => {
@@ -123,7 +47,7 @@ export const acceptSubmission = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (admin.role) {
+    if (admin.role === "admin") {
       await db
         .updateTable(payload.pOrT)
         .set({
@@ -158,7 +82,7 @@ export const declineSubmission = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (admin.role) {
+    if (admin.role === "admin") {
       await db
         .updateTable(payload.pOrT)
         .set({
@@ -171,7 +95,7 @@ export const declineSubmission = mutation$({
       throw new ServerError("Access denied");
     }
   },
-  key: "removeSubmission",
+  key: "declineSubmission",
   schema: z.object({
     id: z.number(),
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
@@ -193,7 +117,7 @@ export const fakeForFake = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (admin.role) {
+    if (admin.role === "admin") {
       if (payload.pOrT === "Personal_questions_fake") {
         const fakeData = createFakeDataPersonal();
         try {
@@ -226,7 +150,7 @@ export const fakeForFake = mutation$({
       throw new ServerError("Access denied");
     }
   },
-  key: "accept",
+  key: "fakeForFake",
   schema: z.object({
     pOrT: z.enum(["Personal_questions_fake", "Their_questions_fake"]),
   }),
@@ -246,7 +170,7 @@ export const fakeForDev = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (admin.role) {
+    if (admin.role === "admin") {
       const user = await db
         .selectFrom("auth_user")
         .select("id")
@@ -289,8 +213,47 @@ export const fakeForDev = mutation$({
       throw new ServerError("Access denied");
     }
   },
-  key: "accept",
+  key: "fakeForDev",
   schema: z.object({
     pOrT: z.enum(["Personal_questions", "Their_questions"]),
   }),
+});
+export const fakeArticlesForDev = mutation$({
+  mutationFn: async ({ request$ }) => {
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const admin = await db
+      .selectFrom("auth_user")
+      .select("role")
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (admin.role === "admin") {
+      const add = await db
+        .insertInto("Articles")
+        .values({
+          description: faker.lorem
+            .paragraphs(10)
+            .substring(0, Math.floor(Math.random() * 400) + 4),
+          link: faker.internet.url(),
+          user: session.user.userId,
+        })
+        .executeTakeFirst();
+
+      if (add) {
+        return "success";
+      } else {
+        throw new ServerError("Failed to add");
+      }
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "fakeArticlesForDev",
 });

@@ -441,10 +441,10 @@ export const articlesPagination = query$({
       ])
       .where("accepted", "=", "accepted")
       .limit(50)
-      .offset(payload.page * 50)
+      .offset(payload.page * 25)
       .execute();
 
-      return articles
+    return articles;
   },
   key: "linkPagination",
   schema: z.object({
