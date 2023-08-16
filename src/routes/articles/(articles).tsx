@@ -6,6 +6,8 @@ const articles: Component = () => {
   const [page, setPage] = createSignal(0);
   const articlesData = articlesPagination(() => ({ page: page() }));
 
+  console.log(articlesData.data);
+
   return (
     <div class="my-16 flex w-full flex-col items-center justify-start gap-4">
       <For each={articlesData.data} fallback={<h2>No articles found yet!</h2>}>
@@ -16,8 +18,7 @@ const articles: Component = () => {
           </div>
         )}
       </For>
-      <Suspense>
-        <div class="m-16 flex w-full items-center justify-around">
+      {/* <div class="m-16 flex w-full items-center justify-around">
           <CustomButton
             class={page() === 0 ? "invisible" : ""}
             onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
@@ -44,8 +45,7 @@ const articles: Component = () => {
           >
             Next
           </CustomButton>
-        </div>
-      </Suspense>
+        </div> */}
     </div>
   );
 };

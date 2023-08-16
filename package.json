@@ -47,8 +47,6 @@
     "@prpc/solid": "^0.2.35",
     "@prpc/vite": "^0.3.21",
     "@routes-gen/solid-start": "^0.1.1",
-    "@solid-primitives/intersection-observer": "^2.1.3",
-    "@solid-primitives/keyed": "^1.2.0",
     "@solid-primitives/presence": "^0.0.3",
     "@solid-primitives/refs": "^1.0.5",
     "@solid-primitives/transition-group": "^1.0.3",
