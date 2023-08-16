@@ -62,15 +62,12 @@ const AllStatsPage: ParentComponent = () => {
     })
   );
 
-  const [compOrder, setCompOrder] = createSignal(
+  const compOrder =
     params.pOrT === "Personal_questions"
       ? allStatsPersonalArr
-      : allStatsTheirArr
-  );
+      : allStatsTheirArr;
 
-  const [selector, setselector] = createSignal(
-    params.pOrT === "Personal_questions" ? "personal" : "their"
-  );
+  const selector = params.pOrT === "Personal_questions" ? "personal" : "their";
 
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
@@ -163,15 +160,15 @@ const AllStatsPage: ParentComponent = () => {
                       }}
                     > */}
               <CompareButton />
-              <For each={compOrder()}>
-                {(comp, i) => (
+              <For each={compOrder}>
+                {(comp) => (
                   <CompSelector
                     {...comp}
                     data={allStatsData.data}
                     ref={(el: Element) => setTargets((p) => [...p, el])}
                     shown={shown()}
                     removeShown={removeShown}
-                    selector={selector()}
+                    selector={selector}
                   />
                 )}
               </For>
