@@ -15,7 +15,7 @@ import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import { allStatsPersonalArr } from "~/data/stats/allStatsArr";
 import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
-import { allStats } from "~/server/queries";
+import { allStats } from "~/server/basic/queries";
 
 const CompareButton: Component = () => {
   const params = useParams<{
@@ -83,8 +83,6 @@ const AllStatsPage: ParentComponent = () => {
   };
 
   onMount(() => {
-    
-
     const options = {
       root: document.querySelector("#scrollArea"),
       rootMargin: "0px",

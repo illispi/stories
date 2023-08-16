@@ -14,7 +14,7 @@ import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import ToggleButton from "~/components/ToggleButton";
-import { allStats } from "~/server/queries";
+import { allStats } from "~/server/basic/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 import { useParams } from "solid-start";
 import { byGenderPersonal } from "~/data/stats/comparePersonal/byGenderPersonal";

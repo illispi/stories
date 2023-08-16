@@ -1,6 +1,6 @@
 import { Component } from "solid-js";
 
-const articles: Component<{}> = (props) => {
+const articles: Component = () => {
   
   return <div>fds</div>;
 };

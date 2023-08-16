@@ -4,7 +4,7 @@ import { useParams } from "solid-start";
 import CustomButton from "~/components/CustomButton";
 import ToggleButton from "~/components/ToggleButton";
 import { questions } from "~/data/personalQuestionsArr";
-import { textPagination } from "~/server/queries";
+import { textPagination } from "~/server/basic/queries";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 const StatsText = () => {

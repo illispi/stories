@@ -3,7 +3,7 @@ import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
-import { postPersonalStats, postTheirStats } from "~/server/mutations";
+import { postPersonalStats, postTheirStats } from "~/server/basic/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
@@ -40,14 +40,8 @@ export const UnitQuestion: ParentComponent<{
   const questions =
     props.LsName === "personalQuestions" ? questionsP : questionsT;
 
-  const {
-    question,
-    questionDB,
-    questionType,
-    selections,
-    multiSelect,
-    skip,
-  } = props.content;
+  const { question, questionDB, questionType, selections, multiSelect, skip } =
+    props.content;
 
   const questionsLs: PersonalQuestions | TheirQuestions = JSON.parse(
     localStorage.getItem(props.LsName) ?? "{}"
@@ -95,7 +89,7 @@ export const UnitQuestion: ParentComponent<{
           questions.find((el) => el.questionDB === e)?.questionType ===
           "integer"
         ) {
-          ((questionsLs as unknown) as Record<keyof PersonalQuestions, number>)[ //TODO this as unknown has to have something better
+          (questionsLs as unknown as Record<keyof PersonalQuestions, number>)[ //TODO this as unknown has to have something better
             e
           ] = Number(questionsLs[e]); //NOTE is this as number really good practice?
         }

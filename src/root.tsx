@@ -43,16 +43,12 @@ export default function Root() {
                 onEnter={(el, done) => {
                   if (document.body.dataset.nav === "true") {
                     document.body.dataset.nav = "false";
-                    console.log(
-                      "scrollingTo",
-                      document.body.dataset.scrollYPrev
-                    );
+
                     window.scrollTo(
                       0,
                       Number(document.body.dataset.scrollYPrev)
                     );
                   } else {
-                    console.log("scrollingTo", "0");
                     document.body.dataset.scrollYPrev =
                       document.body.dataset.scrollY;
                     window.scrollTo(0, 0);

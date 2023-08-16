@@ -2,7 +2,7 @@ import { mutation$ } from "@prpc/solid";
 import { getSession } from "@solid-mediakit/auth";
 import { ServerError } from "solid-start";
 import { authOpts } from "~/routes/api/auth/[...solidauth]";
-import { db } from "./server";
+import { db } from "../server";
 import { z } from "zod";
 import { auth } from "~/auth/lucia";
 

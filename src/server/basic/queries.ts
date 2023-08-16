@@ -1,6 +1,6 @@
 import { query$ } from "@prpc/solid";
 import { z } from "zod";
-import { db } from "./server";
+import { db } from "../server";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
@@ -428,5 +428,26 @@ export const textPagination = query$({
     gender: z.enum(["Female", "Other", "Male"]).nullable(),
     diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
     personalOrTheir: z.enum(["personal", "their"]),
+  }),
+});
+export const articlesPagination = query$({
+  queryFn: async ({ payload }) => {
+    const articles = await db
+      .selectFrom("Articles")
+      .select(({ fn }) => [
+        "link",
+        "description",
+        fn.count<number>("Articles.id").as("count"),
+      ])
+      .where("accepted", "=", "accepted")
+      .limit(50)
+      .offset(payload.page * 50)
+      .execute();
+
+      return articles
+  },
+  key: "linkPagination",
+  schema: z.object({
+    page: z.number(),
   }),
 });

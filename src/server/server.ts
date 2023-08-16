@@ -38,7 +38,9 @@ const dialect = new PostgresDialect({
   pool,
 });
 
-export const db = new Kysely<Database & DB>({
+interface Combined extends Database, DB {}
+
+export const db = new Kysely<Combined>({
   log: ["error"],
   dialect,
 });

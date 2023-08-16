@@ -419,6 +419,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("Their_questions").execute();
-  await db.schema.dropTable("Personal_questions").execute();
+  await db.schema.dropTable("Their_questions").ifExists().execute();
+  await db.schema.dropTable("Personal_questions").ifExists().execute();
 }

@@ -8,7 +8,7 @@ import {
 } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
-import { db } from "./server";
+import { db } from "../server";
 
 // const adminCheck = middleware$(async ({ request$ }) => {
 //   const authRequest = auth.handleRequest(request$);
