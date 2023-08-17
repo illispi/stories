@@ -114,7 +114,7 @@ const AllStatsPage: ParentComponent = () => {
           }}
         > */}
       <Show
-        when={allStatsData.data?.total >= 5}
+        when={allStatsData.data?.total && allStatsData.data?.total >= 5 && allStatsData.data}
         fallback={
           <div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
             <h2 class="text-center text-2xl font-bold lg:text-3xl">
@@ -146,7 +146,7 @@ const AllStatsPage: ParentComponent = () => {
           </div>
         }
       >
-        <div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+        {data => (<div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
           <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
             <h1 class="text-center font-semibold">Statistics personal</h1>
           </div>
@@ -164,7 +164,7 @@ const AllStatsPage: ParentComponent = () => {
                 {(comp) => (
                   <CompSelector
                     {...comp}
-                    data={allStatsData.data}
+                    data={data()}
                     ref={(el: Element) => setTargets((p) => [...p, el])}
                     shown={shown()}
                     removeShown={removeShown}
@@ -177,7 +177,8 @@ const AllStatsPage: ParentComponent = () => {
                   </Suspense> */}
             </div>
           </div>
-        </div>
+        </div>)}
+        
       </Show>
       {/* </ErrorBoundary>
       </Suspense> */}
