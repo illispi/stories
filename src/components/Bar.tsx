@@ -1,10 +1,9 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
-import { createSignal, createEffect, Component } from "solid-js";
-import type { ChartistData, MainReturn } from "~/types/types";
-import BarChartCustom from "./BarChartCustom";
-import { useData } from "./globalSignals";
-import { selector } from "~/utils/functions";
+import { Component, Show } from "solid-js";
+import type { MainReturn } from "~/types/types";
 import { PersonalQuestions } from "~/types/zodFromTypes";
+import { selector } from "~/utils/functions";
+import BarChartCustom from "./BarChartCustom";
 
 export const BarComponent: Component<{
   options?: BarChartOptions<AxisOptions, AxisOptions>;
@@ -23,11 +22,18 @@ export const BarComponent: Component<{
     <div class="flex flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
       <div class="mb-4 w-11/12">
-        <BarChartCustom
-        {...props}
-          data={selector(props.function, props.data?.[props.stat])}
-          options={props.options}
-        />
+        <Show
+          when={props.data}
+          fallback={
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
+          }
+        >
+          <BarChartCustom
+            {...props}
+            data={selector(props.function, props.data?.[props.stat])}
+            options={props.options}
+          />
+        </Show>
       </div>
     </div>
   );

@@ -14,37 +14,34 @@ export const TextComponent: Component<{
 }> = (props) => {
   return (
     <>
-      <Show when={props.data?.[props.stat]}>
-        <Show
-          when={props.data?.[props.stat].length > 0}
-          fallback={<div>failure</div>}
-        >
-          <div class="flex flex-col items-center justify-center ">
-            <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-            <For each={props.data?.[props.stat]}>
-              {(stat, i) => (
-                <div class="flex w-11/12 flex-col items-center justify-center">
-                  <h5 class="m-2 font-bold">{i() + 1}.</h5>
-                  <p class="w-full">{stat}</p>
-                </div>
-              )}
-            </For>
-
-            <A
-              href={route("/stats/texts/:selector/:statsText", {
-                selector: props.selector,
-                statsText: props.stat,
-              })}
-            >
-              <div
-                class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
-        text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
-              >
-                Show more
+      <Show
+        when={props.data?.[props.stat].length > 0 && props.data?.[props.stat]}
+      >
+        <div class="flex flex-col items-center justify-center ">
+          <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
+          <For each={props.data?.[props.stat]}>
+            {(stat, i) => (
+              <div class="flex w-11/12 flex-col items-center justify-center">
+                <h5 class="m-2 font-bold">{i() + 1}.</h5>
+                <p class="w-full">{stat}</p>
               </div>
-            </A>
-          </div>
-        </Show>
+            )}
+          </For>
+
+          <A
+            href={route("/texts/:selector/:statsText", {
+              selector: props.selector,
+              statsText: props.stat,
+            })}
+          >
+            <div
+              class="m-2 my-8 rounded-full bg-blue-500 p-3 font-semibold
+        text-white transition-all hover:scale-110 hover:bg-blue-600 active:scale-110 active:bg-blue-600"
+            >
+              Show more
+            </div>
+          </A>
+        </div>
       </Show>
     </>
   );
