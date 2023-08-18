@@ -53,7 +53,6 @@ const PieChartCustom: Component<{
     }
 
     if (props.data && pie) {
-      console.log("updated");
       pie.update(props.data);
     }
   });

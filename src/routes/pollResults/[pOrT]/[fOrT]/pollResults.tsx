@@ -86,7 +86,7 @@ const AllStatsPage: ParentComponent = () => {
       rootMargin: "0px",
       threshold: 0.01,
     };
-    console.log("observer");
+    // console.log("observer");
 
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {

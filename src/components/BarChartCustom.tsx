@@ -45,6 +45,8 @@ const BarChartCustom: Component<{
             onlyInteger: true,
           },
           axisY: { offset: 80, scaleMinSpace: 25 },
+          distributeSeries: true,
+          horizontalBars: true,
         } //BUG use mergeProps if you want defaults
       );
     }

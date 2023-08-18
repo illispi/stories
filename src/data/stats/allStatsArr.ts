@@ -7,60 +7,36 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "diagnosis",
     header: "Share of diagnosis",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "gender",
     header: "Share of genders",
     function: "dataGender",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "ageOfOnsetByGender",
     header: "Age of onset (average)",
     function: "dataOnset",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "length_of_psychosis",
     header: "Length of first psychosis",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -97,10 +73,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "psychosis_how_many",
     header: "How many psychosis",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
 
   {
@@ -113,20 +85,12 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "prodromal_anxiety",
     header: "Prodromal symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "symptoms_hallucinations",
     header: "First psychosis symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
@@ -154,10 +118,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "side_effs_dizziness",
     header: "Side effects from medication",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
 
   {
@@ -170,20 +130,12 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "quitting_why",
     header: "Reasons for quitting medication",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -200,10 +152,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "weight_amount",
     header: "Weight gained (kg)",
     function: "weightBrackets",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -215,10 +163,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "smoking_amount",
     header: "Smoking tobacco amount",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -245,10 +189,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "flat_expressions",
     header: "Negative symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -260,10 +200,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "disorganized_thinking",
     header: "Cognitive symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "text",
@@ -290,20 +226,12 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "worst_symptom",
     header: "Worst base symptom",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "bar",
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "yesOrNo",
@@ -340,10 +268,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "told_family",
     header: "Has told about illness",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-    },
   },
   {
     type: "text",
