@@ -55,6 +55,7 @@ const PieChartCustom: Component<{
     if (props.data && pie) {
       pie.update(props.data);
     }
+    
   });
 
   onCleanup(() => {
