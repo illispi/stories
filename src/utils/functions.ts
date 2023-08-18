@@ -129,11 +129,12 @@ export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
   }
   const onset = data;
   return {
-    labels: ["Male", "Female", "Other"],
-    series: [
-      [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
-      [onset.maleMedian, onset.femaleMedian, onset.otherMedian],
+    labels: [
+      `Male, ${Math.floor(onset.maleAverage)}`,
+      `Female, ${Math.floor(onset.femaleAverage)}`,
+      `Other, ${Math.floor(onset.otherAverage)}`,
     ],
+    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
   };
 };
 

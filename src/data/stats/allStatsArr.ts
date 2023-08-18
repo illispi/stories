@@ -23,10 +23,14 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     },
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "gender",
     header: "Share of genders",
     function: "dataGender",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "bar",
@@ -41,14 +45,22 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "bar",
     stat: "ageOfOnsetByGender",
-    header: "Age of onset",
+    header: "Age of onset (average)",
     function: "dataOnset",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "length_of_psychosis",
     header: "Length of first psychosis",
     function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "yesOrNo",
@@ -125,7 +137,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
       distributeSeries: true,
       horizontalBars: true,
       reverseData: true,
-      height: "500",
     },
   },
   {
@@ -155,16 +166,24 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Have quit medication",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "quitting_why",
     header: "Reasons for quitting medication",
     function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
-    type: "doughnut",
+    type: "bar",
     function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "yesOrNo",
@@ -192,10 +211,14 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Smoking",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "smoking_amount",
     header: "Smoking tobacco amount",
     function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "yesOrNo",
@@ -263,10 +286,14 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Things that have helped apart from medication",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "worst_symptom",
     header: "Worst base symptom",
     function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "bar",

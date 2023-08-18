@@ -62,7 +62,7 @@ const BarChartCustom: Component<{
       <div class="flex w-full flex-col items-center justify-center">
         <div
           ref={mergeRefs(props.ref, (el) => (ref = el))}
-          class={`h-64 w-full ${!props.data ? "hidden" : ""}`}
+          class={`h-64 w-full lg:w-11/12 ${!props.data ? "hidden" : ""}`}
           classList={{
             "h-[350px]": props.data?.labels.length > 2,
             "h-[450px]": props.data?.labels.length > 3,
