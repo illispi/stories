@@ -10,7 +10,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -21,7 +20,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -35,7 +33,10 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-    options: { distributeSeries: true, horizontalBars: true },
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+    },
   },
   {
     type: "bar",
@@ -87,7 +88,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
 
@@ -104,7 +104,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -115,7 +114,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -126,7 +124,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 70 },
       reverseData: true,
       height: "500",
     },
@@ -149,7 +146,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 70 },
     },
   },
 
@@ -229,7 +225,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -245,7 +240,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -282,7 +276,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {
@@ -323,7 +316,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     options: {
       distributeSeries: true,
       horizontalBars: true,
-      axisY: { offset: 80 },
     },
   },
   {

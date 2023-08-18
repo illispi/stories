@@ -37,7 +37,15 @@ const BarChartCustom: Component<{
           series: props.data?.series,
           labels: props.data?.labels,
         },
-        { ...props.options, width: "100%", height: "100%", chartPadding: 25 } //BUG use mergeProps if you want defaults
+        {
+          ...props.options,
+          width: "100%",
+          chartPadding: 25,
+          axisX: {
+            onlyInteger: true,
+          },
+          axisY: { offset: 80, scaleMinSpace: 25 },
+        } //BUG use mergeProps if you want defaults
       );
     }
     if (props.data && bar) {
@@ -54,7 +62,12 @@ const BarChartCustom: Component<{
       <div class="flex w-full flex-col items-center justify-center">
         <div
           ref={mergeRefs(props.ref, (el) => (ref = el))}
-          class={`h-96 w-full ${!props.data ? "hidden" : ""}`}
+          class={`h-64 w-full ${!props.data ? "hidden" : ""}`}
+          classList={{
+            "h-[350px]": props.data?.labels.length > 2,
+            "h-[450px]": props.data?.labels.length > 3,
+            "h-[550px]": props.data?.labels.length > 4,
+          }}
           id={`chartBar${id}`}
         />
         <div

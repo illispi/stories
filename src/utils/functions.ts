@@ -16,8 +16,20 @@ export const weightBrackets = (data: MainReturn["weight_amount"]) => {
     "81-200",
   ];
 
+  const keys = Object.keys(data);
+  const series = keys.map((e) => data[e]);
+  let total = 0;
+
+  for (let index = 0; index < keys.length; index++) {
+    total += data[keys[index]];
+  }
+
+  const bracketsPercentage = brackets.map(
+    (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
+  );
+
   return {
-    labels: brackets,
+    labels: bracketsPercentage,
     series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
   };
 };
@@ -62,15 +74,25 @@ export const dataMultiSelect = (data) => {
   if (!data) {
     return null;
   }
-  const labelsMultiSelect = Object.keys(data);
+  const keys = Object.keys(data);
+  const series = keys.map((e) => data[e]);
+  let total = 0;
+
+  for (let index = 0; index < keys.length; index++) {
+    total += data[keys[index]];
+  }
+
+  const labelsPercentage = keys.map(
+    (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
+  );
 
   const seriesMultiSelect = [];
-  for (let i = 0; i < labelsMultiSelect.length; i++) {
-    seriesMultiSelect.push(data[labelsMultiSelect[i]]);
+  for (let i = 0; i < keys.length; i++) {
+    seriesMultiSelect.push(data[keys[i]]);
   }
 
   return {
-    labels: labelsMultiSelect,
+    labels: labelsPercentage,
     series: seriesMultiSelect,
   };
 };
