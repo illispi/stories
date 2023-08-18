@@ -6,14 +6,14 @@ export const weightBrackets = (data: MainReturn["weight_amount"]) => {
   }
 
   const brackets = [
-    "0-5kg",
-    "6-10kg",
-    "11-20kg",
-    "21-30kg",
-    "31-40kg",
-    "41-50kg",
-    "51-80kg",
-    "81-200kg",
+    "0-5",
+    "6-10",
+    "11-20",
+    "21-30",
+    "31-40",
+    "41-50",
+    "51-80",
+    "81-200",
   ];
 
   return {

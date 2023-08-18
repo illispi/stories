@@ -3,10 +3,15 @@ import type { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "diagnosis",
     header: "Share of diagnosis",
     function: "dataSelection",
+    options: {
+      distributeSeries: true,
+      horizontalBars: true,
+      axisY: { offset: 80 },
+    },
   },
   {
     type: "bar",
@@ -30,7 +35,7 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-    options: { distributeSeries: true },
+    options: { distributeSeries: true, horizontalBars: true },
   },
   {
     type: "bar",
@@ -178,10 +183,11 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "bar",
     stat: "weight_amount",
-    header: "Weight gained",
+    header: "Weight gained (kg)",
     function: "weightBrackets",
     options: {
       distributeSeries: true,
+      horizontalBars: true,
     },
   },
   {

@@ -19,22 +19,20 @@ export const BarComponent: Component<{
     | "weightBrackets";
 }> = (props) => {
   return (
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex w-full flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="mb-4 w-11/12">
-        <Show
-          when={props.data}
-          fallback={
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
-          }
-        >
-          <BarChartCustom
-            {...props}
-            data={selector(props.function, props.data?.[props.stat])}
-            options={props.options}
-          />
-        </Show>
-      </div>
+      <Show
+        when={props.data}
+        fallback={
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
+        }
+      >
+        <BarChartCustom
+          {...props}
+          data={selector(props.function, props.data?.[props.stat])}
+          options={props.options}
+        />
+      </Show>
     </div>
   );
 };

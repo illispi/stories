@@ -1,18 +1,15 @@
+import { mergeRefs } from "@solid-primitives/refs";
 import { PieChart } from "chartist";
 import {
   Component,
   createEffect,
-  createSignal,
   createUniqueId,
   For,
   onCleanup,
-  onMount,
   Show,
 } from "solid-js";
 import "../styles/index.css";
 import type { ChartistData } from "../types/types";
-import { isServer } from "solid-js/web";
-import { mergeRefs, Ref } from "@solid-primitives/refs";
 
 //BUG currently everytime trigger changes your run cEff on all components
 
@@ -20,6 +17,8 @@ const PieChartCustom: Component<{
   data: ChartistData | null;
   labels?: boolean;
   shown?: Element[];
+  yesOrNo?: boolean;
+  ref?: Element;
   removeShown?: (el: Element) => void;
 }> = (props) => {
   let pie: PieChart;
@@ -44,7 +43,7 @@ const PieChartCustom: Component<{
         },
         {
           donut: true,
-          donutWidth: 70,
+          donutWidth: 50,
           startAngle: 270,
           showLabel: true,
           chartPadding: 30,
@@ -54,6 +53,7 @@ const PieChartCustom: Component<{
     }
 
     if (props.data && pie) {
+      console.log("updated");
       pie.update(props.data);
     }
   });
@@ -67,11 +67,11 @@ const PieChartCustom: Component<{
       <div class="flex flex-col items-center justify-center">
         <div
           ref={mergeRefs(props.ref, (el) => (ref = el))}
-          class={`h-64 w-64 ${!props.data ? `hidden` : ""}`}
+          class={`h-56 w-56 ${!props.data ? `hidden` : ""}`}
           id={`chartPie${id}`}
         />
         <div
-          class={`h-64 w-64 ${
+          class={`h-56 w-56 ${
             props.data ? `hidden` : ""
           } flex items-center justify-center`}
         >
