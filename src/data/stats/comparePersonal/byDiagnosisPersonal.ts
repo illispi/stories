@@ -4,7 +4,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
 
   {
-    type: "doughnut",
+    type: "bar",
     stat: "gender",
     header: "Share of genders",
     function: "dataGender",
@@ -14,7 +14,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-    options: { distributeSeries: true },
+   
   },
   //TODO might want to add averages of onset
   // {
@@ -27,7 +27,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   // type: "stat", stat: "ageOfOnsetByGender[otherAverage]", name: "Other average"
   // },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "length_of_psychosis",
     header: "Length of first psychosis",
     function: "dataSelection",
@@ -37,11 +37,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "relatives",
     header: "Has relatives with schizophrenia",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "yesOrNo",
@@ -78,11 +74,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "psychosis_how_many",
     header: "How many psychosis",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
 
   {
@@ -95,22 +87,14 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "prodromal_anxiety",
     header: "Prodromal symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "bar",
     stat: "symptoms_hallucinations",
     header: "First psychosis symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "bar",
@@ -148,13 +132,13 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Have quit medication",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "quitting_why",
     header: "Reasons for quitting medication",
     function: "dataSelection",
   },
   {
-    type: "doughnut",
+    type: "bar",
     function: "dataSelection",
     stat: "quitting_what_happened",
     header: "Happened after quitting medication",
@@ -184,7 +168,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Smoking",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "smoking_amount",
     header: "Smoking tobacco amount",
     function: "dataSelection",
@@ -214,11 +198,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "flat_expressions",
     header: "Negative symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "yesOrNo",
@@ -230,11 +210,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "disorganized_thinking",
     header: "Cognitive symptoms",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "text",
@@ -257,7 +233,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Things that have helped apart from medication",
   },
   {
-    type: "doughnut",
+    type: "bar",
     stat: "worst_symptom",
     header: "Worst base symptom",
     function: "dataSelection",
@@ -267,11 +243,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "yesOrNo",
@@ -303,11 +275,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "told_family",
     header: "Has told about illness",
     function: "dataMultiSelect",
-    options: {
-      distributeSeries: true,
-      horizontalBars: true,
-      axisY: { offset: 80 },
-    },
+   
   },
   {
     type: "text",
