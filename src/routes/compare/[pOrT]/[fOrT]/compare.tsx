@@ -280,7 +280,7 @@ const CompareStats = () => {
   );
 
   return (
-    <div>
+    <div class="flex-1">
       <Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
       <div class="flex flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
