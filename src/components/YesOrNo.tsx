@@ -11,21 +11,24 @@ export const YesOrNoComponent: Component<{
   const [qDAata, setQDAata] = createSignal(null);
 
   createEffect(() => {
-    setQDAata({
-      labels: [
-        `Yes ${Math.floor(
-          (props.data?.[props.stat].yes /
-            (props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-            100
-        )}%`,
-        `No ${Math.floor(
-          (props.data?.[props.stat].no /
-            (props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-            100
-        )}%`,
-      ],
-      series: [props.data?.[props.stat].yes, props.data?.[props.stat].no],
-    });
+    if (props.data?.[props.stat]) {
+      console.log("here");
+      setQDAata({
+        labels: [
+          `Yes ${Math.floor(
+            (props.data?.[props.stat].yes /
+              (props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
+              100
+          )}%`,
+          `No ${Math.floor(
+            (props.data?.[props.stat].no /
+              (props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
+              100
+          )}%`,
+        ],
+        series: [props.data?.[props.stat].yes, props.data?.[props.stat].no],
+      });
+    }
   });
 
   return (

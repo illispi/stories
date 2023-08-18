@@ -42,6 +42,8 @@ const Compared: Component<{
   const params = useParams<{
     compare: "Personal_questions" | "Their_questions";
   }>();
+
+  //Bug here shows wrong stats
   const byGender =
     params.compare === "Personal_questions" ? byGenderPersonal : byGenderTheir;
   const byDiagnosis =
@@ -238,6 +240,7 @@ const CompareStats = () => {
       rootMargin: "0px",
       threshold: 0.01,
     };
+    console.log(statsB.data?.hospitalized_on_first);
 
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
@@ -284,7 +287,7 @@ const CompareStats = () => {
       <div class="flex flex-col items-center justify-center">
         <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
           <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
-            <h1 class="text-center font-semibold">Statistics Comparision</h1>
+            <h1 class="text-center font-semibold">Statistics Comparison</h1>
           </div>
           <div class="flex flex-col items-center justify-center">
             <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
@@ -299,77 +302,70 @@ const CompareStats = () => {
                 </h3>
               </div>
               <Suspense fallback={<div>Loading...</div>}>
-                <ErrorBoundary
-                  fallback={(err) => {
-                    console.log(err);
-                    return <div>err</div>;
-                  }}
-                >
-                  <For each={compOrder()}>
-                    {(comp) => (
-                      <>
-                        <Show
-                          when={comp.type !== "bar"}
-                          fallback={
-                            <>
-                              <h5 class="text-xl lg:hidden">{A()}:</h5>
-                              <CompSelector
-                                {...comp}
-                                data={statsA.data}
-                                ref={(el: Element) => {
-                                  setTargets((p) => [...p, el]);
-                                }}
-                                shown={shown()}
-                                removeShown={removeShown}
-                              />
-
-                              <h5 class="text-xl lg:hidden">{B()}:</h5>
-                              <CompSelector
-                                {...comp}
-                                data={statsB.data}
-                                ref={(el: Element) => {
-                                  setTargets((p) => [...p, el]);
-                                }}
-                                shown={shown()}
-                                removeShown={removeShown}
-                              />
-                              <div class="my-12 w-full border-2 border-b-black lg:hidden " />
-                            </>
-                          }
-                        >
-                          <h5 class="text-xl lg:hidden">{A()}:</h5>
-                          <CompSelector
-                            {...comp}
-                            data={statsA.data}
-                            ref={(el: Element) => {
-                              {
+                <For each={compOrder()}>
+                  {(comp) => (
+                    <>
+                      <Show
+                        when={comp.type !== "bar"}
+                        fallback={
+                          <>
+                            <h5 class="text-xl lg:hidden">{A()}:</h5>
+                            <CompSelector
+                              {...comp}
+                              data={statsA.data}
+                              ref={(el: Element) => {
                                 setTargets((p) => [...p, el]);
-                              }
-                            }}
-                            shown={shown()}
-                            removeShown={removeShown}
-                          />
-                          <h5 class="text-xl lg:hidden">{B()}:</h5>
-                          <CompSelector
-                            {...comp}
-                            data={statsB.data}
-                            ref={(el: Element) => {
+                              }}
+                              shown={shown()}
+                              removeShown={removeShown}
+                            />
+
+                            <h5 class="text-xl lg:hidden">{B()}:</h5>
+                            <CompSelector
+                              {...comp}
+                              data={statsB.data}
+                              ref={(el: Element) => {
+                                setTargets((p) => [...p, el]);
+                              }}
+                              shown={shown()}
+                              removeShown={removeShown}
+                            />
+                            <div class="my-12 w-full border-2 border-b-black lg:hidden " />
+                          </>
+                        }
+                      >
+                        <h5 class="text-xl lg:hidden">{A()}:</h5>
+                        <CompSelector
+                          {...comp}
+                          data={statsA.data}
+                          ref={(el: Element) => {
+                            {
                               setTargets((p) => [...p, el]);
-                              onCleanup(() => {
-                                if (targets().length >= 0) {
-                                  setTargets([]);
-                                }
-                              });
-                            }}
-                            shown={shown()}
-                            removeShown={removeShown}
-                          />
-                          <div class="my-12 w-full border-2 border-b-black lg:hidden" />
-                        </Show>
-                      </>
-                    )}
-                  </For>
-                </ErrorBoundary>
+                            }
+                          }}
+                          shown={shown()}
+                          removeShown={removeShown}
+                        />
+                        <h5 class="text-xl lg:hidden">{B()}:</h5>
+                        <CompSelector
+                          {...comp}
+                          data={statsB.data}
+                          ref={(el: Element) => {
+                            setTargets((p) => [...p, el]);
+                            onCleanup(() => {
+                              if (targets().length >= 0) {
+                                setTargets([]);
+                              }
+                            });
+                          }}
+                          shown={shown()}
+                          removeShown={removeShown}
+                        />
+                        <div class="my-12 w-full border-2 border-b-black lg:hidden" />
+                      </Show>
+                    </>
+                  )}
+                </For>
               </Suspense>
             </div>
           </div>
@@ -382,4 +378,3 @@ const CompareStats = () => {
 export default CompareStats;
 
 //TODO A and B for text routes need to work as well
-//TODO their questions compare as well
