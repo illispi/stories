@@ -12,7 +12,6 @@ export const YesOrNoComponent: Component<{
 
   createEffect(() => {
     if (props.data?.[props.stat]) {
-      console.log("here");
       setQDAata({
         labels: [
           `Yes ${Math.floor(

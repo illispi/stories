@@ -1,6 +1,5 @@
 import type { Bar, Doughnut, Stat, YesOrNo, Text } from "~/types/types";
 
-
 export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   { type: "stat", stat: "total", name: "Total Responses" },
   {
@@ -14,7 +13,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-   
   },
   //TODO maybe add stat on age of onset if there
   {
@@ -22,7 +20,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "relatives",
     header: "Has relatives with schizophrenia",
     function: "dataSelection",
-    
   },
   {
     type: "bar",
@@ -65,7 +62,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "psychosis_how_many",
     header: "How many psychosis",
     function: "dataSelection",
-    
   },
 
   {
@@ -78,14 +74,12 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "prodromal_anxiety",
     header: "Prodromal symptoms",
     function: "dataMultiSelect",
-    
   },
   {
     type: "bar",
     stat: "symptoms_hallucinations",
     header: "First psychosis symptoms",
     function: "dataMultiSelect",
-    
   },
   {
     type: "bar",
@@ -189,7 +183,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "flat_expressions",
     header: "Negative symptoms",
     function: "dataMultiSelect",
-    
   },
   {
     type: "yesOrNo",
@@ -201,7 +194,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "disorganized_thinking",
     header: "Cognitive symptoms",
     function: "dataMultiSelect",
-    
   },
   {
     type: "text",
@@ -239,7 +231,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
-    
   },
   {
     type: "yesOrNo",
@@ -256,11 +247,7 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "children",
     header: "Has children",
   },
-  {
-    type: "unknown",
-    stat: "lost_relationships",
-    header: "Has lost relationships due to schizophrenia",
-  },
+
   {
     type: "yesOrNo",
     stat: "goals_changed",
@@ -276,7 +263,6 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "told_family",
     header: "Has told about illness",
     function: "dataMultiSelect",
-    
   },
   {
     type: "text",

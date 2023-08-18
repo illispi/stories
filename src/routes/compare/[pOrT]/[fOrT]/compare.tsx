@@ -40,14 +40,14 @@ const Compared: Component<{
   );
 
   const params = useParams<{
-    compare: "Personal_questions" | "Their_questions";
+    pOrT: "Personal_questions" | "Their_questions";
   }>();
 
   //Bug here shows wrong stats
   const byGender =
-    params.compare === "Personal_questions" ? byGenderPersonal : byGenderTheir;
+    params.pOrT === "Personal_questions" ? byGenderPersonal : byGenderTheir;
   const byDiagnosis =
-    params.compare === "Personal_questions"
+    params.pOrT === "Personal_questions"
       ? byDiagnosisPersonal
       : byDiagnosisTheir;
 
@@ -240,7 +240,6 @@ const CompareStats = () => {
       rootMargin: "0px",
       threshold: 0.01,
     };
-    console.log(statsB.data?.hospitalized_on_first);
 
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach((entry) => {
@@ -334,34 +333,36 @@ const CompareStats = () => {
                           </>
                         }
                       >
-                        <h5 class="text-xl lg:hidden">{A()}:</h5>
-                        <CompSelector
-                          {...comp}
-                          data={statsA.data}
-                          ref={(el: Element) => {
-                            {
-                              setTargets((p) => [...p, el]);
-                            }
-                          }}
-                          shown={shown()}
-                          removeShown={removeShown}
-                        />
-                        <h5 class="text-xl lg:hidden">{B()}:</h5>
-                        <CompSelector
-                          {...comp}
-                          data={statsB.data}
-                          ref={(el: Element) => {
-                            setTargets((p) => [...p, el]);
-                            onCleanup(() => {
-                              if (targets().length >= 0) {
-                                setTargets([]);
+                        <>
+                          <h5 class="text-xl lg:hidden">{A()}:</h5>
+                          <CompSelector
+                            {...comp}
+                            data={statsA.data}
+                            ref={(el: Element) => {
+                              {
+                                setTargets((p) => [...p, el]);
                               }
-                            });
-                          }}
-                          shown={shown()}
-                          removeShown={removeShown}
-                        />
-                        <div class="my-12 w-full border-2 border-b-black lg:hidden" />
+                            }}
+                            shown={shown()}
+                            removeShown={removeShown}
+                          />
+                          <h5 class="text-xl lg:hidden">{B()}:</h5>
+                          <CompSelector
+                            {...comp}
+                            data={statsB.data}
+                            ref={(el: Element) => {
+                              setTargets((p) => [...p, el]);
+                              onCleanup(() => {
+                                if (targets().length >= 0) {
+                                  setTargets([]);
+                                }
+                              });
+                            }}
+                            shown={shown()}
+                            removeShown={removeShown}
+                          />
+                          <div class="my-12 w-full border-2 border-b-black lg:hidden" />
+                        </>
                       </Show>
                     </>
                   )}
