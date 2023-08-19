@@ -15,6 +15,7 @@ const TransitionFade: ParentComponent = (props) => {
           ],
           {
             duration: 300,
+            delay: 300,
           }
         );
         a.finished.then(done);
@@ -31,6 +32,7 @@ const TransitionFade: ParentComponent = (props) => {
           ],
           {
             duration: 300,
+            delay: 300,
           }
         );
         a.finished.then(done);

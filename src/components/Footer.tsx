@@ -4,7 +4,7 @@ import { A } from "solid-start";
 
 const Footer: Component<{}> = (props) => {
   return (
-    <footer class="flex w-full items-center justify-center bg-fuchsia-800">
+    <footer class="sticky flex w-full items-center justify-center bg-fuchsia-800">
       <div class="flex w-full max-w-5xl flex-col items-center justify-around gap-8 py-16 md:flex-row md:items-start">
         <div class="flex flex-col items-center justify-center gap-4">
           <h5 class="m-4 border-b border-white text-3xl text-white">

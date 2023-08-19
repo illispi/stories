@@ -38,11 +38,13 @@ export default function Root() {
           <Suspense>
             <ErrorBoundary>
               <NavBar />
-              <TransitionSlide>
-                <Routes>
-                  <FileRoutes />
-                </Routes>
-              </TransitionSlide>
+              <div class="flex min-h-screen flex-col">
+                <TransitionSlide>
+                  <Routes>
+                    <FileRoutes />
+                  </Routes>
+                </TransitionSlide>
+              </div>
               <TransitionFade>
                 <Footer />
               </TransitionFade>
