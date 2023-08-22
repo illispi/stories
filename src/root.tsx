@@ -33,7 +33,7 @@ export default function Root() {
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Body class="flex min-h-screen flex-col">
+      <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
         <QueryProvider>
           <Suspense>
             <ErrorBoundary>
@@ -45,9 +45,7 @@ export default function Root() {
                   </Routes>
                 </TransitionSlide>
               </div>
-              <TransitionFade>
-                <Footer />
-              </TransitionFade>
+              <Footer />
             </ErrorBoundary>
           </Suspense>
           <Scripts />
