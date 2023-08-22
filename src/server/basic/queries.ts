@@ -434,18 +434,21 @@ export const articlesPagination = query$({
   queryFn: async ({ payload }) => {
     const articles = await db
       .selectFrom("Articles")
-      .select(({ fn }) => [
-        "link",
-        "description",
-        fn.count<number>("Articles.id").as("count"),
-      ])
-      .groupBy("Articles.id")
+      .select(["link", "description"])
       .where("accepted", "=", "accepted")
-      .limit(25)
       .offset(payload.page * 25)
+      .limit(25)
       .execute();
 
-    return articles;
+    console.log(articles[0]);
+
+    const count = await db
+      .selectFrom("Articles")
+      .select((eb) => [eb.fn.countAll("Articles").as("count")])
+      .where("accepted", "=", "accepted")
+      .executeTakeFirst();
+
+    return { articles, count };
   },
   key: "linkPagination",
   schema: z.object({
