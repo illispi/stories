@@ -22,9 +22,10 @@ export const GET = async (event: APIEvent) => {
     });
   }
   try {
-    const { existingUser, createUser } = await githubAuth.validateCallback(
+    const { getExistingUser, createUser } = await githubAuth.validateCallback(
       code
     );
+    const existingUser = await getExistingUser();
 
     const getUser = async () => {
       if (existingUser) return existingUser;
