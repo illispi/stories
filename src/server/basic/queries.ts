@@ -440,8 +440,6 @@ export const articlesPagination = query$({
       .limit(25)
       .execute();
 
-    console.log(articles[0]);
-
     const count = await db
       .selectFrom("Articles")
       .select((eb) => [eb.fn.countAll("Articles").as("count")])

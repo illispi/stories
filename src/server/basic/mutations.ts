@@ -86,7 +86,7 @@ export const postArticle = mutation$({
   schema: z.object({
     link: z
       .string()
-      .max(500, { message: "Must be 500 or fewer characters long" })
+      .max(1000, { message: "Must be 1000 or fewer characters long" })
       .min(5, { message: "Must be 5 or more characters long" })
       .trim(),
     description: z
