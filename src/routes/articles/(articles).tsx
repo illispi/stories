@@ -1,7 +1,7 @@
 import type { SubmitHandler } from "@modular-forms/solid";
 import { createForm, valiForm } from "@modular-forms/solid";
-import type { Component } from "solid-js";
-import { For, Show, Suspense, createSignal } from "solid-js";
+import type { Component, Setter } from "solid-js";
+import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
 import { useSearchParams } from "solid-start";
 import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
@@ -30,72 +30,91 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
   const handleSubmit: SubmitHandler<ArticleForm> = async (values, event) => {
     articleMut.mutateAsync(values);
   };
+
   return (
-    <div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl ">
-      <CustomButton
-        onClick={() => {
-          props.setSubmitVis(false);
-        }}
-        class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="h-8 w-8"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </CustomButton>
-      <h2 class="text-2xl font-bold lg:text-3xl">Submit article/interview</h2>
-      <Form onSubmit={handleSubmit}>
-        <div class="m-4 flex flex-col items-center justify-center gap-4">
-          <h3 class="text-lg underline underline-offset-4">Link to article:</h3>
-          <Field name="link">
-            {(field, props) => (
-              <>
-                <textarea
-                  class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-                  {...props}
-                  cols={60}
-                  rows={3}
-                  required
-                  autocomplete="off"
-                  placeholder="link"
-                />
-                {field.error && <div>{field.error}</div>}
-              </>
-            )}
-          </Field>
-          <h3 class="text-lg underline underline-offset-4">
-            Short description of article:
-          </h3>
-          <Field name="description">
-            {(field, props) => (
-              <>
-                <textarea
-                  class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-                  {...props}
-                  cols={60}
-                  rows={9}
-                  required
-                  autocomplete="off"
-                  placeholder="description"
-                />
-                {field.error && <div>{field.error}</div>}
-              </>
-            )}
-          </Field>
-          <CustomButton type="submit">Submit</CustomButton>
+    <Show
+      when={!articleMut.isSuccess}
+      fallback={
+        <div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl ">
+          <h2>Your article was submitted for review!</h2>
+          <CustomButton
+            onClick={() => {
+              articleMut.reset();
+            }}
+          >
+            Submit another one
+          </CustomButton>
         </div>
-      </Form>
-    </div>
+      }
+    >
+      <div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl ">
+        <CustomButton
+          onClick={() => {
+            props.setSubmitVis(false);
+          }}
+          class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-8 w-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </CustomButton>
+        <h2 class="text-2xl font-bold lg:text-3xl">Submit article/interview</h2>
+        <Form onSubmit={handleSubmit}>
+          <div class="m-4 flex flex-col items-center justify-center gap-4">
+            <h3 class="text-lg underline underline-offset-4">
+              Link to article:
+            </h3>
+            <Field name="link">
+              {(field, props) => (
+                <>
+                  <textarea
+                    class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+                    {...props}
+                    cols={60}
+                    rows={3}
+                    required
+                    autocomplete="off"
+                    placeholder="link"
+                  />
+                  {field.error && <div>{field.error}</div>}
+                </>
+              )}
+            </Field>
+            <h3 class="text-lg underline underline-offset-4">
+              Short description of article:
+            </h3>
+            <Field name="description">
+              {(field, props) => (
+                <>
+                  <textarea
+                    class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+                    {...props}
+                    cols={60}
+                    rows={9}
+                    required
+                    autocomplete="off"
+                    placeholder="description"
+                  />
+                  {field.error && <div>{field.error}</div>}
+                </>
+              )}
+            </Field>
+            <CustomButton type="submit">Submit</CustomButton>
+          </div>
+        </Form>
+      </div>
+    </Show>
   );
 };
 
