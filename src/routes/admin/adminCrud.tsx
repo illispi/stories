@@ -100,9 +100,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
             </Show>
             <CustomButton
               onClick={() => {
-                setTab(tab() === "articles"
-                ? "poll"
-                : "articles");
+                setTab(tab() === "articles" ? "poll" : "articles");
               }}
             >
               {tab() === "articles"
@@ -132,7 +130,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                                   >
                                     Accept
                                   </CustomButton>
-
+                                  {/* BUG This or something else should be decline and not remove */}
                                   <CustomButton
                                     onclick={() => {
                                       setEntryEdit(article.id);

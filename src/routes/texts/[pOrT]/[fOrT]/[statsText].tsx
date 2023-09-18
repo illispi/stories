@@ -161,6 +161,39 @@ const StatsText = () => {
               ].question
             }`}</h4>
 
+            <div class="m-16 flex w-full items-center justify-around">
+              <CustomButton
+                class={page() === 0 ? "invisible" : ""}
+                onClick={() => {
+                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
+                  setSearchParams({ page: page() + 1 });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                Back
+              </CustomButton>
+              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
+                Math.floor(texts.data?.total / 25) + 1
+              }`}</h5>
+
+              <CustomButton
+                class={
+                  texts.data?.total / ((page() + 1) * 25) <= 1
+                    ? "invisible"
+                    : ""
+                }
+                onClick={() => {
+                  setPage((prev) =>
+                    texts.data?.total / ((prev + 1) * 25) <= 1 ? prev : prev + 1
+                  );
+                  setSearchParams({ page: page() + 1 });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                Next
+              </CustomButton>
+            </div>
+
             <For each={texts.data?.stats} fallback={<div>None found</div>}>
               {(stat, i) =>
                 stat ? (
