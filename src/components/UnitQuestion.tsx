@@ -7,8 +7,17 @@ import { postPersonalStats, postTheirStats } from "~/server/basic/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
-import { z } from "zod";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
+import {
+  integer,
+  maxLength,
+  maxValue,
+  minLength,
+  minValue,
+  number as numberBot,
+  safeParse,
+  string,
+} from "valibot";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -259,43 +268,34 @@ export const UnitQuestion: ParentComponent<{
 
     if (questionDB === "weight_amount") {
       if (metric()) {
-        numberSchema = z
-          .number({
-            required_error: "Weight is required, 1-300 kilograms",
-            invalid_type_error: "Weight must be a number only",
-          })
-          .max(300, "Maximum weight increase is 300 kilos")
-          .min(1, "Minimum weight increase is 1 kilos")
-          .int("Please provide whole number only (e.g 15, not 15.6)");
+        numberSchema = numberBot("Weight is required, 1-300 kilograms", [
+          minValue(1, "Minimum weight increase is 1 kilos"),
+          maxValue(300, "Maximum weight increase is 300 kilos"),
+          integer("Please provide whole number only (e.g 15, not 15.6)"),
+        ]);
       } else {
-        numberSchema = z
-          .number({
-            required_error: "Weight is required, 1-650 pounds",
-            invalid_type_error: "Weight must be a number only",
-          })
-          .max(650, "Maximum weight increase is 650 pounds")
-          .min(1, "Minimum weight increase is 1 pounds")
-          .int("Please provide whole number only (e.g 15, not 15.6)");
+        numberSchema = numberBot("Weight is required, 1-650 pounds", [
+          minValue(1, "Minimum weight increase is 1 pounds"),
+          maxValue(300, "Maximum weight increase is 650 pounds"),
+          integer("Please provide whole number only (e.g 15, not 15.6)"),
+        ]);
       }
     } else {
       //TODO Maybe handle if age is smaller than onset
-      numberSchema = z
-        .number({
-          required_error: "Age is required, 5-120",
-          invalid_type_error: "Age must be a number only",
-        })
-        .max(110, "Maximum age is 110")
-        .min(5, "Minimum age is 5")
-        .int("Please provide whole number only (e.g 15, not 15.6)");
+
+      numberSchema = numberBot("Age is required, 5-120", [
+        minValue(5, "Minimum age is 5"),
+        maxValue(110, "Maximum age is 110"),
+        integer("Please provide whole number only (e.g 15, not 15.6)"),
+      ]);
     }
 
-    const result = numberSchema.safeParse(Number(number()));
+    const result = safeParse(numberSchema, Number(number()));
 
     if (!result.success) {
-      const formatted = result.error.format();
-      setError(formatted._errors[0]);
+      setError(result.issues[0].message);
     } else {
-      handleSubmit({ [questionDB]: result.data });
+      handleSubmit({ [questionDB]: result.output });
       setError(null);
     }
   };
@@ -308,17 +308,14 @@ export const UnitQuestion: ParentComponent<{
   ) => {
     e.preventDefault();
 
-    const textFieldSchema = z
-      .string()
-      .trim()
-      .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough');
-
-    const result = textFieldSchema.safeParse(text());
+    const textFieldSchema = string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ]);
+    const result = safeParse(textFieldSchema, text());
 
     if (!result.success) {
-      const formatted = result.error.format();
-      setError(formatted._errors[0]);
+      setError(result.issues[0].message);
     } else {
       handleSubmit({ [questionDB]: result.data });
       setError(null);
