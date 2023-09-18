@@ -1,6 +1,5 @@
 import { createEffect, createSignal, Show } from "solid-js";
 import type { ParentComponent } from "solid-js";
-import { Motion, Presence } from "@motionone/solid";
 import CustomButton from "~/components/CustomButton";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
@@ -8,6 +7,7 @@ import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
 import { useParams } from "solid-start";
+import { Transition } from "solid-transition-group";
 
 const Counter: ParentComponent<{
   page: number;
@@ -19,20 +19,6 @@ const Counter: ParentComponent<{
         ((props.page + 1) / props.questions.length) * 100
       )}%`}</h3>
     </div>
-  );
-};
-
-const QuestionTransition: ParentComponent<{ direction: number }> = (props) => {
-  return (
-    <Motion.div
-      initial={{ x: props.direction > 0 ? 340 : -340, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: props.direction < 0 ? 340 : -340, opacity: 0 }}
-      transition={{ duration: 1.2 }}
-      class="absolute z-30 flex h-full w-full flex-col rounded-3xl border-2 border-blue-300 bg-white"
-    >
-      {props.children}
-    </Motion.div>
   );
 };
 
@@ -51,17 +37,86 @@ const Questions: ParentComponent<{
       >
         <div class="relative z-0 h-[600px] w-11/12 max-w-xs flex-col">
           {/*BUG During transition you should lock document from scrolling */}
-          <Presence initial={false}>
+          <Transition
+            onEnter={(el, done) => {
+              const a =
+                props.direction > 0
+                  ? el.animate(
+                      [
+                        {
+                          opacity: 0,
+                          transform: "translate(340px)",
+                          easing: "ease-in",
+                        },
+                        { opacity: 1, transform: "translate(0)" },
+                      ],
+                      {
+                        duration: 450,
+                      }
+                    )
+                  : el.animate(
+                      [
+                        {
+                          opacity: 0,
+                          transform: "translate(340px)",
+                          easing: "ease-in",
+                        },
+                        { opacity: 1, transform: "translate(0)" },
+                      ],
+                      {
+                        duration: 450,
+                      }
+                    );
+              a.finished.then(done);
+            }}
+            onExit={(el, done) => {
+              const a =
+                props.direction < 0
+                  ? el.animate(
+                      [
+                        {
+                          opacity: 1,
+                          transform: "translate(0)",
+                          easing: "ease-in",
+                        },
+                        {
+                          opacity: 0,
+                          transform: "translate(-340px)",
+                        },
+                      ],
+                      {
+                        duration: 450,
+                      }
+                    )
+                  : el.animate(
+                      [
+                        {
+                          opacity: 1,
+                          transform: "translate(0)",
+                          easing: "ease-in",
+                        },
+                        {
+                          opacity: 0,
+                          transform: "translate(-340px)",
+                        },
+                      ],
+                      {
+                        duration: 450,
+                      }
+                    );
+              a.finished.then(done);
+            }}
+          >
             <Show when={props.page === 0 ? true : props.page} keyed>
-              <QuestionTransition direction={props.direction}>
+              <div class="absolute z-30 flex h-full w-full flex-col rounded-3xl border-2 border-blue-300 bg-white">
                 <UnitQuestion
                   content={props.questions[props.page]}
                   paginate={props.paginate}
                   LsName={props.LsName}
                 />
-              </QuestionTransition>
+              </div>
             </Show>
-          </Presence>
+          </Transition>
         </div>
       </Show>
     </Show>
