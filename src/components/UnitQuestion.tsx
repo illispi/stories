@@ -283,7 +283,7 @@ export const UnitQuestion: ParentComponent<{
     } else {
       //TODO Maybe handle if age is smaller than onset
 
-      numberSchema = numberBot("Age is required, 5-120", [
+      numberSchema = numberBot("Age is required, 5-110", [
         minValue(5, "Minimum age is 5"),
         maxValue(110, "Maximum age is 110"),
         integer("Please provide whole number only (e.g 15, not 15.6)"),
