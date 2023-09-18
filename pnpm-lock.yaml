@@ -14,9 +14,6 @@ dependencies:
   '@modular-forms/solid':
     specifier: ^0.19.2
     version: 0.19.2(solid-js@1.7.11)
-  '@motionone/solid':
-    specifier: ^10.16.2
-    version: 10.16.2(solid-js@1.7.11)
   '@prpc/solid':
     specifier: ^0.2.35
     version: 0.2.35(@tanstack/solid-query@5.0.0-beta.20)(solid-js@1.7.11)(solid-start@0.3.5)(zod@3.22.2)
@@ -26,9 +23,6 @@ dependencies:
   '@routes-gen/solid-start':
     specifier: ^0.1.1
     version: 0.1.1(solid-start@0.3.5)
-  '@solid-primitives/presence':
-    specifier: ^0.0.3
-    version: 0.0.3(solid-js@1.7.11)
   '@solid-primitives/refs':
     specifier: ^1.0.5
     version: 1.0.5(solid-js@1.7.11)
@@ -2040,66 +2034,6 @@ packages:
       solid-js: 1.7.11
     dev: false
 
-  /@motionone/animation@10.15.1:
-    resolution: {integrity: sha512-mZcJxLjHor+bhcPuIFErMDNyrdb2vJur8lSfMCsuCB4UyV8ILZLvK+t+pg56erv8ud9xQGK/1OGPt10agPrCyQ==}
-    dependencies:
-      '@motionone/easing': 10.15.1
-      '@motionone/types': 10.15.1
-      '@motionone/utils': 10.15.1
-      tslib: 2.6.2
-    dev: false
-
-  /@motionone/dom@10.16.2:
-    resolution: {integrity: sha512-bnuHdNbge1FutZXv+k7xub9oPWcF0hsu8y1HTH/qg6av58YI0VufZ3ngfC7p2xhMJMnoh0LXFma2EGTgPeCkeg==}
-    dependencies:
-      '@motionone/animation': 10.15.1
-      '@motionone/generators': 10.15.1
-      '@motionone/types': 10.15.1
-      '@motionone/utils': 10.15.1
-      hey-listen: 1.0.8
-      tslib: 2.6.2
-    dev: false
-
-  /@motionone/easing@10.15.1:
-    resolution: {integrity: sha512-6hIHBSV+ZVehf9dcKZLT7p5PEKHGhDwky2k8RKkmOvUoYP3S+dXsKupyZpqx5apjd9f+php4vXk4LuS+ADsrWw==}
-    dependencies:
-      '@motionone/utils': 10.15.1
-      tslib: 2.6.2
-    dev: false
-
-  /@motionone/generators@10.15.1:
-    resolution: {integrity: sha512-67HLsvHJbw6cIbLA/o+gsm7h+6D4Sn7AUrB/GPxvujse1cGZ38F5H7DzoH7PhX+sjvtDnt2IhFYF2Zp1QTMKWQ==}
-    dependencies:
-      '@motionone/types': 10.15.1
-      '@motionone/utils': 10.15.1
-      tslib: 2.6.2
-    dev: false
-
-  /@motionone/solid@10.16.2(solid-js@1.7.11):
-    resolution: {integrity: sha512-0bl1KRDWc6BRcKXzRZR2KdRzIIN86SfSe8mcfKPwHYQDzdOEohRcYUsDaYlwWuwU07VCngOHZEPgFCofDJ80zw==}
-    peerDependencies:
-      solid-js: ^1.5.0
-    dependencies:
-      '@motionone/dom': 10.16.2
-      '@motionone/utils': 10.15.1
-      '@solid-primitives/props': 3.1.8(solid-js@1.7.11)
-      '@solid-primitives/refs': 1.0.5(solid-js@1.7.11)
-      '@solid-primitives/transition-group': 1.0.3(solid-js@1.7.11)
-      solid-js: 1.7.11
-    dev: false
-
-  /@motionone/types@10.15.1:
-    resolution: {integrity: sha512-iIUd/EgUsRZGrvW0jqdst8st7zKTzS9EsKkP+6c6n4MPZoQHwiHuVtTQLD6Kp0bsBLhNzKIBlHXponn/SDT4hA==}
-    dev: false
-
-  /@motionone/utils@10.15.1:
-    resolution: {integrity: sha512-p0YncgU+iklvYr/Dq4NobTRdAPv9PveRDUXabPEeOjBLSO/1FNB2phNTZxOxpi1/GZwYpAoECEa0Wam+nsmhSw==}
-    dependencies:
-      '@motionone/types': 10.15.1
-      hey-listen: 1.0.8
-      tslib: 2.6.2
-    dev: false
-
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -2536,24 +2470,6 @@ packages:
     dependencies:
       solid-js: 1.7.11
     dev: true
-
-  /@solid-primitives/presence@0.0.3(solid-js@1.7.11):
-    resolution: {integrity: sha512-nN09FH9NTs2zixKEVxGFw8Yw21qpn+HbV/3hWjF9d7WmEz1kEjz1Z7NTXqdh50GtcK0thglyMjRIVyY8Z5PqJA==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      '@solid-primitives/utils': 6.2.1(solid-js@1.7.11)
-      solid-js: 1.7.11
-    dev: false
-
-  /@solid-primitives/props@3.1.8(solid-js@1.7.11):
-    resolution: {integrity: sha512-38ERNFhl87emUDPRlYvCmlbvEcK2mOJB38SU22YS2QXFDK7TQf/7P46XZacs7oODc/fckhfZTitht71FMEDe2g==}
-    peerDependencies:
-      solid-js: ^1.6.12
-    dependencies:
-      '@solid-primitives/utils': 6.2.1(solid-js@1.7.11)
-      solid-js: 1.7.11
-    dev: false
 
   /@solid-primitives/refs@1.0.5(solid-js@1.7.11):
     resolution: {integrity: sha512-5hmYmYbm6rs43nMHHozyyUngGA7P7q2WtlaCLJEfmlUJf67GWI1PZmqAiol6m9F37XSMZRuvZLoQ7HA/0q3GYg==}
@@ -4452,10 +4368,6 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
-
-  /hey-listen@1.0.8:
-    resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
-    dev: false
 
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
