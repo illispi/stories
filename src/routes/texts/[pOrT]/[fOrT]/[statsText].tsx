@@ -21,17 +21,26 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
+  const [diagFilter, setDiagFilter] = createSignal<
+    "Schizophrenia" | "Schizoaffective" | null
+  >(null);
+
+  const [genderFilter, setGenderFilter] = createSignal<
+    "Female" | "Other" | "Male" | null
+  >(null);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
 
   const texts = textPagination(() => ({
     page: page(),
     stat: params.statsText,
-    diagnosis: diagnosis(),
-    gender: gender(),
+    diagnosis: diagFilter(),
+    gender: genderFilter(),
     personalOrTheir: params.pOrT,
     fake: params.fOrT,
   }));
+
 
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
@@ -40,6 +49,11 @@ const StatsText = () => {
         onclick={() => {
           setGender(null);
           setDiagnosis(null);
+          setDiagFilter(null);
+          setGenderFilter(null);
+          setPage(0);
+          setSearchParams({ page: page() + 1 });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       >
         Clear Filters
@@ -136,6 +150,10 @@ const StatsText = () => {
               <CustomButton
                 onClick={() => {
                   setPage(0);
+                  setDiagFilter(diagnosis());
+                  setGenderFilter(gender());
+                  setSearchParams({ page: page() + 1 });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                   setFilter(false);
                   document.body.style.overflow = "auto";
                 }}
