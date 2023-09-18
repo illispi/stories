@@ -317,6 +317,8 @@ const CompareStats = () => {
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
+                                pOrT={params.pOrT}
+                                fOrT={params.fOrT}
                               />
 
                               <h5 class="text-xl lg:hidden">{B()}:</h5>
@@ -328,6 +330,8 @@ const CompareStats = () => {
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
+                                pOrT={params.pOrT}
+                                fOrT={params.fOrT}
                               />
                               <div class="my-12 w-full border-2 border-b-black lg:hidden " />
                             </>
@@ -345,6 +349,8 @@ const CompareStats = () => {
                               }}
                               shown={shown()}
                               removeShown={removeShown}
+                              pOrT={params.pOrT}
+                              fOrT={params.fOrT}
                             />
                             <h5 class="text-xl lg:hidden">{B()}:</h5>
                             <CompSelector
@@ -360,6 +366,8 @@ const CompareStats = () => {
                               }}
                               shown={shown()}
                               removeShown={removeShown}
+                              pOrT={params.pOrT}
+                              fOrT={params.fOrT}
                             />
                             <div class="my-12 w-full border-2 border-b-black lg:hidden" />
                           </>

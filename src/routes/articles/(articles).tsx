@@ -36,7 +36,9 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
       when={!articleMut.isSuccess}
       fallback={
         <div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl ">
-          <h2>Your article was submitted for review!</h2>
+          <h2 class="text-lg font-bold">
+            Your article was submitted for review!
+          </h2>
           <CustomButton
             onClick={() => {
               articleMut.reset();

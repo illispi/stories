@@ -1,6 +1,6 @@
 import { Motion, Presence } from "@motionone/solid";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
-import { useParams } from "solid-start";
+import { useParams, useSearchParams } from "solid-start";
 import CustomButton from "~/components/CustomButton";
 import ToggleButton from "~/components/ToggleButton";
 import { questions } from "~/data/personalQuestionsArr";
@@ -10,7 +10,8 @@ import type { PersonalQuestions } from "~/types/zodFromTypes";
 const StatsText = () => {
   const params = useParams<{
     statsText: keyof PersonalQuestions;
-    selector: "personal" | "their";
+    pOrT: "Personal_questions" | "Their_questions";
+    fOrT: "fake" | "real";
   }>();
   const [filter, setFilter] = createSignal(false);
   const [gender, setGender] = createSignal<"Female" | "Other" | "Male" | null>(
@@ -20,13 +21,16 @@ const StatsText = () => {
     "Schizophrenia" | "Schizoaffective" | null
   >(null);
 
-  const [page, setPage] = createSignal(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
+
   const texts = textPagination(() => ({
     page: page(),
     stat: params.statsText,
     diagnosis: diagnosis(),
     gender: gender(),
-    personalOrTheir: params.selector,
+    personalOrTheir: params.pOrT,
+    fake: params.fOrT,
   }));
 
   return (
@@ -171,7 +175,11 @@ const StatsText = () => {
             <div class="m-16 flex w-full items-center justify-around">
               <CustomButton
                 class={page() === 0 ? "invisible" : ""}
-                onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
+                onClick={() => {
+                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
+                  setSearchParams({ page: page() + 1 });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
               >
                 Back
               </CustomButton>
@@ -185,11 +193,13 @@ const StatsText = () => {
                     ? "invisible"
                     : ""
                 }
-                onClick={() =>
+                onClick={() => {
                   setPage((prev) =>
                     texts.data?.total / ((prev + 1) * 25) <= 1 ? prev : prev + 1
-                  )
-                }
+                  );
+                  setSearchParams({ page: page() + 1 });
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
               >
                 Next
               </CustomButton>

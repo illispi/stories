@@ -162,7 +162,8 @@ const AllStatsPage: ParentComponent = () => {
                         ref={(el: Element) => setTargets((p) => [...p, el])}
                         shown={shown()}
                         removeShown={removeShown}
-                        selector={selector}
+                        pOrT={params.pOrT}
+                        fOrT={params.fOrT}
                       />
                     )}
                   </For>

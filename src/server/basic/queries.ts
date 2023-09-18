@@ -374,9 +374,9 @@ export const textPagination = query$({
   queryFn: async ({ payload }) => {
     let stats = db
       .selectFrom(
-        payload.personalOrTheir === "personal"
-          ? "Personal_questions"
-          : "Their_questions"
+        payload.fake === "fake"
+          ? `${payload.personalOrTheir}_fake`
+          : payload.personalOrTheir
       )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
       .where(payload.stat as keyof PersonalQuestions, "is not", null)
@@ -397,13 +397,13 @@ export const textPagination = query$({
 
     const { count } = db.fn;
 
-    //NOTE there has to better way than this to get count than duplicate functions
+    //NOTE there has to better way than this to get count than duplicate functions, ask in kysely discord
 
     let length = db
       .selectFrom(
-        payload.personalOrTheir === "personal"
-          ? "Personal_questions"
-          : "Their_questions"
+        payload.fake === "fake"
+          ? `${payload.personalOrTheir}_fake`
+          : payload.personalOrTheir
       )
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
       .where("accepted", "=", "accepted");
@@ -427,7 +427,8 @@ export const textPagination = query$({
     stat: z.string(),
     gender: z.enum(["Female", "Other", "Male"]).nullable(),
     diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
-    personalOrTheir: z.enum(["personal", "their"]),
+    personalOrTheir: z.enum(["Personal_questions", "Their_questions"]),
+    fake: z.enum(["real", "fake"]),
   }),
 });
 export const articlesPagination = query$({

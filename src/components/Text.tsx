@@ -10,7 +10,8 @@ export const TextComponent: Component<{
   header: string;
   stat: keyof PersonalQuestions;
   data: MainReturn | undefined;
-  selector: "personal" | "their";
+  pOrT: string;
+  fOrT: string;
 }> = (props) => {
   return (
     <>
@@ -29,9 +30,10 @@ export const TextComponent: Component<{
           </For>
 
           <A
-            href={route("/texts/:selector/:statsText", {
-              selector: props.selector,
+            href={route("/texts/:pOrT/:fOrT/:statsText", {
+              pOrT: props.pOrT,
               statsText: props.stat,
+              fOrT: props.fOrT,
             })}
           >
             <div
