@@ -46,25 +46,25 @@ const Questions: ParentComponent<{
                         {
                           opacity: 0,
                           transform: "translate(340px)",
-                          easing: "ease-in",
+                          easing: "ease-in-out",
                         },
                         { opacity: 1, transform: "translate(0)" },
                       ],
                       {
-                        duration: 450,
+                        duration: 600,
                       }
                     )
                   : el.animate(
                       [
                         {
                           opacity: 0,
-                          transform: "translate(340px)",
-                          easing: "ease-in",
+                          transform: "translate(-340px)",
+                          easing: "ease-in-out",
                         },
                         { opacity: 1, transform: "translate(0)" },
                       ],
                       {
-                        duration: 450,
+                        duration: 600,
                       }
                     );
               a.finished.then(done);
@@ -77,15 +77,15 @@ const Questions: ParentComponent<{
                         {
                           opacity: 1,
                           transform: "translate(0)",
-                          easing: "ease-in",
+                          easing: "ease-in-out",
                         },
                         {
                           opacity: 0,
-                          transform: "translate(-340px)",
+                          transform: "translate(340px)",
                         },
                       ],
                       {
-                        duration: 450,
+                        duration: 600,
                       }
                     )
                   : el.animate(
@@ -93,7 +93,7 @@ const Questions: ParentComponent<{
                         {
                           opacity: 1,
                           transform: "translate(0)",
-                          easing: "ease-in",
+                          easing: "ease-in-out",
                         },
                         {
                           opacity: 0,
@@ -101,7 +101,7 @@ const Questions: ParentComponent<{
                         },
                       ],
                       {
-                        duration: 450,
+                        duration: 600,
                       }
                     );
               a.finished.then(done);
