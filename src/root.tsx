@@ -1,6 +1,6 @@
 // @refresh reload
-import "./root.css";
-import { Suspense, createEffect, createSignal, onMount } from "solid-js";
+import { QueryProvider } from "@prpc/solid";
+import { Suspense, createEffect } from "solid-js";
 import {
   Body,
   ErrorBoundary,
@@ -13,12 +13,9 @@ import {
   Title,
 } from "solid-start";
 import NavBar from "./components/Navbar";
-import { QueryProvider } from "@prpc/solid";
+import "./root.css";
 // import GlobalTransition from "./components/GlobalTransition";
-import Footer from "./components/Footer";
-import { Transition } from "solid-transition-group";
 import TransitionSlide from "./components/TransitionSlide";
-import TransitionFade from "./components/TransitionFade";
 
 export default function Root() {
   createEffect(() => {
@@ -38,14 +35,11 @@ export default function Root() {
           <Suspense>
             <ErrorBoundary>
               <NavBar />
-              <div class="flex min-h-screen flex-col">
-                <TransitionSlide>
-                  <Routes>
-                    <FileRoutes />
-                  </Routes>
-                </TransitionSlide>
-              </div>
-              <Footer />
+              <TransitionSlide>
+                <Routes>
+                  <FileRoutes />
+                </Routes>
+              </TransitionSlide>
             </ErrorBoundary>
           </Suspense>
           <Scripts />
