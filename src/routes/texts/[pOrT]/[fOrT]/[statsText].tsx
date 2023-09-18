@@ -1,6 +1,6 @@
-import { Motion, Presence } from "@motionone/solid";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { useParams, useSearchParams } from "solid-start";
+import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
 import ToggleButton from "~/components/ToggleButton";
 import { questions } from "~/data/personalQuestionsArr";
@@ -58,13 +58,25 @@ const StatsText = () => {
       >
         Clear Filters
       </CustomButton>
-      <Presence>
+      <Transition
+        onEnter={(el, done) => {
+          const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 500,
+            easing: "ease-in-out",
+          });
+          a.finished.then(done);
+        }}
+        onExit={(el, done) => {
+          const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 500,
+            easing: "ease-in-out",
+          });
+          a.finished.then(done);
+        }}
+      >
         <Show when={filter()}>
-          <Motion.div
+          <div
             class="relative z-40"
-            animate={{ opacity: [0, 1] }}
-            transition={{ duration: 0.5, easing: "ease-in-out" }}
-            exit={{ opacity: [1, 0] }}
           >
             <div
               onClick={() => {
@@ -162,9 +174,9 @@ const StatsText = () => {
                 Filter
               </CustomButton>
             </div>
-          </Motion.div>
+          </div>
         </Show>
-      </Presence>
+      </Transition>
       <Suspense fallback={<div>Loading</div>}>
         <ErrorBoundary
           fallback={(err) => {

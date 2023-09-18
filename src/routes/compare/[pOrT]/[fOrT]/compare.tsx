@@ -1,26 +1,25 @@
-import { Motion, Presence } from "@motionone/solid";
 import type { Component, Setter } from "solid-js";
 import {
-  ErrorBoundary,
   For,
   Show,
   Suspense,
   batch,
   createEffect,
   createSignal,
-  onCleanup,
+  onCleanup
 } from "solid-js";
+import { useParams } from "solid-start";
+import { Transition } from "solid-transition-group";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import ModalPopUp from "~/components/ModalPopUp";
 import ToggleButton from "~/components/ToggleButton";
+import { byDiagnosisPersonal } from "~/data/stats/comparePersonal/byDiagnosisPersonal";
+import { byGenderPersonal } from "~/data/stats/comparePersonal/byGenderPersonal";
+import { byDiagnosisTheir } from "~/data/stats/compareTheir/byDiagnosisTheir";
+import { byGenderTheir } from "~/data/stats/compareTheir/byGenderTheir";
 import { allStats } from "~/server/basic/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
-import { useParams } from "solid-start";
-import { byGenderPersonal } from "~/data/stats/comparePersonal/byGenderPersonal";
-import { byGenderTheir } from "~/data/stats/compareTheir/byGenderTheir";
-import { byDiagnosisPersonal } from "~/data/stats/comparePersonal/byDiagnosisPersonal";
-import { byDiagnosisTheir } from "~/data/stats/compareTheir/byDiagnosisTheir";
 
 type CompareOptions =
   | "all"
@@ -134,14 +133,24 @@ const Compared: Component<{
         Change Genders
       </CustomButton>
 
-      <Presence>
+      <Transition
+        onEnter={(el, done) => {
+          const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+            duration: 500,
+            easing: "ease-in-out",
+          });
+          a.finished.then(done);
+        }}
+        onExit={(el, done) => {
+          const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 500,
+            easing: "ease-in-out",
+          });
+          a.finished.then(done);
+        }}
+      >
         <Show when={genderModalVisible()}>
-          <Motion.div
-            class="relative z-40"
-            animate={{ opacity: [0, 1] }}
-            transition={{ duration: 0.5, easing: "ease-in-out" }}
-            exit={{ opacity: [1, 0] }}
-          >
+          <div class="relative z-40">
             <div
               onClick={() => {
                 setGenderModalVisible(false);
@@ -201,9 +210,9 @@ const Compared: Component<{
                 Compare
               </CustomButton>
             </div>
-          </Motion.div>
+          </div>
         </Show>
-      </Presence>
+      </Transition>
     </div>
   );
 };
