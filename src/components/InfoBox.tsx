@@ -8,7 +8,7 @@ const InfoBox: Component<{
   route: string;
 }> = (props) => {
   return (
-    <div class="flex max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+    <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
       <h2 class="text-2xl font-bold lg:text-3xl">{props.header}</h2>
       <p class="text-lg">{props.text}</p>
       <A

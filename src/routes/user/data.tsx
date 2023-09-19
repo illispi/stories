@@ -4,15 +4,18 @@ import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedUser from "~/components/ProtectedUser";
 import { removeAccountAndData } from "~/server/user/userMutations";
+import { getPersonal } from "~/server/user/userQueries";
 
 export const { routeData, Page } = ProtectedUser((session) => {
   //TODO DELETE ACCOUNT
   //TODO DELETE PERSONAL AND MULTIPLE THEIR
   //TODO EDIT TOO PERSONAL TEXT
-  //TODO UPDATE DEPS AND KYSELY ADAPTER
   //TODO test roles
 
   const removeAccAndDataMut = removeAccountAndData();
+  const getPersonalQ = getPersonal();
+
+  console.log(getPersonalQ.data);
 
   return (
     <div class="flex flex-col items-center justify-start">
