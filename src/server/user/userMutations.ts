@@ -2,6 +2,7 @@ import { mutation$ } from "@prpc/solid";
 import { ServerError } from "solid-start";
 import { auth } from "~/auth/lucia";
 import { db } from "../server";
+import { z } from "zod";
 
 export const removeAccountAndData = mutation$({
   mutationFn: async ({ request$ }) => {
@@ -19,6 +20,7 @@ export const removeAccountAndData = mutation$({
       .executeTakeFirstOrThrow();
 
     if (user.id && user.role === "user") {
+      //NOTE this is just user role, dont want to delete admin
       await db
         .deleteFrom("auth_user")
         .where("id", "=", user.id)
@@ -46,11 +48,13 @@ export const removePersonal = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (user.id && user.role === "user") {
+    if (user.id && user.role) {
       await db
         .deleteFrom("Personal_questions")
         .where("user", "=", user.id)
         .executeTakeFirst();
+
+      return "Deleted personal data";
     } else {
       //TODO add status codes also
       throw new ServerError("Access denied");
@@ -58,8 +62,8 @@ export const removePersonal = mutation$({
   },
   key: "removePersonal",
 });
-export const editPersonalDeclined = mutation$({
-  mutationFn: async ({ request$ }) => {
+export const removeTheir = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
     const authRequest = auth.handleRequest(request$);
     const session = await authRequest.validate();
 
@@ -73,26 +77,19 @@ export const editPersonalDeclined = mutation$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (user.id && user.role === "user") {
-      const personalQuery = db
-        .selectFrom("Personal_questions")
-        .select([
-          "describe_hospital",
-          "what_kind_of_care_after",
-          "personality_before",
-          "personality_after",
-          "other_help",
-          "goals_after",
-          "responded_to_telling",
-          "life_satisfaction_description",
-          "what_others_should_know",
-          "not_have_schizophrenia_description",
-        ])
-        .where("user", "=", user.id);
+    if (user.id) {
+      await db
+        .deleteFrom("Their_questions")
+        .where("user", "=", user.id)
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+
+      return "Deleted personal data";
     } else {
       //TODO add status codes also
       throw new ServerError("Access denied");
     }
   },
-  key: "removePersonal",
+  key: "removeTheir",
+  schema: z.object({ id: z.number() }),
 });
