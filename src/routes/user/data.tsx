@@ -82,7 +82,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowPersonal(() => !showPersonal());
             }}
           >
-            {`${!showPersonal() ? "Show" : "close"} personal questions data`}
+            {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
           <Show when={showPersonal()}>
             <Suspense>
@@ -147,7 +147,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowTheirs(() => !showTheirs());
             }}
           >
-            {`${!showTheirs() ? "Show" : "close"} your other poll data`}
+            {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
           </CustomButton>
           <Show when={showTheirs()}>
             {/* TODO what if this empty see personal */}
@@ -186,7 +186,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowArticles(() => !showArticles());
             }}
           >
-            {`${!showArticles() ? "Show" : "close"} your shared articles`}
+            {`${!showArticles() ? "Show" : "Close"} your shared articles`}
           </CustomButton>
           <Show when={showArticles()}>
             {/* TODO what if this empty see personal */}
