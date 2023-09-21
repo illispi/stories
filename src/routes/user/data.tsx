@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/solid-query";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
@@ -15,15 +16,22 @@ export const { routeData, Page } = ProtectedUser((session) => {
   //TODO test roles
 
   //NOTE only delete, no edit, due to validation
+  const queryClient = useQueryClient();
 
   const [showPersonal, setShowPersonal] = createSignal(false);
   const [showTheirs, setShowTheirs] = createSignal(false);
   const removeAccAndDataMut = removeAccountAndData();
   const personal = getPersonal();
-  const removePersonalMut = removePersonal();
-  const removeTheirMut = removeTheir();
+  const removePersonalMut = removePersonal(() => ({
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["getPersonal"] }),
+  }));
+  const removeTheirMut = removeTheir(() => ({
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getTheirs"] }),
+  }));
   const their = getTheirs();
   console.log(personal.data); //BUG without this, SSR doesnt work
+  console.log(their.data); //BUG without this, SSR doesnt work
 
   return (
     <div class="flex flex-col items-center justify-start">
@@ -49,14 +57,17 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </CustomButton>
           <CustomButton
             onClick={() => {
-              setShowPersonal(true);
+              setShowPersonal(() => !showPersonal());
             }}
           >
             Show personal questions data
           </CustomButton>
           <Show when={showPersonal()}>
             <Suspense>
-              <Show when={personal.data}>
+              <Show
+                when={personal.data != "No personal poll data found"}
+                fallback={<p>No personal data found yet</p>}
+              >
                 <>
                   <CustomButton
                     onClick={() => {
@@ -81,10 +92,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </Show>
           <CustomButton
             onClick={() => {
-              setShowTheirs(true);
+              setShowTheirs(() => !showTheirs());
             }}
           >
-            Show personal questions data
+            Show your other poll data
           </CustomButton>
           <Show when={showTheirs()}>
             <Suspense>

@@ -18,12 +18,16 @@ export const getPersonal = query$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (userDb.id && (userDb.role === "user" || userDb.role === "admin")) {
+    if (userDb.id && userDb.role) {
       const unSafe = await db
         .selectFrom("Personal_questions")
         .selectAll()
         .where("user", "=", userDb.id)
-        .executeTakeFirstOrThrow();
+        .executeTakeFirst();
+
+      if (!unSafe) {
+        return "No personal poll data found";
+      }
 
       const { user, created_at, id, ...safe } = unSafe;
 
@@ -50,9 +54,9 @@ export const getTheirs = query$({
       .where("id", "=", session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (userDb.id && (userDb.role === "user" || userDb.role === "admin")) {
+    if (userDb.id && userDb.role) {
       const unSafe = await db
-        .selectFrom("Personal_questions")
+        .selectFrom("Their_questions")
         .selectAll()
         .where("user", "=", userDb.id)
         .execute();
