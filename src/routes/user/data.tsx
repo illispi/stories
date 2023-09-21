@@ -49,9 +49,9 @@ export const { routeData, Page } = ProtectedUser((session) => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] }),
   }));
 
-  // console.log(personal.data); //BUG without this, SSR doesnt work
-  // console.log(their.data); //BUG without this, SSR doesnt work
-  // console.log(articles.data); //BUG without this, SSR doesnt work
+  console.log(personal.data); //BUG without this, SSR doesnt work
+  console.log(their.data); //BUG without this, SSR doesnt work
+  console.log(articles.data); //BUG without this, SSR doesnt work
 
   return (
     <div class="flex flex-col items-center justify-start">
