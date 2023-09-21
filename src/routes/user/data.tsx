@@ -49,9 +49,11 @@ export const { routeData, Page } = ProtectedUser((session) => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] }),
   }));
 
-  console.log(personal.data); //BUG without this, SSR doesnt work
-  console.log(their.data); //BUG without this, SSR doesnt work
-  console.log(articles.data); //BUG without this, SSR doesnt work
+  //BUG now it doesnt work if this are logged, for some reason
+
+  // console.log(personal.data); //BUG without this, SSR doesnt work
+  // console.log(their.data); //BUG without this, SSR doesnt work
+  // console.log(articles.data); //BUG without this, SSR doesnt work
 
   return (
     <div class="flex flex-col items-center justify-start">
@@ -80,7 +82,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowPersonal(() => !showPersonal());
             }}
           >
-            Show personal questions data
+            {`${!showPersonal() ? "Show" : "close"} personal questions data`}
           </CustomButton>
           <Show when={showPersonal()}>
             <Suspense>
@@ -145,36 +147,38 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowTheirs(() => !showTheirs());
             }}
           >
-            Show your other poll data
+            {`${!showTheirs() ? "Show" : "close"} your other poll data`}
           </CustomButton>
           <Show when={showTheirs()}>
             {/* TODO what if this empty see personal */}
             <Suspense>
-              <For each={their.data}>
-                {(their) => (
-                  <Box>
-                    <CustomButton
-                      onClick={() => {
-                        removeTheirMut.mutateAsync({ id: their.id });
-                      }}
-                    >
-                      Delete this poll data
-                    </CustomButton>
-                    <h2 class="text-2xl font-bold lg:text-3xl">
-                      Their personality before:
-                    </h2>
-                    <p>{their.personality_before}</p>
-                    <h2 class="text-2xl font-bold lg:text-3xl">
-                      Their personality after:
-                    </h2>
-                    <p>{their.personality_after}</p>
-                    <h2 class="text-2xl font-bold lg:text-3xl">
-                      What others should know about schizophrenia:
-                    </h2>
-                    <p>{their.what_others_should_know}</p>
-                  </Box>
-                )}
-              </For>
+              <div>
+                <For each={their.data}>
+                  {(their) => (
+                    <Box>
+                      <CustomButton
+                        onClick={() => {
+                          removeTheirMut.mutateAsync({ id: their.id });
+                        }}
+                      >
+                        Delete this poll data
+                      </CustomButton>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Their personality before:
+                      </h2>
+                      <p>{their.personality_before}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Their personality after:
+                      </h2>
+                      <p>{their.personality_after}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        What others should know about schizophrenia:
+                      </h2>
+                      <p>{their.what_others_should_know}</p>
+                    </Box>
+                  )}
+                </For>
+              </div>
             </Suspense>
           </Show>
           <CustomButton
@@ -182,27 +186,29 @@ export const { routeData, Page } = ProtectedUser((session) => {
               setShowArticles(() => !showArticles());
             }}
           >
-            Show your shared articles
+            {`${!showArticles() ? "Show" : "close"} your shared articles`}
           </CustomButton>
           <Show when={showArticles()}>
             {/* TODO what if this empty see personal */}
             <Suspense>
-              <For each={articles.data}>
-                {(article) => (
-                  <Box>
-                    <CustomButton
-                      onClick={() => {
-                        removeArticleMut.mutateAsync({ id: article.id });
-                      }}
-                    >
-                      Delete this article
-                    </CustomButton>
+              <div>
+                <For each={articles.data}>
+                  {(article) => (
+                    <Box>
+                      <CustomButton
+                        onClick={() => {
+                          removeArticleMut.mutateAsync({ id: article.id });
+                        }}
+                      >
+                        Delete this article
+                      </CustomButton>
 
-                    <p>{article.link}</p>
-                    <p>{article.description}</p>
-                  </Box>
-                )}
-              </For>
+                      <p>{article.link}</p>
+                      <p>{article.description}</p>
+                    </Box>
+                  )}
+                </For>
+              </div>
             </Suspense>
           </Show>
         </ErrorBoundary>
