@@ -93,3 +93,35 @@ export const removeTheir = mutation$({
   key: "removeTheir",
   schema: z.object({ id: z.number() }),
 });
+
+export const removeArticle = mutation$({
+  mutationFn: async ({ payload, request$ }) => {
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
+
+    if (!session) {
+      throw new ServerError("Session not found");
+    }
+
+    const user = await db
+      .selectFrom("auth_user")
+      .select(["id", "role"])
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (user.id) {
+      await db
+        .deleteFrom("Articles")
+        .where("user", "=", user.id)
+        .where("id", "=", payload.id)
+        .executeTakeFirst();
+
+      return "Deleted article data";
+    } else {
+      //TODO add status codes also
+      throw new ServerError("Access denied");
+    }
+  },
+  key: "removeArticle",
+  schema: z.object({ id: z.number() }),
+});
