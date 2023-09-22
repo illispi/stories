@@ -93,6 +93,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
             onClick={() => {
               setShowPersonal(() => !showPersonal());
             }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showPersonal(),
+            }}
           >
             {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
@@ -143,6 +147,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
           <CustomButton
             onClick={() => {
               setShowTheirs(() => !showTheirs());
+            }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showTheirs(),
             }}
           >
             {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
@@ -197,6 +205,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
           <CustomButton
             onClick={() => {
               setShowArticles(() => !showArticles());
+            }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showArticles(),
             }}
           >
             {`${!showArticles() ? "Show" : "Close"} your shared articles`}
