@@ -24,7 +24,19 @@ const Box: ParentComponent = (props) => {
 export const { routeData, Page } = ProtectedUser((session) => {
   //TODO test roles
 
-  //NOTE only delete, no edit, due to validation
+  const headers = {
+    describe_hospital: "Describe hospital:",
+    what_kind_of_care_after: "What kind of hospital care:",
+    personality_before: "Your personality before:",
+    personality_after: "Your personality after:",
+    other_help: "Other help beyond medication:",
+    goals_after: "Life goals after illness",
+    responded_to_telling: "How people responded to you:",
+    life_satisfaction_description: "Your life satisfaction",
+    what_others_should_know: "What others should know about illness",
+    not_have_schizophrenia_description: "Have or not have schizophrenia",
+  };
+
   const queryClient = useQueryClient();
 
   const [showPersonal, setShowPersonal] = createSignal(false);
@@ -108,48 +120,20 @@ export const { routeData, Page } = ProtectedUser((session) => {
                       >
                         Delete this personal poll data
                       </CustomButton>
-                      <Show when={data().describe_hospital}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          Describe hospital:
-                        </h2>
-                        <p>{data().describe_hospital}</p>
-                      </Show>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        What kind of hospital care:
-                      </h2>
-                      <p>{data().what_kind_of_care_after}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Your personality before:
-                      </h2>
-                      <p>{data().personality_before}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Your personality after:
-                      </h2>
-                      <p>{data().personality_after}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Other help beyond medication:
-                      </h2>
-                      <p>{data().other_help}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Life goals after illness:
-                      </h2>
-                      <p>{data().goals_after}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        How people responded to you:
-                      </h2>
-                      <p>{data().responded_to_telling}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Your life satisfaction:
-                      </h2>
-                      <p>{data().life_satisfaction_description}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        What others should know about illness:
-                      </h2>
-                      <p>{data().what_others_should_know}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Have or not have schizophrenia:
-                      </h2>
-                      <p>{data().not_have_schizophrenia_description}</p>
+                      <For
+                        each={
+                          Object.keys(headers) as Array<keyof typeof headers>
+                        }
+                      >
+                        {(el) => (
+                          <Show when={data()[el]}>
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              {headers[el]}
+                            </h2>
+                            <p>{data()[el]}</p>
+                          </Show>
+                        )}
+                      </For>
                     </ErrorBoundary>
                   </Box>
                 )}
