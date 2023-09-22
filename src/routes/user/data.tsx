@@ -87,58 +87,72 @@ export const { routeData, Page } = ProtectedUser((session) => {
           <Show when={showPersonal()}>
             <Suspense>
               <Show
-                when={personal.data != "No personal poll data found"}
+                when={personal.data}
                 fallback={<p>No personal data found yet</p>}
               >
-                <Box>
-                  <CustomButton
-                    onClick={() => {
-                      removePersonalMut.mutateAsync();
-                    }}
-                  >
-                    Delete this personal poll data
-                  </CustomButton>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Describe hospital:
-                  </h2>
-                  <p>{personal.data?.describe_hospital}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    What kind of hospital care:
-                  </h2>
-                  <p>{personal.data?.what_kind_of_care_after}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Your personality before:
-                  </h2>
-                  <p>{personal.data?.personality_before}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Your personality after:
-                  </h2>
-                  <p>{personal.data?.personality_after}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Other help beyond medication:
-                  </h2>
-                  <p>{personal.data?.other_help}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Life goals after illness:
-                  </h2>
-                  <p>{personal.data?.goals_after}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    How people responded to you:
-                  </h2>
-                  <p>{personal.data?.responded_to_telling}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Your life satisfaction:
-                  </h2>
-                  <p>{personal.data?.life_satisfaction_description}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    What others should know about illness:
-                  </h2>
-                  <p>{personal.data?.what_others_should_know}</p>
-                  <h2 class="text-2xl font-bold lg:text-3xl">
-                    Have or not have schizophrenia:
-                  </h2>
-                  <p>{personal.data?.not_have_schizophrenia_description}</p>
-                </Box>
+                {(data) => (
+                  <Box>
+                    <ErrorBoundary
+                      fallback={(e) => (
+                        <Show
+                          when={e.message === "No personal poll data found"}
+                        >
+                          <p>No personal poll data found</p>
+                        </Show>
+                      )}
+                    >
+                      <CustomButton
+                        onClick={() => {
+                          removePersonalMut.mutateAsync();
+                        }}
+                      >
+                        Delete this personal poll data
+                      </CustomButton>
+                      <Show when={data().describe_hospital}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          Describe hospital:
+                        </h2>
+                        <p>{data().describe_hospital}</p>
+                      </Show>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        What kind of hospital care:
+                      </h2>
+                      <p>{data().what_kind_of_care_after}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Your personality before:
+                      </h2>
+                      <p>{data().personality_before}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Your personality after:
+                      </h2>
+                      <p>{data().personality_after}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Other help beyond medication:
+                      </h2>
+                      <p>{data().other_help}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Life goals after illness:
+                      </h2>
+                      <p>{data().goals_after}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        How people responded to you:
+                      </h2>
+                      <p>{data().responded_to_telling}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Your life satisfaction:
+                      </h2>
+                      <p>{data().life_satisfaction_description}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        What others should know about illness:
+                      </h2>
+                      <p>{data().what_others_should_know}</p>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Have or not have schizophrenia:
+                      </h2>
+                      <p>{data().not_have_schizophrenia_description}</p>
+                    </ErrorBoundary>
+                  </Box>
+                )}
               </Show>
             </Suspense>
           </Show>
@@ -156,25 +170,40 @@ export const { routeData, Page } = ProtectedUser((session) => {
                 <For each={their.data}>
                   {(their) => (
                     <Box>
-                      <CustomButton
-                        onClick={() => {
-                          removeTheirMut.mutateAsync({ id: their.id });
-                        }}
+                      <ErrorBoundary
+                        fallback={(e) => (
+                          <Show when={e.message === "No other poll data found"}>
+                            <p>No other poll data found</p>
+                          </Show>
+                        )}
                       >
-                        Delete this poll data
-                      </CustomButton>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Their personality before:
-                      </h2>
-                      <p>{their.personality_before}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Their personality after:
-                      </h2>
-                      <p>{their.personality_after}</p>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        What others should know about schizophrenia:
-                      </h2>
-                      <p>{their.what_others_should_know}</p>
+                        <CustomButton
+                          onClick={() => {
+                            removeTheirMut.mutateAsync({ id: their.id });
+                          }}
+                        >
+                          Delete this poll data
+                        </CustomButton>
+                        <Show when={their.personality_before}>
+                          <h2 class="text-2xl font-bold lg:text-3xl">
+                            Their personality before:
+                          </h2>
+                          <p>{their.personality_before}</p>
+                        </Show>
+                        <Show when={their.personality_after}>
+                          <h2 class="text-2xl font-bold lg:text-3xl">
+                            Their personality after:
+                          </h2>
+
+                          <p>{their.personality_after}</p>
+                        </Show>
+                        <Show when={their.what_others_should_know}>
+                          <h2 class="text-2xl font-bold lg:text-3xl">
+                            What others should know about schizophrenia:
+                          </h2>
+                          <p>{their.what_others_should_know}</p>
+                        </Show>
+                      </ErrorBoundary>
                     </Box>
                   )}
                 </For>
@@ -195,16 +224,24 @@ export const { routeData, Page } = ProtectedUser((session) => {
                 <For each={articles.data}>
                   {(article) => (
                     <Box>
-                      <CustomButton
-                        onClick={() => {
-                          removeArticleMut.mutateAsync({ id: article.id });
-                        }}
+                      <ErrorBoundary
+                        fallback={(e) => (
+                          <Show when={e.message === "No articles found"}>
+                            <p>No articles found</p>
+                          </Show>
+                        )}
                       >
-                        Delete this article
-                      </CustomButton>
+                        <CustomButton
+                          onClick={() => {
+                            removeArticleMut.mutateAsync({ id: article.id });
+                          }}
+                        >
+                          Delete this article
+                        </CustomButton>
 
-                      <p>{article.link}</p>
-                      <p>{article.description}</p>
+                        <p>{article.link}</p>
+                        <p>{article.description}</p>
+                      </ErrorBoundary>
                     </Box>
                   )}
                 </For>

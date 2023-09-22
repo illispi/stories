@@ -26,7 +26,7 @@ export const getPersonal = query$({
         .executeTakeFirst();
 
       if (!unSafe) {
-        return "No personal poll data found";
+        throw new ServerError("No personal poll data found", { status: 404 });
       }
 
       const { user, created_at, id, ...safe } = unSafe;
@@ -60,6 +60,10 @@ export const getTheirs = query$({
         .selectAll()
         .where("user", "=", userDb.id)
         .execute();
+
+      if (!unSafe) {
+        throw new ServerError("No other poll data found", { status: 404 });
+      }
 
       const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
         const { user, created_at, ...safeTemp } = unSafeEl;
@@ -95,6 +99,10 @@ export const getArticles = query$({
         .selectAll()
         .where("user", "=", userDb.id)
         .execute();
+
+      if (!unSafe) {
+        throw new ServerError("No articles found", { status: 404 });
+      }
 
       const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
         const { user, created_at, ...safeTemp } = unSafeEl;

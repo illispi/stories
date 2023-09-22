@@ -10,7 +10,8 @@ export async function up(db: Kysely<any>): Promise<void> {
       "text",
       (col) => col.references("auth_user.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
-    .addColumn("accepted", "text", (col) => col.defaultTo("pending").notNull())
+    .addColumn("accepted", "boolean", (col) => col.defaultTo(null))
+    .addColumn("decline_reason", "text")
     .addColumn("diagnosis", "text", (col) =>
       col
         .notNull()
@@ -261,11 +262,10 @@ export async function up(db: Kysely<any>): Promise<void> {
         .check(sql`relation in ('relative', 'friend', 'acquintance')`)
         .notNull()
     )
-    .addColumn("accepted", "text", (col) => col.defaultTo("pending").notNull())
-    .addColumn(
-      "gender",
-      "text",
-      (col) => col.notNull().check(sql`gender in ('male', 'female', 'other')`) //NOTE check if this actually works first thing.
+    .addColumn("accepted", "boolean", (col) => col.defaultTo(null))
+    .addColumn("decline_reason", "text")
+    .addColumn("gender", "text", (col) =>
+      col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
     .addColumn("age_of_onset", "integer", (col) => col.notNull())
     .addColumn("current_age", "integer", (col) => col.notNull())

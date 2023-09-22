@@ -397,7 +397,7 @@ export const textPagination = query$({
 
     const { count } = db.fn;
 
-    //NOTE there has to better way than this to get count than duplicate functions, ask in kysely discord
+    //TODO there has to better way than this to get count than duplicate functions, ask in kysely discord
 
     let length = db
       .selectFrom(
