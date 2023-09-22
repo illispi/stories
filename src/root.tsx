@@ -16,6 +16,15 @@ import NavBar from "./components/Navbar";
 import "./root.css";
 // import GlobalTransition from "./components/GlobalTransition";
 import TransitionSlide from "./components/TransitionSlide";
+import { QueryClient } from "@tanstack/solid-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 
 export default function Root() {
   createEffect(() => {
@@ -31,7 +40,7 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-        <QueryProvider>
+        <QueryProvider queryClient={queryClient}>
           <Suspense>
             <ErrorBoundary>
               <NavBar />
