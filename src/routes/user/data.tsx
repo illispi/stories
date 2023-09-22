@@ -45,9 +45,15 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
   const removeAccAndDataMut = removeAccountAndData();
 
-  const personal = getPersonal();
-  const their = getTheirs();
-  const articles = getArticles();
+  const personal = getPersonal(undefined, () => ({
+    placeholderData: (prev) => prev,
+  }));
+  const their = getTheirs(undefined, () => ({
+    placeholderData: (prev) => prev,
+  }));
+  const articles = getArticles(undefined, () => ({
+    placeholderData: (prev) => prev,
+  }));
 
   const removePersonalMut = removePersonal(() => ({
     onSuccess: () =>
@@ -63,7 +69,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
   //BUG now it doesnt work if this are logged, for some reason
 
-  // console.log(personal.data); //BUG without this, SSR doesnt work
+  //console.log(personal.data); //BUG without this, SSR doesnt work
   // console.log(their.data); //BUG without this, SSR doesnt work
   // console.log(articles.data); //BUG without this, SSR doesnt work
 
@@ -100,50 +106,39 @@ export const { routeData, Page } = ProtectedUser((session) => {
           >
             {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
-          <Show when={showPersonal()}>
-            <Suspense>
-              <Show
-                when={personal.data}
-                fallback={<p>No personal data found yet</p>}
-              >
-                {(data) => (
-                  <Box>
-                    <ErrorBoundary
-                      fallback={(e) => (
-                        <Show
-                          when={e.message === "No personal poll data found"}
-                        >
-                          <p>No personal poll data found</p>
-                        </Show>
-                      )}
-                    >
-                      <CustomButton
-                        onClick={() => {
-                          removePersonalMut.mutateAsync();
-                        }}
-                      >
-                        Delete this personal poll data
-                      </CustomButton>
-                      <For
-                        each={
-                          Object.keys(headers) as Array<keyof typeof headers>
-                        }
-                      >
-                        {(el) => (
-                          <Show when={data()[el]}>
-                            <h2 class="text-2xl font-bold lg:text-3xl">
-                              {headers[el]}
-                            </h2>
-                            <p>{data()[el]}</p>
-                          </Show>
-                        )}
-                      </For>
-                    </ErrorBoundary>
-                  </Box>
-                )}
-              </Show>
-            </Suspense>
-          </Show>
+          <Suspense>
+            <Show when={showPersonal()}>
+              <Box>
+                <ErrorBoundary
+                  fallback={(e) => (
+                    <Show when={e.message === "No personal poll data found"}>
+                      <p>No personal poll data found</p>
+                    </Show>
+                  )}
+                >
+                  <CustomButton
+                    onClick={() => {
+                      removePersonalMut.mutateAsync();
+                    }}
+                  >
+                    Delete this personal poll data
+                  </CustomButton>
+                  <For
+                    each={Object.keys(headers) as Array<keyof typeof headers>}
+                  >
+                    {(el) => (
+                      <Show when={personal.data?.[el]}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          {headers[el]}
+                        </h2>
+                        <p>{personal.data?.[el]}</p>
+                      </Show>
+                    )}
+                  </For>
+                </ErrorBoundary>
+              </Box>
+            </Show>
+          </Suspense>
           <CustomButton
             onClick={() => {
               setShowTheirs(() => !showTheirs());
@@ -155,9 +150,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
           >
             {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
           </CustomButton>
-          <Show when={showTheirs()}>
-            {/* TODO what if this empty see personal */}
-            <Suspense>
+          <Suspense>
+            <Show when={showTheirs()}>
               <div>
                 <For each={their.data}>
                   {(their) => (
@@ -200,8 +194,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
                   )}
                 </For>
               </div>
-            </Suspense>
-          </Show>
+            </Show>
+          </Suspense>
           <CustomButton
             onClick={() => {
               setShowArticles(() => !showArticles());
@@ -213,9 +207,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
           >
             {`${!showArticles() ? "Show" : "Close"} your shared articles`}
           </CustomButton>
-          <Show when={showArticles()}>
-            {/* TODO what if this empty see personal */}
-            <Suspense>
+          <Suspense>
+            <Show when={showArticles()}>
               <div>
                 <For each={articles.data}>
                   {(article) => (
@@ -242,8 +235,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
                   )}
                 </For>
               </div>
-            </Suspense>
-          </Show>
+            </Show>
+          </Suspense>
         </ErrorBoundary>
       </Suspense>
     </div>

@@ -42,8 +42,8 @@ export default function Root() {
               </TransitionSlide>
             </ErrorBoundary>
           </Suspense>
-          <Scripts />
         </QueryProvider>
+        <Scripts />
       </Body>
     </Html>
   );
