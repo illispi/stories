@@ -109,13 +109,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
           <Suspense>
             <Show when={showPersonal()}>
               <Box>
-                <ErrorBoundary
-                  fallback={(e) => (
-                    <Show when={e.message === "No personal poll data found"}>
-                      <p>No personal poll data found</p>
-                    </Show>
-                  )}
-                >
+                <ErrorBoundary fallback={(e) => <div>{e?.message} </div>}>
                   <CustomButton
                     onClick={() => {
                       removePersonalMut.mutateAsync();
@@ -156,13 +150,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                 <For each={their.data}>
                   {(their) => (
                     <Box>
-                      <ErrorBoundary
-                        fallback={(e) => (
-                          <Show when={e.message === "No other poll data found"}>
-                            <p>No other poll data found</p>
-                          </Show>
-                        )}
-                      >
+                      <ErrorBoundary fallback={(e) => <div>{e?.message} </div>}>
                         <CustomButton
                           onClick={() => {
                             removeTheirMut.mutateAsync({ id: their.id });
@@ -214,11 +202,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                   {(article) => (
                     <Box>
                       <ErrorBoundary
-                        fallback={(e) => (
-                          <Show when={e.message === "No articles found"}>
-                            <p>No articles found</p>
-                          </Show>
-                        )}
+                        fallback={(e) => <div>{e?.message} </div>}
                       >
                         <CustomButton
                           onClick={() => {

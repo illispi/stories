@@ -5,36 +5,40 @@ import { db } from "../server";
 
 export const getPersonal = query$({
   queryFn: async ({ request$ }) => {
-    const authRequest = auth.handleRequest(request$);
-    const session = await authRequest.validate();
+    try {
+      const authRequest = auth.handleRequest(request$);
+      const session = await authRequest.validate();
 
-    if (!session) {
-      throw new ServerError("Session not found");
-    }
-
-    const userDb = await db
-      .selectFrom("auth_user")
-      .select(["id", "role"])
-      .where("id", "=", session.user?.userId)
-      .executeTakeFirstOrThrow();
-
-    if (userDb.id && userDb.role) {
-      const unSafe = await db
-        .selectFrom("Personal_questions")
-        .selectAll()
-        .where("user", "=", userDb.id)
-        .executeTakeFirst();
-
-      if (!unSafe) {
-        throw new ServerError("No personal poll data found", { status: 404 });
+      if (!session) {
+        throw new Error("Session not found");
       }
 
-      const { user, created_at, id, ...safe } = unSafe;
+      const userDb = await db
+        .selectFrom("auth_user")
+        .select(["id", "role"])
+        .where("id", "=", session.user?.userId)
+        .executeTakeFirstOrThrow();
 
-      return safe;
-    } else {
-      //TODO add status codes also
-      throw new ServerError("Access denied");
+      if (userDb.id && userDb.role) {
+        const unSafe = await db
+          .selectFrom("Personal_questions")
+          .selectAll()
+          .where("user", "=", userDb.id)
+          .executeTakeFirst();
+
+        if (!unSafe) {
+          throw new Error("No personal poll data found");
+        }
+
+        const { user, created_at, id, ...safe } = unSafe;
+
+        return safe;
+      } else {
+        //TODO add status codes also
+        throw new Error("Access denied");
+      }
+    } catch (error) {
+      throw new ServerError(error.message);
     }
   },
   key: "getPersonal",
