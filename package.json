@@ -65,7 +65,7 @@
     "zod": "^3.22.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "jest": {
     "preset": "@next-auth/adapter-test/jest"
