@@ -3,6 +3,7 @@ import type { ParentComponent } from "solid-js";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
+import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import ProtectedUser from "~/components/ProtectedUser";
 import {
@@ -107,40 +108,38 @@ export const { routeData, Page } = ProtectedUser((session) => {
             {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
           <Suspense>
-            <div class={`wrapper ${showPersonal() ? "is-open" : ""}`}>
-              <div class="inner">
-                <Box>
-                  <Show
-                    when={personal.data}
-                    fallback={
-                      <div class="text-lg font-bold">
-                        No personal poll data found
-                      </div>
-                    }
+            <CssTranstionGrow duration={0.5} visible={showPersonal()}>
+              <Box>
+                <Show
+                  when={personal.data}
+                  fallback={
+                    <div class="text-lg font-bold">
+                      No personal poll data found
+                    </div>
+                  }
+                >
+                  <CustomButton
+                    onClick={() => {
+                      removePersonalMut.mutateAsync();
+                    }}
                   >
-                    <CustomButton
-                      onClick={() => {
-                        removePersonalMut.mutateAsync();
-                      }}
-                    >
-                      Delete this personal poll data
-                    </CustomButton>
-                    <For
-                      each={Object.keys(headers) as Array<keyof typeof headers>}
-                    >
-                      {(el) => (
-                        <Show when={personal.data?.[el]}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            {headers[el]}
-                          </h2>
-                          <p>{personal.data?.[el]}</p>
-                        </Show>
-                      )}
-                    </For>
-                  </Show>
-                </Box>
-              </div>
-            </div>
+                    Delete this personal poll data
+                  </CustomButton>
+                  <For
+                    each={Object.keys(headers) as Array<keyof typeof headers>}
+                  >
+                    {(el) => (
+                      <Show when={personal.data?.[el]}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          {headers[el]}
+                        </h2>
+                        <p>{personal.data?.[el]}</p>
+                      </Show>
+                    )}
+                  </For>
+                </Show>
+              </Box>
+            </CssTranstionGrow>
           </Suspense>
           <CustomButton
             onClick={() => {

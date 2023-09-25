@@ -9,17 +9,3 @@ select,
 a {
   -webkit-tap-highlight-color: transparent;
 }
-
-.wrapper {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s ease-out;
-}
-
-.wrapper.is-open {
-  grid-template-rows: 1fr;
-}
-
-.inner {
-  overflow: hidden;
-}
