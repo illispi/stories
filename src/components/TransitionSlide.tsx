@@ -1,4 +1,4 @@
-import type { ParentComponent} from "solid-js";
+import type { ParentComponent } from "solid-js";
 import { Show, createSignal } from "solid-js";
 import { Transition } from "solid-transition-group";
 import Footer from "./Footer";
@@ -60,15 +60,35 @@ const TransitionSlide: ParentComponent = (props) => {
       </Transition>
       <Transition
         onEnter={(el, done) => {
-          const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: 300,
-          });
+          const a = el.animate(
+            [
+              {
+                opacity: 0,
+                transform: "translate(100px)",
+                easing: "ease-out",
+              },
+              { opacity: 1, transform: "translate(0)" },
+            ],
+            {
+              duration: 300,
+            }
+          );
           a.finished.then(done);
         }}
         onExit={(el, done) => {
-          const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: 300,
-          });
+          const a = el.animate(
+            [
+              {
+                opacity: 1,
+                transform: "translate(0)",
+                easing: "ease-in",
+              },
+              { opacity: 0, transform: "translate(-100px)" },
+            ],
+            {
+              duration: 300,
+            }
+          );
           a.finished.then(done);
         }}
       >
