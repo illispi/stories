@@ -28,11 +28,11 @@ const queryClient = new QueryClient({
 });
 
 export default function Root() {
-  createEffect(() => {
-    window.addEventListener("popstate", () => {
-      document.body.dataset.nav = "true";
-    });
-  });
+  // createEffect(() => {
+  //   window.addEventListener("popstate", () => {
+  //     document.body.dataset.nav = "true";
+  //   });
+  // });
   return (
     <Html lang="en">
       <Head>
