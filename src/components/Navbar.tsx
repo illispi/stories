@@ -50,10 +50,10 @@ const Hamburger: Component<{
   });
 
   return (
-    <div class="relative">
-      <div class="flex items-center justify-center transition-transform active:scale-125">
+    <>
+      <div class="relative flex items-center justify-center">
         <button
-          class="p-3 transition-transform duration-200 ease-out hover:scale-125"
+          class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 "
           onClick={() => {
             if (searchParams.nav === "true") {
               setSearchParams({ nav: null });
@@ -66,8 +66,9 @@ const Hamburger: Component<{
             when={searchParams.nav === "true"}
             fallback={
               <svg
+                width="32"
+                height="32"
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-8 w-8"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -82,8 +83,9 @@ const Hamburger: Component<{
             }
           >
             <svg
+              width="32"
+              height="32"
               xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -144,7 +146,7 @@ const Hamburger: Component<{
           </svg>
         </button>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -155,7 +157,11 @@ const NavBar: Component = () => {
     <>
       <Title>Home</Title>
       <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
-        <A class=" p-3" noScroll={true} href={route("/")}>
+        <A
+          class="p-3 transition-transform duration-200 ease-out hover:scale-125"
+          noScroll={true}
+          href={route("/")}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
