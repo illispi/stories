@@ -15,7 +15,7 @@ import { getArticles, getPersonal, getTheirs } from "~/server/user/userQueries";
 
 const Box: ParentComponent = (props) => {
   return (
-    <div class="my-8 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+    <div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
       {props.children}
     </div>
   );
@@ -75,15 +75,15 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
   return (
     <div class="flex flex-col items-center justify-start">
-      <Suspense>
-        <ErrorBoundary
-          fallback={(e) => (
-            <Show when={e.message === "Session not found"}>
-              <HttpStatusCode code={e.status} />
-              <ErrorMessage error={e} />
-            </Show>
-          )}
-        >
+      <ErrorBoundary
+        fallback={(e) => (
+          <Show when={e.message === "Session not found"}>
+            <HttpStatusCode code={e.status} />
+            <ErrorMessage error={e} />
+          </Show>
+        )}
+      >
+        <Suspense>
           <Show when={removeAccAndDataMut.isSuccess}>
             <Navigate href={"/"} />
           </Show>
@@ -109,7 +109,14 @@ export const { routeData, Page } = ProtectedUser((session) => {
           <Suspense>
             <Show when={showPersonal()}>
               <Box>
-                <ErrorBoundary fallback={(e) => <div>{e?.message} </div>}>
+                <Show
+                  when={personal.data}
+                  fallback={
+                    <div class="text-lg font-bold">
+                      No personal poll data found
+                    </div>
+                  }
+                >
                   <CustomButton
                     onClick={() => {
                       removePersonalMut.mutateAsync();
@@ -129,7 +136,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                       </Show>
                     )}
                   </For>
-                </ErrorBoundary>
+                </Show>
               </Box>
             </Show>
           </Suspense>
@@ -146,42 +153,45 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </CustomButton>
           <Suspense>
             <Show when={showTheirs()}>
-              <div>
+              <Show
+                when={their.data}
+                fallback={
+                  <div class="text-lg font-bold">No other poll data found</div>
+                }
+              >
                 <For each={their.data}>
                   {(their) => (
                     <Box>
-                      <ErrorBoundary fallback={(e) => <div>{e?.message} </div>}>
-                        <CustomButton
-                          onClick={() => {
-                            removeTheirMut.mutateAsync({ id: their.id });
-                          }}
-                        >
-                          Delete this poll data
-                        </CustomButton>
-                        <Show when={their.personality_before}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            Their personality before:
-                          </h2>
-                          <p>{their.personality_before}</p>
-                        </Show>
-                        <Show when={their.personality_after}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            Their personality after:
-                          </h2>
+                      <CustomButton
+                        onClick={() => {
+                          removeTheirMut.mutateAsync({ id: their.id });
+                        }}
+                      >
+                        Delete this poll data
+                      </CustomButton>
+                      <Show when={their.personality_before}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          Their personality before:
+                        </h2>
+                        <p>{their.personality_before}</p>
+                      </Show>
+                      <Show when={their.personality_after}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          Their personality after:
+                        </h2>
 
-                          <p>{their.personality_after}</p>
-                        </Show>
-                        <Show when={their.what_others_should_know}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            What others should know about schizophrenia:
-                          </h2>
-                          <p>{their.what_others_should_know}</p>
-                        </Show>
-                      </ErrorBoundary>
+                        <p>{their.personality_after}</p>
+                      </Show>
+                      <Show when={their.what_others_should_know}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          What others should know about schizophrenia:
+                        </h2>
+                        <p>{their.what_others_should_know}</p>
+                      </Show>
                     </Box>
                   )}
                 </For>
-              </div>
+              </Show>
             </Show>
           </Suspense>
           <CustomButton
@@ -197,34 +207,39 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </CustomButton>
           <Suspense>
             <Show when={showArticles()}>
-              <div>
+              <Show
+                when={articles.data}
+                fallback={
+                  <div class="text-lg font-bold">
+                    No articles submitted found
+                  </div>
+                }
+              >
                 <For each={articles.data}>
                   {(article) => (
                     <Box>
-                      <ErrorBoundary
-                        fallback={(e) => <div>{e?.message} </div>}
+                      <CustomButton
+                        onClick={() => {
+                          removeArticleMut.mutateAsync({ id: article.id });
+                        }}
                       >
-                        <CustomButton
-                          onClick={() => {
-                            removeArticleMut.mutateAsync({ id: article.id });
-                          }}
-                        >
-                          Delete this article
-                        </CustomButton>
+                        Delete this article
+                      </CustomButton>
 
-                        <p>{article.link}</p>
-                        <p>{article.description}</p>
-                      </ErrorBoundary>
+                      <p>{article.link}</p>
+                      <p>{article.description}</p>
                     </Box>
                   )}
                 </For>
-              </div>
+              </Show>
             </Show>
           </Suspense>
-        </ErrorBoundary>
-      </Suspense>
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 });
 
 export default Page;
+
+//TODO suspense should be under errorBoundary1

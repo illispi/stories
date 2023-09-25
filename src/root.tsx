@@ -17,6 +17,7 @@ import "./root.css";
 // import GlobalTransition from "./components/GlobalTransition";
 import TransitionSlide from "./components/TransitionSlide";
 import { QueryClient } from "@tanstack/solid-query";
+import CustomButton from "./components/CustomButton";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,16 +42,25 @@ export default function Root() {
       </Head>
       <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
         <QueryProvider queryClient={queryClient}>
-          <Suspense>
-            <ErrorBoundary>
+          <ErrorBoundary
+            fallback={(e, reset) => {
+              return (
+                <div>
+                  <h2>{e.message}</h2>
+                  <CustomButton onClick={reset}>Try again</CustomButton>
+                </div>
+              );
+            }}
+          >
+            <Suspense>
               <NavBar />
               <TransitionSlide>
                 <Routes>
                   <FileRoutes />
                 </Routes>
               </TransitionSlide>
-            </ErrorBoundary>
-          </Suspense>
+            </Suspense>
+          </ErrorBoundary>
         </QueryProvider>
         <Scripts />
       </Body>

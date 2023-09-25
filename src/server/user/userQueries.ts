@@ -5,40 +5,36 @@ import { db } from "../server";
 
 export const getPersonal = query$({
   queryFn: async ({ request$ }) => {
-    try {
-      const authRequest = auth.handleRequest(request$);
-      const session = await authRequest.validate();
+    const authRequest = auth.handleRequest(request$);
+    const session = await authRequest.validate();
 
-      if (!session) {
-        throw new Error("Session not found");
+    if (!session) {
+      throw new ServerError("Session not found"); //TODO should be servererror;
+    }
+
+    const userDb = await db
+      .selectFrom("auth_user")
+      .select(["id", "role"])
+      .where("id", "=", session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (userDb.id && userDb.role) {
+      const unSafe = await db
+        .selectFrom("Personal_questions")
+        .selectAll()
+        .where("user", "=", userDb.id)
+        .executeTakeFirst();
+
+      if (!unSafe) {
+        return null;
       }
 
-      const userDb = await db
-        .selectFrom("auth_user")
-        .select(["id", "role"])
-        .where("id", "=", session.user?.userId)
-        .executeTakeFirstOrThrow();
+      const { user, created_at, id, ...safe } = unSafe;
 
-      if (userDb.id && userDb.role) {
-        const unSafe = await db
-          .selectFrom("Personal_questions")
-          .selectAll()
-          .where("user", "=", userDb.id)
-          .executeTakeFirst();
-
-        if (!unSafe) {
-          throw new Error("No personal poll data found");
-        }
-
-        const { user, created_at, id, ...safe } = unSafe;
-
-        return safe;
-      } else {
-        //TODO add status codes also
-        throw new Error("Access denied");
-      }
-    } catch (error) {
-      throw new ServerError(error.message);
+      return safe;
+    } else {
+      //TODO add status codes also
+      throw new Error("Access denied");
     }
   },
   key: "getPersonal",
@@ -66,7 +62,7 @@ export const getTheirs = query$({
         .execute();
 
       if (!unSafe) {
-        throw new ServerError("No other poll data found", { status: 404 });
+        return null;
       }
 
       const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
@@ -105,7 +101,7 @@ export const getArticles = query$({
         .execute();
 
       if (!unSafe) {
-        throw new ServerError("No articles found", { status: 404 });
+        return null;
       }
 
       const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
