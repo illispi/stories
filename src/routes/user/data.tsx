@@ -30,11 +30,11 @@ export const { routeData, Page } = ProtectedUser((session) => {
     personality_before: "Your personality before:",
     personality_after: "Your personality after:",
     other_help: "Other help beyond medication:",
-    goals_after: "Life goals after illness",
+    goals_after: "Life goals after illness:",
     responded_to_telling: "How people responded to you:",
-    life_satisfaction_description: "Your life satisfaction",
-    what_others_should_know: "What others should know about illness",
-    not_have_schizophrenia_description: "Have or not have schizophrenia",
+    life_satisfaction_description: "Your life satisfaction:",
+    what_others_should_know: "What others should know about illness:",
+    not_have_schizophrenia_description: "Have or not have schizophrenia:",
   };
 
   const queryClient = useQueryClient();
@@ -107,38 +107,40 @@ export const { routeData, Page } = ProtectedUser((session) => {
             {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
           <Suspense>
-            <Show when={showPersonal()}>
-              <Box>
-                <Show
-                  when={personal.data}
-                  fallback={
-                    <div class="text-lg font-bold">
-                      No personal poll data found
-                    </div>
-                  }
-                >
-                  <CustomButton
-                    onClick={() => {
-                      removePersonalMut.mutateAsync();
-                    }}
+            <div class={`wrapper ${showPersonal() ? "is-open" : ""}`}>
+              <div class="inner">
+                <Box>
+                  <Show
+                    when={personal.data}
+                    fallback={
+                      <div class="text-lg font-bold">
+                        No personal poll data found
+                      </div>
+                    }
                   >
-                    Delete this personal poll data
-                  </CustomButton>
-                  <For
-                    each={Object.keys(headers) as Array<keyof typeof headers>}
-                  >
-                    {(el) => (
-                      <Show when={personal.data?.[el]}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          {headers[el]}
-                        </h2>
-                        <p>{personal.data?.[el]}</p>
-                      </Show>
-                    )}
-                  </For>
-                </Show>
-              </Box>
-            </Show>
+                    <CustomButton
+                      onClick={() => {
+                        removePersonalMut.mutateAsync();
+                      }}
+                    >
+                      Delete this personal poll data
+                    </CustomButton>
+                    <For
+                      each={Object.keys(headers) as Array<keyof typeof headers>}
+                    >
+                      {(el) => (
+                        <Show when={personal.data?.[el]}>
+                          <h2 class="text-2xl font-bold lg:text-3xl">
+                            {headers[el]}
+                          </h2>
+                          <p>{personal.data?.[el]}</p>
+                        </Show>
+                      )}
+                    </For>
+                  </Show>
+                </Box>
+              </div>
+            </div>
           </Suspense>
           <CustomButton
             onClick={() => {
