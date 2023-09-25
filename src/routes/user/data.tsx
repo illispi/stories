@@ -69,7 +69,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   }));
 
   return (
-    <div class="flex h-full w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+    <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <ErrorBoundary
         fallback={(e) => (
           <Show when={e.message === "Session not found"}>
@@ -78,169 +78,165 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </Show>
         )}
       >
-        <div class="my-16 lg:my-48">
+        <Suspense>
+          <Show when={removeAccAndDataMut.isSuccess}>
+            {/* TODO needs confirmation modal */}
+            <Navigate href={"/"} />
+          </Show>
+          <CustomButton
+            class="my-32"
+            onClick={() => {
+              removeAccAndDataMut.mutateAsync();
+            }}
+          >
+            Delete account and data
+          </CustomButton>
+          <CustomButton
+            onClick={() => {
+              setShowPersonal(() => !showPersonal());
+            }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showPersonal(),
+            }}
+          >
+            {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
+          </CustomButton>
           <Suspense>
-            <Show when={removeAccAndDataMut.isSuccess}>
-              {/* TODO needs confirmation modal */}
-              <Navigate href={"/"} />
-            </Show>
-            <CustomButton
-              class="my-32"
-              onClick={() => {
-                removeAccAndDataMut.mutateAsync();
-              }}
-            >
-              Delete account and data
-            </CustomButton>
-            <CustomButton
-              onClick={() => {
-                setShowPersonal(() => !showPersonal());
-              }}
-              classList={{
-                ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                  showPersonal(),
-              }}
-            >
-              {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
-            </CustomButton>
-            <Suspense>
-              <CssTranstionGrow duration={0.5} visible={showPersonal()}>
-                <Box>
-                  <Show
-                    when={personal.data}
-                    fallback={
-                      <div class="text-lg font-bold">
-                        No personal poll data found
-                      </div>
-                    }
+            <CssTranstionGrow duration={0.5} visible={showPersonal()}>
+              <Box>
+                <Show
+                  when={personal.data}
+                  fallback={
+                    <div class="text-lg font-bold">
+                      No personal poll data found
+                    </div>
+                  }
+                >
+                  <CustomButton
+                    onClick={() => {
+                      removePersonalMut.mutateAsync();
+                    }}
                   >
-                    <CustomButton
-                      onClick={() => {
-                        removePersonalMut.mutateAsync();
-                      }}
-                    >
-                      Delete this personal poll data
-                    </CustomButton>
-                    <For
-                      each={Object.keys(headers) as Array<keyof typeof headers>}
-                    >
-                      {(el) => (
-                        <Show when={personal.data?.[el]}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            {headers[el]}
-                          </h2>
-                          <p>{personal.data?.[el]}</p>
-                        </Show>
-                      )}
-                    </For>
-                  </Show>
-                </Box>
-              </CssTranstionGrow>
-            </Suspense>
-            <CustomButton
-              onClick={() => {
-                setShowTheirs(() => !showTheirs());
-              }}
-              classList={{
-                ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                  showTheirs(),
-              }}
-            >
-              {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
-            </CustomButton>
-            <Suspense>
-              <CssTranstionGrow
-                visible={showTheirs()}
-                duration={their.data?.length * 0.01} //TODO this is bit stupid at least for many, consider pagination
-              >
-                <Show
-                  when={their.data}
-                  fallback={
-                    <div class="text-lg font-bold">
-                      No other poll data found
-                    </div>
-                  }
-                >
-                  <For each={their.data}>
-                    {(their) => (
-                      <Box>
-                        <CustomButton
-                          onClick={() => {
-                            removeTheirMut.mutateAsync({ id: their.id });
-                          }}
-                        >
-                          Delete this poll data
-                        </CustomButton>
-                        <Show when={their.personality_before}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            Their personality before:
-                          </h2>
-                          <p>{their.personality_before}</p>
-                        </Show>
-                        <Show when={their.personality_after}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            Their personality after:
-                          </h2>
-
-                          <p>{their.personality_after}</p>
-                        </Show>
-                        <Show when={their.what_others_should_know}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            What others should know about schizophrenia:
-                          </h2>
-                          <p>{their.what_others_should_know}</p>
-                        </Show>
-                      </Box>
+                    Delete this personal poll data
+                  </CustomButton>
+                  <For
+                    each={Object.keys(headers) as Array<keyof typeof headers>}
+                  >
+                    {(el) => (
+                      <Show when={personal.data?.[el]}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          {headers[el]}
+                        </h2>
+                        <p>{personal.data?.[el]}</p>
+                      </Show>
                     )}
                   </For>
                 </Show>
-              </CssTranstionGrow>
-            </Suspense>
-            <CustomButton
-              onClick={() => {
-                setShowArticles(() => !showArticles());
-              }}
-              classList={{
-                ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                  showArticles(),
-              }}
-            >
-              {`${!showArticles() ? "Show" : "Close"} your shared articles`}
-            </CustomButton>
-            <Suspense>
-              <CssTranstionGrow
-                visible={showArticles()}
-                duration={articles.data?.length * 0.01}
-              >
-                <Show
-                  when={articles.data}
-                  fallback={
-                    <div class="text-lg font-bold">
-                      No articles submitted found
-                    </div>
-                  }
-                >
-                  <For each={articles.data}>
-                    {(article) => (
-                      <Box>
-                        <CustomButton
-                          onClick={() => {
-                            removeArticleMut.mutateAsync({ id: article.id });
-                          }}
-                        >
-                          Delete this article
-                        </CustomButton>
-
-                        <p>{article.link}</p>
-                        <p>{article.description}</p>
-                      </Box>
-                    )}
-                  </For>
-                </Show>
-              </CssTranstionGrow>
-            </Suspense>
+              </Box>
+            </CssTranstionGrow>
           </Suspense>
-        </div>
+          <CustomButton
+            onClick={() => {
+              setShowTheirs(() => !showTheirs());
+            }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showTheirs(),
+            }}
+          >
+            {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
+          </CustomButton>
+          <Suspense>
+            <CssTranstionGrow
+              visible={showTheirs()}
+              duration={their.data?.length * 0.01} //TODO this is bit stupid at least for many, consider pagination
+            >
+              <Show
+                when={their.data}
+                fallback={
+                  <div class="text-lg font-bold">No other poll data found</div>
+                }
+              >
+                <For each={their.data}>
+                  {(their) => (
+                    <Box>
+                      <CustomButton
+                        onClick={() => {
+                          removeTheirMut.mutateAsync({ id: their.id });
+                        }}
+                      >
+                        Delete this poll data
+                      </CustomButton>
+                      <Show when={their.personality_before}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          Their personality before:
+                        </h2>
+                        <p>{their.personality_before}</p>
+                      </Show>
+                      <Show when={their.personality_after}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          Their personality after:
+                        </h2>
+
+                        <p>{their.personality_after}</p>
+                      </Show>
+                      <Show when={their.what_others_should_know}>
+                        <h2 class="text-2xl font-bold lg:text-3xl">
+                          What others should know about schizophrenia:
+                        </h2>
+                        <p>{their.what_others_should_know}</p>
+                      </Show>
+                    </Box>
+                  )}
+                </For>
+              </Show>
+            </CssTranstionGrow>
+          </Suspense>
+          <CustomButton
+            onClick={() => {
+              setShowArticles(() => !showArticles());
+            }}
+            classList={{
+              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
+                showArticles(),
+            }}
+          >
+            {`${!showArticles() ? "Show" : "Close"} your shared articles`}
+          </CustomButton>
+          <Suspense>
+            <CssTranstionGrow
+              visible={showArticles()}
+              duration={articles.data?.length * 0.01}
+            >
+              <Show
+                when={articles.data}
+                fallback={
+                  <div class="text-lg font-bold">
+                    No articles submitted found
+                  </div>
+                }
+              >
+                <For each={articles.data}>
+                  {(article) => (
+                    <Box>
+                      <CustomButton
+                        onClick={() => {
+                          removeArticleMut.mutateAsync({ id: article.id });
+                        }}
+                      >
+                        Delete this article
+                      </CustomButton>
+
+                      <p>{article.link}</p>
+                      <p>{article.description}</p>
+                    </Box>
+                  )}
+                </For>
+              </Show>
+            </CssTranstionGrow>
+          </Suspense>
+        </Suspense>
       </ErrorBoundary>
     </div>
   );
