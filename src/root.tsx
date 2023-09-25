@@ -28,11 +28,10 @@ const queryClient = new QueryClient({
 });
 
 export default function Root() {
-  // createEffect(() => {
-  //   window.addEventListener("popstate", () => {
-  //     document.body.dataset.nav = "true";
-  //   });
-  // });
+  createEffect(() => {
+    history.scrollRestoration = "manual";
+  });
+
   return (
     <Html lang="en">
       <Head>

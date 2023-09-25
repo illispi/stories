@@ -6,13 +6,23 @@ import Footer from "./Footer";
 const TransitionSlide: ParentComponent = (props) => {
   const [vis, setVis] = createSignal(false);
 
+  const [reload, setReload] = createSignal(true);
   const [scrollPrev, setScrollPrev] = createSignal(0);
   const [scrollTo, setScrollTo] = createSignal(0);
   const [scrollNow, setScrollNow] = createSignal(false);
+  const [scrollReload, setScrollReload] = createSignal(0);
 
   createEffect(() => {
     window.addEventListener("popstate", () => {
       setScrollNow(true);
+    });
+
+    window.addEventListener("scroll", () => {
+      setScrollReload(window.scrollY);
+    });
+
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("scrollPos", String(scrollReload()));
     });
   });
   return (
@@ -21,14 +31,18 @@ const TransitionSlide: ParentComponent = (props) => {
         onBeforeExit={() => {
           setScrollPrev(scrollTo());
           setScrollTo(window.scrollY);
+          setReload(false);
           setVis(false);
         }}
         onEnter={(el, done) => {
           if (scrollNow() === true) {
+            console.log("should be here");
             window.scrollTo(0, scrollPrev());
             setScrollNow(false);
-          } else {
+          } else if (reload() === false) {
             window.scrollTo(0, 0);
+          } else {
+            window.scrollTo(0, Number(localStorage.getItem("scrollPos") ?? 0));
           }
 
           const a = el.animate(
