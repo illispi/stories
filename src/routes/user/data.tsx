@@ -6,6 +6,7 @@ import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
+import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
@@ -228,80 +229,69 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </CustomButton>
               <Suspense>
                 <CssTranstionGrow visible={showTheirs()}>
-                  <Box>
-                    <div class="flex items-center justify-center">
-                      <CustomButton
-                        class={pageTheir() === 0 ? "invisible" : ""}
-                        onClick={() => {
-                          setPageTheir((prev) => (prev === 0 ? 0 : prev - 1));
-                        }}
-                      >
-                        Back
-                      </CustomButton>
-                      <h5 class="text-lg font-bold">{`Page: ${
-                        pageTheir() + 1
-                      }/${Math.floor(Number(their.data?.length) + 1)}`}</h5>
-
-                      <CustomButton
-                        class={
-                          their.data?.length === pageTheir() ? "invisible" : ""
-                        }
-                        onClick={() => {
-                          setPageTheir((prev) =>
-                            their.data?.length < prev - 1 ? prev : prev + 1
-                          );
-                        }}
-                        // BUG this crashes if you go beyond last
-                      >
-                        Next
-                      </CustomButton>
-                    </div>
-
-                    <TransitionSlide>
-                      <Show when={pageTheir() === 0 ? true : pageTheir()} keyed>
-                        <div class="flex flex-col items-center justify-center gap-8 ">
-                          <CustomButton
-                            onClick={() => {
-                              removeTheirMut.mutateAsync({
-                                id: their.data[pageTheir()].id,
-                              });
-                            }}
-                          >
-                            Delete this poll data
-                          </CustomButton>
-                          <Show
-                            when={their.data[pageTheir()].personality_before}
-                          >
-                            <h2 class="text-2xl font-bold lg:text-3xl">
-                              Their personality before:
-                            </h2>
-                            <p>{their.data[pageTheir()].personality_before}</p>
-                          </Show>
-                          <Show
-                            when={their.data[pageTheir()].personality_after}
-                          >
-                            <h2 class="text-2xl font-bold lg:text-3xl">
-                              Their personality after:
-                            </h2>
-
-                            <p>{their.data[pageTheir()].personality_after}</p>
-                          </Show>
-                          <Show
-                            when={
-                              their.data[pageTheir()].what_others_should_know
-                            }
-                          >
-                            <h2 class="text-2xl font-bold lg:text-3xl">
-                              What others should know about schizophrenia:
-                            </h2>
-                            <p>
-                              {their.data[pageTheir()].what_others_should_know}
-                            </p>
-                          </Show>
+                  <Show when={their.data}>
+                    {(their) => (
+                      <Box>
+                        <div class="flex items-center justify-center">
+                          <PaginationNav
+                            arrLength={their().length}
+                            page={pageTheir()}
+                            perPageNum={1}
+                            setPage={setPageTheir}
+                            color="fuchsia"
+                          />
                         </div>
-                      </Show>
-                    </TransitionSlide>
-                  </Box>
+
+                        <TransitionSlide>
+                          <Show
+                            when={pageTheir() === 0 ? true : pageTheir()}
+                            keyed
+                          >
+                            <div class="flex flex-col items-center justify-center gap-8 ">
+                              <CustomButton
+                                onClick={() => {
+                                  removeTheirMut.mutateAsync({
+                                    id: their()[pageTheir()].id,
+                                  });
+                                }}
+                              >
+                                Delete this poll data
+                              </CustomButton>
+                              <Show
+                                when={their()[pageTheir()].personality_before}
+                              >
+                                <h2 class="text-2xl font-bold lg:text-3xl">
+                                  Their personality before:
+                                </h2>
+                                <p>{their()[pageTheir()].personality_before}</p>
+                              </Show>
+                              <Show
+                                when={their()[pageTheir()].personality_after}
+                              >
+                                <h2 class="text-2xl font-bold lg:text-3xl">
+                                  Their personality after:
+                                </h2>
+
+                                <p>{their()[pageTheir()].personality_after}</p>
+                              </Show>
+                              <Show
+                                when={
+                                  their()[pageTheir()].what_others_should_know
+                                }
+                              >
+                                <h2 class="text-2xl font-bold lg:text-3xl">
+                                  What others should know about schizophrenia:
+                                </h2>
+                                <p>
+                                  {their()[pageTheir()].what_others_should_know}
+                                </p>
+                              </Show>
+                            </div>
+                          </Show>
+                        </TransitionSlide>
+                      </Box>
+                    )}
+                  </Show>
                 </CssTranstionGrow>
               </Suspense>
             </Show>
@@ -340,67 +330,48 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </CustomButton>
               <Suspense>
                 <CssTranstionGrow visible={showArticles()}>
-                  <Box>
-                    <div class="flex items-center justify-center">
-                      <CustomButton
-                        class={pageArticles() === 0 ? "invisible" : ""}
-                        onClick={() => {
-                          setPageArticles((prev) =>
-                            prev === 0 ? 0 : prev - 1
-                          );
-                        }}
-                      >
-                        Back
-                      </CustomButton>
-                      <h5 class="text-lg font-bold">{`Page: ${
-                        pageArticles() + 1
-                      }/${Math.floor(Number(articles.data.length) + 1)}`}</h5>
-
-                      <CustomButton
-                        class={
-                          articles.data.length === pageArticles()
-                            ? "invisible"
-                            : ""
-                        }
-                        onClick={() => {
-                          setPageArticles((prev) =>
-                            articles.data.length < prev - 1 ? prev : prev + 1
-                          );
-                        }}
-                        // BUG this crashes if you go beyond last, same with articles
-                      >
-                        Next
-                      </CustomButton>
-                    </div>
-
-                    <TransitionSlide>
-                      <Show
-                        when={pageArticles() === 0 ? true : pageArticles()}
-                        keyed
-                      >
-                        <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
-                          <CustomButton
-                            onClick={() => {
-                              removeArticleMut.mutateAsync({
-                                id: articles.data[pageArticles()].id,
-                              });
-                            }}
-                          >
-                            Delete this article
-                          </CustomButton>
-                          <a
-                            class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
-                            href={articles.data[pageArticles()].link}
-                          >
-                            {articles.data[pageArticles()].link}
-                          </a>
-                          <p class="flex-1 text-base">
-                            {articles.data[pageArticles()].description}
-                          </p>
+                  <Show when={articles.data}>
+                    {(articles) => (
+                      <Box>
+                        <div class="flex items-center justify-center">
+                          <PaginationNav
+                            arrLength={articles().length}
+                            page={pageArticles()}
+                            perPageNum={5}
+                            setPage={setPageArticles}
+                            color="fuchsia"
+                          />
                         </div>
-                      </Show>
-                    </TransitionSlide>
-                  </Box>
+                        <TransitionSlide>
+                          <Show
+                            when={pageArticles() === 0 ? true : pageArticles()}
+                            keyed
+                          >
+                            <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
+                              <CustomButton
+                                onClick={() => {
+                                  removeArticleMut.mutateAsync({
+                                    id: articles()[pageArticles()].id,
+                                  });
+                                }}
+                              >
+                                Delete this article
+                              </CustomButton>
+                              <a
+                                class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+                                href={articles()[pageArticles()].link}
+                              >
+                                {articles()[pageArticles()].link}
+                              </a>
+                              <p class="flex-1 text-base">
+                                {articles()[pageArticles()].description}
+                              </p>
+                            </div>
+                          </Show>
+                        </TransitionSlide>
+                      </Box>
+                    )}
+                  </Show>
                 </CssTranstionGrow>
               </Suspense>
             </Show>
