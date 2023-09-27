@@ -15,9 +15,9 @@ import {
 import NavBar from "./components/Navbar";
 import "./root.css";
 // import GlobalTransition from "./components/GlobalTransition";
-import TransitionSlide from "./components/TransitionSlide";
 import { QueryClient } from "@tanstack/solid-query";
 import CustomButton from "./components/CustomButton";
+import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,11 +53,11 @@ export default function Root() {
           >
             <Suspense>
               <NavBar />
-              <TransitionSlide>
+              <TransitionSlideGlobal>
                 <Routes>
                   <FileRoutes />
                 </Routes>
-              </TransitionSlide>
+              </TransitionSlideGlobal>
             </Suspense>
           </ErrorBoundary>
         </QueryProvider>

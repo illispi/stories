@@ -4,11 +4,11 @@ import type { ParentComponent } from "solid-js";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
-import { Transition } from "solid-transition-group";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
+import TransitionSlide from "~/components/TransitionSlide";
 import {
   removeAccountAndData,
   removeArticle,
@@ -19,7 +19,7 @@ import { getArticles, getPersonal, getTheirs } from "~/server/user/userQueries";
 
 const Box: ParentComponent = (props) => {
   return (
-    <div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+    <div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 overflow-hidden rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
       {props.children}
     </div>
   );
@@ -250,40 +250,56 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             their.data?.length < prev - 1 ? prev : prev + 1
                           );
                         }}
+                        // BUG this crashes if you go beyond last
                       >
                         Next
                       </CustomButton>
                     </div>
-                    <CustomButton
-                      onClick={() => {
-                        removeTheirMut.mutateAsync({
-                          id: their.data[pageTheir()].id,
-                        });
-                      }}
-                    >
-                      Delete this poll data
-                    </CustomButton>
-                    <Show when={their.data[pageTheir()].personality_before}>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Their personality before:
-                      </h2>
-                      <p>{their.data[pageTheir()].personality_before}</p>
-                    </Show>
-                    <Show when={their.data[pageTheir()].personality_after}>
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        Their personality after:
-                      </h2>
 
-                      <p>{their.data[pageTheir()].personality_after}</p>
-                    </Show>
-                    <Show
-                      when={their.data[pageTheir()].what_others_should_know}
-                    >
-                      <h2 class="text-2xl font-bold lg:text-3xl">
-                        What others should know about schizophrenia:
-                      </h2>
-                      <p>{their.data[pageTheir()].what_others_should_know}</p>
-                    </Show>
+                    <TransitionSlide>
+                      <Show when={pageTheir() === 0 ? true : pageTheir()} keyed>
+                        <div class="flex flex-col items-center justify-center gap-8 ">
+                          <CustomButton
+                            onClick={() => {
+                              removeTheirMut.mutateAsync({
+                                id: their.data[pageTheir()].id,
+                              });
+                            }}
+                          >
+                            Delete this poll data
+                          </CustomButton>
+                          <Show
+                            when={their.data[pageTheir()].personality_before}
+                          >
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              Their personality before:
+                            </h2>
+                            <p>{their.data[pageTheir()].personality_before}</p>
+                          </Show>
+                          <Show
+                            when={their.data[pageTheir()].personality_after}
+                          >
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              Their personality after:
+                            </h2>
+
+                            <p>{their.data[pageTheir()].personality_after}</p>
+                          </Show>
+                          <Show
+                            when={
+                              their.data[pageTheir()].what_others_should_know
+                            }
+                          >
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              What others should know about schizophrenia:
+                            </h2>
+                            <p>
+                              {their.data[pageTheir()].what_others_should_know}
+                            </p>
+                          </Show>
+                        </div>
+                      </Show>
+                    </TransitionSlide>
                   </Box>
                 </CssTranstionGrow>
               </Suspense>
