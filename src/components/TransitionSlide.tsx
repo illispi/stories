@@ -36,7 +36,6 @@ const TransitionSlide: ParentComponent = (props) => {
         }}
         onEnter={(el, done) => {
           if (scrollNow() === true) {
-            console.log("should be here");
             window.scrollTo(0, scrollPrev());
             setScrollNow(false);
           } else if (reload() === false) {

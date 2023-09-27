@@ -43,6 +43,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [showPersonal, setShowPersonal] = createSignal(false);
   const [showTheirs, setShowTheirs] = createSignal(false);
   const [showArticles, setShowArticles] = createSignal(false);
+  const [showDeleteAccount, setShowDeleteAccount] = createSignal(false);
 
   const removeAccAndDataMut = removeAccountAndData();
 
@@ -69,7 +70,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   }));
 
   return (
-    <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+    <div class="flex min-h-screen w-full flex-col items-center justify-start bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <ErrorBoundary
         fallback={(e) => (
           <Show when={e.message === "Session not found"}>
@@ -78,19 +79,58 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </Show>
         )}
       >
+        <h1 class="my-28 text-3xl font-bold lg:my-40 lg:text-4xl">
+          Your account and data
+        </h1>
         <Suspense>
-          <Show when={removeAccAndDataMut.isSuccess}>
-            {/* TODO needs confirmation modal */}
-            <Navigate href={"/"} />
-          </Show>
-          <CustomButton
-            class="my-32"
-            onClick={() => {
-              removeAccAndDataMut.mutateAsync();
-            }}
-          >
-            Delete account and data
-          </CustomButton>
+          <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              Delete account
+            </h2>
+            <p class="text-center text-lg">
+              Deletes both your account and all data you have submitted.
+            </p>
+
+            <Show when={removeAccAndDataMut.isSuccess}>
+              {/* TODO needs confirmation modal */}
+              <Navigate href={"/"} />
+            </Show>
+
+            <button
+              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              onClick={() => {
+                setShowDeleteAccount(!showDeleteAccount());
+              }}
+            >
+              {`${!showDeleteAccount() ? "Show" : "Close"}`}
+            </button>
+
+            <CssTranstionGrow visible={showDeleteAccount()}>
+              <div class="flex flex-col items-center justify-center gap-16 rounded-lg border-2 border-fuchsia-600 p-8">
+                <h2 class="text-center text-2xl font-bold lg:text-3xl">
+                  Are you sure you want to delete all your data?
+                </h2>
+                <div class="flex flex-col items-center justify-center gap-8">
+                  <CustomButton
+                    class=" bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+                    onClick={() => {
+                      removeAccAndDataMut.mutateAsync();
+                    }}
+                  >
+                    Delete account and data
+                  </CustomButton>
+                  <CustomButton
+                    onClick={() => {
+                      setShowDeleteAccount(false);
+                    }}
+                  >
+                    Cancel deleting account/data
+                  </CustomButton>
+                </div>
+              </div>
+            </CssTranstionGrow>
+          </div>
+
           <CustomButton
             onClick={() => {
               setShowPersonal(() => !showPersonal());

@@ -140,7 +140,7 @@ const articles: Component = () => {
             <>
               <div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-t-4 border-fuchsia-600 bg-white py-12 shadow-xl ">
                 <h2 class="text-2xl font-bold lg:text-3xl">
-                  Submit new article/interview
+                  Submit article/interview
                 </h2>
                 <CustomButton
                   onClick={() => {

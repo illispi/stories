@@ -53,7 +53,7 @@ const Hamburger: Component<{
     <>
       <div class="relative flex items-center justify-center">
         <button
-          class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 "
+          class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 "
           onClick={() => {
             if (searchParams.nav === "true") {
               setSearchParams({ nav: null });
@@ -158,7 +158,7 @@ const NavBar: Component = () => {
       <Title>Home</Title>
       <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
         <A
-          class="p-3 transition-transform duration-200 ease-out hover:scale-125"
+          class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
           noScroll={true}
           href={route("/")}
         >
