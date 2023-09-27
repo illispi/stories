@@ -9,12 +9,19 @@ const CssTranstionGrow: ParentComponent<{
       style={{
         display: "grid",
         "grid-template-rows": `${props.visible ? "1fr" : "0fr"}`,
+
         transition: `grid-template-rows ${
           props.duration ?? "0.5"
         }s ease-in-out`,
       }}
     >
-      <div style={{ overflow: "hidden", "grid-row": "1 / span 2" }}>
+      <div
+        class="flex items-center justify-center"
+        style={{
+          overflow: "hidden",
+          "grid-row": "1 / span 2",
+        }}
+      >
         {props.children}
       </div>
     </div>

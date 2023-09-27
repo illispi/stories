@@ -1,11 +1,14 @@
 import { useQueryClient } from "@tanstack/solid-query";
+import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
-import { ErrorMessage, Navigate } from "solid-start";
+import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
+import { Transition } from "solid-transition-group";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import ProtectedUser from "~/components/ProtectedUser";
+import TransitionFade from "~/components/TransitionFade";
 import {
   removeAccountAndData,
   removeArticle,
@@ -44,6 +47,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [showTheirs, setShowTheirs] = createSignal(false);
   const [showArticles, setShowArticles] = createSignal(false);
   const [showDeleteAccount, setShowDeleteAccount] = createSignal(false);
+  const [pageTheir, setPageTheir] = createSignal(0);
 
   const removeAccAndDataMut = removeAccountAndData();
 
@@ -70,7 +74,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   }));
 
   return (
-    <div class="flex min-h-screen w-full flex-col items-center justify-start bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+    <div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <ErrorBoundary
         fallback={(e) => (
           <Show when={e.message === "Session not found"}>
@@ -92,18 +96,17 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </p>
 
             <Show when={removeAccAndDataMut.isSuccess}>
-              {/* TODO needs confirmation modal */}
               <Navigate href={"/"} />
             </Show>
 
-            <button
-              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+            <CustomButton
+              class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
               onClick={() => {
                 setShowDeleteAccount(!showDeleteAccount());
               }}
             >
               {`${!showDeleteAccount() ? "Show" : "Close"}`}
-            </button>
+            </CustomButton>
 
             <CssTranstionGrow visible={showDeleteAccount()}>
               <div class="flex flex-col items-center justify-center gap-16 rounded-lg border-2 border-fuchsia-600 p-8">
@@ -131,108 +134,161 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </CssTranstionGrow>
           </div>
 
-          <CustomButton
-            onClick={() => {
-              setShowPersonal(() => !showPersonal());
-            }}
-            classList={{
-              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                showPersonal(),
-            }}
-          >
-            {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
-          </CustomButton>
-          <Suspense>
-            <CssTranstionGrow duration={0.5} visible={showPersonal()}>
-              <Box>
-                <Show
-                  when={personal.data}
-                  fallback={
-                    <div class="text-lg font-bold">
-                      No personal poll data found
-                    </div>
-                  }
-                >
-                  <CustomButton
-                    onClick={() => {
-                      removePersonalMut.mutateAsync();
-                    }}
+          <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              Personal poll data
+            </h2>
+            <Show
+              when={personal.data}
+              fallback={
+                <div class="flex w-full flex-col items-center justify-center gap-8">
+                  <p class="text-center text-lg">
+                    You haven't submitted personal poll data yet
+                  </p>
+                  <A
+                    class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                    href={route("/questionares/")}
+                    noScroll={false}
                   >
-                    Delete this personal poll data
-                  </CustomButton>
-                  <For
-                    each={Object.keys(headers) as Array<keyof typeof headers>}
-                  >
-                    {(el) => (
-                      <Show when={personal.data?.[el]}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          {headers[el]}
-                        </h2>
-                        <p>{personal.data?.[el]}</p>
-                      </Show>
-                    )}
-                  </For>
-                </Show>
-              </Box>
-            </CssTranstionGrow>
-          </Suspense>
-          <CustomButton
-            onClick={() => {
-              setShowTheirs(() => !showTheirs());
-            }}
-            classList={{
-              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                showTheirs(),
-            }}
-          >
-            {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
-          </CustomButton>
-          <Suspense>
-            <CssTranstionGrow
-              visible={showTheirs()}
-              duration={their.data?.length * 0.01} //TODO this is bit stupid at least for many, consider pagination
+                    Do personal poll
+                  </A>
+                </div>
+              }
             >
-              <Show
-                when={their.data}
-                fallback={
-                  <div class="text-lg font-bold">No other poll data found</div>
-                }
+              <CustomButton
+                onClick={() => {
+                  setShowPersonal(() => !showPersonal());
+                }}
               >
-                <For each={their.data}>
-                  {(their) => (
+                {`${
+                  !showPersonal() ? "Show" : "Close"
+                } personal questions data`}
+              </CustomButton>
+              <Suspense>
+                <TransitionFade>
+                  <Show when={showPersonal()}>
                     <Box>
                       <CustomButton
                         onClick={() => {
-                          removeTheirMut.mutateAsync({ id: their.id });
+                          removePersonalMut.mutateAsync();
                         }}
                       >
-                        Delete this poll data
+                        Delete this personal poll data
                       </CustomButton>
-                      <Show when={their.personality_before}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          Their personality before:
-                        </h2>
-                        <p>{their.personality_before}</p>
-                      </Show>
-                      <Show when={their.personality_after}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          Their personality after:
-                        </h2>
-
-                        <p>{their.personality_after}</p>
-                      </Show>
-                      <Show when={their.what_others_should_know}>
-                        <h2 class="text-2xl font-bold lg:text-3xl">
-                          What others should know about schizophrenia:
-                        </h2>
-                        <p>{their.what_others_should_know}</p>
-                      </Show>
+                      <For
+                        each={
+                          Object.keys(headers) as Array<keyof typeof headers>
+                        }
+                      >
+                        {(el) => (
+                          <Show when={personal.data?.[el]}>
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              {headers[el]}
+                            </h2>
+                            <p>{personal.data?.[el]}</p>
+                          </Show>
+                        )}
+                      </For>
                     </Box>
-                  )}
-                </For>
-              </Show>
-            </CssTranstionGrow>
-          </Suspense>
+                  </Show>
+                </TransitionFade>
+              </Suspense>
+            </Show>
+          </div>
+
+          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              Other poll data
+            </h2>
+            <Show
+              when={their.data}
+              fallback={
+                <div class="flex w-full flex-col items-center justify-center gap-8">
+                  <p class="text-center text-lg">
+                    You haven't submitted other poll data yet
+                  </p>
+                  <A
+                    class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                    href={route("/questionares/")}
+                    noScroll={false}
+                  >
+                    Do other poll
+                  </A>
+                </div>
+              }
+            >
+              <CustomButton
+                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                onClick={() => {
+                  setShowTheirs(() => !showTheirs());
+                }}
+              >
+                {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
+              </CustomButton>
+              <Suspense>
+                <CssTranstionGrow visible={showTheirs()}>
+                  <Box>
+                    <div class="flex items-center justify-center">
+                      <CustomButton
+                        class={pageTheir() === 0 ? "invisible" : ""}
+                        onClick={() => {
+                          setPageTheir((prev) => (prev === 0 ? 0 : prev - 1));
+                        }}
+                      >
+                        Back
+                      </CustomButton>
+                      <h5 class="text-lg font-bold">{`Page: ${
+                        pageTheir() + 1
+                      }/${Math.floor(Number(their.data?.length) + 1)}`}</h5>
+
+                      <CustomButton
+                        class={
+                          their.data?.length === pageTheir() ? "invisible" : ""
+                        }
+                        onClick={() => {
+                          setPageTheir((prev) =>
+                            their.data?.length < prev - 1 ? prev : prev + 1
+                          );
+                        }}
+                      >
+                        Next
+                      </CustomButton>
+                    </div>
+                    <CustomButton
+                      onClick={() => {
+                        removeTheirMut.mutateAsync({
+                          id: their.data[pageTheir()].id,
+                        });
+                      }}
+                    >
+                      Delete this poll data
+                    </CustomButton>
+                    <Show when={their.data[pageTheir()].personality_before}>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Their personality before:
+                      </h2>
+                      <p>{their.data[pageTheir()].personality_before}</p>
+                    </Show>
+                    <Show when={their.data[pageTheir()].personality_after}>
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        Their personality after:
+                      </h2>
+
+                      <p>{their.data[pageTheir()].personality_after}</p>
+                    </Show>
+                    <Show
+                      when={their.data[pageTheir()].what_others_should_know}
+                    >
+                      <h2 class="text-2xl font-bold lg:text-3xl">
+                        What others should know about schizophrenia:
+                      </h2>
+                      <p>{their.data[pageTheir()].what_others_should_know}</p>
+                    </Show>
+                  </Box>
+                </CssTranstionGrow>
+              </Suspense>
+            </Show>
+          </div>
           <CustomButton
             onClick={() => {
               setShowArticles(() => !showArticles());
