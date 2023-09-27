@@ -48,6 +48,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [showArticles, setShowArticles] = createSignal(false);
   const [showDeleteAccount, setShowDeleteAccount] = createSignal(false);
   const [pageTheir, setPageTheir] = createSignal(0);
+  const [pageArticles, setPageArticles] = createSignal(0);
 
   const removeAccAndDataMut = removeAccountAndData();
 
@@ -74,7 +75,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
   }));
 
   return (
-    <div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+    <div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 py-20 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <ErrorBoundary
         fallback={(e) => (
           <Show when={e.message === "Session not found"}>
@@ -305,49 +306,105 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </Suspense>
             </Show>
           </div>
-          <CustomButton
-            onClick={() => {
-              setShowArticles(() => !showArticles());
-            }}
-            classList={{
-              ["bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"]:
-                showArticles(),
-            }}
-          >
-            {`${!showArticles() ? "Show" : "Close"} your shared articles`}
-          </CustomButton>
-          <Suspense>
-            <CssTranstionGrow
-              visible={showArticles()}
-              duration={articles.data?.length * 0.01}
+
+          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              Your submitted articles
+            </h2>
+            <Show
+              when={their.data}
+              fallback={
+                <div class="flex w-full flex-col items-center justify-center gap-8">
+                  <p class="text-center text-lg">
+                    You haven't submitted any articles yet
+                  </p>
+                  <A
+                    class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                    href={route("/articles/")}
+                    noScroll={false}
+                  >
+                    Submit articles
+                  </A>
+                </div>
+              }
             >
-              <Show
-                when={articles.data}
-                fallback={
-                  <div class="text-lg font-bold">
-                    No articles submitted found
-                  </div>
-                }
+              <CustomButton
+                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                onClick={() => {
+                  setShowArticles(() => !showArticles());
+                }}
               >
-                <For each={articles.data}>
-                  {(article) => (
-                    <Box>
+                {`${
+                  !showArticles() ? "Show" : "Close"
+                } your submitted articles`}
+              </CustomButton>
+              <Suspense>
+                <CssTranstionGrow visible={showArticles()}>
+                  <Box>
+                    <div class="flex items-center justify-center">
                       <CustomButton
+                        class={pageArticles() === 0 ? "invisible" : ""}
                         onClick={() => {
-                          removeArticleMut.mutateAsync({ id: article.id });
+                          setPageArticles((prev) =>
+                            prev === 0 ? 0 : prev - 1
+                          );
                         }}
                       >
-                        Delete this article
+                        Back
                       </CustomButton>
+                      <h5 class="text-lg font-bold">{`Page: ${
+                        pageArticles() + 1
+                      }/${Math.floor(Number(articles.data.length) + 1)}`}</h5>
 
-                      <p>{article.link}</p>
-                      <p>{article.description}</p>
-                    </Box>
-                  )}
-                </For>
-              </Show>
-            </CssTranstionGrow>
-          </Suspense>
+                      <CustomButton
+                        class={
+                          articles.data.length === pageArticles()
+                            ? "invisible"
+                            : ""
+                        }
+                        onClick={() => {
+                          setPageArticles((prev) =>
+                            articles.data.length < prev - 1 ? prev : prev + 1
+                          );
+                        }}
+                        // BUG this crashes if you go beyond last, same with articles
+                      >
+                        Next
+                      </CustomButton>
+                    </div>
+
+                    <TransitionSlide>
+                      <Show
+                        when={pageArticles() === 0 ? true : pageArticles()}
+                        keyed
+                      >
+                        <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
+                          <CustomButton
+                            onClick={() => {
+                              removeArticleMut.mutateAsync({
+                                id: articles.data[pageArticles()].id,
+                              });
+                            }}
+                          >
+                            Delete this article
+                          </CustomButton>
+                          <a
+                            class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+                            href={articles.data[pageArticles()].link}
+                          >
+                            {articles.data[pageArticles()].link}
+                          </a>
+                          <p class="flex-1 text-base">
+                            {articles.data[pageArticles()].description}
+                          </p>
+                        </div>
+                      </Show>
+                    </TransitionSlide>
+                  </Box>
+                </CssTranstionGrow>
+              </Suspense>
+            </Show>
+          </div>
         </Suspense>
       </ErrorBoundary>
     </div>
