@@ -348,24 +348,32 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             keyed
                           >
                             <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
-                              <CustomButton
-                                onClick={() => {
-                                  removeArticleMut.mutateAsync({
-                                    id: articles()[pageArticles()].id,
-                                  });
-                                }}
+                              <For
+                                each={articles().splice(pageArticles() * 5, 5)}
                               >
-                                Delete this article
-                              </CustomButton>
-                              <a
-                                class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
-                                href={articles()[pageArticles()].link}
-                              >
-                                {articles()[pageArticles()].link}
-                              </a>
-                              <p class="flex-1 text-base">
-                                {articles()[pageArticles()].description}
-                              </p>
+                                {(fiveArticles) => (
+                                  <div>
+                                    <CustomButton
+                                      onClick={() => {
+                                        removeArticleMut.mutateAsync({
+                                          id: fiveArticles.id,
+                                        });
+                                      }}
+                                    >
+                                      Delete this article
+                                    </CustomButton>
+                                    <a
+                                      class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+                                      href={fiveArticles.link}
+                                    >
+                                      {fiveArticles.link}
+                                    </a>
+                                    <p class="flex-1 text-base">
+                                      {fiveArticles.description}
+                                    </p>
+                                  </div>
+                                )}
+                              </For>
                             </div>
                           </Show>
                         </TransitionSlide>
