@@ -44,7 +44,7 @@ export default function Root() {
           <ErrorBoundary
             fallback={(e, reset) => {
               return (
-                <div>
+                <div class="flex min-h-screen w-full flex-col items-center justify-center">
                   <h2>{e.message}</h2>
                   <CustomButton onClick={reset}>Try again</CustomButton>
                 </div>
