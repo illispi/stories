@@ -36,6 +36,7 @@ const PaginationNav: Component<{
   return (
     <>
       <CustomButton
+        color={props.color}
         class={props.page === 0 ? "invisible" : ""}
         onClick={() => {
           props.setPage((prev) => (prev === 0 ? 0 : prev - 1));
@@ -49,6 +50,7 @@ const PaginationNav: Component<{
       }`}</h5>
 
       <CustomButton
+        color={props.color}
         class={
           props.arrLength / ((props.page + 1) * props.perPageNum) <= 1
             ? "invisible"

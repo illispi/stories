@@ -102,7 +102,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </Show>
 
             <CustomButton
-              class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+              color="fuchsia"
               onClick={() => {
                 setShowDeleteAccount(!showDeleteAccount());
               }}
@@ -220,7 +220,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               }
             >
               <CustomButton
-                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                color="fuchsia"
                 onClick={() => {
                   setShowTheirs(() => !showTheirs());
                 }}
@@ -231,7 +231,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                 <CssTranstionGrow visible={showTheirs()}>
                   <Show when={their.data}>
                     {(their) => (
-                      <Box>
+                      <div class="flex w-full flex-col gap-16">
                         <div class="flex items-center justify-center">
                           <PaginationNav
                             arrLength={their().length}
@@ -249,6 +249,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                           >
                             <div class="flex flex-col items-center justify-center gap-8 ">
                               <CustomButton
+                                color="red"
                                 onClick={() => {
                                   removeTheirMut.mutateAsync({
                                     id: their()[pageTheir()].id,
@@ -289,7 +290,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             </div>
                           </Show>
                         </TransitionSlide>
-                      </Box>
+                      </div>
                     )}
                   </Show>
                 </CssTranstionGrow>
@@ -319,7 +320,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               }
             >
               <CustomButton
-                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                color="fuchsia"
                 onClick={() => {
                   setShowArticles(() => !showArticles());
                 }}
@@ -332,7 +333,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                 <CssTranstionGrow visible={showArticles()}>
                   <Show when={articles.data}>
                     {(articles) => (
-                      <Box>
+                      <div class="flex w-full flex-col gap-16">
                         <div class="flex items-center justify-center">
                           <PaginationNav
                             arrLength={articles().length}
@@ -352,8 +353,9 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                 each={articles().splice(pageArticles() * 5, 5)}
                               >
                                 {(fiveArticles) => (
-                                  <div>
+                                  <div class="flex w-full flex-col items-center justify-center gap-8">
                                     <CustomButton
+                                      color="red"
                                       onClick={() => {
                                         removeArticleMut.mutateAsync({
                                           id: fiveArticles.id,
@@ -368,7 +370,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                     >
                                       {fiveArticles.link}
                                     </a>
-                                    <p class="flex-1 text-base">
+                                    <p class="w-full flex-1 border-b-2 border-b-fuchsia-400 pb-8 text-base">
                                       {fiveArticles.description}
                                     </p>
                                   </div>
@@ -377,7 +379,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             </div>
                           </Show>
                         </TransitionSlide>
-                      </Box>
+                      </div>
                     )}
                   </Show>
                 </CssTranstionGrow>
@@ -392,4 +394,4 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
 export default Page;
 
-//TODO suspense should be under errorBoundary1
+//BUG counting in articles is messed up
