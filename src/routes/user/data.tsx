@@ -85,7 +85,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
           </Show>
         )}
       >
-        <h1 class="my-28 text-3xl font-bold lg:my-40 lg:text-4xl">
+        <h1 class="my-28 text-4xl font-bold lg:my-40 lg:text-6xl">
           Your account and data
         </h1>
         <Suspense>
@@ -102,7 +102,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </Show>
 
             <CustomButton
-              color="fuchsia"
+              class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
               onClick={() => {
                 setShowDeleteAccount(!showDeleteAccount());
               }}
@@ -220,7 +220,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               }
             >
               <CustomButton
-                color="fuchsia"
+                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
                 onClick={() => {
                   setShowTheirs(() => !showTheirs());
                 }}
@@ -238,7 +238,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             page={pageTheir()}
                             perPageNum={1}
                             setPage={setPageTheir}
-                            color="fuchsia"
+                            class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
                           />
                         </div>
 
@@ -249,7 +249,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                           >
                             <div class="flex flex-col items-center justify-center gap-8 ">
                               <CustomButton
-                                color="red"
+                                class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                                 onClick={() => {
                                   removeTheirMut.mutateAsync({
                                     id: their()[pageTheir()].id,
@@ -320,7 +320,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               }
             >
               <CustomButton
-                color="fuchsia"
+                class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
                 onClick={() => {
                   setShowArticles(() => !showArticles());
                 }}
@@ -340,7 +340,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             page={pageArticles()}
                             perPageNum={5}
                             setPage={setPageArticles}
-                            color="fuchsia"
+                            classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
                           />
                         </div>
                         <TransitionSlide>
@@ -350,12 +350,12 @@ export const { routeData, Page } = ProtectedUser((session) => {
                           >
                             <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
                               <For
-                                each={articles().splice(pageArticles() * 5, 5)}
+                                each={articles().slice(pageArticles() * 5, 5)}
                               >
                                 {(fiveArticles) => (
                                   <div class="flex w-full flex-col items-center justify-center gap-8">
                                     <CustomButton
-                                      color="red"
+                                      class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                                       onClick={() => {
                                         removeArticleMut.mutateAsync({
                                           id: fiveArticles.id,
@@ -394,4 +394,4 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
 export default Page;
 
-//BUG counting in articles is messed up
+//BUG counting in articles is messed up, only in SSR

@@ -5,29 +5,6 @@ import { twMerge } from "tailwind-merge";
 interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   class?: string;
   type?: "button" | "submit" | "reset";
-  color?:
-    | "slate"
-    | "gray"
-    | "zinc"
-    | "neutral"
-    | "stone"
-    | "red"
-    | "orange"
-    | "amber"
-    | "yellow"
-    | "lime"
-    | "green"
-    | "emerald"
-    | "teal"
-    | "cyan"
-    | "sky"
-    | "blue"
-    | "indigo"
-    | "violet"
-    | "purple"
-    | "fuchsia"
-    | "pink"
-    | "rose";
 }
 const CustomButton: ParentComponent<Props> = (props) => {
   const [local, others] = splitProps(props, ["class", "type"]);
@@ -36,11 +13,7 @@ const CustomButton: ParentComponent<Props> = (props) => {
     <button
       type={local.type === undefined ? "button" : local.type}
       class={twMerge(
-        `m-2 rounded-full p-3 font-semibold text-white transition-all hover:scale-110 active:scale-125 duration-200 ease-in bg-${
-          props.color ?? "blue"
-        }-500 hover:bg-${props.color ?? "blue"}-600 focus:bg-${
-          props.color ?? "blue"
-        }-600 active:bg-${props.color ?? "blue"}-600`,
+        `m-2 rounded-full p-3 font-semibold text-white transition-all hover:scale-110 active:scale-125 duration-200 ease-in bg-blue-500 hover:bg-blue-600 focus:bg-blue-600 active:bg-blue-600`,
         local.class
       )}
       {...others}
@@ -51,3 +24,5 @@ const CustomButton: ParentComponent<Props> = (props) => {
 };
 
 export default CustomButton;
+
+

@@ -2,29 +2,6 @@ import { Component, Setter } from "solid-js";
 import CustomButton from "./CustomButton";
 
 const PaginationNav: Component<{
-  color?:
-    | "slate"
-    | "gray"
-    | "zinc"
-    | "neutral"
-    | "stone"
-    | "red"
-    | "orange"
-    | "amber"
-    | "yellow"
-    | "lime"
-    | "green"
-    | "emerald"
-    | "teal"
-    | "cyan"
-    | "sky"
-    | "blue"
-    | "indigo"
-    | "violet"
-    | "purple"
-    | "fuchsia"
-    | "pink"
-    | "rose";
   classButton?: string;
   backOnClick?: () => void;
   nextOnClick?: () => void;
@@ -36,8 +13,7 @@ const PaginationNav: Component<{
   return (
     <>
       <CustomButton
-        color={props.color}
-        class={props.page === 0 ? "invisible" : ""}
+        class={props.page === 0 ? "invisible" : props.classButton}
         onClick={() => {
           props.setPage((prev) => (prev === 0 ? 0 : prev - 1));
           props.backOnClick ? props.backOnClick() : null;
@@ -50,11 +26,10 @@ const PaginationNav: Component<{
       }`}</h5>
 
       <CustomButton
-        color={props.color}
         class={
           props.arrLength / ((props.page + 1) * props.perPageNum) <= 1
             ? "invisible"
-            : ""
+            : props.classButton
         }
         onClick={() => {
           props.setPage((prev) =>
