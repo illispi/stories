@@ -133,6 +133,8 @@ const articles: Component = () => {
     })
   );
 
+  const [dir, setDir] = createSignal(1);
+
   return (
     <div class="my-16 flex w-full flex-col items-center justify-start gap-8">
       <Suspense>
@@ -170,10 +172,12 @@ const articles: Component = () => {
                 backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
+                  setDir(-1);
                 }}
                 nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
+                  setDir(1);
                 }}
               />
             </div>
@@ -183,15 +187,10 @@ const articles: Component = () => {
 
       <Show when={articlesData.data} fallback={<h2>No articles found yet!</h2>}>
         {(articles) => (
-          <TransitionSlide>
+          <TransitionSlide dir={dir()}>
             <Show when={page() === 0 ? true : page()} keyed>
               <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
-                <For
-                  each={articles().articles.slice(
-                    page() * 25,
-                    page() * 25 + 25
-                  )}
-                >
+                <For each={articles().articles}>
                   {(twentyfiveArticles) => (
                     <div class="flex w-full flex-col items-center justify-center gap-8">
                       <div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16 ">
@@ -226,10 +225,12 @@ const articles: Component = () => {
                 backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
+                  setDir(-1);
                 }}
                 nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
+                  setDir(1);
                 }}
               />
             </div>
@@ -241,3 +242,5 @@ const articles: Component = () => {
 };
 
 export default articles;
+
+//TODO does this work on real network without useTransition

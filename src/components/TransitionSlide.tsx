@@ -1,7 +1,7 @@
 import type { ParentComponent } from "solid-js";
 import { Transition } from "solid-transition-group";
 
-const TransitionSlide: ParentComponent = (props) => {
+const TransitionSlide: ParentComponent<{ dir: number }> = (props) => {
   return (
     <Transition
       onEnter={(el, done) => {
@@ -9,13 +9,13 @@ const TransitionSlide: ParentComponent = (props) => {
           [
             {
               opacity: 0,
-              transform: "translate(100px)",
-              easing: "ease-out",
+              transform: `translate(${props.dir * 100}px)`,
             },
             { opacity: 1, transform: "translate(0)" },
           ],
           {
             duration: 300,
+            easing: "ease-in-out",
           }
         );
         a.finished.then(done);
@@ -26,12 +26,12 @@ const TransitionSlide: ParentComponent = (props) => {
             {
               opacity: 1,
               transform: "translate(0)",
-              easing: "ease-in",
             },
-            { opacity: 0, transform: "translate(-100px)" },
+            { opacity: 0, transform: `translate(${props.dir * -100}px)` },
           ],
           {
             duration: 300,
+            easing: "ease-in-out",
           }
         );
         a.finished.then(done);
