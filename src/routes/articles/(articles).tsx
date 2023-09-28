@@ -7,6 +7,7 @@ import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
+import TransitionSlide from "~/components/TransitionSlide";
 import { postArticle } from "~/server/basic/mutations";
 import { articlesPagination } from "~/server/basic/queries";
 
@@ -179,22 +180,39 @@ const articles: Component = () => {
           )}
         </Show>
       </Suspense>
-      <For
-        each={articlesData.data?.articles}
-        fallback={<h2>No articles found yet!</h2>}
-      >
-        {(article) => (
-          <div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16 ">
-            <a
-              class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
-              href={article.link}
-            >
-              {article.link}
-            </a>
-            <p class="flex-1 text-base">{article.description}</p>
-          </div>
+
+      <Show when={articlesData.data} fallback={<h2>No articles found yet!</h2>}>
+        {(articles) => (
+          <TransitionSlide>
+            <Show when={page() === 0 ? true : page()} keyed>
+              <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
+                <For
+                  each={articles().articles.slice(
+                    page() * 25,
+                    page() * 25 + 25
+                  )}
+                >
+                  {(twentyfiveArticles) => (
+                    <div class="flex w-full flex-col items-center justify-center gap-8">
+                      <div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16 ">
+                        <a
+                          class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+                          href={twentyfiveArticles.link}
+                        >
+                          {twentyfiveArticles.link}
+                        </a>
+                        <p class="flex-1 text-base">
+                          {twentyfiveArticles.description}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </For>
+              </div>
+            </Show>
+          </TransitionSlide>
         )}
-      </For>
+      </Show>
       <Suspense>
         <Show when={articlesData.data?.count}>
           {(data) => (
