@@ -169,15 +169,14 @@ const articles: Component = () => {
                 perPageNum={25}
                 setPage={setPage}
                 classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                dirSetter={setDir}
                 backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                  setDir(-1);
                 }}
                 nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                  setDir(1);
                 }}
               />
             </div>
@@ -222,15 +221,14 @@ const articles: Component = () => {
                 perPageNum={25}
                 setPage={setPage}
                 classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                dirSetter={setDir}
                 backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                  setDir(-1);
                 }}
                 nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
-                  setDir(1);
                 }}
               />
             </div>

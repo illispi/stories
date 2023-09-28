@@ -3,8 +3,9 @@ import CustomButton from "./CustomButton";
 
 const PaginationNav: Component<{
   classButton?: string;
-  backOnClick?: () => void;
+  dirSetter: Setter<number>;
   nextOnClick?: () => void;
+  backOnClick?: () => void;
   page: number;
   arrLength: number;
   setPage: Setter<number>;
@@ -15,6 +16,7 @@ const PaginationNav: Component<{
       <CustomButton
         class={props.page === 0 ? "invisible" : props.classButton}
         onClick={() => {
+          props.dirSetter(-1)
           props.setPage((prev) => (prev === 0 ? 0 : prev - 1));
           props.backOnClick ? props.backOnClick() : null;
         }}
@@ -32,6 +34,7 @@ const PaginationNav: Component<{
             : props.classButton
         }
         onClick={() => {
+          props.dirSetter(1)
           props.setPage((prev) =>
             props.arrLength / ((prev + 1) * props.perPageNum) <= 1
               ? prev

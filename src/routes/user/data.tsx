@@ -51,6 +51,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [pageTheir, setPageTheir] = createSignal(0);
   const [pageArticles, setPageArticles] = createSignal(0);
 
+  const [dir, setDir] = createSignal(1);
+
   const removeAccAndDataMut = removeAccountAndData();
 
   const personal = getPersonal(undefined, () => ({
@@ -239,10 +241,11 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             perPageNum={1}
                             setPage={setPageTheir}
                             classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                            dirSetter={setDir}
                           />
                         </div>
 
-                        <TransitionSlide>
+                        <TransitionSlide dir={dir()}>
                           <Show
                             when={pageTheir() === 0 ? true : pageTheir()}
                             keyed
@@ -341,9 +344,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             perPageNum={5}
                             setPage={setPageArticles}
                             classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                            dirSetter={setDir}
                           />
                         </div>
-                        <TransitionSlide>
+                        <TransitionSlide dir={dir()}>
                           <Show
                             when={pageArticles() === 0 ? true : pageArticles()}
                             keyed
