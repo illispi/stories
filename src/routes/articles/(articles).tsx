@@ -6,6 +6,7 @@ import { useSearchParams } from "solid-start";
 import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
 import CustomButton from "~/components/CustomButton";
+import PaginationNav from "~/components/PaginationNav";
 import { postArticle } from "~/server/basic/mutations";
 import { articlesPagination } from "~/server/basic/queries";
 
@@ -159,38 +160,21 @@ const articles: Component = () => {
         <Show when={articlesData.data?.count}>
           {(data) => (
             <div class="flex w-full max-w-md items-center justify-around">
-              <CustomButton
-                class={page() === 0 ? "invisible" : ""}
-                onClick={() => {
-                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
+              <PaginationNav
+                arrLength={Number(data().count)}
+                page={page()}
+                perPageNum={25}
+                setPage={setPage}
+                classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-              >
-                Back
-              </CustomButton>
-              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                Math.floor(Number(data().count) / 25) + 1
-              }`}</h5>
-
-              <CustomButton
-                class={
-                  Number(data().count) / ((page() + 1) * 25) <= 1
-                    ? "invisible"
-                    : ""
-                }
-                onClick={() => {
-                  setPage((prev) =>
-                    Number(data().count) / ((prev + 1) * 25) <= 1
-                      ? prev
-                      : prev + 1
-                  );
+                nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-              >
-                Next
-              </CustomButton>
+              />
             </div>
           )}
         </Show>
@@ -215,38 +199,21 @@ const articles: Component = () => {
         <Show when={articlesData.data?.count}>
           {(data) => (
             <div class="flex w-full max-w-md items-center justify-around">
-              <CustomButton
-                class={page() === 0 ? "invisible" : ""}
-                onClick={() => {
-                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
+              <PaginationNav
+                arrLength={Number(data().count)}
+                page={page()}
+                perPageNum={25}
+                setPage={setPage}
+                classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                backOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-              >
-                Back
-              </CustomButton>
-              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                Math.floor(Number(data().count) / 25) + 1
-              }`}</h5>
-
-              <CustomButton
-                class={
-                  Number(data().count) / ((page() + 1) * 25) <= 1
-                    ? "invisible"
-                    : ""
-                }
-                onClick={() => {
-                  setPage((prev) =>
-                    Number(data().count) / ((prev + 1) * 25) <= 1
-                      ? prev
-                      : prev + 1
-                  );
+                nextOnClick={() => {
                   setSearchParams({ page: page() + 1 });
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-              >
-                Next
-              </CustomButton>
+              />
             </div>
           )}
         </Show>

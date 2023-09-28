@@ -136,7 +136,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </CssTranstionGrow>
           </div>
 
-          <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+          <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
             <h2 class="text-center text-2xl font-bold lg:text-3xl">
               Personal poll data
             </h2>
@@ -198,7 +198,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </Show>
           </div>
 
-          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
             <h2 class="text-center text-2xl font-bold lg:text-3xl">
               Other poll data
             </h2>
@@ -238,7 +238,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             page={pageTheir()}
                             perPageNum={1}
                             setPage={setPageTheir}
-                            class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+                            classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
                           />
                         </div>
 
@@ -298,7 +298,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
             </Show>
           </div>
 
-          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+          <div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
             <h2 class="text-center text-2xl font-bold lg:text-3xl">
               Your submitted articles
             </h2>
@@ -350,7 +350,10 @@ export const { routeData, Page } = ProtectedUser((session) => {
                           >
                             <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
                               <For
-                                each={articles().slice(pageArticles() * 5, 5)}
+                                each={articles().slice(
+                                  pageArticles() * 5,
+                                  pageArticles() * 5 + 5
+                                )}
                               >
                                 {(fiveArticles) => (
                                   <div class="flex w-full flex-col items-center justify-center gap-8">

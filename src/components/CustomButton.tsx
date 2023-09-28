@@ -24,5 +24,3 @@ const CustomButton: ParentComponent<Props> = (props) => {
 };
 
 export default CustomButton;
-
-
