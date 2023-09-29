@@ -395,6 +395,10 @@ export const textPagination = query$({
       .limit(25)
       .execute();
 
+    if (!statsFinal) {
+      return null;
+    }
+
     const { count } = db.fn;
 
     //TODO there has to better way than this to get count than duplicate functions, ask in kysely discord

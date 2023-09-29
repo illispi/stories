@@ -2,10 +2,12 @@ import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { useParams, useSearchParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
+import PaginationNav from "~/components/PaginationNav";
 import ToggleButton from "~/components/ToggleButton";
 import { questions } from "~/data/personalQuestionsArr";
 import { textPagination } from "~/server/basic/queries";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
+import TransitionSlide from "~/components/TransitionSlide";
 
 const StatsText = () => {
   const params = useParams<{
@@ -32,6 +34,8 @@ const StatsText = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
 
+  const [dir, setDir] = createSignal(1);
+
   const texts = textPagination(() => ({
     page: page(),
     stat: params.statsText,
@@ -40,7 +44,6 @@ const StatsText = () => {
     personalOrTheir: params.pOrT,
     fake: params.fOrT,
   }));
-
 
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
@@ -75,9 +78,7 @@ const StatsText = () => {
         }}
       >
         <Show when={filter()}>
-          <div
-            class="relative z-40"
-          >
+          <div class="relative z-40">
             <div
               onClick={() => {
                 setFilter(false);
@@ -177,13 +178,13 @@ const StatsText = () => {
           </div>
         </Show>
       </Transition>
-      <Suspense fallback={<div>Loading</div>}>
-        <ErrorBoundary
-          fallback={(err) => {
-            console.log(err);
-            return <div>err</div>;
-          }}
-        >
+      <ErrorBoundary
+        fallback={(err) => {
+          console.log(err);
+          return <div>err</div>;
+        }}
+      >
+        <Suspense>
           <div class="flex w-11/12 max-w-xs flex-col items-center justify-center md:max-w-prose">
             <h4 class="sticky top-12 w-full bg-white py-12 text-center text-xl underline underline-offset-8">{`${
               questions[
@@ -191,85 +192,78 @@ const StatsText = () => {
               ].question
             }`}</h4>
 
-            <div class="m-16 flex w-full items-center justify-around">
-              <CustomButton
-                class={page() === 0 ? "invisible" : ""}
-                onClick={() => {
-                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
-                  setSearchParams({ page: page() + 1 });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              >
-                Back
-              </CustomButton>
-              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                Math.floor(texts.data?.total / 25) + 1
-              }`}</h5>
-
-              <CustomButton
-                class={
-                  texts.data?.total / ((page() + 1) * 25) <= 1
-                    ? "invisible"
-                    : ""
-                }
-                onClick={() => {
-                  setPage((prev) =>
-                    texts.data?.total / ((prev + 1) * 25) <= 1 ? prev : prev + 1
-                  );
-                  setSearchParams({ page: page() + 1 });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              >
-                Next
-              </CustomButton>
-            </div>
-
-            <For each={texts.data?.stats} fallback={<div>None found</div>}>
-              {(stat, i) =>
-                stat ? (
-                  <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
-                    <h5 class="m-2 my-8 font-bold">{i() + 1}.</h5>
-                    <p class="m-8 w-full">{stat?.[params.statsText]}</p>
-                    <h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
+            <Show when={texts.data?.total}>
+              {(count) => (
+                <>
+                  <div class="m-16 flex w-full items-center justify-around">
+                    <PaginationNav
+                      arrLength={count()}
+                      page={page()}
+                      perPageNum={25}
+                      setPage={setPage}
+                      backOnClick={() => {
+                        setSearchParams({ page: page() + 1 });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      nextOnClick={() => {
+                        setSearchParams({ page: page() + 1 });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      dirSetter={setDir}
+                    />
                   </div>
-                ) : null
-              }
-            </For>
-            <div class="m-16 flex w-full items-center justify-around">
-              <CustomButton
-                class={page() === 0 ? "invisible" : ""}
-                onClick={() => {
-                  setPage((prev) => (prev === 0 ? 0 : prev - 1));
-                  setSearchParams({ page: page() + 1 });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              >
-                Back
-              </CustomButton>
-              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                Math.floor(texts.data?.total / 25) + 1
-              }`}</h5>
+                </>
+              )}
+            </Show>
+            <Suspense>
+              <TransitionSlide dir={dir()}>
+                <Show when={page() === 0 ? true : page()} keyed>
+                  <div>
+                    <For
+                      each={texts.data?.stats}
+                      fallback={<div>None found</div>}
+                    >
+                      {(stat, i) =>
+                        stat ? (
+                          <div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
+                            <h5 class="m-2 my-8 font-bold">{i() + 1}.</h5>
+                            <p class="m-8 w-full">{stat?.[params.statsText]}</p>
+                            <h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
+                          </div>
+                        ) : null
+                      }
+                    </For>
+                  </div>
+                </Show>
+              </TransitionSlide>
+            </Suspense>
 
-              <CustomButton
-                class={
-                  texts.data?.total / ((page() + 1) * 25) <= 1
-                    ? "invisible"
-                    : ""
-                }
-                onClick={() => {
-                  setPage((prev) =>
-                    texts.data?.total / ((prev + 1) * 25) <= 1 ? prev : prev + 1
-                  );
-                  setSearchParams({ page: page() + 1 });
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
-              >
-                Next
-              </CustomButton>
-            </div>
+            <Show when={texts.data?.total}>
+              {(count) => (
+                <>
+                  <div class="m-16 flex w-full items-center justify-around">
+                    <PaginationNav
+                      arrLength={count()}
+                      page={page()}
+                      perPageNum={25}
+                      setPage={setPage}
+                      backOnClick={() => {
+                        setSearchParams({ page: page() + 1 });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      nextOnClick={() => {
+                        setSearchParams({ page: page() + 1 });
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      dirSetter={setDir}
+                    />
+                  </div>
+                </>
+              )}
+            </Show>
           </div>
-        </ErrorBoundary>
-      </Suspense>
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };
@@ -278,3 +272,4 @@ export default StatsText;
 //TODO replace suspense with some component
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
 //TODO usetransition in filter
+//BUG script tag might leak session
