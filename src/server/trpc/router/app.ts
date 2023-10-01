@@ -1,7 +1,10 @@
 import { router } from "../utils";
+import { allStats, articlesPagination, textPagination } from "./basic/queries";
 
 export const appRouter = router({
-  //procedures
+  allStats,
+  articlesPagination,
+  textPagination,
 });
 
 export type IAppRouter = typeof appRouter;
