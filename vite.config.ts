@@ -28,7 +28,6 @@ export default defineConfig(() => {
       // }),
       solid({ ssr: true }),
     ],
-    server: { host: true },
     //TEST server: { host: true, https: true },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
