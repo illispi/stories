@@ -1,5 +1,4 @@
 // @refresh reload
-import { QueryProvider } from "@prpc/solid";
 import { Suspense, createEffect } from "solid-js";
 import {
   Body,
@@ -15,17 +14,11 @@ import {
 import NavBar from "./components/Navbar";
 import "./root.css";
 // import GlobalTransition from "./components/GlobalTransition";
-import { QueryClient } from "@tanstack/solid-query";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
+import { queryClient, trpc } from "./utils/trpc";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      suspense: true,
-    },
-  },
-});
+
 
 export default function Root() {
   createEffect(() => {
@@ -40,7 +33,7 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-        <QueryProvider queryClient={queryClient}>
+        <trpc.Provider queryClient={queryClient}>
           <ErrorBoundary
             fallback={(e, reset) => {
               return (
@@ -60,7 +53,7 @@ export default function Root() {
               </TransitionSlideGlobal>
             </Suspense>
           </ErrorBoundary>
-        </QueryProvider>
+        </trpc.Provider>
         <Scripts />
       </Body>
     </Html>

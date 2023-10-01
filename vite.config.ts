@@ -18,7 +18,6 @@ export default defineConfig(() => {
       //   brotliSize: true,
       //   filename: "analyse.html", // will be saved in project's root
       // }) as PluginOption,
-      prpc(),
 
       //TEST process.env.NODE_ENV === "development" ? [basicSsl()] : [],
 
