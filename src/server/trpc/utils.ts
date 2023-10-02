@@ -44,7 +44,7 @@ export const userProcedure = apiProcedure.use(async (opts) => {
     message: "You are not authorized",
   });
 });
-export const admninProcedure = apiProcedure.use(async (opts) => {
+export const adminProcedure = apiProcedure.use(async (opts) => {
   if (opts.ctx.session) {
     const user = await opts.ctx.db
       .selectFrom("auth_user")
