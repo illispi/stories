@@ -20,7 +20,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
   const [entryEdit, setEntryEdit] = createSignal<number>(0);
   const [tab, setTab] = createSignal<"poll" | "articles">("poll");
 
-  const queryClient = useQueryClient();
+  const utils = trpc.useContext();
 
   const submissions = trpc.listSubmissions.useQuery(() => ({
     page: page(),
@@ -34,16 +34,16 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
   }));
 
   const acceptMut = trpc.acceptSubmission.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.listSubmissions.invalidate(),
   }));
   const declineMut = trpc.declineSubmission.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.listSubmissions.invalidate(),
   }));
   const acceptArticleMut = trpc.acceptArticle.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.listArticles.invalidate(),
   }));
   const declineArticleMut = trpc.declineArticle.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.listArticles.invalidate(),
   }));
 
   return (

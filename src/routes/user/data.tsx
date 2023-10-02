@@ -36,7 +36,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
     not_have_schizophrenia_description: "Have or not have schizophrenia:",
   };
 
-  const queryClient = useQueryClient();
+
+  const utils = trpc.useContext();
 
   const [showPersonal, setShowPersonal] = createSignal(false);
   const [showTheirs, setShowTheirs] = createSignal(false);
@@ -54,13 +55,13 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const articles = trpc.getArticles.useQuery();
 
   const removePersonalMut = trpc.removePersonal.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.getPersonal.invalidate(),
   }));
   const removeTheirMut = trpc.removeTheir.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.getTheirs.invalidate(),
   }));
   const removeArticleMut = trpc.removeArticle.useMutation(() => ({
-    onSuccess: () => queryClient.invalidateQueries(),
+    onSuccess: () => utils.getArticles.invalidate(),
   }));
 
   return (
