@@ -33,6 +33,8 @@ export const postPersonalStats = mutation$({
   key: "postPersonalStats",
   schema: personalQuestionsSchema,
 });
+
+
 export const postTheirStats = mutation$({
   mutationFn: async ({ payload, request$ }) => {
     const authRequest = auth.handleRequest(request$);

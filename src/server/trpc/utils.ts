@@ -25,7 +25,7 @@ export const userProcedure = apiProcedure.use(async (opts) => {
       .where("id", "=", opts.ctx.session.user?.userId)
       .executeTakeFirstOrThrow();
 
-    if (user) {
+    if (!user) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "User was not found",
@@ -36,6 +36,40 @@ export const userProcedure = apiProcedure.use(async (opts) => {
       ctx: {
         user,
       },
+    });
+  }
+
+  throw new TRPCError({
+    code: "UNAUTHORIZED",
+    message: "You are not authorized",
+  });
+});
+export const admninProcedure = apiProcedure.use(async (opts) => {
+  if (opts.ctx.session) {
+    const user = await opts.ctx.db
+      .selectFrom("auth_user")
+      .select(["id", "role"])
+      .where("id", "=", opts.ctx.session.user?.userId)
+      .executeTakeFirstOrThrow();
+
+    if (!user) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "User was not found",
+      });
+    }
+
+    if (user.role === "admin") {
+      return opts.next({
+        ctx: {
+          user,
+        },
+      });
+    }
+
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized",
     });
   }
 
