@@ -14,12 +14,6 @@ dependencies:
   '@modular-forms/solid':
     specifier: ^0.19.2
     version: 0.19.2(solid-js@1.7.12)
-  '@prpc/solid':
-    specifier: ^0.2.35
-    version: 0.2.35(@tanstack/solid-query@5.0.0-rc.1)(solid-js@1.7.12)(solid-start@0.3.6)(zod@3.22.2)
-  '@prpc/vite':
-    specifier: ^0.3.21
-    version: 0.3.21(rollup@3.29.4)
   '@routes-gen/solid-start':
     specifier: ^0.1.1
     version: 0.1.1(solid-start@0.3.6)
@@ -2204,60 +2198,6 @@ packages:
 
   /@polka/url@1.0.0-next.23:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
-
-  /@prpc/compiler@0.3.20:
-    resolution: {integrity: sha512-5POvLiQI0GsPqefJyt2VL3Foj4sYfirATmL+MDy5La/b8jgTPNpn/oBBmP4rBd+RFs0vofnm+4lrwvMKIV1/aA==}
-    engines: {node: '>=10'}
-    dependencies:
-      '@babel/core': 7.23.0
-      '@babel/preset-typescript': 7.23.0(@babel/core@7.23.0)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@prpc/core@0.3.15(zod@3.22.2):
-    resolution: {integrity: sha512-3TxBNjpmycPuIhglxS91q8ApcO02P9mTcfiulE04i65nLwIK+zQEkvM535hAVwQEu0FihyM8Wq0VmCE2bn62bg==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      zod: ^3.20.6
-    peerDependenciesMeta:
-      zod:
-        optional: true
-    dependencies:
-      zod: 3.22.2
-    dev: false
-
-  /@prpc/solid@0.2.35(@tanstack/solid-query@5.0.0-rc.1)(solid-js@1.7.12)(solid-start@0.3.6)(zod@3.22.2):
-    resolution: {integrity: sha512-qEvrfOhxaeYw9cJ9HiIQSSi4JKp6OeTQ4BxC4PgAmxgHLhmmJDKTBTH6oTITIY2XKcvDpARsnRxwNJH840dtDA==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      '@tanstack/solid-query': ^5.0.0-beta.15
-      solid-js: ^1.7.9
-      solid-start: ^0.2.30
-      zod: ^3.20.6
-    peerDependenciesMeta:
-      zod:
-        optional: true
-    dependencies:
-      '@prpc/core': 0.3.15(zod@3.22.2)
-      '@tanstack/solid-query': 5.0.0-rc.1(solid-js@1.7.12)
-      solid-js: 1.7.12
-      solid-start: 0.3.6(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.7.12)(solid-start-node@0.3.6)(vite@4.4.9)
-      zod: 3.22.2
-    dev: false
-
-  /@prpc/vite@0.3.21(rollup@3.29.4):
-    resolution: {integrity: sha512-w3bRkUq5IzEpTjOkGYsYG7labqb1ELlrjQ/a8/QLSP5Uga7yvCdQAJMszWR21DqpW5girBc7/rYg7sEQS8bUjg==}
-    engines: {node: '>=10'}
-    dependencies:
-      '@babel/core': 7.23.0
-      '@babel/preset-typescript': 7.23.0(@babel/core@7.23.0)
-      '@prpc/compiler': 0.3.20
-      '@rollup/pluginutils': 5.0.4(rollup@3.29.4)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: false
 
   /@rollup/plugin-commonjs@24.1.0(rollup@3.29.4):
     resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
