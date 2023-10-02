@@ -1,22 +1,19 @@
 import { route } from "routes-gen";
 import type { Component, ParentComponent } from "solid-js";
 import {
-  ErrorBoundary,
   For,
   Show,
   Suspense,
   createEffect,
-  createRenderEffect,
   createSignal,
   onCleanup,
-  onMount,
 } from "solid-js";
 import { A, useParams } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import { allStatsPersonalArr } from "~/data/stats/allStatsArr";
 import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
-import { allStats } from "~/server/basic/queries";
+import { trpc } from "~/utils/trpc";
 
 const CompareButton: Component = () => {
   const params = useParams<{
@@ -52,16 +49,11 @@ const AllStatsPage: ParentComponent = () => {
     fOrT: "fake" | "real";
   }>();
 
-  const allStatsData = allStats(
-    () => ({
-      value: "all",
-      pOrT: params.pOrT,
-      fake: params.fOrT,
-    }),
-    () => ({
-      placeholderData: (prev) => prev,
-    })
-  );
+  const allStatsData = trpc.allStats.useQuery(() => ({
+    value: "all",
+    pOrT: params.pOrT,
+    fake: params.fOrT,
+  }));
 
   const compOrder =
     params.pOrT === "Personal_questions"

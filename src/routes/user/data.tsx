@@ -10,13 +10,7 @@ import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
-import {
-  removeAccountAndData,
-  removeArticle,
-  removePersonal,
-  removeTheir,
-} from "~/server/user/userMutations";
-import { getArticles, getPersonal, getTheirs } from "~/server/user/userQueries";
+import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent = (props) => {
   return (
@@ -53,28 +47,20 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
   const [dir, setDir] = createSignal(1);
 
-  const removeAccAndDataMut = removeAccountAndData();
+  const removeAccAndDataMut = trpc.removeAccountAndData.useMutation();
 
-  const personal = getPersonal(undefined, () => ({
-    placeholderData: (prev) => prev,
-  }));
-  const their = getTheirs(undefined, () => ({
-    placeholderData: (prev) => prev,
-  }));
-  const articles = getArticles(undefined, () => ({
-    placeholderData: (prev) => prev,
-  }));
+  const personal = trpc.getPersonal.useQuery();
+  const their = trpc.getTheirs.useQuery();
+  const articles = trpc.getArticles.useQuery();
 
-  const removePersonalMut = removePersonal(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["getPersonal"] }),
+  const removePersonalMut = trpc.removePersonal.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
-  const removeTheirMut = removeTheir(() => ({
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getTheirs"] }),
+  const removeTheirMut = trpc.removeTheir.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
-  const removeArticleMut = removeArticle(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["getArticles"] }),
+  const removeArticleMut = trpc.removeArticle.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   return (

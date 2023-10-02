@@ -1,15 +1,14 @@
 import type { SubmitHandler } from "@modular-forms/solid";
 import { createForm, valiForm } from "@modular-forms/solid";
 import type { Component, Setter } from "solid-js";
-import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
+import { For, Show, Suspense, createSignal } from "solid-js";
 import { useSearchParams } from "solid-start";
 import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import TransitionSlide from "~/components/TransitionSlide";
-import { postArticle } from "~/server/basic/mutations";
-import { articlesPagination } from "~/server/basic/queries";
+import { trpc } from "~/utils/trpc";
 
 const ArticleSchema = object({
   link: string([
@@ -25,7 +24,7 @@ const ArticleSchema = object({
 type ArticleForm = Input<typeof ArticleSchema>;
 
 const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
-  const articleMut = postArticle();
+  const articleMut = trpc.postArticle.useMutation();
   const [articleForm, { Form, Field }] = createForm<ArticleForm>({
     validate: valiForm(ArticleSchema),
   });
@@ -126,12 +125,9 @@ const articles: Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
   const [submitVis, setSubmitVis] = createSignal(false);
-  const articlesData = articlesPagination(
-    () => ({ page: page() }),
-    () => ({
-      placeholderData: (prev) => prev,
-    })
-  );
+  const articlesData = trpc.articlesPagination.useQuery(() => ({
+    page: page(),
+  }));
 
   const [dir, setDir] = createSignal(1);
 

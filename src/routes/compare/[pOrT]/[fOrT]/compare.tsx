@@ -6,7 +6,7 @@ import {
   batch,
   createEffect,
   createSignal,
-  onCleanup
+  onCleanup,
 } from "solid-js";
 import { useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
@@ -18,8 +18,8 @@ import { byDiagnosisPersonal } from "~/data/stats/comparePersonal/byDiagnosisPer
 import { byGenderPersonal } from "~/data/stats/comparePersonal/byGenderPersonal";
 import { byDiagnosisTheir } from "~/data/stats/compareTheir/byDiagnosisTheir";
 import { byGenderTheir } from "~/data/stats/compareTheir/byGenderTheir";
-import { allStats } from "~/server/basic/queries";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
+import { trpc } from "~/utils/trpc";
 
 type CompareOptions =
   | "all"
@@ -267,26 +267,16 @@ const CompareStats = () => {
     });
   });
 
-  const statsA = allStats(
-    () => ({
-      value: A(),
-      pOrT: params.pOrT,
-      fake: params.fOrT,
-    }),
-    () => ({
-      placeholderData: (prev) => prev, //NOTE why is this necessary, log something in effect
-    })
-  );
-  const statsB = allStats(
-    () => ({
-      value: B(),
-      pOrT: params.pOrT,
-      fake: params.fOrT,
-    }),
-    () => ({
-      placeholderData: (prev) => prev,
-    })
-  );
+  const statsA = trpc.allStats.useQuery(() => ({
+    value: A(),
+    pOrT: params.pOrT,
+    fake: params.fOrT,
+  }));
+  const statsB = trpc.allStats.useQuery(() => ({
+    value: B(),
+    pOrT: params.pOrT,
+    fake: params.fOrT,
+  }));
 
   return (
     <div class="flex-1">

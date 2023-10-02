@@ -1,13 +1,13 @@
 // utils/trpc.ts
 import { QueryClient } from "@tanstack/solid-query";
-import type { IAppRouter } from "~/server/trpc/router/_app";
+import type { IAppRouter } from "~/server/trpc/router/app";
 import { createTRPCSolidStart } from "solid-trpc";
 import { httpBatchLink } from "@trpc/client";
 import { isServer } from "solid-js/web";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return "";
-  return `http://localhost:${process.env.PORT ?? 5173}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
 };
 
 export const trpc = createTRPCSolidStart<IAppRouter>({

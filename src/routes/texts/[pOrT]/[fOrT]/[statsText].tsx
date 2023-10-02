@@ -5,9 +5,9 @@ import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import ToggleButton from "~/components/ToggleButton";
 import { questions } from "~/data/personalQuestionsArr";
-import { textPagination } from "~/server/basic/queries";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import TransitionSlide from "~/components/TransitionSlide";
+import { trpc } from "~/utils/trpc";
 
 const StatsText = () => {
   const params = useParams<{
@@ -36,7 +36,7 @@ const StatsText = () => {
 
   const [dir, setDir] = createSignal(1);
 
-  const texts = textPagination(() => ({
+  const texts = trpc.textPagination.useQuery(() => ({
     page: page(),
     stat: params.statsText,
     diagnosis: diagFilter(),

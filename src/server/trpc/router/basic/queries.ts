@@ -3,11 +3,11 @@ import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
-import { publicProcedure } from "../../utils";
+import { apiProcedure } from "../../utils";
 import { db } from "~/server/server";
 //TODO remember to only update this every once in a while in production
 
-export const allStats = publicProcedure
+export const allStats = apiProcedure
   .input(
     z.object({
       value: z.enum([
@@ -372,7 +372,7 @@ export const allStats = publicProcedure
     }
   });
 
-export const textPagination = publicProcedure
+export const textPagination = apiProcedure
   .input(
     z.object({
       page: z.number(),
@@ -438,7 +438,7 @@ export const textPagination = publicProcedure
     return { stats: statsFinal, total: totalLength };
   });
 
-export const articlesPagination = publicProcedure
+export const articlesPagination = apiProcedure
   .input(
     z.object({
       page: z.number().int(),

@@ -3,7 +3,6 @@ import { createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
-import { postPersonalStats, postTheirStats } from "~/server/basic/mutations";
 import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
@@ -18,6 +17,7 @@ import {
   safeParse,
   string,
 } from "valibot";
+import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -43,8 +43,8 @@ export const UnitQuestion: ParentComponent<{
 }> = (props) => {
   const sendStats =
     props.LsName === "personalQuestions"
-      ? postPersonalStats()
-      : postTheirStats();
+      ? trpc.postPersonalStats.useMutation()
+      : trpc.postTheirStats.useMutation();
 
   const questions =
     props.LsName === "personalQuestions" ? questionsP : questionsT;

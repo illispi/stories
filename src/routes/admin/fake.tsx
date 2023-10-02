@@ -1,16 +1,12 @@
 import { Show, Suspense } from "solid-js";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import {
-  fakeArticlesForDev,
-  fakeForDev,
-  fakeForFake,
-} from "~/server/admin/adminMutations";
+import { trpc } from "~/utils/trpc";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const fakeForFakeMut = fakeForFake();
-  const fakeForDevMut = fakeForDev();
-  const fakeArticlesForDevMut = fakeArticlesForDev();
+  const fakeForFakeMut = trpc.fakeForFake.useMutation();
+  const fakeForDevMut = trpc.fakeForDev.useMutation();
+  const fakeArticlesForDevMut = trpc.fakeArticlesForDev.useMutation();
   return (
     <div>
       <Suspense>

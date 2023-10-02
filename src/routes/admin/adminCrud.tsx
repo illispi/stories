@@ -3,14 +3,9 @@ import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
-import { listArticles, listSubmissions } from "~/server/admin/adminQueries";
-import {
-  acceptArticle,
-  acceptSubmission,
-  declineArticle,
-  declineSubmission,
-} from "~/server/admin/adminMutations";
+
 import { useQueryClient } from "@tanstack/solid-query";
+import { trpc } from "~/utils/trpc";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal<"pending" | "accepted">(
@@ -27,32 +22,28 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
 
   const queryClient = useQueryClient();
 
-  const submissions = listSubmissions(() => ({
+  const submissions = trpc.listSubmissions.useQuery(() => ({
     page: page(),
     accepted: accepted(),
     pOrT: pOrT(),
   }));
 
-  const articles = listArticles(() => ({
+  const articles = trpc.listArticles.useQuery(() => ({
     page: pageArticles(),
     accepted: accepted(),
   }));
 
-  const acceptMut = acceptSubmission(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["listSubmissions"] }),
+  const acceptMut = trpc.acceptSubmission.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
-  const declineMut = declineSubmission(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["listSubmissions"] }),
+  const declineMut = trpc.declineSubmission.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
-  const acceptArticleMut = acceptArticle(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["listArticles"] }),
+  const acceptArticleMut = trpc.acceptArticle.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
-  const declineArticleMut = declineArticle(() => ({
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["listArticles"] }),
+  const declineArticleMut = trpc.declineArticle.useMutation(() => ({
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   return (
