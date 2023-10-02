@@ -48,6 +48,8 @@ export const listSubmissions = adminProcedure
       .limit(25)
       .execute();
 
+    //BUG this might return undefined, should be returnin null in that case
+
     const { countAll } = ctx.db.fn;
 
     const { count } = (await ctx.db
