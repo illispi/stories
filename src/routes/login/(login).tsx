@@ -3,9 +3,11 @@ import {
   Form,
   SubmitHandler,
   createForm,
+  getValue,
   valiForm,
 } from "@modular-forms/solid";
 import { LuciaError } from "lucia";
+import { Show } from "solid-js";
 import {
   ServerError,
   createServerAction$,
@@ -14,6 +16,7 @@ import {
 } from "solid-start/server";
 import { Input, maxLength, minLength, object, parse, string } from "valibot";
 import { auth } from "~/auth/lucia";
+import CustomButton from "~/components/CustomButton";
 
 //TODO redir to user data page if logged in
 
@@ -39,98 +42,117 @@ const userSchema = object({
 });
 
 type UserForm = Input<typeof userSchema>;
+type Action = { action: string };
 
 const Login = () => {
-  const [_, submit] = createServerAction$(async (formData: UserForm) => {
-    try {
-      const { username, password } = parse(userSchema, formData);
+  const [submission, submit] = createServerAction$(
+    async ({ password, username, action }: UserForm & Action) => {
+      try {
+        parse(userSchema, { password, username });
+        // find user by key
+        // and validate password
 
-      // find user by key
-      // and validate password
-      const key = await auth.useKey(
-        "username",
-        username.toLowerCase(),
-        password
-      );
-      if (key) {
-        const session = await auth.createSession({
-          userId: key.userId,
-          attributes: {},
+        if (action === "signin") {
+          const key = await auth.useKey(
+            "username",
+            username.toLowerCase(),
+            password
+          );
+          if (key) {
+            const session = await auth.createSession({
+              userId: key.userId,
+              attributes: {},
+            });
+            const sessionCookie = auth.createSessionCookie(session);
+            // set cookie and redirect
+            return new Response(null, {
+              status: 302,
+              headers: {
+                Location: "/",
+                "Set-Cookie": sessionCookie.serialize(),
+              },
+            });
+          }
+        }
+
+        if ((action = "signup")) {
+          const user = await auth.createUser({
+            key: {
+              providerId: "username", // auth method
+              providerUserId: username.toLowerCase(), // unique id when using "username" auth method
+              password, // hashed by Lucia
+            },
+            attributes: {
+              username,
+              role: "user",
+            },
+          });
+          const session = await auth.createSession({
+            userId: user.userId,
+            attributes: {},
+          });
+          const sessionCookie = auth.createSessionCookie(session);
+          // set cookie and redirect
+          return new Response(null, {
+            status: 302,
+            headers: {
+              Location: "/",
+              "Set-Cookie": sessionCookie.serialize(),
+            },
+          });
+        }
+      } catch (e) {
+        if (
+          e instanceof LuciaError &&
+          // (e.message === "AUTH_INVALID_KEY_ID" ||
+          e.message === "AUTH_INVALID_PASSWORD"
+        ) {
+          throw new ServerError("Incorrect password");
+        }
+        if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
+          return { username, statusAcc: "missing" };
+        }
+        if (
+          e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from kysely when using same name
+        ) {
+          throw new ServerError("Username already taken");
+        }
+        if (
+          e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from valibot when failing validation
+        ) {
+          throw new ServerError("Validation failed");
+        }
+        throw new ServerError("An unknown error occurred", {
+          status: 500,
         });
-        const sessionCookie = auth.createSessionCookie(session);
-        // set cookie and redirect
-        return new Response(null, {
-          status: 302,
-          headers: {
-            Location: "/",
-            "Set-Cookie": sessionCookie.serialize(),
-          },
-        });
       }
-
-      //NOTE below is when signing up if, key not found
-
-      const user = await auth.createUser({
-        key: {
-          providerId: "username", // auth method
-          providerUserId: username.toLowerCase(), // unique id when using "username" auth method
-          password, // hashed by Lucia
-        },
-        attributes: {
-          username,
-          role: "user",
-        },
-      });
-      const session = await auth.createSession({
-        userId: user.userId,
-        attributes: {},
-      });
-      const sessionCookie = auth.createSessionCookie(session);
-      // set cookie and redirect
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: "/",
-          "Set-Cookie": sessionCookie.serialize(),
-        },
-      });
-    } catch (e) {
-      if (
-        e instanceof LuciaError &&
-        (e.message === "AUTH_INVALID_KEY_ID" ||
-          e.message === "AUTH_INVALID_PASSWORD")
-      ) {
-        // user does not exist
-        // or invalid password
-        throw new ServerError("Incorrect username or password");
-      }
-      if (
-        e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from kysely when using same name
-      ) {
-        throw new ServerError("Username already taken");
-      }
-      if (
-        e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from valibot when failing validation
-      ) {
-        throw new ServerError("Validation failed");
-      }
-      throw new ServerError("An unknown error occurred", {
-        status: 500,
-      });
     }
-  });
+  );
 
   const [userForm, { Form, Field }] = createForm<UserForm>({
     validate: valiForm(userSchema),
   });
   const handleSubmit: SubmitHandler<UserForm> = async (values, event) => {
-    //TODO serveraction
-
-    submit(values);
+    submit({ ...values, action: "signin" });
   };
 
   return (
     <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+      <Show when={submission.result?.statusAcc === "missing"}>
+        <h2>{`No account found with username: ${submission.result?.username}`}</h2>
+        <CustomButton
+          onClick={() => {
+            submit({
+              username: getValue(userForm, "username"),
+              password: getValue(userForm, "password"),
+              action: "signup",
+            });
+          }}
+        >
+          Create new account!
+        </CustomButton>
+        <CustomButton>Cancel</CustomButton>
+      </Show>
       <h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Sign up/in</h1>
       <div class="mb-16 flex h-full w-full max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
         <div class="flex w-11/12 max-w-2xl flex-col justify-start gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
