@@ -19,7 +19,7 @@ export const acceptArticle = adminProcedure
     const insertion = await ctx.db
       .updateTable("Articles")
       .set({
-        accepted: "accepted",
+        accepted: true
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -44,7 +44,7 @@ export const declineArticle = adminProcedure
     const insertion = await ctx.db
       .updateTable("Articles")
       .set({
-        accepted: "declined",
+        accepted: false,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -70,7 +70,7 @@ export const acceptSubmission = adminProcedure
     const updated = await ctx.db
       .updateTable(input.pOrT)
       .set({
-        accepted: "accepted",
+        accepted: true,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -96,7 +96,7 @@ export const declineSubmission = adminProcedure
     const updated = await ctx.db
       .updateTable(input.pOrT)
       .set({
-        accepted: "declined",
+        accepted: false,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -170,7 +170,7 @@ export const fakeForDev = adminProcedure
         .values({
           ...fakeData,
           user: ctx.user.id,
-          accepted: "pending",
+          accepted: null,
         })
         .executeTakeFirst();
 

@@ -4,7 +4,6 @@ import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import { apiProcedure } from "../../utils";
-import { db } from "~/server/server";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = apiProcedure
@@ -22,7 +21,7 @@ export const allStats = apiProcedure
       fake: z.enum(["real", "fake"]),
     })
   )
-  .query(async ({ input: payload }) => {
+  .query(async ({ input: payload, ctx }) => {
     {
       let stats;
 
@@ -34,14 +33,14 @@ export const allStats = apiProcedure
       if (payload.fake === "fake") {
         switch (payload.value) {
           case "all":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .execute();
 
             break;
           case "female":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .where("gender", "=", "female")
@@ -49,7 +48,7 @@ export const allStats = apiProcedure
 
             break;
           case "other":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .where("gender", "=", "other")
@@ -57,7 +56,7 @@ export const allStats = apiProcedure
 
             break;
           case "male":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .where("gender", "=", "male")
@@ -65,7 +64,7 @@ export const allStats = apiProcedure
 
             break;
           case "schizophrenia":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .where("diagnosis", "=", "schizophrenia")
@@ -73,7 +72,7 @@ export const allStats = apiProcedure
 
             break;
           case "schizoaffective":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(`${payload.pOrT}_fake`)
               .selectAll()
               .where("diagnosis", "=", "schizoaffective")
@@ -87,55 +86,55 @@ export const allStats = apiProcedure
       } else {
         switch (payload.value) {
           case "all":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
           case "female":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
               .where("gender", "=", "female")
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
           case "other":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
               .where("gender", "=", "other")
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
           case "male":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
               .where("gender", "=", "male")
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
           case "schizophrenia":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
               .where("diagnosis", "=", "schizophrenia")
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
           case "schizoaffective":
-            stats = await db
+            stats = await ctx.db
               .selectFrom(payload.pOrT)
               .selectAll()
               .where("diagnosis", "=", "schizoaffective")
-              .where("accepted", "=", "accepted")
+              .where("accepted", "=", true)
               .execute();
 
             break;
@@ -147,24 +146,24 @@ export const allStats = apiProcedure
 
       const responsesTotal: number = stats.length; //TODO use postgres count here
 
-      const maleAge = await db
+      const maleAge = await ctx.db
         .selectFrom("Personal_questions")
         .select(["age_of_onset"])
         .where("gender", "=", "male")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
 
-      const femaleAge = await db
+      const femaleAge = await ctx.db
         .selectFrom("Personal_questions")
         .select(["age_of_onset"])
         .where("gender", "=", "female")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
-      const otherAge = await db
+      const otherAge = await ctx.db
         .selectFrom("Personal_questions")
         .select(["age_of_onset"])
         .where("gender", "=", "other")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
 
       const filterSensitive = stats.map((e: (typeof stats)[0]) => {
@@ -317,24 +316,24 @@ export const allStats = apiProcedure
 
       //BUG below code soesnt work currently, and its not even used in frontend
 
-      const maleSplit = await db
+      const maleSplit = await ctx.db
         .selectFrom("Personal_questions")
         .select(["length_of_psychosis"])
         .where("gender", "=", "male")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
 
-      const femaleSplit = await db
+      const femaleSplit = await ctx.db
         .selectFrom("Personal_questions")
         .select(["length_of_psychosis"])
         .where("gender", "=", "female")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
-      const otherSplit = await db
+      const otherSplit = await ctx.db
         .selectFrom("Personal_questions")
         .select(["length_of_psychosis"])
         .where("gender", "=", "other")
-        .where("accepted", "=", "accepted")
+        .where("accepted", "=", true)
         .execute();
 
       //BUG above seems to return too little
@@ -383,8 +382,8 @@ export const textPagination = apiProcedure
       fake: z.enum(["real", "fake"]),
     })
   )
-  .query(async ({ input: payload }) => {
-    let stats = db
+  .query(async ({ input: payload, ctx }) => {
+    let stats = ctx.db
       .selectFrom(
         payload.fake === "fake"
           ? `${payload.personalOrTheir}_fake`
@@ -392,7 +391,7 @@ export const textPagination = apiProcedure
       )
       .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
       .where(payload.stat as keyof PersonalQuestions, "is not", null)
-      .where("accepted", "=", "accepted");
+      .where("accepted", "=", true);
 
     if (payload.gender) {
       stats = stats.where("gender", "=", payload.gender.toLowerCase());
@@ -411,18 +410,18 @@ export const textPagination = apiProcedure
       return null;
     }
 
-    const { count } = db.fn;
+    const { count } = ctx.db.fn;
 
     //TODO there has to better way than this to get count than duplicate functions, ask in kysely discord
 
-    let length = db
+    let length = ctx.db
       .selectFrom(
         payload.fake === "fake"
           ? `${payload.personalOrTheir}_fake`
           : payload.personalOrTheir
       )
       .select(count(payload.stat as keyof PersonalQuestions).as("count"))
-      .where("accepted", "=", "accepted");
+      .where("accepted", "=", true);
 
     if (payload.gender) {
       length = length.where("gender", "=", payload.gender.toLowerCase());
@@ -444,19 +443,19 @@ export const articlesPagination = apiProcedure
       page: z.number().int(),
     })
   )
-  .query(async ({ input: payload }) => {
-    const articles = await db
+  .query(async ({ input: payload, ctx }) => {
+    const articles = await ctx.db
       .selectFrom("Articles")
       .select(["link", "description"])
-      .where("accepted", "=", "accepted")
+      .where("accepted", "=", true)
       .offset(payload.page * 25)
       .limit(25)
       .execute();
 
-    const count = await db
+    const count = await ctx.db
       .selectFrom("Articles")
       .select((eb) => [eb.fn.countAll("Articles").as("count")])
-      .where("accepted", "=", "accepted")
+      .where("accepted", "=", true)
       .executeTakeFirst();
 
     return { articles, count };

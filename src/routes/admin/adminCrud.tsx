@@ -8,9 +8,7 @@ import { useQueryClient } from "@tanstack/solid-query";
 import { trpc } from "~/utils/trpc";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const [accepted, setAccepted] = createSignal<"pending" | "accepted">(
-    "pending"
-  );
+  const [accepted, setAccepted] = createSignal(false);
   const [pOrT, setPOrT] = createSignal<
     "Personal_questions" | "Their_questions"
   >("Personal_questions");
@@ -109,7 +107,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                           <div class="m-8 flex items-center justify-between">
                             <h3 class="text-xl font-bold">{index()}</h3>
                             <Show
-                              when={accepted() === "accepted"}
+                              when={accepted()}
                               fallback={
                                 <>
                                   <CustomButton
@@ -202,13 +200,13 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                 </CustomButton>
                 <CustomButton
                   class={`${
-                    accepted() === "accepted"
+                    accepted()
                       ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
                       : ""
                   }`}
                   onClick={() =>
                     setAccepted(
-                      accepted() === "accepted" ? "pending" : "accepted"
+                      accepted() === true ? null : true
                     )
                   }
                 >
@@ -232,7 +230,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                       <div class="m-8 flex items-center justify-between">
                         <h3 class="text-xl font-bold">{index()}</h3>
                         <Show
-                          when={accepted() === "accepted"}
+                          when={accepted()}
                           fallback={
                             <>
                               <CustomButton

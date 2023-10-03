@@ -6,7 +6,7 @@ export const listSubmissions = adminProcedure
     z.object({
       page: z.number().int(),
       pOrT: z.enum(["Personal_questions", "Their_questions"]),
-      accepted: z.enum(["accepted", "pending"]),
+      accepted: z.boolean(),
     })
   )
   .query(async ({ ctx, input }) => {
@@ -43,7 +43,7 @@ export const listSubmissions = adminProcedure
     //TODO Use try and catch here and then return error with serverError
 
     const poll = await pOrTQuery
-      .where("accepted", "=", input.accepted)
+      .where("accepted", "is", input.accepted)
       .offset(input.page * 25)
       .limit(25)
       .execute();
@@ -55,7 +55,7 @@ export const listSubmissions = adminProcedure
     const { count } = (await ctx.db
       .selectFrom(input.pOrT)
       .select(countAll().as("count"))
-      .where("accepted", "=", input.accepted)
+      .where("accepted", "is", input.accepted)
       .executeTakeFirst()) ?? { count: 0 };
 
     const total = Number(count);
@@ -67,7 +67,7 @@ export const listArticles = adminProcedure
   .input(
     z.object({
       page: z.number().int(),
-      accepted: z.enum(["accepted", "pending"]),
+      accepted: z.boolean(),
     })
   )
   .query(async ({ ctx, input }) => {
@@ -80,7 +80,7 @@ export const listArticles = adminProcedure
         eb.fn.count<number>("Articles.id").as("count"),
       ])
       .groupBy("Articles.id") //BUG this needs group by but shows count of 1
-      .where("accepted", "=", "pending")
+      .where("accepted", "is", null)
       .limit(25)
       .offset(input.page * 25)
       .execute();

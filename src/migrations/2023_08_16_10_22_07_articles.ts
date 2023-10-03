@@ -10,7 +10,8 @@ export async function up(db: Kysely<any>): Promise<void> {
       "text",
       (col) => col.references("auth_user.id").onDelete("cascade").notNull() //BUG add .unique() because user can have only one in final iteration
     )
-    .addColumn("accepted", "text", (col) => col.defaultTo("pending").notNull())
+    .addColumn("accepted", "boolean", (col) => col.defaultTo(null))
+    .addColumn("decline_reason", "text")
     .addColumn("link", "text", (col) => col.notNull())
     .addColumn("description", "text", (col) => col.notNull())
     .addColumn("created_at", "timestamptz", (col) =>
