@@ -22,6 +22,7 @@ export const auth = lucia({
   getUserAttributes: (databaseUser) => {
     return {
       role: databaseUser.role,
+      username: databaseUser.username
     };
   },
 });
