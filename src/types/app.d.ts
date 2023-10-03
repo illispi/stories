@@ -6,7 +6,7 @@ declare namespace Lucia {
     username: string | null;
   };
   type DatabaseSessionAttributes = {
-    role: "user" | "admin";
-    username: string | null;
+    // role: "user" | "admin";
+    // username: string | null;
   };
 }
