@@ -23,7 +23,8 @@ export const getTheirs = userProcedure.query(async ({ ctx }) => {
     .where("user", "=", ctx.user.id)
     .execute();
 
-  if (!unSafe) {
+
+  if (unSafe.length === 0) {
     return null;
   }
 
