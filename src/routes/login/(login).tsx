@@ -7,7 +7,7 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import { LuciaError } from "lucia";
-import { Show, createEffect, createSignal } from "solid-js";
+import { ErrorBoundary, Show, createEffect, createSignal } from "solid-js";
 import {
   ServerError,
   createServerAction$,
@@ -18,6 +18,7 @@ import { Input, maxLength, minLength, object, parse, string } from "valibot";
 import { auth } from "~/auth/lucia";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
+import ModalPopUp from "~/components/ModalPopUp";
 
 //TODO redir to user data page if logged in
 
@@ -142,15 +143,19 @@ const Login = () => {
   };
 
   const [showAccountMissing, setShowAccountMissing] = createSignal(false);
+  const [error, setError] = createSignal<string | null>(null);
 
   createEffect(() => {
     submission.result?.statusAcc === "missing"
       ? setShowAccountMissing(true)
       : null;
+
+    submission.error?.message ? setError(submission.error.message) : null;
   });
 
   return (
     <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+      <ModalPopUp message={error()} setMessage={setError} />
       <ModalOptions show={showAccountMissing()} setShow={setShowAccountMissing}>
         <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
           <h2 class="text-center text-2xl font-bold lg:text-3xl">
@@ -230,6 +235,7 @@ const Login = () => {
                       {...props}
                       required
                       placeholder="password"
+                      type="password"
                     />
                     {field.error && <div>{field.error}</div>}
                   </>
