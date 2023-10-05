@@ -11,7 +11,7 @@ export const getSession = () => {
     const authRequest = auth.handleRequest(event.request);
     const session = await authRequest.validate();
     if (session) {
-      return session;
+      return session.user.username;
     } else {
       return null;
     }
@@ -115,7 +115,7 @@ const Hamburger: Component<{
               return <div>err</div>;
             }}
           >
-            <Show when={sessionData}>
+            <Show when={sessionData()}>
               <MenuItem route={route("/user/data")} content="Your data" />
             </Show>
           </ErrorBoundary>

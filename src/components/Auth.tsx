@@ -1,5 +1,9 @@
-import type { VoidComponent } from "solid-js";
-import { createServerData$ } from "solid-start/server";
+import { Show, type VoidComponent } from "solid-js";
+import {
+  ServerError,
+  createServerAction$,
+  createServerData$,
+} from "solid-start/server";
 import CustomButton from "./CustomButton";
 import { auth } from "~/auth/lucia";
 import { A } from "solid-start";
@@ -11,21 +15,51 @@ const getSession = () => {
     if (!session) {
       return null;
     }
-    return session;
+    return session.user.username;
   });
 };
 
 const Auth: VoidComponent = () => {
   const sessionData = getSession();
+
+  const [signOutStatus, signOut] = createServerAction$(async (_, event) => {
+    const authRequest = auth.handleRequest(event.request);
+    const session = await authRequest.validate();
+    if (!session) {
+      throw new ServerError("Unauthorized", {
+        status: 401,
+      });
+    }
+    await auth.invalidateSession(session.sessionId); // invalidate session
+    const sessionCookie = auth.createSessionCookie(null);
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/login",
+        "Set-Cookie": sessionCookie.serialize(),
+      },
+    });
+  });
+
   return (
-    <CustomButton
-      class="w-44"
+    <Show
+      when={sessionData()}
+      fallback={
+        <CustomButton class="w-44">
+          <A href="/login">{"Sign in/up"}</A>
+        </CustomButton>
+      }
     >
-      <A href="/login">{sessionData() ? "Sign out" : "Sign in/up"}</A>
-    </CustomButton>
+      <CustomButton
+        onClick={() => {
+          signOut();
+        }}
+        class="w-44"
+      >
+        Sign out
+      </CustomButton>
+    </Show>
   );
 };
 
 export default Auth;
-
-//BUG maybe refesh page after sign out
