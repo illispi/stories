@@ -31,7 +31,7 @@ export const ModalOptions: ParentComponent<{
             props.setShow(false);
             document.body.style.overflow = "auto";
           }}
-          class=" fixed left-0 top-0 flex h-screen w-screen bg-black/30 transition-visible"
+          class="fixed left-0 top-0 z-40 flex h-screen w-screen bg-black/30 transition-all duration-500"
           classList={{
             ["backdrop-blur-sm visible opacity-100"]: props.show,
             ["invisible opacity-0"]: !props.show,
@@ -43,9 +43,9 @@ export const ModalOptions: ParentComponent<{
             ["visible opacity-100"]: props.show,
             ["invisible opacity-0"]: !props.show,
           }}
-          class="absolute left-1/2 top-1/2 z-40 flex -translate-x-1/2 -translate-y-1/2  flex-col  items-center justify-center rounded-3xl border-2 bg-blue-50 p-5 pt-8 transition-visible"
+          class="fixed left-1/2 top-1/2 z-40 flex w-full max-w-xs -translate-x-1/2 -translate-y-1/2  flex-col  items-center justify-center transition-all duration-500"
         >
-          <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
+          {/* <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
             <CustomButton
               class="bg-red-600 p-2 text-center hover:bg-red-900 focus:bg-red-900 active:bg-red-900"
               onClick={() => {
@@ -68,7 +68,7 @@ export const ModalOptions: ParentComponent<{
                 />
               </svg>
             </CustomButton>
-          </div>
+          </div> */}
           {props.children}
         </div>
       </div>

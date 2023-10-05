@@ -152,31 +152,40 @@ const Login = () => {
   return (
     <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <ModalOptions show={showAccountMissing()} setShow={setShowAccountMissing}>
-        <h2>{`No account found with username: ${submission.result?.username}`}</h2>
-        <CustomButton
-          onClick={() => {
-            setShowAccountMissing(false);
-            submit({
-              username: getValue(userForm, "username"),
-              password: getValue(userForm, "password"),
-              action: "signup",
-            });
-          }}
-        >
-          Create new account!
-        </CustomButton>
-        <CustomButton
-          onClick={() => {
-            submit({
-              username: getValue(userForm, "username"),
-              password: getValue(userForm, "password"),
-              action: "cancel",
-            });
-            setShowAccountMissing(false);
-          }}
-        >
-          Cancel
-        </CustomButton>
+        <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+          <h2 class="text-center text-2xl font-bold lg:text-3xl">
+            Create new account?
+          </h2>
+
+          <h3 class="text-center text-lg">{`No account found with username: `}</h3>
+          <h4 class="text-center text-xl font-semibold">{`${submission.result?.username}`}</h4>
+          <CustomButton
+            class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+            onClick={() => {
+              setShowAccountMissing(false);
+              submit({
+                username: getValue(userForm, "username"),
+                password: getValue(userForm, "password"),
+                action: "signup",
+              });
+            }}
+          >
+            Create new account!
+          </CustomButton>
+          <CustomButton
+            class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+            onClick={() => {
+              submit({
+                username: getValue(userForm, "username"),
+                password: getValue(userForm, "password"),
+                action: "cancel",
+              });
+              setShowAccountMissing(false);
+            }}
+          >
+            Cancel
+          </CustomButton>
+        </div>
       </ModalOptions>
       <h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Sign up/in</h1>
       <div class="mb-16 flex h-full w-full max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
