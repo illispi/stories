@@ -7,7 +7,7 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import { LuciaError } from "lucia";
-import { Show } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
 import {
   ServerError,
   createServerAction$,
@@ -17,6 +17,7 @@ import {
 import { Input, maxLength, minLength, object, parse, string } from "valibot";
 import { auth } from "~/auth/lucia";
 import CustomButton from "~/components/CustomButton";
+import { ModalOptions } from "~/components/ModalOptions";
 
 //TODO redir to user data page if logged in
 
@@ -48,11 +49,15 @@ const Login = () => {
   const [submission, submit] = createServerAction$(
     async ({ password, username, action }: UserForm & Action) => {
       try {
+        if (action === "cancel") {
+          return { statusAcc: "cancel" };
+        }
+
         parse(userSchema, { password, username });
-        // find user by key
-        // and validate password
 
         if (action === "signin") {
+          // find user by key
+          // and validate password
           const key = await auth.useKey(
             "username",
             username.toLowerCase(),
@@ -136,12 +141,21 @@ const Login = () => {
     submit({ ...values, action: "signin" });
   };
 
+  const [showAccountMissing, setShowAccountMissing] = createSignal(false);
+
+  createEffect(() => {
+    submission.result?.statusAcc === "missing"
+      ? setShowAccountMissing(true)
+      : null;
+  });
+
   return (
     <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-      <Show when={submission.result?.statusAcc === "missing"}>
+      <ModalOptions show={showAccountMissing()} setShow={setShowAccountMissing}>
         <h2>{`No account found with username: ${submission.result?.username}`}</h2>
         <CustomButton
           onClick={() => {
+            setShowAccountMissing(false);
             submit({
               username: getValue(userForm, "username"),
               password: getValue(userForm, "password"),
@@ -151,17 +165,32 @@ const Login = () => {
         >
           Create new account!
         </CustomButton>
-        <CustomButton>Cancel</CustomButton>
-      </Show>
+        <CustomButton
+          onClick={() => {
+            submit({
+              username: getValue(userForm, "username"),
+              password: getValue(userForm, "password"),
+              action: "cancel",
+            });
+            setShowAccountMissing(false);
+          }}
+        >
+          Cancel
+        </CustomButton>
+      </ModalOptions>
       <h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Sign up/in</h1>
       <div class="mb-16 flex h-full w-full max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
-        <div class="flex w-11/12 max-w-2xl flex-col justify-start gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+        <div class="flex w-11/12 max-w-2xl flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
           <h2 class="text-2xl font-bold lg:text-3xl">Username and password</h2>
           <p class="text-lg">
             Sign up/in with regular username and password. Use anonymous
             username. You can delete your account and all your data if you want
             at anytime. Remember to save username and password to
             browser/password manager, so that you can access account.
+          </p>
+          <br />
+          <p class="text-lg font-semibold">
+            Use this same form to sign in or up or both
           </p>
           <Form onSubmit={handleSubmit}>
             <div class="m-4 flex flex-col items-center justify-center gap-4">
@@ -214,7 +243,7 @@ const Login = () => {
           </h2>
         </div>
 
-        <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+        <div class="flex w-11/12 max-w-2xl flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
           <h2 class="text-2xl font-bold lg:text-3xl">
             Social media sign up/in
           </h2>
@@ -231,7 +260,7 @@ const Login = () => {
             into single account.
           </p>
           {/* TODO Modal for options */}
-          <div class="flex items-center justify-center">
+          <div class="flex h-full items-center justify-center">
             <a
               class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-6 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href="/login/github"
