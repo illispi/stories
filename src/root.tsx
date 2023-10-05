@@ -1,6 +1,7 @@
 // @refresh reload
 import { Suspense, createEffect } from "solid-js";
 import {
+  A,
   Body,
   ErrorBoundary,
   FileRoutes,
@@ -17,8 +18,6 @@ import "./root.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
-
-
 
 export default function Root() {
   createEffect(() => {

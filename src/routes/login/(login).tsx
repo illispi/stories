@@ -20,17 +20,15 @@ import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
 
-//TODO redir to user data page if logged in
-
-// export const routeData = () => {
-// 	return createServerData$(async (_, event) => {
-// 		const authRequest = auth.handleRequest(event.request);
-// 		const session = await authRequest.validate();
-// 		if (session) {
-// 			return redirect("/");
-// 		}
-// 	});
-// };
+export const routeData = () => {
+  return createServerData$(async (_, event) => {
+    const authRequest = auth.handleRequest(event.request);
+    const session = await authRequest.validate();
+    if (session) {
+      return redirect("/");
+    }
+  });
+};
 
 const userSchema = object({
   username: string([

@@ -5,14 +5,13 @@ import {
 import { userProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { NullSchema } from "valibot";
 
 export const postPersonalStats = userProcedure
   .input(personalQuestionsSchema)
   .mutation(async ({ ctx, input }) => {
     const insertion = await ctx.db
       .insertInto("Personal_questions")
-      .values({ ...input, user: ctx.user.id, accepted: NullSchema })
+      .values({ ...input, user: ctx.user.id, accepted: null })
       .executeTakeFirst();
 
     if (!insertion) {
@@ -30,7 +29,7 @@ export const postTheirStats = userProcedure
   .mutation(async ({ ctx, input }) => {
     const insertion = await ctx.db
       .insertInto("Their_questions")
-      .values({ ...input, user: ctx.user.id, accepted: NullSchema })
+      .values({ ...input, user: ctx.user.id, accepted: null })
       .executeTakeFirst();
 
     if (!insertion) {
@@ -61,7 +60,7 @@ export const postArticle = userProcedure
   .mutation(async ({ input, ctx }) => {
     const insertion = await ctx.db
       .insertInto("Articles")
-      .values({ ...input, user: ctx.user.id, accepted: NullSchema })
+      .values({ ...input, user: ctx.user.id, accepted: null })
       .executeTakeFirst();
     if (!insertion) {
       throw new TRPCError({
