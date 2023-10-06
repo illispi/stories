@@ -350,7 +350,7 @@ export const questions: QuestionPersonal[] = [
     question: "Did your life goals change after experiencing psychosis?",
     questionType: "yesOrNo",
     questionDB: "goals_changed",
-    skip: "told_family",
+    skip: "told_nobody",
   },
   {
     question: "How did your life goals change?",
@@ -359,14 +359,19 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question: "Have you told anybody you have schizophrenia?",
+    questionType: "yesOrNo",
+    questionDB: "told_nobody",
+    skip: "lost_relationships",
+  },
+  {
+    question: "Who have you told you have schizophrenia?",
     questionType: "multiSelect",
     questionDB: "told_family",
     multiSelect: [
-      ["told_nobody", "Nobody"],
       ["told_family", "Family"],
       ["told_friends", "Friends"],
       ["told_employer", "Employer"],
-      ["told_if_asked", "Only if asked"],
+      ["told_if_asked", "If asked"],
     ],
   },
   {

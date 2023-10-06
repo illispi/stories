@@ -159,8 +159,7 @@ export const personalQuestionsSchemaCustom = z
       .string()
       .trim()
       .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough')
-      .nullable(),
+      .min(4, 'Your text is too short, even "okay" is enough'),
     what_others_should_know: z
       .string()
       .trim()
@@ -190,14 +189,6 @@ export const personalQuestionsSchemaCustom = z
         : !data?.hospitalized_voluntarily;
     },
     { message: "1" }
-  )
-  .refine(
-    (data) => {
-      return data.life_satisfaction
-        ? data.life_satisfaction_description !== null
-        : !data?.life_satisfaction_description;
-    },
-    { message: "2" }
   )
   .refine(
     (data) => {
