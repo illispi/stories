@@ -1,4 +1,4 @@
-import { createForm, valiForm } from "@modular-forms/solid";
+import { SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
 import { useQueryClient } from "@tanstack/solid-query";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
@@ -118,6 +118,15 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const editPersonalMut = trpc.editPersonal.useMutation(() => ({
     onSuccess: () => utils.getPersonal.invalidate(),
   }));
+
+  const handleEditPersonal: SubmitHandler<PersonalForm> = async (
+    values,
+    event
+  ) => {
+    if (personal.data) {
+      editPersonalMut.mutateAsync({ ...personal.data, ...values });
+    }
+  };
 
   return (
     <div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 py-20 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
@@ -252,11 +261,13 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                       <textarea
                                         class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
                                         {...props}
-                                        cols={60}
+                                        cols={20}
                                         rows={3}
                                         required
                                         autocomplete="off"
-                                        placeholder="link"
+                                        value={
+                                          field.value || personal.data?.[el]
+                                        }
                                       />
                                       {field.error && <div>{field.error}</div>}
                                     </>
