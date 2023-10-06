@@ -1,15 +1,18 @@
+import { createForm, valiForm } from "@modular-forms/solid";
 import { useQueryClient } from "@tanstack/solid-query";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
+import { Input, maxLength, minLength, object, string } from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
+import { editPersonal } from "~/server/trpc/router/user/userMutations";
 import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent = (props) => {
@@ -19,6 +22,51 @@ const Box: ParentComponent = (props) => {
     </div>
   );
 };
+
+const PersonalFormSchema = object({
+  describe_hospital: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  what_kind_of_care_after: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  personality_before: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  personality_after: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  other_help: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  goals_after: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  responded_to_telling: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  life_satisfaction_description: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  what_others_should_know: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+  not_have_schizophrenia_description: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(4, 'Your text is too short, even "okay" is enough'),
+  ]),
+});
+
+type PersonalForm = Input<typeof PersonalFormSchema>;
 
 export const { routeData, Page } = ProtectedUser((session) => {
   //TODO test roles
@@ -44,6 +92,11 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [showDeleteAccount, setShowDeleteAccount] = createSignal(false);
   const [pageTheir, setPageTheir] = createSignal(0);
   const [pageArticles, setPageArticles] = createSignal(0);
+  const [personalEdit, setPersonalEdit] = createSignal(false);
+
+  const [personalForm, { Form, Field }] = createForm<PersonalForm>({
+    validate: valiForm(PersonalFormSchema),
+  });
 
   const [dir, setDir] = createSignal(1);
 
@@ -61,6 +114,9 @@ export const { routeData, Page } = ProtectedUser((session) => {
   }));
   const removeArticleMut = trpc.removeArticle.useMutation(() => ({
     onSuccess: () => utils.getArticles.invalidate(),
+  }));
+  const editPersonalMut = trpc.editPersonal.useMutation(() => ({
+    onSuccess: () => utils.getPersonal.invalidate(),
   }));
 
   return (
@@ -155,18 +211,79 @@ export const { routeData, Page } = ProtectedUser((session) => {
                     >
                       Delete this personal poll data
                     </CustomButton>
-                    <For
-                      each={Object.keys(headers) as Array<keyof typeof headers>}
+                    <CustomButton
+                      onClick={() => {
+                        setPersonalEdit(true);
+                      }}
                     >
-                      {(el) => (
-                        <Show when={personal.data?.[el]}>
-                          <h2 class="text-2xl font-bold lg:text-3xl">
-                            {headers[el]}
-                          </h2>
-                          <p>{personal.data?.[el]}</p>
-                        </Show>
-                      )}
-                    </For>
+                      Edit this personal poll data
+                    </CustomButton>
+                    <h4>{`status: ${
+                      personal.data?.accepted
+                        ? "Accepted"
+                        : personal.data?.accepted === null
+                        ? "Pending"
+                        : "Declined"
+                    }`}</h4>
+                    <Show when={!personal.data?.accepted}>
+                      {personal.data?.decline_reason}
+                    </Show>
+
+                    <Show
+                      when={!personalEdit()}
+                      fallback={
+                        <Form onSubmit={handleEditPersonal}>
+                          <For
+                            each={
+                              Object.keys(headers) as Array<
+                                keyof typeof headers
+                              >
+                            }
+                          >
+                            {(el) => (
+                              <Show when={personal.data?.[el]}>
+                                <h2 class="text-2xl font-bold lg:text-3xl">
+                                  {headers[el]}
+                                </h2>
+                                <p>{personal.data?.[el]}</p>
+                                <Field name={el}>
+                                  {(field, props) => (
+                                    <>
+                                      <textarea
+                                        class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+                                        {...props}
+                                        cols={60}
+                                        rows={3}
+                                        required
+                                        autocomplete="off"
+                                        placeholder="link"
+                                      />
+                                      {field.error && <div>{field.error}</div>}
+                                    </>
+                                  )}
+                                </Field>
+                              </Show>
+                            )}
+                          </For>
+                          <CustomButton type="submit">Submit Edit</CustomButton>
+                        </Form>
+                      }
+                    >
+                      <For
+                        each={
+                          Object.keys(headers) as Array<keyof typeof headers>
+                        }
+                      >
+                        {(el) => (
+                          <Show when={personal.data?.[el]}>
+                            <h2 class="text-2xl font-bold lg:text-3xl">
+                              {headers[el]}
+                            </h2>
+                            <p>{personal.data?.[el]}</p>
+                          </Show>
+                        )}
+                      </For>
+                    </Show>
                   </Box>
                 </Show>
               </TransitionFade>
