@@ -6,7 +6,7 @@ export const listSubmissions = adminProcedure
     z.object({
       page: z.number().int(),
       pOrT: z.enum(["Personal_questions", "Their_questions"]),
-      accepted: z.boolean(),
+      accepted: z.boolean().nullable(),
     })
   )
   .query(async ({ ctx, input }) => {
@@ -50,6 +50,8 @@ export const listSubmissions = adminProcedure
 
     //BUG this might return undefined, should be returnin null in that case
 
+    console.log(poll, input.accepted);
+
     const { countAll } = ctx.db.fn;
 
     const { count } = (await ctx.db
@@ -67,7 +69,7 @@ export const listArticles = adminProcedure
   .input(
     z.object({
       page: z.number().int(),
-      accepted: z.boolean(),
+      accepted: z.boolean().nullable(),
     })
   )
   .query(async ({ ctx, input }) => {

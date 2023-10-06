@@ -19,7 +19,7 @@ export const acceptArticle = adminProcedure
     const insertion = await ctx.db
       .updateTable("Articles")
       .set({
-        accepted: true
+        accepted: true,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -181,6 +181,46 @@ export const fakeForDev = adminProcedure
         });
       }
 
+      return "Insertion success";
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    }
+  });
+
+export const fakeForDevBulk = adminProcedure
+  .input(
+    z.object({
+      pOrT: z.enum(["Personal_questions", "Their_questions"]),
+    })
+  )
+  .mutation(async ({ ctx, input }) => {
+    try {
+      for (let index = 0; index < 20; index++) {
+        const fakeData =
+          input.pOrT === "Personal_questions"
+            ? createFakeDataPersonal()
+            : createFakeDataTheir();
+
+        input.pOrT === "Personal_questions"
+          ? personalQuestionsSchema.parse(fakeData)
+          : theirQuestionsSchema.parse(fakeData);
+
+        const fakeInsert = await ctx.db
+          .insertInto(input.pOrT)
+          .values({
+            ...fakeData,
+            user: ctx.user.id,
+            accepted: true,
+          })
+          .executeTakeFirst();
+
+        if (!fakeInsert) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Insertion failed",
+          });
+        }
+      }
       return "Insertion success";
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });

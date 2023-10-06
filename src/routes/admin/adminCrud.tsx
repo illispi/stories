@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/solid-query";
 import { trpc } from "~/utils/trpc";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const [accepted, setAccepted] = createSignal(false);
+  const [accepted, setAccepted] = createSignal<null | boolean>(null);
   const [pOrT, setPOrT] = createSignal<
     "Personal_questions" | "Their_questions"
   >("Personal_questions");
@@ -204,11 +204,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                       ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
                       : ""
                   }`}
-                  onClick={() =>
-                    setAccepted(
-                      accepted() === true ? null : true
-                    )
-                  }
+                  onClick={() => setAccepted(accepted() === true ? null : true)}
                 >
                   Accepted
                 </CustomButton>

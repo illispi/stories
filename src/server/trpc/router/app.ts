@@ -6,6 +6,7 @@ import {
   declineSubmission,
   fakeArticlesForDev,
   fakeForDev,
+  fakeForDevBulk,
   fakeForFake,
 } from "./admin/adminMutations";
 import { listArticles, listSubmissions } from "./admin/adminQueries";
@@ -50,6 +51,7 @@ export const appRouter = router({
   getArticles,
   editPersonal,
   editTheir,
+  fakeForDevBulk
 });
 
 export type IAppRouter = typeof appRouter;

@@ -254,7 +254,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                 <h2 class="text-2xl font-bold lg:text-3xl">
                                   {headers[el]}
                                 </h2>
-                                <p>{personal.data?.[el]}</p>
                                 <Field name={el}>
                                   {(field, props) => (
                                     <>
