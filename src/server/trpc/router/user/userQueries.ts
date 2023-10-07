@@ -23,8 +23,7 @@ export const getTheirs = userProcedure.query(async ({ ctx }) => {
     .where("user", "=", ctx.user.id)
     .execute();
 
-
-  if (unSafe.length === 0) {
+  if (!unSafe.length) {
     return null;
   }
 
@@ -43,7 +42,7 @@ export const getArticles = userProcedure.query(async ({ ctx }) => {
     .where("user", "=", ctx.user.id)
     .execute();
 
-  if (!unSafe) {
+  if (!unSafe.length) {
     return null;
   }
 

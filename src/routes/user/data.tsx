@@ -2,7 +2,14 @@ import { SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
 import { useQueryClient } from "@tanstack/solid-query";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
-import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
+import {
+  ErrorBoundary,
+  For,
+  Show,
+  Suspense,
+  createEffect,
+  createSignal,
+} from "solid-js";
 import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import { Input, maxLength, minLength, object, string } from "valibot";
@@ -94,10 +101,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const [pageArticles, setPageArticles] = createSignal(0);
   const [personalEdit, setPersonalEdit] = createSignal(false);
 
-  const [personalForm, { Form, Field }] = createForm<PersonalForm>({
-    validate: valiForm(PersonalFormSchema),
-  });
-
   const [dir, setDir] = createSignal(1);
 
   const removeAccAndDataMut = trpc.removeAccountAndData.useMutation();
@@ -118,6 +121,25 @@ export const { routeData, Page } = ProtectedUser((session) => {
   const editPersonalMut = trpc.editPersonal.useMutation(() => ({
     onSuccess: () => utils.getPersonal.invalidate(),
   }));
+
+  let initial;
+
+  let [personalForm, { Form, Field }] = createForm<PersonalForm>({
+    validate: valiForm(PersonalFormSchema),
+  });
+
+  createEffect(() => {
+    if (personal.data) {
+      const arrKeys = Object.keys(headers);
+      initial = Object.fromEntries(arrKeys.map((k) => [k, personal.data?.[k]]));
+
+      console.log(initial);
+      [personalForm, { Form, Field }] = createForm<PersonalForm>({
+        validate: valiForm(PersonalFormSchema),
+        initialValues: initial,
+      });
+    }
+  });
 
   const handleEditPersonal: SubmitHandler<PersonalForm> = async (
     values,
@@ -264,9 +286,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                         rows={3}
                                         required
                                         autocomplete="off"
-                                        value={
-                                          field.value || personal.data?.[el]
-                                        }
+                                        value={field.value}
                                       />
                                       {field.error && <div>{field.error}</div>}
                                     </>
