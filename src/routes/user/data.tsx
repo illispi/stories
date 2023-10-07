@@ -1,8 +1,10 @@
 import {
   SubmitHandler,
   createForm,
+  getValue,
   setValue,
   setValues,
+  toCustom,
   valiForm,
 } from "@modular-forms/solid";
 import { useQueryClient } from "@tanstack/solid-query";
@@ -160,7 +162,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
           .filter((e) => personal.data?.[e])
           .map((k) => [k, personal.data?.[k]])
       );
-      console.log(initial);
       arrKeys.forEach((e) => setValue(personalForm, e, initial?.[e]));
     }
   });
@@ -169,7 +170,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
     values,
     event
   ) => {
-    console.log("mutate");
     editPersonalMut.mutateAsync({ ...personal.data, ...values });
   };
 
@@ -295,7 +295,11 @@ export const { routeData, Page } = ProtectedUser((session) => {
                             }
                           >
                             {(el) => (
-                              <Show when={personal.data?.[el]}>
+                              <div
+                                classList={{
+                                  ["flex"]: !personal.data?.[el],
+                                }}
+                              >
                                 <h2 class="text-2xl font-bold lg:text-3xl">
                                   {headers[el]}
                                 </h2>
@@ -315,10 +319,25 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                     </>
                                   )}
                                 </Field>
-                              </Show>
+                              </div>
                             )}
                           </For>
-                          <CustomButton type="submit">Submit Edit</CustomButton>
+                          <CustomButton
+                            onClick={() => {
+                              Object.keys(headers).forEach((e) => {
+                                setValue(
+                                  personalForm,
+                                  e,
+                                  getValue(personalForm, e)?.length
+                                    ? getValue(personalForm, e)
+                                    : null
+                                );
+                              });
+                            }}
+                            type="submit"
+                          >
+                            Submit Edit
+                          </CustomButton>
                         </Form>
                       }
                     >
