@@ -18,7 +18,7 @@ import {
 } from "solid-js";
 import { A, ErrorMessage, Navigate } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
-import { Input, maxLength, minLength, object, string } from "valibot";
+import { Input, maxLength, minLength, nullable, object, string } from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -37,46 +37,66 @@ const Box: ParentComponent = (props) => {
 };
 
 const PersonalFormSchema = object({
-  describe_hospital: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  what_kind_of_care_after: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  personality_before: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  personality_after: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  other_help: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  goals_after: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  responded_to_telling: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  life_satisfaction_description: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  what_others_should_know: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
-  not_have_schizophrenia_description: string([
-    maxLength(600, "Your text is too long! (Max. 600 characters)"),
-    minLength(4, 'Your text is too short, even "okay" is enough'),
-  ]),
+  describe_hospital: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  what_kind_of_care_after: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  personality_before: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  personality_after: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  other_help: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  goals_after: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  responded_to_telling: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  life_satisfaction_description: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  what_others_should_know: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
+  not_have_schizophrenia_description: nullable(
+    string([
+      maxLength(600, "Your text is too long! (Max. 600 characters)"),
+      minLength(4, 'Your text is too short, even "okay" is enough'),
+    ])
+  ),
 });
 
 type PersonalForm = Input<typeof PersonalFormSchema>;
