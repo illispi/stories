@@ -128,8 +128,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
     onSuccess: () => utils.getPersonal.invalidate(),
   }));
 
-  let initial;
-
   const [personalForm, { Form, Field }] = createForm<PersonalForm>({
     validate: valiForm(PersonalFormSchema),
   });
@@ -137,7 +135,12 @@ export const { routeData, Page } = ProtectedUser((session) => {
   createEffect(() => {
     if (personal.data) {
       const arrKeys = Object.keys(headers);
-      initial = Object.fromEntries(arrKeys.map((k) => [k, personal.data?.[k]]));
+      const initial = Object.fromEntries(
+        arrKeys
+          .filter((e) => personal.data?.[e])
+          .map((k) => [k, personal.data?.[k]])
+      );
+      console.log(initial);
       arrKeys.forEach((e) => setValue(personalForm, e, initial?.[e]));
     }
   });
