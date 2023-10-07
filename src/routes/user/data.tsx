@@ -1,4 +1,10 @@
-import { SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
+import {
+  SubmitHandler,
+  createForm,
+  setValue,
+  setValues,
+  valiForm,
+} from "@modular-forms/solid";
 import { useQueryClient } from "@tanstack/solid-query";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
@@ -124,7 +130,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
 
   let initial;
 
-  let [personalForm, { Form, Field }] = createForm<PersonalForm>({
+  const [personalForm, { Form, Field }] = createForm<PersonalForm>({
     validate: valiForm(PersonalFormSchema),
   });
 
@@ -132,12 +138,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
     if (personal.data) {
       const arrKeys = Object.keys(headers);
       initial = Object.fromEntries(arrKeys.map((k) => [k, personal.data?.[k]]));
-
-      console.log(initial);
-      [personalForm, { Form, Field }] = createForm<PersonalForm>({
-        validate: valiForm(PersonalFormSchema),
-        initialValues: initial,
-      });
+      arrKeys.forEach((e) => setValue(personalForm, e, initial?.[e]));
     }
   });
 
@@ -145,9 +146,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
     values,
     event
   ) => {
-    if (personal.data) {
-      editPersonalMut.mutateAsync({ ...personal.data, ...values });
-    }
+    console.log("mutate");
+    editPersonalMut.mutateAsync({ ...personal.data, ...values });
   };
 
   return (
