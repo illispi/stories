@@ -168,10 +168,9 @@ const PersonalQuestions: ParentComponent = () => {
   return (
     <div class="flex h-screen w-full flex-col items-center justify-start lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <Show
-        when={submissionStatus() === "success"}
+        when={submissionStatus() !== "success"}
         fallback={
           <div class="flex h-screen w-full flex-col items-center justify-center">
-            {console.log(submissionStatus(), "here")}
             <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
               <h2 class="m-8 text-lg">Submitted successfully for apporval!</h2>
             </div>
