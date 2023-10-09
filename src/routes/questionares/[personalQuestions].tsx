@@ -211,70 +211,72 @@ const PersonalQuestions: ParentComponent = () => {
                   </div>
                 }
               >
-                <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
-                  <div class="flex h-20 w-80 items-center justify-between p-2">
-                    <Counter page={page()} questions={questions} />
-                    <CustomButton
-                      type="button"
-                      onClick={() => {
-                        if (page() >= 0) {
-                          const skipAmount = localStorage.getItem(
-                            `to_${questions[page()].questionDB}_${LsName}`
-                          );
+                <div class="flex h-screen w-full flex-col items-center justify-start">
+                  <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
+                    <div class="flex h-20 w-80 items-center justify-between p-2">
+                      <Counter page={page()} questions={questions} />
+                      <CustomButton
+                        type="button"
+                        onClick={() => {
+                          if (page() >= 0) {
+                            const skipAmount = localStorage.getItem(
+                              `to_${questions[page()].questionDB}_${LsName}`
+                            );
 
-                          paginate(
-                            skipAmount ? -1 - JSON.parse(skipAmount) : -1
-                          );
-                        }
-                      }}
-                    >
-                      Previous
-                    </CustomButton>
+                            paginate(
+                              skipAmount ? -1 - JSON.parse(skipAmount) : -1
+                            );
+                          }
+                        }}
+                      >
+                        Previous
+                      </CustomButton>
+                    </div>
+
+                    <Questions
+                      setSubmissionStatus={setSubmissionStatus}
+                      direction={direction()}
+                      page={page()}
+                      paginate={paginate}
+                      questions={questions}
+                      LsName={LsName}
+                    />
                   </div>
+                  <CustomButton
+                    class="my-4 w-48"
+                    onClick={() => {
+                      setClear(true);
+                    }}
+                  >
+                    Clear answers
+                  </CustomButton>
+                  <ModalOptions show={clear()} setShow={setClear}>
+                    <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+                      <h2 class="text-center text-2xl font-bold lg:text-3xl">
+                        Clear all answers?
+                      </h2>
 
-                  <Questions
-                    setSubmissionStatus={setSubmissionStatus}
-                    direction={direction()}
-                    page={page()}
-                    paginate={paginate}
-                    questions={questions}
-                    LsName={LsName}
-                  />
+                      <CustomButton
+                        class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+                        onClick={() => {
+                          localStorage.clear();
+                          setClear(false);
+                          setPage(-1);
+                        }}
+                      >
+                        Clear answers
+                      </CustomButton>
+
+                      <CustomButton
+                        onClick={() => {
+                          setClear(false);
+                        }}
+                      >
+                        Cancel
+                      </CustomButton>
+                    </div>
+                  </ModalOptions>
                 </div>
-                <CustomButton
-                  class="my-4 w-48"
-                  onClick={() => {
-                    setClear(true);
-                  }}
-                >
-                  Clear answers
-                </CustomButton>
-                <ModalOptions show={clear()} setShow={setClear}>
-                  <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
-                    <h2 class="text-center text-2xl font-bold lg:text-3xl">
-                      Clear all answers?
-                    </h2>
-
-                    <CustomButton
-                      class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
-                      onClick={() => {
-                        localStorage.clear();
-                        setClear(false);
-                        setPage(-1);
-                      }}
-                    >
-                      Clear answers
-                    </CustomButton>
-
-                    <CustomButton
-                      onClick={() => {
-                        setClear(false);
-                      }}
-                    >
-                      Cancel
-                    </CustomButton>
-                  </div>
-                </ModalOptions>
               </Show>
             </TransitionFade>
           </Show>
