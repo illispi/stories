@@ -36,9 +36,12 @@ export default function Root() {
           <ErrorBoundary
             fallback={(e, reset) => {
               return (
-                <div class="flex min-h-screen w-full flex-col items-center justify-center">
-                  <h2>{e.message}</h2>
-                  <CustomButton onClick={reset}>Try again</CustomButton>
+                <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
+                  <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+                    <h1 class="text-center text-2xl">Error occured!</h1>
+                    <h2 class="text-center">{`Message: ${e.message}`}</h2>
+                    <CustomButton onClick={reset}>Try again</CustomButton>
+                  </div>
                 </div>
               );
             }}
