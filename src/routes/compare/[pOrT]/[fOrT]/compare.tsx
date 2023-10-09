@@ -1,3 +1,4 @@
+import { route } from "routes-gen";
 import type { Component, Setter } from "solid-js";
 import {
   For,
@@ -8,7 +9,7 @@ import {
   createSignal,
   onCleanup,
 } from "solid-js";
-import { useParams } from "solid-start";
+import { useParams, A as Alink } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
@@ -279,108 +280,154 @@ const CompareStats = () => {
   }));
 
   return (
-    <div class="flex-1">
-      <Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
-      <div class="flex flex-col items-center justify-center">
-        <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
-          <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
-            <h1 class="text-center font-semibold">Statistics Comparison</h1>
+    <Show
+      when={
+        statsA.data?.total &&
+        statsB.data?.total &&
+        statsA.data?.total >= 5 &&
+        statsB.data?.total >= 5
+      }
+      fallback={
+        <div class="flex min-h-screen w-full items-center justify-center">
+          <div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
+            <div class="flex flex-col items-center justify-center gap-2">
+              <h2 class="text-center text-2xl font-bold lg:text-3xl">
+                {`${statsA.data?.total ?? 0}/5 ${A()}`}
+              </h2>
+              <h2 class="text-center text-2xl font-bold lg:text-3xl">{`${
+                statsA.data?.total ?? 0
+              }/5 ${B()}`}</h2>
+            </div>
+            <p class="text-center text-lg">
+              Poll needs to be done by at least 5 people on both comparisons
+            </p>
+            <Alink
+              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/questionares/:personalQuestions", {
+                personalQuestions:
+                  params.pOrT === "Personal_questions"
+                    ? "personalQuestions"
+                    : "theirQuestions",
+              })}
+            >
+              Do the poll now
+            </Alink>
+            <Alink
+              class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+              href={route("/compare/:pOrT/:fOrT/compare", {
+                fOrT: "fake",
+                pOrT: params.pOrT,
+              })}
+            >
+              View results with fake data
+            </Alink>
           </div>
-          <div class="flex flex-col items-center justify-center">
-            <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
-              <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
-                <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                  {A()}
-                </h3>
-              </div>
-              <div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
-                <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                  {B()}
-                </h3>
-              </div>
-              <Show when={statsA.data && statsB.data}>
-                <Suspense>
-                  <For each={compOrder()}>
-                    {(comp) => (
-                      <>
-                        <Show
-                          when={comp.type !== "bar"}
-                          fallback={
+        </div>
+      }
+    >
+      <div class="flex-1">
+        <Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
+        <div class="flex flex-col items-center justify-center">
+          <div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
+            <div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
+              <h1 class="text-center font-semibold">Statistics Comparison</h1>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+              <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
+                <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
+                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                    {A()}
+                  </h3>
+                </div>
+                <div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
+                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                    {B()}
+                  </h3>
+                </div>
+                <Show when={statsA.data && statsB.data}>
+                  <Suspense>
+                    <For each={compOrder()}>
+                      {(comp) => (
+                        <>
+                          <Show
+                            when={comp.type !== "bar"}
+                            fallback={
+                              <>
+                                <h5 class="text-xl lg:hidden">{A()}:</h5>
+                                <CompSelector
+                                  {...comp}
+                                  data={statsA.data}
+                                  ref={(el: Element) => {
+                                    setTargets((p) => [...p, el]);
+                                  }}
+                                  shown={shown()}
+                                  removeShown={removeShown}
+                                  pOrT={params.pOrT}
+                                  fOrT={params.fOrT}
+                                />
+
+                                <h5 class="text-xl lg:hidden">{B()}:</h5>
+                                <CompSelector
+                                  {...comp}
+                                  data={statsB.data}
+                                  ref={(el: Element) => {
+                                    setTargets((p) => [...p, el]);
+                                  }}
+                                  shown={shown()}
+                                  removeShown={removeShown}
+                                  pOrT={params.pOrT}
+                                  fOrT={params.fOrT}
+                                />
+                                <div class="my-12 w-full border-2 border-b-black lg:hidden " />
+                              </>
+                            }
+                          >
                             <>
                               <h5 class="text-xl lg:hidden">{A()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsA.data}
                                 ref={(el: Element) => {
-                                  setTargets((p) => [...p, el]);
+                                  {
+                                    setTargets((p) => [...p, el]);
+                                  }
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
-
                               <h5 class="text-xl lg:hidden">{B()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsB.data}
                                 ref={(el: Element) => {
                                   setTargets((p) => [...p, el]);
+                                  onCleanup(() => {
+                                    if (targets().length >= 0) {
+                                      setTargets([]);
+                                    }
+                                  });
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
-                              <div class="my-12 w-full border-2 border-b-black lg:hidden " />
+                              <div class="my-12 w-full border-2 border-b-black lg:hidden" />
                             </>
-                          }
-                        >
-                          <>
-                            <h5 class="text-xl lg:hidden">{A()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsA.data}
-                              ref={(el: Element) => {
-                                {
-                                  setTargets((p) => [...p, el]);
-                                }
-                              }}
-                              shown={shown()}
-                              removeShown={removeShown}
-                              pOrT={params.pOrT}
-                              fOrT={params.fOrT}
-                            />
-                            <h5 class="text-xl lg:hidden">{B()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsB.data}
-                              ref={(el: Element) => {
-                                setTargets((p) => [...p, el]);
-                                onCleanup(() => {
-                                  if (targets().length >= 0) {
-                                    setTargets([]);
-                                  }
-                                });
-                              }}
-                              shown={shown()}
-                              removeShown={removeShown}
-                              pOrT={params.pOrT}
-                              fOrT={params.fOrT}
-                            />
-                            <div class="my-12 w-full border-2 border-b-black lg:hidden" />
-                          </>
-                        </Show>
-                      </>
-                    )}
-                  </For>
-                </Suspense>
-              </Show>
+                          </Show>
+                        </>
+                      )}
+                    </For>
+                  </Suspense>
+                </Show>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Show>
   );
 };
 

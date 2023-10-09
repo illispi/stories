@@ -60,8 +60,6 @@ const AllStatsPage: ParentComponent = () => {
       ? allStatsPersonalArr
       : allStatsTheirArr;
 
-  const selector = params.pOrT === "Personal_questions" ? "personal" : "their";
-
   const [shown, setShown] = createSignal<Element[]>([]);
   const [targets, setTargets] = createSignal<Element[]>([]);
 
