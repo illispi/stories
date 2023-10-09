@@ -169,119 +169,134 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <div class="flex h-screen w-full flex-col items-center justify-start lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-      <TransitionFade>
-        <Suspense fallback="loading">
-          <Show
-            when={
-              !personal.data || params.personalQuestions === "theirQuestions"
-            }
-            fallback={
-              <div class="flex h-screen w-full flex-col items-center justify-center">
-                <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-                  <h2 class="m-8 text-lg">
-                    You have already submitted personal poll!
-                  </h2>
-                  <A
-                    href={route("/user/data")}
-                    class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                  >
-                    See status of it
-                  </A>
-                </div>
-              </div>
-            }
-          >
-            <TransitionFade>
-              <Show
-                when={submissionStatus() !== "success"}
-                fallback={
-                  <div class="flex h-screen w-full flex-col items-center justify-center">
-                    <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-                      <h2 class="m-8 text-lg">
-                        Submitted successfully for apporval!
-                      </h2>
-                      <A
-                        href={route("/user/data")}
-                        class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                      >
-                        See status
-                      </A>
-                    </div>
-                  </div>
-                }
+    <div class="flex h-screen w-full flex-col items-center justify-start">
+      <Show
+        when={!personal.isLoading}
+        fallback={
+          <div class="flex h-screen w-full flex-col items-center justify-center">
+            <div class="animate-ping">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
               >
-                <div class="flex h-screen w-full flex-col items-center justify-start">
-                  <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
-                    <div class="flex h-20 w-80 items-center justify-between p-2">
-                      <Counter page={page()} questions={questions} />
-                      <CustomButton
-                        type="button"
-                        onClick={() => {
-                          if (page() >= 0) {
-                            const skipAmount = localStorage.getItem(
-                              `to_${questions[page()].questionDB}_${LsName}`
-                            );
-
-                            paginate(
-                              skipAmount ? -1 - JSON.parse(skipAmount) : -1
-                            );
-                          }
-                        }}
-                      >
-                        Previous
-                      </CustomButton>
-                    </div>
-
-                    <Questions
-                      setSubmissionStatus={setSubmissionStatus}
-                      direction={direction()}
-                      page={page()}
-                      paginate={paginate}
-                      questions={questions}
-                      LsName={LsName}
-                    />
+                <path
+                  fill="currentColor"
+                  d="m11 12.2l-.9-.9q-.275-.275-.7-.275t-.7.275q-.275.275-.275.7t.275.7l2.6 2.6q.3.3.7.3t.7-.3l2.6-2.6q.275-.275.275-.7t-.275-.7q-.275-.275-.7-.275t-.7.275l-.9.9V9q0-.425-.288-.713T12 8q-.425 0-.713.288T11 9v3.2Zm1 9.8q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"
+                />
+              </svg>
+            </div>
+          </div>
+        }
+      >
+        <Show
+          when={!personal.data || params.personalQuestions === "theirQuestions"}
+          fallback={
+            <div class="flex h-screen w-full flex-col items-center justify-center">
+              <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+                <h2 class="m-8 text-lg">
+                  You have already submitted personal poll!
+                </h2>
+                <A
+                  href={route("/user/data")}
+                  class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                >
+                  See status of it
+                </A>
+              </div>
+            </div>
+          }
+        >
+          <TransitionFade>
+            <Show
+              when={submissionStatus() !== "success"}
+              fallback={
+                <div class="flex h-screen w-full flex-col items-center justify-center">
+                  <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+                    <h2 class="m-8 text-lg">
+                      Submitted successfully for apporval!
+                    </h2>
+                    <A
+                      href={route("/user/data")}
+                      class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                    >
+                      See status
+                    </A>
                   </div>
-                  <CustomButton
-                    class="my-4 w-48"
-                    onClick={() => {
-                      setClear(true);
-                    }}
-                  >
-                    Clear answers
-                  </CustomButton>
-                  <ModalOptions show={clear()} setShow={setClear}>
-                    <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
-                      <h2 class="text-center text-2xl font-bold lg:text-3xl">
-                        Clear all answers?
-                      </h2>
-
-                      <CustomButton
-                        class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
-                        onClick={() => {
-                          localStorage.clear();
-                          setClear(false);
-                          setPage(-1);
-                        }}
-                      >
-                        Clear answers
-                      </CustomButton>
-
-                      <CustomButton
-                        onClick={() => {
-                          setClear(false);
-                        }}
-                      >
-                        Cancel
-                      </CustomButton>
-                    </div>
-                  </ModalOptions>
                 </div>
-              </Show>
-            </TransitionFade>
-          </Show>
-        </Suspense>
-      </TransitionFade>
+              }
+            >
+              <div class="flex h-screen w-full flex-col items-center justify-start">
+                <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
+                  <div class="flex h-20 w-80 items-center justify-between p-2">
+                    <Counter page={page()} questions={questions} />
+                    <CustomButton
+                      type="button"
+                      onClick={() => {
+                        if (page() >= 0) {
+                          const skipAmount = localStorage.getItem(
+                            `to_${questions[page()].questionDB}_${LsName}`
+                          );
+
+                          paginate(
+                            skipAmount ? -1 - JSON.parse(skipAmount) : -1
+                          );
+                        }
+                      }}
+                    >
+                      Previous
+                    </CustomButton>
+                  </div>
+
+                  <Questions
+                    setSubmissionStatus={setSubmissionStatus}
+                    direction={direction()}
+                    page={page()}
+                    paginate={paginate}
+                    questions={questions}
+                    LsName={LsName}
+                  />
+                </div>
+                <CustomButton
+                  class="my-4 w-48"
+                  onClick={() => {
+                    setClear(true);
+                  }}
+                >
+                  Clear answers
+                </CustomButton>
+                <ModalOptions show={clear()} setShow={setClear}>
+                  <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+                    <h2 class="text-center text-2xl font-bold lg:text-3xl">
+                      Clear all answers?
+                    </h2>
+
+                    <CustomButton
+                      class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+                      onClick={() => {
+                        localStorage.clear();
+                        setClear(false);
+                        setPage(-1);
+                      }}
+                    >
+                      Clear answers
+                    </CustomButton>
+
+                    <CustomButton
+                      onClick={() => {
+                        setClear(false);
+                      }}
+                    >
+                      Cancel
+                    </CustomButton>
+                  </div>
+                </ModalOptions>
+              </div>
+            </Show>
+          </TransitionFade>
+        </Show>
+      </Show>
     </div>
   );
 };
