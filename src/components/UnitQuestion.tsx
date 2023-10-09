@@ -1,5 +1,5 @@
 import type { ParentComponent, Setter } from "solid-js";
-import { createEffect, createSignal, For, Match, Switch } from "solid-js";
+import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
@@ -508,7 +508,7 @@ export const UnitQuestion: ParentComponent<{
       </Match>
       <Match when={questionType === "yesOrNo"}>
         <Box question={question}>
-          <div class="flex flex-col items-center justify-end ">
+          <div class="flex flex-col items-center justify-end gap-8 ">
             <CustomButton
               // TODO might better to use state of yesOrNO instead of valueOfLS
               class={
@@ -584,7 +584,16 @@ export const UnitQuestion: ParentComponent<{
       {/* TODO When you press submit something should happen */}
       <Match when={questionType === "submit"}>
         <Box question={question}>
-          <CustomButton onClick={submitResults}>Submit</CustomButton>
+          <Show
+            when={!sendStats.isPending}
+            fallback={
+              <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
+                Submitting
+              </CustomButton>
+            }
+          >
+            <CustomButton onClick={submitResults}>Submit</CustomButton>
+          </Show>
         </Box>
       </Match>
     </Switch>
