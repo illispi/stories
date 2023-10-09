@@ -118,30 +118,31 @@ export const fakeForFake = adminProcedure
     })
   )
   .mutation(async ({ ctx, input }) => {
-    const fakeData =
-      input.pOrT === "Personal_questions_fake"
-        ? createFakeDataPersonal()
-        : createFakeDataTheir();
-
     try {
-      input.pOrT === "Personal_questions_fake"
-        ? personalQuestionsSchema.parse(fakeData)
-        : theirQuestionsSchema.parse(fakeData);
+      for (let index = 0; index < 100; index++) {
+        const fakeData =
+          input.pOrT === "Personal_questions_fake"
+            ? createFakeDataPersonal()
+            : createFakeDataTheir();
 
-      const fakeInsert = await ctx.db
-        .insertInto(input.pOrT)
-        .values({
-          ...fakeData,
-        })
-        .executeTakeFirst();
+        input.pOrT === "Personal_questions_fake"
+          ? personalQuestionsSchema.parse(fakeData)
+          : theirQuestionsSchema.parse(fakeData);
 
-      if (!fakeInsert) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Insertion failed",
-        });
+        const fakeInsert = await ctx.db
+          .insertInto(input.pOrT)
+          .values({
+            ...fakeData,
+          })
+          .executeTakeFirst();
+
+        if (!fakeInsert) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Insertion failed",
+          });
+        }
       }
-
       return "Insertion success";
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });

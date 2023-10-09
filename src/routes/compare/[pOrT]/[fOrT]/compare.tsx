@@ -282,10 +282,11 @@ const CompareStats = () => {
   return (
     <Show
       when={
-        statsA.data?.total &&
-        statsB.data?.total &&
-        statsA.data?.total >= 5 &&
-        statsB.data?.total >= 5
+        (statsA.data?.total &&
+          statsB.data?.total &&
+          statsA.data?.total >= 5 &&
+          statsB.data?.total >= 5) ||
+        params.fOrT === "fake"
       }
       fallback={
         <div class="flex min-h-screen w-full items-center justify-center">
