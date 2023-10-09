@@ -1,5 +1,5 @@
-import type { ParentComponent } from "solid-js";
-import { createSignal, For, Match, Switch } from "solid-js";
+import type { ParentComponent, Setter } from "solid-js";
+import { createEffect, createSignal, For, Match, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
@@ -40,11 +40,19 @@ export const UnitQuestion: ParentComponent<{
   content: QuestionPersonal | QuestionTheir;
   LsName: "personalQuestions" | "theirQuestions";
   paginate: (newDirection: number) => void;
+  setSubmissionStatus: Setter<string>;
 }> = (props) => {
   const sendStats =
     props.LsName === "personalQuestions"
       ? trpc.postPersonalStats.useMutation()
       : trpc.postTheirStats.useMutation();
+
+  createEffect(() => {
+    if (sendStats.isSuccess) {
+      props.setSubmissionStatus("success");
+    }
+    localStorage.clear();
+  });
 
   const questions =
     props.LsName === "personalQuestions" ? questionsP : questionsT;

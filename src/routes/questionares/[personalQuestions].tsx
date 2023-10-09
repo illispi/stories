@@ -1,5 +1,5 @@
 import { createEffect, createSignal, Show } from "solid-js";
-import type { ParentComponent } from "solid-js";
+import type { ParentComponent, Setter } from "solid-js";
 import CustomButton from "~/components/CustomButton";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
@@ -9,6 +9,7 @@ import { UnitQuestion } from "~/components/UnitQuestion";
 import { useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { ModalOptions } from "~/components/ModalOptions";
+import { trpc } from "~/utils/trpc";
 
 const Counter: ParentComponent<{
   page: number;
@@ -29,6 +30,7 @@ const Questions: ParentComponent<{
   paginate: (newDirection: number) => void;
   questions: QuestionPersonal[] | QuestionTheir[];
   LsName: "personalQuestions" | "theirQuestions";
+  setSubmissionStatus: Setter<string>;
 }> = (props) => {
   return (
     <Show fallback={<div>Loading....</div>} when={props.page >= 0}>
@@ -111,6 +113,7 @@ const Questions: ParentComponent<{
             <Show when={props.page === 0 ? true : props.page} keyed>
               <div class="absolute z-30 flex h-full w-full flex-col rounded-3xl bg-white shadow-lg shadow-blue-400">
                 <UnitQuestion
+                  setSubmissionStatus={props.setSubmissionStatus}
                   content={props.questions[props.page]}
                   paginate={props.paginate}
                   LsName={props.LsName}
@@ -131,6 +134,10 @@ const PersonalQuestions: ParentComponent = () => {
   const [page, setPage] = createSignal(-1);
   const [direction, setDirection] = createSignal(1);
   const [clear, setClear] = createSignal(false);
+
+  const [submissionStatus, setSubmissionStatus] = createSignal("");
+
+  
 
   const questions =
     params.personalQuestions === "personalQuestions"
@@ -162,67 +169,80 @@ const PersonalQuestions: ParentComponent = () => {
 
   return (
     <div class="flex h-screen w-full flex-col items-center justify-start lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-      <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
-        <div class="flex h-20 w-80 items-center justify-between p-2">
-          <Counter page={page()} questions={questions} />
-          <CustomButton
-            type="button"
-            onClick={() => {
-              if (page() >= 0) {
-                const skipAmount = localStorage.getItem(
-                  `to_${questions[page()].questionDB}_${LsName}`
-                );
-
-                paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
-              }
-            }}
-          >
-            Previous
-          </CustomButton>
-        </div>
-
-        <Questions
-          direction={direction()}
-          page={page()}
-          paginate={paginate}
-          questions={questions}
-          LsName={LsName}
-        />
-      </div>
-      <CustomButton
-        class="my-4 w-48"
-        onClick={() => {
-          setClear(true);
-        }}
+      <Show
+        when={submissionStatus() === "success"}
+        fallback={
+          <div class="flex h-screen w-full flex-col items-center justify-center">
+            {console.log(submissionStatus())}
+            <div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+              <h2 class="m-8 text-lg">Submitted successfully for apporval!</h2>
+            </div>
+          </div>
+        }
       >
-        Clear answers
-      </CustomButton>
-      <ModalOptions show={clear()} setShow={setClear}>
-        <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
-          <h2 class="text-center text-2xl font-bold lg:text-3xl">
-            Clear all answers?
-          </h2>
+        <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
+          <div class="flex h-20 w-80 items-center justify-between p-2">
+            <Counter page={page()} questions={questions} />
+            <CustomButton
+              type="button"
+              onClick={() => {
+                if (page() >= 0) {
+                  const skipAmount = localStorage.getItem(
+                    `to_${questions[page()].questionDB}_${LsName}`
+                  );
 
-          <CustomButton
-            class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
-            onClick={() => {
-              localStorage.clear();
-              setClear(false);
-              setPage(-1);
-            }}
-          >
-            Clear answers
-          </CustomButton>
+                  paginate(skipAmount ? -1 - JSON.parse(skipAmount) : -1);
+                }
+              }}
+            >
+              Previous
+            </CustomButton>
+          </div>
 
-          <CustomButton
-            onClick={() => {
-              setClear(false);
-            }}
-          >
-            Cancel
-          </CustomButton>
+          <Questions
+            setSubmissionStatus={setSubmissionStatus}
+            direction={direction()}
+            page={page()}
+            paginate={paginate}
+            questions={questions}
+            LsName={LsName}
+          />
         </div>
-      </ModalOptions>
+        <CustomButton
+          class="my-4 w-48"
+          onClick={() => {
+            setClear(true);
+          }}
+        >
+          Clear answers
+        </CustomButton>
+        <ModalOptions show={clear()} setShow={setClear}>
+          <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+            <h2 class="text-center text-2xl font-bold lg:text-3xl">
+              Clear all answers?
+            </h2>
+
+            <CustomButton
+              class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+              onClick={() => {
+                localStorage.clear();
+                setClear(false);
+                setPage(-1);
+              }}
+            >
+              Clear answers
+            </CustomButton>
+
+            <CustomButton
+              onClick={() => {
+                setClear(false);
+              }}
+            >
+              Cancel
+            </CustomButton>
+          </div>
+        </ModalOptions>
+      </Show>
     </div>
   );
 };
