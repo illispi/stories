@@ -125,7 +125,11 @@ const Compared: Component<{
       </div>
       {/* NOTE how to animate invisible */}
       <CustomButton
-        class={`mt-4 ${selection() !== "gender" ? "invisible" : "block"}`}
+        class={`mt-4 transition-all duration-300 ${
+          selection() !== "gender"
+            ? "invisible opacity-0"
+            : "visible opacity-100"
+        }`}
         onclick={() => {
           setGenderModalVisible(true);
           document.body.style.overflow = "hidden";
@@ -334,96 +338,113 @@ const CompareStats = () => {
               <h1 class="text-center font-semibold">Statistics Comparison</h1>
             </div>
             <div class="flex flex-col items-center justify-center">
-              <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
-                <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
-                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                    {A()}
-                  </h3>
-                </div>
-                <div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
-                  <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-                    {B()}
-                  </h3>
-                </div>
-                <Show when={statsA.data && statsB.data}>
-                  <>
-                    <For each={compOrder()}>
-                      {(comp) => (
-                        <>
-                          <Show
-                            when={comp.type !== "bar"}
-                            fallback={
-                              <>
-                                <h5 class="text-xl lg:hidden">{A()}:</h5>
-                                <CompSelector
-                                  {...comp}
-                                  data={statsA.data}
-                                  ref={(el: Element) => {
-                                    setTargets((p) => [...p, el]);
-                                  }}
-                                  shown={shown()}
-                                  removeShown={removeShown}
-                                  pOrT={params.pOrT}
-                                  fOrT={params.fOrT}
-                                />
-
-                                <h5 class="text-xl lg:hidden">{B()}:</h5>
-                                <CompSelector
-                                  {...comp}
-                                  data={statsB.data}
-                                  ref={(el: Element) => {
-                                    setTargets((p) => [...p, el]);
-                                  }}
-                                  shown={shown()}
-                                  removeShown={removeShown}
-                                  pOrT={params.pOrT}
-                                  fOrT={params.fOrT}
-                                />
-                                <div class="my-12 w-full border-2 border-b-black lg:hidden " />
-                              </>
-                            }
-                          >
+              <Show
+                when={statsA.isSuccess && statsB.isSuccess}
+                fallback={
+                  <div class="flex h-screen w-full flex-col items-center justify-center">
+                    <div class="animate-ping">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m11 12.2l-.9-.9q-.275-.275-.7-.275t-.7.275q-.275.275-.275.7t.275.7l2.6 2.6q.3.3.7.3t.7-.3l2.6-2.6q.275-.275.275-.7t-.275-.7q-.275-.275-.7-.275t-.7.275l-.9.9V9q0-.425-.288-.713T12 8q-.425 0-.713.288T11 9v3.2Zm1 9.8q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                }
+              >
+                <div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
+                  <div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
+                    <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                      {A()}
+                    </h3>
+                  </div>
+                  <div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
+                    <h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
+                      {B()}
+                    </h3>
+                  </div>
+                  <For each={compOrder()}>
+                    {(comp) => (
+                      <>
+                        <Show
+                          when={comp.type !== "bar"}
+                          fallback={
                             <>
                               <h5 class="text-xl lg:hidden">{A()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsA.data}
                                 ref={(el: Element) => {
-                                  {
-                                    setTargets((p) => [...p, el]);
-                                  }
+                                  setTargets((p) => [...p, el]);
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
+
                               <h5 class="text-xl lg:hidden">{B()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsB.data}
                                 ref={(el: Element) => {
                                   setTargets((p) => [...p, el]);
-                                  onCleanup(() => {
-                                    if (targets().length >= 0) {
-                                      setTargets([]);
-                                    }
-                                  });
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
-                              <div class="my-12 w-full border-2 border-b-black lg:hidden" />
+                              <div class="my-12 w-full border-2 border-b-black lg:hidden " />
                             </>
-                          </Show>
-                        </>
-                      )}
-                    </For>
-                  </>
-                </Show>
-              </div>
+                          }
+                        >
+                          <>
+                            <h5 class="text-xl lg:hidden">{A()}:</h5>
+                            <CompSelector
+                              {...comp}
+                              data={statsA.data}
+                              ref={(el: Element) => {
+                                {
+                                  setTargets((p) => [...p, el]);
+                                }
+                              }}
+                              shown={shown()}
+                              removeShown={removeShown}
+                              pOrT={params.pOrT}
+                              fOrT={params.fOrT}
+                            />
+                            <h5 class="text-xl lg:hidden">{B()}:</h5>
+                            <CompSelector
+                              {...comp}
+                              data={statsB.data}
+                              ref={(el: Element) => {
+                                setTargets((p) => [...p, el]);
+                                onCleanup(() => {
+                                  if (targets().length >= 0) {
+                                    setTargets([]);
+                                  }
+                                });
+                              }}
+                              shown={shown()}
+                              removeShown={removeShown}
+                              pOrT={params.pOrT}
+                              fOrT={params.fOrT}
+                            />
+                            <div class="my-12 w-full border-2 border-b-black lg:hidden" />
+                          </>
+                        </Show>
+                      </>
+                    )}
+                  </For>
+                </div>
+              </Show>
             </div>
           </div>
         </div>
