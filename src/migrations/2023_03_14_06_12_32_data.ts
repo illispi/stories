@@ -20,13 +20,12 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("gender", "text", (col) =>
       col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
-    .addColumn("relatives", "text", (col) =>
-      col
-        .notNull()
-        .check(
-          sql`relatives in ('parents', 'none', 'siblings', 'cousins', 'grandparents', 'other')`
-        )
-    )
+    .addColumn("relatives", "boolean", (col) => col.notNull())
+    .addColumn("relative_cousins", "boolean")
+    .addColumn("relative_parents", "boolean")
+    .addColumn("relative_siblings", "boolean")
+    .addColumn("relative_grandparents", "boolean")
+    .addColumn("relative_other", "boolean")
     .addColumn("lost_relationships", "boolean", (col) => col.notNull())
     .addColumn("current_age", "integer", (col) => col.notNull())
     .addColumn("age_of_onset", "integer", (col) => col.notNull())
@@ -227,7 +226,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       col.check(sql`NOT (goals_changed AND goals_after IS NULL)`)
     )
     .addColumn("told_family", "boolean")
-    .addColumn("told_nobody", "boolean")
+    .addColumn("told_nobody", "boolean", (col) => col.notNull())
     .addColumn("told_friends", "boolean")
     .addColumn("told_if_asked", "boolean")
     .addColumn("told_employer", "boolean")
@@ -267,6 +266,12 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("gender", "text", (col) =>
       col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
+    .addColumn("relatives", "boolean", (col) => col.notNull())
+    .addColumn("relative_cousins", "boolean")
+    .addColumn("relative_parents", "boolean")
+    .addColumn("relative_siblings", "boolean")
+    .addColumn("relative_grandparents", "boolean")
+    .addColumn("relative_other", "boolean")
     .addColumn("age_of_onset", "integer", (col) => col.notNull())
     .addColumn("current_age", "integer", (col) => col.notNull())
     .addColumn("med_efficacy", "boolean")
@@ -355,13 +360,6 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("partner", "boolean") //NOTE can be null because might not know
     .addColumn("friends", "boolean")
     .addColumn("children", "boolean")
-    .addColumn("relatives", "text", (col) =>
-      col
-        .notNull()
-        .check(
-          sql`relatives in ('parents', 'none', 'siblings', 'cousins', 'grandparents', 'other')`
-        )
-    )
     .addColumn("symptoms_hallucinations", "boolean")
     .addColumn("symptoms_delusions", "boolean")
     .addColumn("symptoms_paranoia", "boolean")
