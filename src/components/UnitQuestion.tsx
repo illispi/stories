@@ -333,8 +333,8 @@ export const UnitQuestion: ParentComponent<{
                     onClick={() => handleSubmit({ [questionDB]: v })}
                     class={
                       v === selection()
-                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                        : ""
+                        ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                        : " w-56"
                     }
                   >
                     {firstLetterUpperCase(v)}
@@ -375,8 +375,8 @@ export const UnitQuestion: ParentComponent<{
                     }}
                     class={
                       v === selection()
-                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                        : ""
+                        ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                        : "w-56"
                     }
                   >
                     {firstLetterUpperCase(v)}
@@ -413,8 +413,8 @@ export const UnitQuestion: ParentComponent<{
                 onClick={() => setMetric(false)}
                 class={
                   !metric()
-                    ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                    : ""
+                    ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500  active:bg-green-600"
+                    : "w-56"
                 }
               >
                 Imperial (lbs)
@@ -423,8 +423,8 @@ export const UnitQuestion: ParentComponent<{
                 onClick={() => setMetric(true)}
                 class={
                   metric()
-                    ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                    : ""
+                    ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                    : "w-56"
                 }
               >
                 Metric (kg)
@@ -500,13 +500,13 @@ export const UnitQuestion: ParentComponent<{
       </Match>
       <Match when={questionType === "yesOrNo"}>
         <Box question={question}>
-          <div class="flex items-center justify-end ">
+          <div class="flex flex-col items-center justify-end ">
             <CustomButton
               // TODO might better to use state of yesOrNO instead of valueOfLS
               class={
                 yesOrNO() === true
-                  ? "bg-green-500 p-5 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                  : " p-5"
+                  ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                  : " w-56"
               }
               onClick={() => handleSubmit({ [questionDB]: true })}
             >
@@ -515,8 +515,8 @@ export const UnitQuestion: ParentComponent<{
             <CustomButton
               class={
                 yesOrNO() === false
-                  ? "bg-green-500 p-5 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                  : " p-5"
+                  ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+                  : " w-56"
               }
               onClick={() =>
                 handleSubmit(
@@ -546,8 +546,8 @@ export const UnitQuestion: ParentComponent<{
                   <CustomButton
                     class={
                       multiSelections()[v[0]] === true
-                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-                        : ""
+                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600 w-56"
+                        : "w-56"
                     }
                     onClick={() => {
                       setMultiSelections(
