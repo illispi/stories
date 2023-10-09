@@ -97,14 +97,13 @@ const AllStatsPage: ParentComponent = () => {
   });
 
   return (
-    <div class="flex h-full w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-      <Show
-        when={
-          allStatsData.data?.total &&
-          allStatsData.data?.total >= 5 &&
-          allStatsData.data
-        }
-        fallback={
+    <Show
+      when={
+        (allStatsData.data?.total && allStatsData.data?.total >= 5) ||
+        params.fOrT === "fake"
+      }
+      fallback={
+        <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
           <div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
             <h2 class="text-center text-2xl font-bold lg:text-3xl">
               {`${allStatsData.data?.total ?? 0}/5`}
@@ -133,38 +132,38 @@ const AllStatsPage: ParentComponent = () => {
               View results with fake data
             </A>
           </div>
-        }
-      >
-        {(data) => (
-          <div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-            <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-              <h1 class="text-center font-semibold">Statistics personal</h1>
-            </div>
-            <div class="flex flex-col items-center justify-center">
-              <div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
-                <CompareButton />
-                <Suspense>
-                  <For each={compOrder}>
-                    {(comp) => (
-                      <CompSelector
-                        {...comp}
-                        data={data()}
-                        ref={(el: Element) => setTargets((p) => [...p, el])}
-                        shown={shown()}
-                        removeShown={removeShown}
-                        pOrT={params.pOrT}
-                        fOrT={params.fOrT}
-                      />
-                    )}
-                  </For>
-                </Suspense>
-                <CompareButton />
-              </div>
+        </div>
+      }
+    >
+      <div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+        <div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+          <div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+            <h1 class="text-center font-semibold">Statistics personal</h1>
+          </div>
+          <div class="flex flex-col items-center justify-center">
+            <div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
+              <CompareButton />
+
+              <For each={compOrder}>
+                {(comp) => (
+                  <CompSelector
+                    {...comp}
+                    data={allStatsData.data}
+                    ref={(el: Element) => setTargets((p) => [...p, el])}
+                    shown={shown()}
+                    removeShown={removeShown}
+                    pOrT={params.pOrT}
+                    fOrT={params.fOrT}
+                  />
+                )}
+              </For>
+
+              <CompareButton />
             </div>
           </div>
-        )}
-      </Show>
-    </div>
+        </div>
+      </div>
+    </Show>
   );
 };
 
