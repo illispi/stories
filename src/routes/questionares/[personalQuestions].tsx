@@ -6,11 +6,12 @@ import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
-import { useParams } from "solid-start";
+import { A, useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { ModalOptions } from "~/components/ModalOptions";
 import { trpc } from "~/utils/trpc";
 import TransitionFade from "~/components/TransitionFade";
+import { route } from "routes-gen";
 
 const Counter: ParentComponent<{
   page: number;
@@ -177,6 +178,12 @@ const PersonalQuestions: ParentComponent = () => {
                 <h2 class="m-8 text-lg">
                   Submitted successfully for apporval!
                 </h2>
+                <A
+                  href={route("/user/data")}
+                  class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+                >
+                  See status
+                </A>
               </div>
             </div>
           }

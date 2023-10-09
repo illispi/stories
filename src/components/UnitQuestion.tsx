@@ -585,7 +585,7 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "submit"}>
         <Box question={question}>
           <Show
-            when={!sendStats.isPending}
+            when={!sendStats.isPending || sendStats.isSuccess}
             fallback={
               <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
                 Submitting
