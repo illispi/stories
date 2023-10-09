@@ -186,11 +186,10 @@ export const UnitQuestion: ParentComponent<{
 
       if (questionType === "yesOrNo" || questionType === "unknown") {
         if (
-          (value[questionDB] === true ||
-            value[questionDB] === "yes" ||
-            value[questionDB] === "unknown") &&
+          (value[questionDB] === true || value[questionDB] === "yes") &&
           skip
         ) {
+          console.log(value[questionDB]);
           junctions = {
             ...junctions,
             [questionDB]:
@@ -357,7 +356,7 @@ export const UnitQuestion: ParentComponent<{
                 <div class="m-2">
                   <CustomButton
                     onClick={() => {
-                      if (v === "no") {
+                      if (v === "no" || v === "unknown") {
                         handleSubmit(
                           { [questionDB]: v },
                           skip
