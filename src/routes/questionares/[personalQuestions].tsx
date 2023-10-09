@@ -8,6 +8,7 @@ import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
 import { useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
+import { ModalOptions } from "~/components/ModalOptions";
 
 const Counter: ParentComponent<{
   page: number;
@@ -108,7 +109,7 @@ const Questions: ParentComponent<{
             }}
           >
             <Show when={props.page === 0 ? true : props.page} keyed>
-              <div class="absolute z-30 flex h-full w-full flex-col rounded-3xl border-2 border-blue-300 bg-white">
+              <div class="absolute z-30 flex h-full w-full flex-col rounded-3xl bg-white shadow-lg shadow-blue-400">
                 <UnitQuestion
                   content={props.questions[props.page]}
                   paginate={props.paginate}
@@ -129,6 +130,7 @@ const PersonalQuestions: ParentComponent = () => {
   }>();
   const [page, setPage] = createSignal(-1);
   const [direction, setDirection] = createSignal(1);
+  const [clear, setClear] = createSignal(false);
 
   const questions =
     params.personalQuestions === "personalQuestions"
@@ -159,7 +161,7 @@ const PersonalQuestions: ParentComponent = () => {
   });
 
   return (
-    <div class="flex h-screen w-full lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+    <div class="flex h-screen w-full flex-col items-center justify-start lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
       <div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
         <div class="flex h-20 w-80 items-center justify-between p-2">
           <Counter page={page()} questions={questions} />
@@ -187,6 +189,40 @@ const PersonalQuestions: ParentComponent = () => {
           LsName={LsName}
         />
       </div>
+      <CustomButton
+        class="my-4 w-48"
+        onClick={() => {
+          setClear(true);
+        }}
+      >
+        Clear answers
+      </CustomButton>
+      <ModalOptions show={clear()} setShow={setClear}>
+        <div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+          <h2 class="text-center text-2xl font-bold lg:text-3xl">
+            Clear all answers?
+          </h2>
+
+          <CustomButton
+            class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+            onClick={() => {
+              localStorage.clear();
+              setClear(false);
+              setPage(-1);
+            }}
+          >
+            Clear answers
+          </CustomButton>
+
+          <CustomButton
+            onClick={() => {
+              setClear(false);
+            }}
+          >
+            Cancel
+          </CustomButton>
+        </div>
+      </ModalOptions>
     </div>
   );
 };
