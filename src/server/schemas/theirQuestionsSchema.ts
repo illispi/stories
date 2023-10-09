@@ -53,7 +53,7 @@ export const theirQuestionsSchemaCustom = z
     friends: z.boolean().nullable(),
     children: z.boolean().nullable(),
 
-    relatives: z.boolean(),
+    relatives: z.enum(["yes", "no", "unknown"]),
     relative_cousins: z.boolean().nullable(),
     relative_parents: z.boolean().nullable(),
     relative_siblings: z.boolean().nullable(),
@@ -233,7 +233,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.relatives
+      return data.relatives === "yes"
         ? data.relative_cousins !== null
         : !data?.relative_cousins;
     },
@@ -241,7 +241,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.relatives
+      return data.relatives === "yes"
         ? data.relative_parents !== null
         : !data?.relative_parents;
     },
@@ -249,7 +249,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.relatives
+      return data.relatives === "yes"
         ? data.relative_siblings !== null
         : !data?.relative_siblings;
     },
@@ -257,7 +257,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.relatives
+      return data.relatives === "yes"
         ? data.relative_grandparents !== null
         : !data?.relative_grandparents;
     },
@@ -265,7 +265,7 @@ export const theirQuestionsSchemaCustom = z
   )
   .refine(
     (data) => {
-      return data.relatives
+      return data.relatives === "yes"
         ? data.relative_other !== null
         : !data?.relative_other;
     },

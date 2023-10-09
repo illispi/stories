@@ -43,7 +43,7 @@ export const questions: QuestionTheir[] = [
 
   {
     question: "Do they have relatives with this illness?",
-    questionType: "yesOrNo",
+    questionType: "unknown",
     questionDB: "relatives",
     skip: "age_of_onset",
   },

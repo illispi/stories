@@ -159,7 +159,8 @@ export const personalQuestionsSchemaCustom = z
       .string()
       .trim()
       .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough'),
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
     what_others_should_know: z
       .string()
       .trim()

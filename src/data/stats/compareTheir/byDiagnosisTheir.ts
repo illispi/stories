@@ -13,10 +13,9 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-    
   },
   {
-    type: "yesOrNo",
+    type: "unknown",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
   },
@@ -66,7 +65,6 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "psychosis_how_many",
     header: "How many psychosis",
     function: "dataSelection",
-   
   },
   {
     type: "yesOrNo",
@@ -78,14 +76,12 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "prodromal_anxiety",
     header: "Prodromal symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "bar",
     stat: "symptoms_hallucinations",
     header: "First psychosis symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "yesOrNo",
@@ -151,7 +147,6 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "flat_expressions",
     header: "Negative symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "text",
@@ -173,7 +168,6 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
-   
   },
   {
     type: "yesOrNo",

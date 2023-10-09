@@ -50,7 +50,6 @@ export const listSubmissions = adminProcedure
 
     //BUG this might return undefined, should be returnin null in that case
 
-    console.log(poll, input.accepted);
 
     const { countAll } = ctx.db.fn;
 

@@ -20,7 +20,7 @@ export const createFakeDataTheir = () => {
   const negative_symptoms = faker.helpers.arrayElement([true, false]);
 
   const personality_changed = faker.helpers.arrayElement([true, false]);
-  const relatives = faker.helpers.arrayElement([true, false]);
+  const relatives = faker.helpers.arrayElement(["no", "yes", "unknown"]);
 
   const fakeData: TheirQuestions = {
     diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
@@ -150,21 +150,16 @@ export const createFakeDataTheir = () => {
       .substring(0, Math.floor(Math.random() * 595) + 4),
     lost_relationships: faker.helpers.arrayElement(["no", "yes", "unknown"]),
     relatives: relatives,
-    relative_cousins: relatives
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    relative_parents: relatives
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    relative_grandparents: relatives
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    relative_other: relatives
-      ? faker.helpers.arrayElement([true, false])
-      : null,
-    relative_siblings: relatives
-      ? faker.helpers.arrayElement([true, false])
-      : null,
+    relative_cousins:
+      relatives === "yes" ? faker.helpers.arrayElement([true, false]) : null,
+    relative_parents:
+      relatives === "yes" ? faker.helpers.arrayElement([true, false]) : null,
+    relative_grandparents:
+      relatives === "yes" ? faker.helpers.arrayElement([true, false]) : null,
+    relative_other:
+      relatives === "yes" ? faker.helpers.arrayElement([true, false]) : null,
+    relative_siblings:
+      relatives === "yes" ? faker.helpers.arrayElement([true, false]) : null,
   };
 
   return fakeData;

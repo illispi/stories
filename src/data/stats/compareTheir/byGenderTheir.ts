@@ -16,7 +16,7 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   //TODO maybe add age of onset, but needs custom logic instead of the usual
   {
-    type: "yesOrNo",
+    type: "unknown",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
   },

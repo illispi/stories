@@ -183,7 +183,10 @@ export const fakeForDev = adminProcedure
 
       return "Insertion success";
     } catch (error) {
-      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: error.message,
+      });
     }
   });
 

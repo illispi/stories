@@ -266,7 +266,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("gender", "text", (col) =>
       col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
-    .addColumn("relatives", "boolean", (col) => col.notNull())
+    .addColumn("relatives", "boolean", (col) =>
+      col.notNull().check(sql`relatives in ('yes', 'no', 'unknown')`)
+    )
     .addColumn("relative_cousins", "boolean")
     .addColumn("relative_parents", "boolean")
     .addColumn("relative_siblings", "boolean")

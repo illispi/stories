@@ -27,7 +27,7 @@ export const allStatsTheirArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataOnset",
   },
   {
-    type: "yesOrNo",
+    type: "unknown",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
   },
