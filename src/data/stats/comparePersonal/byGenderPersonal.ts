@@ -14,6 +14,17 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Age of responses",
     function: "dataAgeOfRes",
   },
+  {
+    type: "yesOrNo",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+  },
+  {
+    type: "bar",
+    stat: "relative_parents",
+    header: "Relatives with illness",
+    function: "dataMultiSelect",
+  },
   //TODO maybe add stat on age of onset if there
   {
     type: "bar",

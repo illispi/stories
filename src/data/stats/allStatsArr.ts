@@ -10,15 +10,20 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   {
     type: "bar",
-    stat: "relatives",
-    header: "Has relatives with schizophrenia",
-    function: "dataSelection",
-  },
-  {
-    type: "bar",
     stat: "gender",
     header: "Share of genders",
     function: "dataGender",
+  },
+  {
+    type: "yesOrNo",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+  },
+  {
+    type: "bar",
+    stat: "relative_parents",
+    header: "Relatives with illness",
+    function: "dataMultiSelect",
   },
   {
     type: "bar",

@@ -16,6 +16,17 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     
   },
   {
+    type: "yesOrNo",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+  },
+  {
+    type: "bar",
+    stat: "relative_parents",
+    header: "Relatives with illness",
+    function: "dataMultiSelect",
+  },
+  {
     type: "bar",
     stat: "ageOfOnsetByGender",
     header: "Age of onset",

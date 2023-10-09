@@ -16,6 +16,17 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataAgeOfRes",
    
   },
+  {
+    type: "yesOrNo",
+    stat: "relatives",
+    header: "Has relatives with schizophrenia",
+  },
+  {
+    type: "bar",
+    stat: "relative_parents",
+    header: "Relatives with illness",
+    function: "dataMultiSelect",
+  },
   //TODO might want to add averages of onset
   // {
   // type: "stat", stat: "ageOfOnsetByGender[maleAverage]", name: "Male average"

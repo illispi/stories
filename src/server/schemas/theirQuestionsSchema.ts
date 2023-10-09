@@ -52,14 +52,14 @@ export const theirQuestionsSchemaCustom = z
     partner: z.boolean().nullable(),
     friends: z.boolean().nullable(),
     children: z.boolean().nullable(),
-    relatives: z.enum([
-      "parents",
-      "none",
-      "siblings",
-      "cousins",
-      "grandparents",
-      "other",
-    ]),
+
+    relatives: z.boolean(),
+    relative_cousins: z.boolean().nullable(),
+    relative_parents: z.boolean().nullable(),
+    relative_siblings: z.boolean().nullable(),
+    relative_grandparents: z.boolean().nullable(),
+    relative_other: z.boolean().nullable(),
+
     symptoms_hallucinations: z.boolean().nullable(),
     symptoms_delusions: z.boolean().nullable(),
     symptoms_paranoia: z.boolean().nullable(),
@@ -230,6 +230,46 @@ export const theirQuestionsSchemaCustom = z
         : !data?.prodromal_irritability;
     },
     { message: "36" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_cousins !== null
+        : !data?.relative_cousins;
+    },
+    { message: "38" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_parents !== null
+        : !data?.relative_parents;
+    },
+    { message: "39" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_siblings !== null
+        : !data?.relative_siblings;
+    },
+    { message: "40" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_grandparents !== null
+        : !data?.relative_grandparents;
+    },
+    { message: "41" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_other !== null
+        : !data?.relative_other;
+    },
+    { message: "42" }
   )
   .refine(
     (data) => {

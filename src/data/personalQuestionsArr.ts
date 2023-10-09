@@ -37,15 +37,20 @@ export const questions: QuestionPersonal[] = [
   },
   {
     question: "Do you have relatives with this illness?",
-    questionType: "selection",
+    questionType: "yesOrNo",
     questionDB: "relatives",
-    selections: [
-      "none",
-      "parents",
-      "siblings",
-      "cousins",
-      "grandparents",
-      "other",
+    skip: "age_of_onset",
+  },
+  {
+    question: "What relatives with schizophrenia/affective?",
+    questionType: "multiSelect",
+    questionDB: "relative_parents",
+    multiSelect: [
+      ["relative_parents", "Parents"],
+      ["relative_cousins", "Cousins"],
+      ["relative_siblings", "Siblings"],
+      ["relative_grandparents", "Grandparents"],
+      ["relative_other", "Other"],
     ],
   },
   {

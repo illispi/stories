@@ -40,24 +40,30 @@ export const questions: QuestionTheir[] = [
     questionType: "integer",
     questionDB: "current_age",
   },
+
+  {
+    question: "Do they have relatives with this illness?",
+    questionType: "yesOrNo",
+    questionDB: "relatives",
+    skip: "age_of_onset",
+  },
+  {
+    question: "What relatives with schizophrenia/affective?",
+    questionType: "multiSelect",
+    questionDB: "relative_parents",
+    multiSelect: [
+      ["relative_parents", "Parents"],
+      ["relative_cousins", "Cousins"],
+      ["relative_siblings", "Siblings"],
+      ["relative_grandparents", "Grandparents"],
+      ["relative_other", "Other"],
+    ],
+  },
   {
     question:
       "What age were they when they first had a psychotic episode (estimate)",
     questionType: "integer",
     questionDB: "age_of_onset",
-  },
-  {
-    question: "Do they have relatives with this illness?",
-    questionType: "selection",
-    questionDB: "relatives",
-    selections: [
-      "none",
-      "parents",
-      "siblings",
-      "cousins",
-      "grandparents",
-      "other",
-    ],
   },
   {
     question: "How long did their psychotic episodes last?",

@@ -173,14 +173,12 @@ export const personalQuestionsSchemaCustom = z
       .min(4, 'Your text is too short, even "okay" is enough'),
 
     lost_relationships: z.boolean(),
-    relatives: z.enum([
-      "parents",
-      "none",
-      "siblings",
-      "cousins",
-      "grandparents",
-      "other",
-    ]),
+    relatives: z.boolean(),
+    relative_cousins: z.boolean().nullable(),
+    relative_parents: z.boolean().nullable(),
+    relative_siblings: z.boolean().nullable(),
+    relative_grandparents: z.boolean().nullable(),
+    relative_other: z.boolean().nullable(),
   })
   .refine(
     (data) => {
@@ -469,6 +467,46 @@ export const personalQuestionsSchemaCustom = z
       }
     },
     { message: "38" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_cousins !== null
+        : !data?.relative_cousins;
+    },
+    { message: "38" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_parents !== null
+        : !data?.relative_parents;
+    },
+    { message: "39" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_siblings !== null
+        : !data?.relative_siblings;
+    },
+    { message: "40" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_grandparents !== null
+        : !data?.relative_grandparents;
+    },
+    { message: "41" }
+  )
+  .refine(
+    (data) => {
+      return data.relatives
+        ? data.relative_other !== null
+        : !data?.relative_other;
+    },
+    { message: "42" }
   )
   .refine(
     (data) => {
