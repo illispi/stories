@@ -179,53 +179,6 @@ export const { routeData, Page } = ProtectedUser((session) => {
         Your account and data
       </h1>
       <Suspense>
-        <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-          <h2 class="text-center text-2xl font-bold lg:text-3xl">
-            Delete account
-          </h2>
-          <p class="text-center text-lg">
-            Deletes both your account and all data you have submitted.
-          </p>
-
-          <Show when={removeAccAndDataMut.isSuccess}>
-            <Navigate href={"/"} />
-          </Show>
-
-          <CustomButton
-            class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
-            onClick={() => {
-              setShowDeleteAccount(!showDeleteAccount());
-            }}
-          >
-            {`${!showDeleteAccount() ? "Show" : "Close"}`}
-          </CustomButton>
-
-          <CssTranstionGrow visible={showDeleteAccount()}>
-            <div class="flex flex-col items-center justify-center gap-16 rounded-lg border-2 border-fuchsia-600 p-8">
-              <h2 class="text-center text-2xl font-bold lg:text-3xl">
-                Are you sure you want to delete all your data?
-              </h2>
-              <div class="flex flex-col items-center justify-center gap-8">
-                <CustomButton
-                  class=" bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
-                  onClick={() => {
-                    removeAccAndDataMut.mutateAsync();
-                  }}
-                >
-                  Delete account and data
-                </CustomButton>
-                <CustomButton
-                  onClick={() => {
-                    setShowDeleteAccount(false);
-                  }}
-                >
-                  Cancel deleting account/data
-                </CustomButton>
-              </div>
-            </div>
-          </CssTranstionGrow>
-        </div>
-
         <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
           <h2 class="text-center text-2xl font-bold lg:text-3xl">
             Personal poll data
@@ -551,6 +504,53 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </CssTranstionGrow>
             </Suspense>
           </Show>
+        </div>
+
+        <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+          <h2 class="text-center text-2xl font-bold lg:text-3xl">
+            Delete account
+          </h2>
+          <p class="text-center text-lg">
+            Deletes both your account and all data you have submitted.
+          </p>
+
+          <Show when={removeAccAndDataMut.isSuccess}>
+            <Navigate href={"/"} />
+          </Show>
+
+          <CustomButton
+            class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+            onClick={() => {
+              setShowDeleteAccount(!showDeleteAccount());
+            }}
+          >
+            {`${!showDeleteAccount() ? "Show" : "Close"}`}
+          </CustomButton>
+
+          <CssTranstionGrow visible={showDeleteAccount()}>
+            <div class="flex flex-col items-center justify-center gap-16 rounded-lg border-2 border-fuchsia-600 p-8">
+              <h2 class="text-center text-2xl font-bold lg:text-3xl">
+                Are you sure you want to delete all your data?
+              </h2>
+              <div class="flex flex-col items-center justify-center gap-8">
+                <CustomButton
+                  class=" bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+                  onClick={() => {
+                    removeAccAndDataMut.mutateAsync();
+                  }}
+                >
+                  Delete account and data
+                </CustomButton>
+                <CustomButton
+                  onClick={() => {
+                    setShowDeleteAccount(false);
+                  }}
+                >
+                  Cancel deleting account/data
+                </CustomButton>
+              </div>
+            </div>
+          </CssTranstionGrow>
         </div>
       </Suspense>
     </div>
