@@ -18,7 +18,7 @@ import { trpc } from "~/utils/trpc";
 const CompareButton: Component = () => {
   const params = useParams<{
     pOrT: "Personal_questions" | "Their_questions";
-    fOrR: "real" | "fake";
+    fOrT: "real" | "fake";
   }>();
   return (
     <div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
@@ -26,7 +26,7 @@ const CompareButton: Component = () => {
         noScroll={true}
         href={route("/compare/:pOrT/:fOrT/compare", {
           pOrT: params.pOrT,
-          fOrT: params.fOrR,
+          fOrT: params.fOrT,
         })}
       >
         <CustomButton
