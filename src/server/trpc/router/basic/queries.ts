@@ -146,25 +146,37 @@ export const allStats = apiProcedure
 
       const responsesTotal: number = stats.length; //TODO use postgres count here
 
-      const maleAge = await ctx.db
-        .selectFrom("Personal_questions")
+      let maleAge = ctx.db
+        .selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
         .select(["age_of_onset"])
-        .where("gender", "=", "male")
-        .where("accepted", "=", true)
-        .execute();
+        .where("gender", "=", "male");
 
-      const femaleAge = await ctx.db
-        .selectFrom("Personal_questions")
+      maleAge =
+        payload.value === "schizoaffective"
+          ? await maleAge.where("diagnosis", "=", "schizophrenia").execute()
+          : await maleAge.where("diagnosis", "=", "schizoaffective").execute();
+
+      let femaleAge = ctx.db
+        .selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
         .select(["age_of_onset"])
-        .where("gender", "=", "female")
-        .where("accepted", "=", true)
-        .execute();
-      const otherAge = await ctx.db
-        .selectFrom("Personal_questions")
+        .where("gender", "=", "female");
+
+      femaleAge =
+        payload.value === "schizoaffective"
+          ? await femaleAge.where("diagnosis", "=", "schizophrenia").execute()
+          : await femaleAge
+              .where("diagnosis", "=", "schizoaffective")
+              .execute();
+
+      let otherAge = ctx.db
+        .selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
         .select(["age_of_onset"])
-        .where("gender", "=", "other")
-        .where("accepted", "=", true)
-        .execute();
+        .where("gender", "=", "other");
+
+      otherAge =
+        payload.value === "schizoaffective"
+          ? await otherAge.where("diagnosis", "=", "schizophrenia").execute()
+          : await otherAge.where("diagnosis", "=", "schizoaffective").execute();
 
       const filterSensitive = stats.map((e: (typeof stats)[0]) => {
         const { user, created_at, id, ...filtered } = e;

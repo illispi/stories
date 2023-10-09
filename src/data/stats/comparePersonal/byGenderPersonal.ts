@@ -25,7 +25,7 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Relatives with illness",
     function: "dataMultiSelect",
   },
-  //TODO maybe add stat on age of onset if there
+ 
   {
     type: "bar",
     stat: "relatives",

@@ -353,7 +353,6 @@ const CompareStats = () => {
                           when={comp.type !== "bar"}
                           fallback={
                             <>
-                              {console.log(statsA.data)}
                               <h5 class="text-xl lg:hidden">{A()}:</h5>
                               <CompSelector
                                 {...comp}

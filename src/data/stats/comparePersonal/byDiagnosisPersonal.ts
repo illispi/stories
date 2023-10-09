@@ -14,7 +14,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
-   
   },
   {
     type: "yesOrNo",
@@ -27,16 +26,12 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Relatives with illness",
     function: "dataMultiSelect",
   },
-  //TODO might want to add averages of onset
-  // {
-  // type: "stat", stat: "ageOfOnsetByGender[maleAverage]", name: "Male average"
-  // },
-  // {
-  // type: "stat", stat: "ageOfOnsetByGender[femaleAverage]", name: "Female average"
-  // },
-  // {
-  // type: "stat", stat: "ageOfOnsetByGender[otherAverage]", name: "Other average"
-  // },
+  {
+    type: "bar",
+    stat: "ageOfOnsetByGender",
+    header: "Age of onset (average)",
+    function: "dataOnset",
+  },
   {
     type: "bar",
     stat: "length_of_psychosis",
@@ -48,7 +43,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "relatives",
     header: "Has relatives with schizophrenia",
     function: "dataSelection",
-   
   },
   {
     type: "yesOrNo",
@@ -85,7 +79,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "psychosis_how_many",
     header: "How many psychosis",
     function: "dataSelection",
-   
   },
 
   {
@@ -98,14 +91,12 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "prodromal_anxiety",
     header: "Prodromal symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "bar",
     stat: "symptoms_hallucinations",
     header: "First psychosis symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "bar",
@@ -209,7 +200,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "flat_expressions",
     header: "Negative symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "yesOrNo",
@@ -221,7 +211,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "disorganized_thinking",
     header: "Cognitive symptoms",
     function: "dataMultiSelect",
-   
   },
   {
     type: "text",
@@ -254,7 +243,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
-   
   },
   {
     type: "yesOrNo",
@@ -286,7 +274,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "told_family",
     header: "Has told about illness",
     function: "dataMultiSelect",
-   
   },
   {
     type: "text",
