@@ -346,80 +346,82 @@ const CompareStats = () => {
                   </h3>
                 </div>
                 <Show when={statsA.data && statsB.data}>
-                  <For each={compOrder()}>
-                    {(comp) => (
-                      <>
-                        <Show
-                          when={comp.type !== "bar"}
-                          fallback={
+                  <>
+                    <For each={compOrder()}>
+                      {(comp) => (
+                        <>
+                          <Show
+                            when={comp.type !== "bar"}
+                            fallback={
+                              <>
+                                <h5 class="text-xl lg:hidden">{A()}:</h5>
+                                <CompSelector
+                                  {...comp}
+                                  data={statsA.data}
+                                  ref={(el: Element) => {
+                                    setTargets((p) => [...p, el]);
+                                  }}
+                                  shown={shown()}
+                                  removeShown={removeShown}
+                                  pOrT={params.pOrT}
+                                  fOrT={params.fOrT}
+                                />
+
+                                <h5 class="text-xl lg:hidden">{B()}:</h5>
+                                <CompSelector
+                                  {...comp}
+                                  data={statsB.data}
+                                  ref={(el: Element) => {
+                                    setTargets((p) => [...p, el]);
+                                  }}
+                                  shown={shown()}
+                                  removeShown={removeShown}
+                                  pOrT={params.pOrT}
+                                  fOrT={params.fOrT}
+                                />
+                                <div class="my-12 w-full border-2 border-b-black lg:hidden " />
+                              </>
+                            }
+                          >
                             <>
                               <h5 class="text-xl lg:hidden">{A()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsA.data}
                                 ref={(el: Element) => {
-                                  setTargets((p) => [...p, el]);
+                                  {
+                                    setTargets((p) => [...p, el]);
+                                  }
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
-
                               <h5 class="text-xl lg:hidden">{B()}:</h5>
                               <CompSelector
                                 {...comp}
                                 data={statsB.data}
                                 ref={(el: Element) => {
                                   setTargets((p) => [...p, el]);
+                                  onCleanup(() => {
+                                    if (targets().length >= 0) {
+                                      setTargets([]);
+                                    }
+                                  });
                                 }}
                                 shown={shown()}
                                 removeShown={removeShown}
                                 pOrT={params.pOrT}
                                 fOrT={params.fOrT}
                               />
-                              <div class="my-12 w-full border-2 border-b-black lg:hidden " />
+                              <div class="my-12 w-full border-2 border-b-black lg:hidden" />
                             </>
-                          }
-                        >
-                          <>
-                            <h5 class="text-xl lg:hidden">{A()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsA.data}
-                              ref={(el: Element) => {
-                                {
-                                  setTargets((p) => [...p, el]);
-                                }
-                              }}
-                              shown={shown()}
-                              removeShown={removeShown}
-                              pOrT={params.pOrT}
-                              fOrT={params.fOrT}
-                            />
-                            <h5 class="text-xl lg:hidden">{B()}:</h5>
-                            <CompSelector
-                              {...comp}
-                              data={statsB.data}
-                              ref={(el: Element) => {
-                                setTargets((p) => [...p, el]);
-                                onCleanup(() => {
-                                  if (targets().length >= 0) {
-                                    setTargets([]);
-                                  }
-                                });
-                              }}
-                              shown={shown()}
-                              removeShown={removeShown}
-                              pOrT={params.pOrT}
-                              fOrT={params.fOrT}
-                            />
-                            <div class="my-12 w-full border-2 border-b-black lg:hidden" />
-                          </>
-                        </Show>
-                      </>
-                    )}
-                  </For>
+                          </Show>
+                        </>
+                      )}
+                    </For>
+                  </>
                 </Show>
               </div>
             </div>

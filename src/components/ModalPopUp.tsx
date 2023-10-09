@@ -92,3 +92,4 @@ const ModalPopUp: ParentComponent<{
 export default ModalPopUp;
 
 //TODO maybe consider slightly over then back to position see tailwind keyframes
+//TODO remove this primitive in favor of solid-transition-group
