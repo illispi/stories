@@ -30,8 +30,8 @@ dependencies:
     specifier: ^0.8.3
     version: 0.8.3(solid-js@1.7.12)
   '@tanstack/solid-query':
-    specifier: 5.0.0-rc.1
-    version: 5.0.0-rc.1(solid-js@1.7.12)
+    specifier: 5.0.0-rc.5
+    version: 5.0.0-rc.5(solid-js@1.7.12)
   '@trpc/client':
     specifier: ^10.38.5
     version: 10.38.5(@trpc/server@10.38.5)
@@ -67,7 +67,7 @@ dependencies:
     version: 0.2.3(solid-js@1.7.12)
   solid-trpc:
     specifier: 0.1.0-sssr.8
-    version: 0.1.0-sssr.8(@tanstack/solid-query@5.0.0-rc.1)(@trpc/client@10.38.5)(@trpc/server@10.38.5)(solid-js@1.7.12)(solid-start@0.3.6)
+    version: 0.1.0-sssr.8(@tanstack/solid-query@5.0.0-rc.5)(@trpc/client@10.38.5)(@trpc/server@10.38.5)(solid-js@1.7.12)(solid-start@0.3.6)
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -2496,16 +2496,16 @@ packages:
     dependencies:
       solid-js: 1.7.12
 
-  /@tanstack/query-core@5.0.0-rc.1:
-    resolution: {integrity: sha512-6jzPCwvEHS+Y3QCildpOlIrqJXXJ+v2EvbtCnbKUi6FpOrrfoSPacVB3nr0cjSBG/rCXnTB0aaevx9T8iT9CrQ==}
+  /@tanstack/query-core@5.0.0-rc.5:
+    resolution: {integrity: sha512-Rht0Krzo7iYXmYTaa4YTS0OAFY4ZGFhvQ4p1t5IobUkuP9zGsFBb8EUh55GKZeRNuHb9WvLQWXCVgfY40PQYjA==}
     dev: false
 
-  /@tanstack/solid-query@5.0.0-rc.1(solid-js@1.7.12):
-    resolution: {integrity: sha512-6jF98zcQ2Epvaq7H1JhcMhOq+P3Gxmsmx/nON1bg1u8CSkfRBzG2TzSvqR1vixyCjIFNgDxZ4tZQocv9G6Tz+w==}
+  /@tanstack/solid-query@5.0.0-rc.5(solid-js@1.7.12):
+    resolution: {integrity: sha512-ItlM4hBTXCvU8I9ygctvtupDstw9iMz1cWQwrKQ9Acj+1CGSiYWAM9xICRdVHS/To+Ro1R0fCAmzdtsqTYOO5A==}
     peerDependencies:
       solid-js: ^1.6.0
     dependencies:
-      '@tanstack/query-core': 5.0.0-rc.1
+      '@tanstack/query-core': 5.0.0-rc.5
       solid-js: 1.7.12
     dev: false
 
@@ -6541,7 +6541,7 @@ packages:
       solid-js: 1.7.12
     dev: false
 
-  /solid-trpc@0.1.0-sssr.8(@tanstack/solid-query@5.0.0-rc.1)(@trpc/client@10.38.5)(@trpc/server@10.38.5)(solid-js@1.7.12)(solid-start@0.3.6):
+  /solid-trpc@0.1.0-sssr.8(@tanstack/solid-query@5.0.0-rc.5)(@trpc/client@10.38.5)(@trpc/server@10.38.5)(solid-js@1.7.12)(solid-start@0.3.6):
     resolution: {integrity: sha512-O+cDHqEPTvDOzQNHyyfDWWOTLzdnKX3naX2zqHRi2EO5r5GV/A4GHECKp+LDOg+JKZjM+wktqH8ggzKvdevrgQ==}
     peerDependencies:
       '@tanstack/solid-query': ^5.0.0-beta.15
@@ -6550,7 +6550,7 @@ packages:
       solid-js: ^1.5.3
       solid-start: ^0.2.1
     dependencies:
-      '@tanstack/solid-query': 5.0.0-rc.1(solid-js@1.7.12)
+      '@tanstack/solid-query': 5.0.0-rc.5(solid-js@1.7.12)
       '@trpc/client': 10.38.5(@trpc/server@10.38.5)
       '@trpc/server': 10.38.5
       solid-js: 1.7.12

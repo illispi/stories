@@ -1,14 +1,6 @@
 import { route } from "routes-gen";
 import type { Component, Setter } from "solid-js";
-import {
-  For,
-  Show,
-  Suspense,
-  batch,
-  createEffect,
-  createSignal,
-  onCleanup,
-} from "solid-js";
+import { For, Show, createEffect, createSignal, onCleanup } from "solid-js";
 import { useParams, A as Alink } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { CompSelector } from "~/components/CompSelector";
@@ -70,11 +62,9 @@ const Compared: Component<{
     } else {
       const filtered = arr.filter((e) => e[0] === true);
 
-      batch(() => {
-        props.setCompOrder(byGender);
-        props.setA(filtered[0][1]);
-        props.setB(filtered[1][1]);
-      });
+      props.setCompOrder(byGender);
+      props.setA(filtered[0][1]);
+      props.setB(filtered[1][1]);
 
       setMessage(null);
       setGenderModalVisible(false);
@@ -93,12 +83,10 @@ const Compared: Component<{
               : "w-32"
           }
           onClick={() => {
-            batch(() => {
-              setSelection("diagnosis");
-              props.setCompOrder(byDiagnosis);
-              props.setA("schizophrenia");
-              props.setB("schizoaffective");
-            });
+            setSelection("diagnosis");
+            props.setCompOrder(byDiagnosis);
+            props.setA("schizophrenia");
+            props.setB("schizoaffective");
           }}
         >
           By Diagnosis
