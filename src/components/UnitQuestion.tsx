@@ -50,8 +50,8 @@ export const UnitQuestion: ParentComponent<{
   createEffect(() => {
     if (sendStats.isSuccess) {
       props.setSubmissionStatus("success");
+      localStorage.clear();
     }
-    localStorage.clear();
   });
 
   const questions =
