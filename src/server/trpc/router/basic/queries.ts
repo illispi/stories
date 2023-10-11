@@ -4,6 +4,7 @@ import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import { apiProcedure } from "../../utils";
+import { sql } from "kysely";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = apiProcedure
@@ -387,7 +388,7 @@ export const textPagination = apiProcedure
   .input(
     z.object({
       page: z.number(),
-      stat: z.string(),
+      stat: z.string() as keyof PersonalQuestions,
       gender: z.enum(["Female", "Other", "Male"]).nullable(),
       diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
       personalOrTheir: z.enum(["Personal_questions", "Their_questions"]),
@@ -395,58 +396,78 @@ export const textPagination = apiProcedure
     })
   )
   .query(async ({ input: payload, ctx }) => {
-    let stats = ctx.db
+    let statsQuery = ctx.db
       .selectFrom(
         payload.fake === "fake"
           ? `${payload.personalOrTheir}_fake`
           : payload.personalOrTheir
       )
-      .select([payload.stat as keyof PersonalQuestions, "gender", "diagnosis"])
-      .where(payload.stat as keyof PersonalQuestions, "is not", null)
-      .where("accepted", "=", true);
+      .select((eb) => [payload.stat, "gender", "diagnosis"])
+      .where(payload.stat, "is not", null);
+
+    if (payload.fake === "real") {
+      statsQuery = statsQuery.where("accepted", "=", true);
+    }
 
     if (payload.gender) {
-      stats = stats.where("gender", "=", payload.gender.toLowerCase());
+      statsQuery = statsQuery.where(
+        "gender",
+        "=",
+        payload.gender.toLowerCase()
+      );
     }
 
     if (payload.diagnosis) {
-      stats = stats.where("diagnosis", "=", payload.diagnosis.toLowerCase());
+      statsQuery = statsQuery.where(
+        "diagnosis",
+        "=",
+        payload.diagnosis.toLowerCase()
+      );
     }
 
-    const statsFinal = await stats
+    const stats = await statsQuery
       .offset(payload.page * 25)
       .limit(25)
       .execute();
 
-    if (!statsFinal) {
+    if (!stats) {
       return null;
     }
 
-    const { count } = ctx.db.fn;
+    // const { count } = ctx.db.fn;
 
     //TODO there has to better way than this to get count than duplicate functions, ask in kysely discord
 
-    let length = ctx.db
+    let lengthQuery = ctx.db
       .selectFrom(
         payload.fake === "fake"
           ? `${payload.personalOrTheir}_fake`
           : payload.personalOrTheir
       )
-      .select(count(payload.stat as keyof PersonalQuestions).as("count"))
-      .where("accepted", "=", true);
+      .select((eb) => eb.fn.count<number>(payload.stat).as("count"));
+
+    if (payload.fake === "real") {
+      lengthQuery = lengthQuery.where("accepted", "=", true);
+    }
 
     if (payload.gender) {
-      length = length.where("gender", "=", payload.gender.toLowerCase());
+      lengthQuery = lengthQuery.where(
+        "gender",
+        "=",
+        payload.gender.toLowerCase()
+      );
     }
 
     if (payload.diagnosis) {
-      length = length.where("diagnosis", "=", payload.diagnosis.toLowerCase());
+      lengthQuery = lengthQuery.where(
+        "diagnosis",
+        "=",
+        payload.diagnosis.toLowerCase()
+      );
     }
-    const finalLength = await length.executeTakeFirst();
+    const count = await lengthQuery.executeTakeFirst();
 
-    const totalLength = Number(finalLength?.count ?? "0");
-
-    return { stats: statsFinal, total: totalLength };
+    return { stats, ...count };
   });
 
 export const articlesPagination = apiProcedure

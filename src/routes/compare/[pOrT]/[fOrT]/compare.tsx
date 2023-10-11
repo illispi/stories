@@ -260,16 +260,22 @@ const CompareStats = () => {
     });
   });
 
-  const statsA = trpc.allStats.useQuery(() => ({
-    value: A(),
-    pOrT: params.pOrT,
-    fake: params.fOrT,
-  }));
-  const statsB = trpc.allStats.useQuery(() => ({
-    value: B(),
-    pOrT: params.pOrT,
-    fake: params.fOrT,
-  }));
+  const statsA = trpc.allStats.useQuery(
+    () => ({
+      value: A(),
+      pOrT: params.pOrT,
+      fake: params.fOrT,
+    }),
+    () => ({ placeholderData: (prev) => prev })
+  );
+  const statsB = trpc.allStats.useQuery(
+    () => ({
+      value: B(),
+      pOrT: params.pOrT,
+      fake: params.fOrT,
+    }),
+    () => ({ placeholderData: (prev) => prev })
+  );
 
   return (
     <Show
@@ -445,4 +451,3 @@ export default CompareStats;
 
 //TODO A and B for text routes need to work as well
 //BUG SSR fails when switiching to gender
-

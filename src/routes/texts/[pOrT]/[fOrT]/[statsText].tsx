@@ -36,14 +36,17 @@ const StatsText = () => {
 
   const [dir, setDir] = createSignal(1);
 
-  const texts = trpc.textPagination.useQuery(() => ({
-    page: page(),
-    stat: params.statsText,
-    diagnosis: diagFilter(),
-    gender: genderFilter(),
-    personalOrTheir: params.pOrT,
-    fake: params.fOrT,
-  }));
+  const texts = trpc.textPagination.useQuery(
+    () => ({
+      page: page(),
+      stat: params.statsText,
+      diagnosis: diagFilter(),
+      gender: genderFilter(),
+      personalOrTheir: params.pOrT,
+      fake: params.fOrT,
+    }),
+    () => ({ placeholderData: (prev) => prev })
+  );
 
   return (
     <div class="mt-8 flex flex-col items-center justify-center">
@@ -192,7 +195,7 @@ const StatsText = () => {
               ].question
             }`}</h4>
 
-            <Show when={texts.data?.total}>
+            <Show when={texts.data?.count}>
               {(count) => (
                 <>
                   <div class="m-16 flex w-full items-center justify-around">
@@ -238,7 +241,7 @@ const StatsText = () => {
               </TransitionSlide>
             </Suspense>
 
-            <Show when={texts.data?.total}>
+            <Show when={texts.data?.count}>
               {(count) => (
                 <>
                   <div class="m-16 flex w-full items-center justify-around">
@@ -272,4 +275,3 @@ export default StatsText;
 //TODO replace suspense with some component
 //TODO back navigate should remember position, and page shouldnt go to top before exit animation, maybe just have noScroll adn manually scrolltotop on every page
 //TODO usetransition in filter
-//BUG script tag might leak session
