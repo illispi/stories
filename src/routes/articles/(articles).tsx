@@ -129,9 +129,12 @@ const articles: Component = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
   const [submitVis, setSubmitVis] = createSignal(false);
-  const articlesData = trpc.articlesPagination.useQuery(() => ({
-    page: page(),
-  }));
+  const articlesData = trpc.articlesPagination.useQuery(
+    () => ({
+      page: page(),
+    }),
+    () => ({ placeholderData: (prev) => prev })
+  );
 
   const [dir, setDir] = createSignal(1);
 
