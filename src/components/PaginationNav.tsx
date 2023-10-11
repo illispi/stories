@@ -17,9 +17,12 @@ const PaginationNav: Component<{
       <CustomButton
         class={twMerge(
           "visible opacity-100 transition-all duration-300",
-          props.classButton
+          `${
+            props.page === 0
+              ? "bg-gray-500 hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-600"
+              : props.classButton
+          }`
         )}
-        classList={{ ["invisible opacity-0"]: props.page === 0 }}
         onClick={() => {
           props.dirSetter(-1);
           props.setPage((prev) => (prev === 0 ? 0 : prev - 1));
@@ -31,16 +34,15 @@ const PaginationNav: Component<{
       <h5 class="text-lg font-bold">{`Page: ${props.page + 1}/${
         Math.floor(props.arrLength / props.perPageNum) + 1
       }`}</h5>
-
       <CustomButton
         class={twMerge(
           "visible opacity-100 transition-all duration-300",
-          props.classButton
+          `${
+            props.arrLength / ((props.page + 1) * props.perPageNum) <= 1
+              ? "bg-gray-500 hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-600"
+              : props.classButton
+          }`
         )}
-        classList={{
-          ["invisible opacity-0"]:
-            props.arrLength / ((props.page + 1) * props.perPageNum) <= 1,
-        }}
         onClick={() => {
           props.dirSetter(1);
           props.setPage((prev) =>
