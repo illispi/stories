@@ -9,3 +9,16 @@ select,
 a {
   -webkit-tap-highlight-color: transparent;
 }
+
+.slide-fade-enter-active,
+.slide-fade-exit-active {
+  transition: all 0.3s ease-in-out;
+}
+.slide-fade-enter {
+  transform: translateX(100px);
+  opacity: 0;
+}
+.slide-fade-exit-to {
+  transform: translateX(-100px);
+  opacity: 0;
+}
