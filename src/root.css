@@ -22,3 +22,12 @@ a {
   transform: translateX(-100px);
   opacity: 0;
 }
+
+.fade-enter-active,
+.fade-exit-active {
+  transition: all 0.4s ease-in-out;
+}
+.fade-enter,
+.fade-exit-to {
+  opacity: 0;
+}
