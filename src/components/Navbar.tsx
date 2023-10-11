@@ -101,11 +101,21 @@ const Hamburger: Component<{
         </button>
       </div>
       <div
+        class="fixed right-0 top-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+        classList={{
+          ["opacity-0 invisible"]: !searchParams.nav,
+          ["visible, opacity-40"]: searchParams.nav === "true",
+        }}
+        onClick={() => {
+          setSearchParams({ nav: null });
+        }}
+      />
+      <div
         class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-6 p-8 ${
           searchParams.nav === "true"
             ? `translate-x-0 opacity-100 ease-out`
             : `translate-x-full opacity-0 ease-in`
-        } h-screen w-80 flex-col bg-blue-200 border-l border-blue-400 transition-all duration-300`}
+        } h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}
       >
         <Auth />
         <Suspense>
