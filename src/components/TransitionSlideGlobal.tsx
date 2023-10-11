@@ -113,6 +113,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
           );
           a.finished.then(done);
         }}
+        mode="outin"
       >
         <Show when={vis()}>
           <Footer />

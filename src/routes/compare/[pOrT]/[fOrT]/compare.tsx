@@ -445,3 +445,4 @@ export default CompareStats;
 
 //TODO A and B for text routes need to work as well
 //BUG SSR fails when switiching to gender
+
