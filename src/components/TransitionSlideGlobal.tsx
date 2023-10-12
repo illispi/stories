@@ -54,7 +54,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
               { opacity: 1, transform: "translate(0)" },
             ],
             {
-              duration: 300,
+              duration: 400,
             }
           );
           setVis(true);
@@ -71,7 +71,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
               { opacity: 0, transform: "translate(-100px)" },
             ],
             {
-              duration: 300,
+              duration: 400,
             }
           );
           a.finished.then(done);
@@ -92,7 +92,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
               { opacity: 1, transform: "translate(0)" },
             ],
             {
-              duration: 300,
+              duration: 400,
             }
           );
           a.finished.then(done);
@@ -108,7 +108,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
               { opacity: 0, transform: "translate(-100px)" },
             ],
             {
-              duration: 300,
+              duration: 400,
             }
           );
           a.finished.then(done);
