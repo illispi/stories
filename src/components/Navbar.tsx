@@ -131,29 +131,31 @@ const Hamburger: Component<{
           </ErrorBoundary>
         </Suspense>
         <div class="w-full border-b-2 border-black" />
-        <MenuItem class="mt-8" route={route("/stats")} content="results" />
-        <MenuItem route={route("/questionares")} content="poll" />
-        <MenuItem route={route("/articles")} content="Articles" />
+        <MenuItem route={route("/pollResults/")} content="results" />
+        <MenuItem route={route("/questionares/")} content="poll" />
+        <MenuItem route={route("/articles/")} content="Articles" />
         <button
           class="p-16 transition-all hover:scale-125"
           onClick={() => {
             setSearchParams({ nav: null });
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="0.6"
-            stroke="currentColor"
-            class="h-16 w-16"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <div class="rounded-full border border-black p-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="0.6"
+              stroke="currentColor"
+              class="h-16 w-16"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
         </button>
       </div>
     </>
