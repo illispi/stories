@@ -1,7 +1,7 @@
+import { imagetools } from "vite-imagetools";
 import solid from "solid-start/vite";
 import dotenv from "dotenv";
 import { PluginOption, defineConfig } from "vite";
-import prpc from "@prpc/vite";
 import devtools from "solid-devtools/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import basicSsl from "@vitejs/plugin-basic-ssl";
@@ -25,6 +25,7 @@ export default defineConfig(() => {
       //   /* features options - all disabled by default */
       //   autoname: true, // e.g. enable autoname
       // }),
+      imagetools(),
       solid({ ssr: true }),
     ],
     //TEST server: { host: true, https: true },

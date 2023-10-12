@@ -2,6 +2,9 @@ import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { A } from "solid-start";
 import InfoBox from "~/components/InfoBox";
+import img1 from "../pictures/first.png?w=400;500;700;900;1200&format=webp&as=srcset";
+import img2 from "../pictures/second.png?w=400;500;700;900;1200&format=webp&as=srcset";
+import img3 from "../pictures/third.png?w=400;500;700;900;1200&format=webp&as=srcset";
 
 const Home: Component = () => {
   return (
@@ -35,17 +38,22 @@ const Home: Component = () => {
           <div class="grid w-full auto-cols-max grid-flow-col justify-items-center gap-8 overflow-x-auto p-8 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:gap-12 lg:p-12">
             <img
               class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
-              src="/first.png"
+              // src="/first.png"
+              srcset={img1}
               alt="Picture of poll"
             />
+
             <img
               class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
-              src="/second.png"
+              // src="/second.png"
+              srcset={img2}
               alt="Picture of poll"
             />
+
             <img
               class="col-span-2 max-h-96 rounded-3xl border border-fuchsia-400 shadow-lg shadow-fuchsia-400"
-              src="/third.png"
+              // src="/third.png"
+              srcset={img3}
               alt="Picture of poll"
             />
           </div>
