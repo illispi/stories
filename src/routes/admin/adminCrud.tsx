@@ -1,11 +1,21 @@
+import { SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
 import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
+import { Input, maxLength, minLength, object, string } from "valibot";
 import CustomButton from "~/components/CustomButton";
 import ProtectedAdmin from "~/components/ProtectedAdmin";
 
-import { useQueryClient } from "@tanstack/solid-query";
 import { trpc } from "~/utils/trpc";
+
+const declineSchema = object({
+  decline_reason: string([
+    maxLength(600, "Your text is too long! (Max. 600 characters)"),
+    minLength(10, "Your text is too short, 10 chars"),
+  ]),
+});
+
+type DeclineForm = Input<typeof declineSchema>;
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
   const [accepted, setAccepted] = createSignal<null | boolean>(null);
@@ -44,6 +54,25 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
     onSuccess: () => utils.listArticles.invalidate(),
   }));
 
+  const [declineForm, { Form, Field }] = createForm<DeclineForm>({
+    validate: valiForm(declineSchema),
+  });
+
+  const handleDecline: SubmitHandler<DeclineForm> = async (values, event) => {
+    if (tab() === "poll") {
+      declineMut.mutateAsync({
+        id: entryEdit(),
+        pOrT: pOrT(),
+        decline_reason: values.decline_reason,
+      });
+    } else if (tab() === "articles") {
+      declineArticleMut.mutateAsync({
+        id: entryEdit(),
+        decline_reason: values.decline_reason,
+      });
+    }
+  };
+
   return (
     <>
       <div class="flex flex-col items-center">
@@ -60,30 +89,41 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
               <dialog open>
                 <div class="fixed left-0 top-0 z-40 h-screen w-screen bg-black opacity-50" />
                 <div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
-                  <CustomButton
-                    onClick={() => {
-                      if (tab() === "poll") {
-                        declineMut.mutateAsync({
-                          id: entryEdit(),
-                          pOrT: pOrT(),
-                        });
-                      } else if (tab() === "articles") {
-                        declineArticleMut.mutateAsync({ id: entryEdit() });
-                      }
-                      setShowModal(false);
-                      setEntryEdit(0);
-                    }}
-                  >
-                    Decline
-                  </CustomButton>
-                  <CustomButton
-                    onClick={() => {
-                      setShowModal(false);
-                      setEntryEdit(0);
-                    }}
-                  >
-                    Cancel
-                  </CustomButton>
+                  <Form onSubmit={handleDecline}>
+                    <Field name="decline_reason">
+                      {(field, props) => (
+                        <>
+                          <textarea
+                            class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+                            {...props}
+                            cols={20}
+                            rows={3}
+                            required
+                            autocomplete="off"
+                            placeholder="Decline reason"
+                          />
+                          {field.error && <div>{field.error}</div>}
+                        </>
+                      )}
+                    </Field>
+                    <CustomButton
+                      type="submit"
+                      onClick={() => {
+                        setShowModal(false);
+                        setEntryEdit(0);
+                      }}
+                    >
+                      Decline
+                    </CustomButton>
+                    <CustomButton
+                      onClick={() => {
+                        setShowModal(false);
+                        setEntryEdit(0);
+                      }}
+                    >
+                      Cancel
+                    </CustomButton>
+                  </Form>
                 </div>
               </dialog>
             </Show>
@@ -246,7 +286,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                                   setShowModal(true);
                                 }}
                               >
-                                Remove
+                                Decline
                               </CustomButton>
                             </>
                           }

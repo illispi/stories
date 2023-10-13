@@ -38,6 +38,7 @@ export const declineArticle = adminProcedure
   .input(
     z.object({
       id: z.number(),
+      decline_reason: z.string().min(10).max(600),
     })
   )
   .mutation(async ({ ctx, input }) => {
@@ -45,6 +46,7 @@ export const declineArticle = adminProcedure
       .updateTable("Articles")
       .set({
         accepted: false,
+        decline_reason: input.decline_reason,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -71,6 +73,7 @@ export const acceptSubmission = adminProcedure
       .updateTable(input.pOrT)
       .set({
         accepted: true,
+        decline_reason: null,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();
@@ -90,6 +93,7 @@ export const declineSubmission = adminProcedure
     z.object({
       id: z.number(),
       pOrT: z.enum(["Personal_questions", "Their_questions"]),
+      decline_reason: z.string().min(10).max(600),
     })
   )
   .mutation(async ({ ctx, input }) => {
@@ -97,6 +101,7 @@ export const declineSubmission = adminProcedure
       .updateTable(input.pOrT)
       .set({
         accepted: false,
+        decline_reason: input.decline_reason,
       })
       .where("id", "=", input.id)
       .executeTakeFirst();

@@ -54,7 +54,6 @@ const Login = () => {
         }
 
         parse(userSchema, { password, username });
-        console.log(request);
 
         if (action === "signin") {
           // find user by key

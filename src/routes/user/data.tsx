@@ -3,23 +3,18 @@ import {
   createForm,
   getValue,
   setValue,
-  setValues,
-  toCustom,
-  valiForm,
+  valiForm
 } from "@modular-forms/solid";
-import { useQueryClient } from "@tanstack/solid-query";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import {
-  ErrorBoundary,
   For,
   Show,
   Suspense,
   createEffect,
-  createSignal,
+  createSignal
 } from "solid-js";
-import { A, ErrorMessage, Navigate } from "solid-start";
-import { HttpStatusCode } from "solid-start/server";
+import { A, Navigate } from "solid-start";
 import { Input, maxLength, minLength, nullable, object, string } from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
@@ -27,7 +22,6 @@ import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
-import { editPersonal } from "~/server/trpc/router/user/userMutations";
 import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent = (props) => {
