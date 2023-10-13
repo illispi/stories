@@ -97,270 +97,269 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
   return (
     <>
       <div class="flex flex-col items-center">
-        <Suspense fallback={<div>Loading...</div>}>
-          <ErrorBoundary
-            fallback={(e) => (
-              <Show when={e.message === "Session not found"}>
-                <HttpStatusCode code={e.status} />
-                <ErrorMessage error={e} />
-              </Show>
-            )}
-          >
-            <Show when={showModal()}>
-              <dialog open>
-                <div class="fixed left-0 top-0 z-40 h-screen w-screen bg-black opacity-50" />
-                <div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
-                  <Form onSubmit={handleDecline}>
-                    <Field name="decline_reason">
-                      {(field, props) => (
-                        <>
-                          <textarea
-                            class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-                            {...props}
-                            cols={20}
-                            rows={3}
-                            required
-                            autocomplete="off"
-                            placeholder="Decline reason"
-                          />
-                          {field.error && <div>{field.error}</div>}
-                        </>
-                      )}
-                    </Field>
-                    <CustomButton type="submit">Decline</CustomButton>
-                    <CustomButton
-                      onClick={() => {
-                        setShowModal(false);
-                        setEntryEdit(0);
-                        reset(declineForm);
-                      }}
-                    >
-                      Cancel
-                    </CustomButton>
-                  </Form>
-                </div>
-              </dialog>
+        <ErrorBoundary
+          fallback={(e) => (
+            <Show when={e.message === "Session not found"}>
+              <HttpStatusCode code={e.status} />
+              <ErrorMessage error={e} />
             </Show>
-            <CustomButton
-              onClick={() => {
-                setTab(tab() === "articles" ? "poll" : "articles");
-              }}
-            >
-              {tab() === "articles"
-                ? "Switch to poll CRUD"
-                : "Switch to articles CRUD"}
-            </CustomButton>
-            <Show
-              when={tab() === "poll"}
-              fallback={
-                <>
-                  <div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
-                    <For each={articles.data}>
-                      {(article, index) => (
-                        <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
-                          <div class="m-8 flex items-center justify-between">
-                            <h3 class="text-xl font-bold">{index()}</h3>
-                            <Show
-                              when={accepted()}
-                              fallback={
-                                <>
-                                  <CustomButton
-                                    onclick={() => {
-                                      acceptArticleMut.mutateAsync({
-                                        id: article.id,
-                                      });
-                                    }}
-                                  >
-                                    Accept
-                                  </CustomButton>
-
-                                  <CustomButton
-                                    onclick={() => {
-                                      setEntryEdit(article.id);
-                                      setShowModal(true);
-                                    }}
-                                  >
-                                    Decline
-                                  </CustomButton>
-                                </>
-                              }
-                            >
-                              <CustomButton
-                                onclick={() => {
-                                  setEntryEdit(article.id);
-                                  setShowModal(true);
-                                }}
-                              >
-                                Decline
-                              </CustomButton>
-                            </Show>
-                          </div>
-                          <For each={Object.keys(article)}>
-                            {(keys) => (
+          )}
+        >
+          <Show when={showModal()}>
+            <dialog open>
+              <div class="fixed left-0 top-0 z-40 h-screen w-screen bg-black opacity-50" />
+              <div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
+                <Form onSubmit={handleDecline}>
+                  <Field name="decline_reason">
+                    {(field, props) => (
+                      <>
+                        <textarea
+                          class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+                          {...props}
+                          cols={20}
+                          rows={3}
+                          required
+                          autocomplete="off"
+                          placeholder="Decline reason"
+                        />
+                        {field.error && <div>{field.error}</div>}
+                      </>
+                    )}
+                  </Field>
+                  <CustomButton type="submit">Decline</CustomButton>
+                  <CustomButton
+                    onClick={() => {
+                      setShowModal(false);
+                      setEntryEdit(0);
+                      reset(declineForm);
+                    }}
+                  >
+                    Cancel
+                  </CustomButton>
+                </Form>
+              </div>
+            </dialog>
+          </Show>
+          <CustomButton
+            onClick={() => {
+              setTab(tab() === "articles" ? "poll" : "articles");
+            }}
+          >
+            {tab() === "articles"
+              ? "Switch to poll CRUD"
+              : "Switch to articles CRUD"}
+          </CustomButton>
+          <Show
+            when={tab() === "poll"}
+            fallback={
+              <>
+                <div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
+                  <For each={articles.data}>
+                    {(article, index) => (
+                      <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
+                        <div class="m-8 flex items-center justify-between">
+                          <h3 class="text-xl font-bold">{index()}</h3>
+                          <Show
+                            when={accepted()}
+                            fallback={
                               <>
-                                <h4 class="w-full text-lg font-bold">{keys}</h4>
-                                <p class="w-full">{article[keys]}</p>
+                                <CustomButton
+                                  onclick={() => {
+                                    acceptArticleMut.mutateAsync({
+                                      id: article.id,
+                                    });
+                                  }}
+                                >
+                                  Accept
+                                </CustomButton>
+
+                                <CustomButton
+                                  onclick={() => {
+                                    setEntryEdit(article.id);
+                                    setShowModal(true);
+                                  }}
+                                >
+                                  Decline
+                                </CustomButton>
                               </>
-                            )}
-                          </For>
+                            }
+                          >
+                            <CustomButton
+                              onclick={() => {
+                                setEntryEdit(article.id);
+                                setShowModal(true);
+                              }}
+                            >
+                              Decline
+                            </CustomButton>
+                          </Show>
                         </div>
+                        <For each={Object.keys(article)}>
+                          {(keys) => (
+                            <>
+                              <h4 class="w-full text-lg font-bold">{keys}</h4>
+                              <p class="w-full">{article[keys]}</p>
+                            </>
+                          )}
+                        </For>
+                      </div>
+                    )}
+                  </For>
+                </div>
+                <div class="m-16 flex w-full items-center justify-around">
+                  <CustomButton
+                    class={pageArticles() === 0 ? "invisible" : ""}
+                    onClick={() =>
+                      setPageArticles((prev) => (prev === 0 ? 0 : prev - 1))
+                    }
+                  >
+                    Back
+                  </CustomButton>
+                  <h5 class="text-lg font-bold">{`Page: ${pageArticles() + 1}/${
+                    Math.floor(articles.data[0].count / 25) + 1
+                  }`}</h5>
+
+                  <CustomButton
+                    class={
+                      articles.data[0].count / ((pageArticles() + 1) * 25) <= 1
+                        ? "invisible"
+                        : ""
+                    }
+                    onClick={() =>
+                      setPageArticles((prev) =>
+                        articles.data[0].count / ((prev + 1) * 25) <= 1
+                          ? prev
+                          : prev + 1
+                      )
+                    }
+                  >
+                    Next
+                  </CustomButton>
+                </div>
+              </>
+            }
+          >
+            <div class="my-10 flex items-center justify-between gap-4 p-4">
+              <CustomButton
+                class={`${
+                  pOrT() === "Personal_questions"
+                    ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+                    : ""
+                }`}
+                onClick={() => setPOrT("Personal_questions")}
+              >
+                {`Personal`}
+              </CustomButton>
+              <CustomButton
+                class={`${
+                  accepted()
+                    ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+                    : ""
+                }`}
+                onClick={() => setAccepted(accepted() === true ? null : true)}
+              >
+                Accepted
+              </CustomButton>
+              <CustomButton
+                class={`${
+                  pOrT() === "Their_questions"
+                    ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+                    : ""
+                }`}
+                onClick={() => setPOrT("Their_questions")}
+              >
+                {`Their`}
+              </CustomButton>
+            </div>
+            <div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
+              <For each={submissions.data?.poll}>
+                {(entry, index) => (
+                  <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
+                    <div class="m-8 flex items-center justify-between">
+                      <h3 class="text-xl font-bold">{index()}</h3>
+                      <Show
+                        when={accepted()}
+                        fallback={
+                          <>
+                            <CustomButton
+                              onclick={() => {
+                                acceptMut.mutateAsync({
+                                  id: entry.id,
+                                  pOrT: pOrT(),
+                                });
+                              }}
+                            >
+                              Accept
+                            </CustomButton>
+
+                            <CustomButton
+                              onclick={() => {
+                                setEntryEdit(entry.id);
+                                setShowModal(true);
+                              }}
+                            >
+                              Decline
+                            </CustomButton>
+                          </>
+                        }
+                      >
+                        <CustomButton
+                          onclick={() => {
+                            setEntryEdit(entry.id);
+                            setShowModal(true);
+                          }}
+                        >
+                          Decline
+                        </CustomButton>
+                      </Show>
+                    </div>
+                    <For each={Object.keys(entry)}>
+                      {(keys) => (
+                        <>
+                          <h4 class="w-full text-lg font-bold">{keys}</h4>
+                          <p class="w-full">{entry[keys]}</p>
+                        </>
                       )}
                     </For>
                   </div>
-                  <div class="m-16 flex w-full items-center justify-around">
-                    <CustomButton
-                      class={pageArticles() === 0 ? "invisible" : ""}
-                      onClick={() =>
-                        setPageArticles((prev) => (prev === 0 ? 0 : prev - 1))
-                      }
-                    >
-                      Back
-                    </CustomButton>
-                    <h5 class="text-lg font-bold">{`Page: ${
-                      pageArticles() + 1
-                    }/${Math.floor(articles.data[0].count / 25) + 1}`}</h5>
+                )}
+              </For>
+            </div>
+            <div class="m-16 flex w-full items-center justify-around">
+              <CustomButton
+                class={page() === 0 ? "invisible" : ""}
+                onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
+              >
+                Back
+              </CustomButton>
+              <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
+                Math.floor(submissions.data?.total / 25) + 1
+              }`}</h5>
 
-                    <CustomButton
-                      class={
-                        articles.data[0].count / ((pageArticles() + 1) * 25) <=
-                        1
-                          ? "invisible"
-                          : ""
-                      }
-                      onClick={() =>
-                        setPageArticles((prev) =>
-                          articles.data[0].count / ((prev + 1) * 25) <= 1
-                            ? prev
-                            : prev + 1
-                        )
-                      }
-                    >
-                      Next
-                    </CustomButton>
-                  </div>
-                </>
-              }
-            >
-              <div class="my-10 flex items-center justify-between gap-4 p-4">
-                <CustomButton
-                  class={`${
-                    pOrT() === "Personal_questions"
-                      ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
-                      : ""
-                  }`}
-                  onClick={() => setPOrT("Personal_questions")}
-                >
-                  {`Personal`}
-                </CustomButton>
-                <CustomButton
-                  class={`${
-                    accepted()
-                      ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
-                      : ""
-                  }`}
-                  onClick={() => setAccepted(accepted() === true ? null : true)}
-                >
-                  Accepted
-                </CustomButton>
-                <CustomButton
-                  class={`${
-                    pOrT() === "Their_questions"
-                      ? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
-                      : ""
-                  }`}
-                  onClick={() => setPOrT("Their_questions")}
-                >
-                  {`Their`}
-                </CustomButton>
-              </div>
-              <div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
-                <For each={submissions.data?.poll}>
-                  {(entry, index) => (
-                    <div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
-                      <div class="m-8 flex items-center justify-between">
-                        <h3 class="text-xl font-bold">{index()}</h3>
-                        <Show
-                          when={accepted()}
-                          fallback={
-                            <>
-                              <CustomButton
-                                onclick={() => {
-                                  acceptMut.mutateAsync({
-                                    id: entry.id,
-                                    pOrT: pOrT(),
-                                  });
-                                }}
-                              >
-                                Accept
-                              </CustomButton>
-
-                              <CustomButton
-                                onclick={() => {
-                                  setEntryEdit(entry.id);
-                                  setShowModal(true);
-                                }}
-                              >
-                                Decline
-                              </CustomButton>
-                            </>
-                          }
-                        >
-                          <CustomButton
-                            onclick={() => {
-                              setEntryEdit(entry.id);
-                              setShowModal(true);
-                            }}
-                          >
-                            Decline
-                          </CustomButton>
-                        </Show>
-                      </div>
-                      <For each={Object.keys(entry)}>
-                        {(keys) => (
-                          <>
-                            <h4 class="w-full text-lg font-bold">{keys}</h4>
-                            <p class="w-full">{entry[keys]}</p>
-                          </>
-                        )}
-                      </For>
-                    </div>
-                  )}
-                </For>
-              </div>
-              <div class="m-16 flex w-full items-center justify-around">
-                <CustomButton
-                  class={page() === 0 ? "invisible" : ""}
-                  onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
-                >
-                  Back
-                </CustomButton>
-                <h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
-                  Math.floor(submissions.data?.total / 25) + 1
-                }`}</h5>
-
-                <CustomButton
-                  class={
-                    submissions.data?.total / ((page() + 1) * 25) <= 1
-                      ? "invisible"
-                      : ""
-                  }
-                  onClick={() =>
-                    setPage((prev) =>
-                      submissions.data?.total / ((prev + 1) * 25) <= 1
-                        ? prev
-                        : prev + 1
-                    )
-                  }
-                >
-                  Next
-                </CustomButton>
-              </div>
-            </Show>
-          </ErrorBoundary>
-        </Suspense>
+              <CustomButton
+                class={
+                  submissions.data?.total / ((page() + 1) * 25) <= 1
+                    ? "invisible"
+                    : ""
+                }
+                onClick={() =>
+                  setPage((prev) =>
+                    submissions.data?.total / ((prev + 1) * 25) <= 1
+                      ? prev
+                      : prev + 1
+                  )
+                }
+              >
+                Next
+              </CustomButton>
+            </div>
+          </Show>
+        </ErrorBoundary>
       </div>
     </>
   );
 });
 
 export default Page;
+
+//BUG SSR doesnt work probably show without single parent jsx

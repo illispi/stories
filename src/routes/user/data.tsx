@@ -2,18 +2,13 @@ import {
   SubmitHandler,
   createForm,
   getValue,
+  reset,
   setValue,
-  valiForm
+  valiForm,
 } from "@modular-forms/solid";
 import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
-import {
-  For,
-  Show,
-  Suspense,
-  createEffect,
-  createSignal
-} from "solid-js";
+import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
 import { A, Navigate } from "solid-start";
 import { Input, maxLength, minLength, nullable, object, string } from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
@@ -164,6 +159,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
     values,
     event
   ) => {
+    console.log("here");
     editPersonalMut.mutateAsync({ ...personal.data, ...values });
   };
 
@@ -243,9 +239,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                           >
                             {(el) => (
                               <div
-                                classList={{
-                                  ["flex"]: !personal.data?.[el],
-                                }}
+                                classList={{ ["hidden"]: !personal.data?.[el] }}
                               >
                                 <h2 class="text-2xl font-bold lg:text-3xl">
                                   {headers[el]}
