@@ -55,6 +55,7 @@ const Home: Component = () => {
               // src="/third.png"
               srcset={img3}
               alt="Picture of poll"
+              sizes="1006px"
             />
           </div>
           <div class="my-16 flex w-full max-w-md items-center justify-center gap-4 p-6 lg:hidden">
