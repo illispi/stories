@@ -1,5 +1,17 @@
-import { SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
-import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
+import {
+  SubmitHandler,
+  createForm,
+  reset,
+  valiForm,
+} from "@modular-forms/solid";
+import {
+  ErrorBoundary,
+  For,
+  Show,
+  Suspense,
+  createEffect,
+  createSignal,
+} from "solid-js";
 import { ErrorMessage } from "solid-start";
 import { HttpStatusCode } from "solid-start/server";
 import { Input, maxLength, minLength, object, string } from "valibot";
@@ -57,6 +69,15 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
   const [declineForm, { Form, Field }] = createForm<DeclineForm>({
     validate: valiForm(declineSchema),
   });
+  createEffect(() => {
+    if (declineMut.isSuccess || declineArticleMut.isSuccess) {
+      setShowModal(false);
+      setEntryEdit(0);
+      declineMut.reset();
+      declineArticleMut.reset();
+      reset(declineForm);
+    }
+  });
 
   const handleDecline: SubmitHandler<DeclineForm> = async (values, event) => {
     if (tab() === "poll") {
@@ -106,15 +127,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                         </>
                       )}
                     </Field>
-                    <CustomButton
-                      type="submit"
-                      onClick={() => {
-                        setShowModal(false);
-                        setEntryEdit(0);
-                      }}
-                    >
-                      Decline
-                    </CustomButton>
+                    <CustomButton type="submit">Decline</CustomButton>
                     <CustomButton
                       onClick={() => {
                         setShowModal(false);
