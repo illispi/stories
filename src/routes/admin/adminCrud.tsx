@@ -132,6 +132,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                       onClick={() => {
                         setShowModal(false);
                         setEntryEdit(0);
+                        reset(declineForm);
                       }}
                     >
                       Cancel
@@ -172,14 +173,14 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                                   >
                                     Accept
                                   </CustomButton>
-                                  {/* BUG This or something else should be decline and not remove */}
+
                                   <CustomButton
                                     onclick={() => {
                                       setEntryEdit(article.id);
                                       setShowModal(true);
                                     }}
                                   >
-                                    Remove
+                                    Decline
                                   </CustomButton>
                                 </>
                               }
@@ -190,7 +191,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                                   setShowModal(true);
                                 }}
                               >
-                                Remove
+                                Decline
                               </CustomButton>
                             </Show>
                           </div>
@@ -310,7 +311,7 @@ export const { routeData, Page } = ProtectedAdmin((session) => {
                               setShowModal(true);
                             }}
                           >
-                            Remove
+                            Decline
                           </CustomButton>
                         </Show>
                       </div>
