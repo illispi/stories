@@ -82,6 +82,7 @@ export const editPersonal = userProcedure
     const updated = await ctx.db
       .updateTable("Personal_questions")
       .set({ ...input, accepted: null })
+      .where("user", "=", ctx.user.id)
       .executeTakeFirst();
 
     if (!updated) {
@@ -100,6 +101,7 @@ export const editTheir = userProcedure
     const updated = await ctx.db
       .updateTable("Their_questions")
       .set({ ...input.data, accepted: null })
+      .where("user", "=", ctx.user.id)
       .executeTakeFirst();
 
     if (!updated) {
