@@ -7,6 +7,7 @@ import {
 import CustomButton from "./CustomButton";
 import { auth } from "~/auth/lucia";
 import { A } from "solid-start";
+import LoginA from "./LoginA";
 
 const getSession = () => {
   return createServerData$(async (_, event) => {
@@ -45,9 +46,7 @@ const Auth: VoidComponent = () => {
     <Show
       when={sessionData()}
       fallback={
-        <CustomButton class="w-44">
-          <A href="/login">{"Sign in/up"}</A>
-        </CustomButton>
+       <LoginA/>
       }
     >
       <CustomButton

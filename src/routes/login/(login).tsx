@@ -8,6 +8,7 @@ import {
 } from "@modular-forms/solid";
 import { LuciaError } from "lucia";
 import { ErrorBoundary, Show, createEffect, createSignal } from "solid-js";
+import { useNavigate, useRouteData, useSearchParams } from "solid-start";
 import {
   ServerError,
   createServerAction$,
@@ -25,7 +26,7 @@ export const routeData = () => {
     const authRequest = auth.handleRequest(event.request);
     const session = await authRequest.validate();
     if (session) {
-      return redirect("/");
+      return "redir";
     }
   });
 };
@@ -46,13 +47,14 @@ type Action = { action: string };
 
 const Login = () => {
   const [submission, submit] = createServerAction$(
-    async ({ password, username, action }: UserForm & Action) => {
+    async ({ password, username, action }: UserForm & Action, { request }) => {
       try {
         if (action === "cancel") {
           return { statusAcc: "cancel" };
         }
 
         parse(userSchema, { password, username });
+        console.log(request);
 
         if (action === "signin") {
           // find user by key
@@ -70,9 +72,8 @@ const Login = () => {
             const sessionCookie = auth.createSessionCookie(session);
             // set cookie and redirect
             return new Response(null, {
-              status: 302,
+              status: 200,
               headers: {
-                Location: "/",
                 "Set-Cookie": sessionCookie.serialize(),
               },
             });
@@ -97,10 +98,10 @@ const Login = () => {
           });
           const sessionCookie = auth.createSessionCookie(session);
           // set cookie and redirect
+
           return new Response(null, {
-            status: 302,
+            status: 200,
             headers: {
-              Location: "/",
               "Set-Cookie": sessionCookie.serialize(),
             },
           });
@@ -132,6 +133,24 @@ const Login = () => {
       }
     }
   );
+
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const session = useRouteData<typeof routeData>();
+
+  createEffect(() => {
+    if (session()) {
+      if (searchParams.redir) {
+        navigate(searchParams.redir);
+      } else {
+        navigate("/");
+      }
+    }
+    // console.log(submission.result);
+
+    //   if(submission.result.)
+  });
 
   const [userForm, { Form, Field }] = createForm<UserForm>({
     validate: valiForm(userSchema),

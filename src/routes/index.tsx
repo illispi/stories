@@ -73,6 +73,7 @@ const Home: Component = () => {
             </A>
           </div>
         </div>
+        
       </div>
       <div class="flex w-full items-center justify-center bg-slate-100">
         <div class="grid w-full max-w-screen-2xl grid-cols-1 justify-items-center gap-12 py-16 lg:grid-cols-2">
