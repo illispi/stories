@@ -159,8 +159,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
     values,
     event
   ) => {
-    console.log("here");
     editPersonalMut.mutateAsync({ ...personal.data, ...values });
+    setPersonalEdit(false);
   };
 
   return (
@@ -200,22 +200,36 @@ export const { routeData, Page } = ProtectedUser((session) => {
             <Suspense>
               <TransitionFade>
                 <Show when={showPersonal()}>
-                  <Box>
+                  <div class="flex flex-col items-center justify-start gap-8">
                     <CustomButton
+                      class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
                       onClick={() => {
                         removePersonalMut.mutateAsync();
                       }}
                     >
                       Delete this personal poll data
                     </CustomButton>
-                    <CustomButton
-                      onClick={() => {
-                        setPersonalEdit(true);
-                      }}
+                    <Show
+                      when={!personalEdit()}
+                      fallback={
+                        <CustomButton
+                          onClick={() => {
+                            setPersonalEdit(false);
+                          }}
+                        >
+                          Cancel editing personal poll data
+                        </CustomButton>
+                      }
                     >
-                      Edit this personal poll data
-                    </CustomButton>
-                    <h4>{`status: ${
+                      <CustomButton
+                        onClick={() => {
+                          setPersonalEdit(true);
+                        }}
+                      >
+                        Edit this personal poll data
+                      </CustomButton>
+                    </Show>
+                    <h4 class="text-lg font-semibold">{`status: ${
                       personal.data?.accepted
                         ? "Accepted"
                         : personal.data?.accepted === null
@@ -251,7 +265,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                                         class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
                                         {...props}
                                         cols={20}
-                                        rows={3}
+                                        rows={8}
                                         required
                                         autocomplete="off"
                                         value={field.value}
@@ -297,7 +311,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
                         )}
                       </For>
                     </Show>
-                  </Box>
+                  </div>
                 </Show>
               </TransitionFade>
             </Suspense>
