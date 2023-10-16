@@ -10,7 +10,7 @@ const Footer: Component<{}> = (props) => {
           <h5 class="m-4 border-b border-white text-3xl text-white">
             Contact me:
           </h5>
-          <a class="text-xl text-white">Reddit</a>
+
           <a
             class="text-xl text-white"
             href="https://github.com/illispi/stories"
@@ -42,5 +42,4 @@ const Footer: Component<{}> = (props) => {
     </footer>
   );
 };
-//TODO add link to reddit
 export default Footer;

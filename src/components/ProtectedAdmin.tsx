@@ -11,7 +11,7 @@ const ProtectedAdmin = (Comp: IProtectedComponent) => {
       const session = await authRequest.validate();
       const user = await auth.getUser(session?.user.userId);
       if (session && user.role === "admin") {
-        return session;
+        return session.user.username;
       } else {
         return redirect("/");
       }

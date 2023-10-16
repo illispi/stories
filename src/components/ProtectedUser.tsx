@@ -10,7 +10,7 @@ const ProtectedUser = (Comp: IProtectedComponent) => {
       const authRequest = auth.handleRequest(event.request);
       const session = await authRequest.validate();
       if (session) {
-        return session;
+        return session.user.username;
       } else {
         return redirect("/");
       }
