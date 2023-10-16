@@ -13,6 +13,8 @@ import { trpc } from "~/utils/trpc";
 import TransitionFade from "~/components/TransitionFade";
 import { route } from "routes-gen";
 
+
+
 const Counter: ParentComponent<{
   page: number;
   questions: QuestionPersonal[] | QuestionTheir[];
@@ -130,6 +132,8 @@ const Questions: ParentComponent<{
 };
 
 const PersonalQuestions: ParentComponent = () => {
+
+
   const params = useParams<{
     personalQuestions: "personalQuestions" | "theirQuestions";
   }>();
@@ -248,7 +252,6 @@ const PersonalQuestions: ParentComponent = () => {
                       Previous
                     </CustomButton>
                   </div>
-
                   <Questions
                     setSubmissionStatus={setSubmissionStatus}
                     direction={direction()}

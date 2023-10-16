@@ -18,6 +18,21 @@ import {
   string,
 } from "valibot";
 import { trpc } from "~/utils/trpc";
+import LoginA from "./LoginA";
+import { createServerData$ } from "solid-start/server";
+import { auth } from "~/auth/lucia";
+
+export const getSession = () => {
+  return createServerData$(async (_, event) => {
+    const authRequest = auth.handleRequest(event.request);
+    const session = await authRequest.validate();
+    if (session) {
+      return session.user.username;
+    } else {
+      return null;
+    }
+  });
+};
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -41,7 +56,9 @@ export const UnitQuestion: ParentComponent<{
   LsName: "personalQuestions" | "theirQuestions";
   paginate: (newDirection: number) => void;
   setSubmissionStatus: Setter<string>;
+  sessionLocal: string | null | undefined;
 }> = (props) => {
+  const session = getSession();
   const sendStats =
     props.LsName === "personalQuestions"
       ? trpc.postPersonalStats.useMutation()
@@ -585,14 +602,24 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "submit"}>
         <Box question={question}>
           <Show
-            when={!sendStats.isPending || sendStats.isSuccess}
+            when={session}
             fallback={
-              <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
-                Submitting
-              </CustomButton>
+              <div class="flex flex-col items-center justify-center">
+                <h3>You have to be signed up/in to submit</h3>
+                <LoginA />
+              </div>
             }
           >
-            <CustomButton onClick={submitResults}>Submit</CustomButton>
+            <Show
+              when={!sendStats.isPending || sendStats.isSuccess}
+              fallback={
+                <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
+                  Submitting
+                </CustomButton>
+              }
+            >
+              <CustomButton onClick={submitResults}>Submit</CustomButton>
+            </Show>
           </Show>
         </Box>
       </Match>

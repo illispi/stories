@@ -27,7 +27,7 @@ export const routeData = () => {
     const session = await authRequest.validate();
     if (session) {
       return "redir";
-    }
+    } 
   });
 };
 
