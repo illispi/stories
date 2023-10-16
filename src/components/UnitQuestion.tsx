@@ -56,7 +56,6 @@ export const UnitQuestion: ParentComponent<{
   LsName: "personalQuestions" | "theirQuestions";
   paginate: (newDirection: number) => void;
   setSubmissionStatus: Setter<string>;
-  sessionLocal: string | null | undefined;
 }> = (props) => {
   const session = getSession();
   const sendStats =
@@ -602,10 +601,12 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "submit"}>
         <Box question={question}>
           <Show
-            when={session}
+            when={session()}
             fallback={
-              <div class="flex flex-col items-center justify-center">
-                <h3>You have to be signed up/in to submit</h3>
+              <div class="flex w-11/12 flex-col items-center justify-center gap-6">
+                <h3 class="text-center text-lg font-semibold">
+                  You have to be signed up/in to submit
+                </h3>
                 <LoginA />
               </div>
             }
@@ -613,12 +614,16 @@ export const UnitQuestion: ParentComponent<{
             <Show
               when={!sendStats.isPending || sendStats.isSuccess}
               fallback={
-                <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
-                  Submitting
-                </CustomButton>
+                <>
+                  <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
+                    Submitting
+                  </CustomButton>
+                </>
               }
             >
-              <CustomButton onClick={submitResults}>Submit</CustomButton>
+              <>
+                <CustomButton onClick={submitResults}>Submit</CustomButton>
+              </>
             </Show>
           </Show>
         </Box>
