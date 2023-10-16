@@ -9,16 +9,28 @@ import { z } from "zod";
 export const postPersonalStats = userProcedure
   .input(personalQuestionsSchema)
   .mutation(async ({ ctx, input }) => {
-    const insertion = await ctx.db
-      .insertInto("Personal_questions")
-      .values({ ...input, user: ctx.user.id, accepted: null })
+    const existsAlready = await ctx.db
+      .selectFrom("Personal_questions")
+      .selectAll()
       .executeTakeFirst();
 
-    if (!insertion) {
+    if (existsAlready) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Insertion failed",
+        message: "Personal poll exists already",
       });
+    } else {
+      const insertion = await ctx.db
+        .insertInto("Personal_questions")
+        .values({ ...input, user: ctx.user.id, accepted: null })
+        .executeTakeFirst();
+
+      if (!insertion) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Insertion failed",
+        });
+      }
     }
 
     return "Added succesfully";
