@@ -1,17 +1,12 @@
 name: Deploy # Name of the workflow
 
-# On a push to the branch named master
+# On a push with tag
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 
-# Job called build runs-on ubuntu-latest
 jobs:
-  # deploy:
-  #   name: Deploy to GitHub Pages
-  #   # we are not interested in this job
-
   publish-docker-hub:
     name: Publish image to Docker Hub
     runs-on: ubuntu-latest
@@ -25,7 +20,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # Builds devopsdockeruh/docker-hy.github.io
+      # Builds image
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
