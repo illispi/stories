@@ -8,9 +8,9 @@ on:
 
 # Job called build runs-on ubuntu-latest
 jobs:
-  deploy:
-    name: Deploy to GitHub Pages
-    # we are not interested in this job
+  # deploy:
+  #   name: Deploy to GitHub Pages
+  #   # we are not interested in this job
 
   publish-docker-hub:
     name: Publish image to Docker Hub
