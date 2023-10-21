@@ -18,6 +18,7 @@ import "./root.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
+import { QueryClientProvider } from "@tanstack/solid-query";
 
 export default function Root() {
   createEffect(() => {
@@ -32,30 +33,32 @@ export default function Root() {
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-        <trpc.Provider queryClient={queryClient}>
-          <ErrorBoundary
-            fallback={(e, reset) => {
-              return (
-                <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
-                  <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-                    <h1 class="text-center text-2xl">Error occured!</h1>
-                    <h2 class="text-center">{`Message: ${e.message}`}</h2>
-                    <CustomButton onClick={reset}>Try again</CustomButton>
+        <QueryClientProvider client={queryClient}>
+          <trpc.Provider queryClient={queryClient}>
+            <ErrorBoundary
+              fallback={(e, reset) => {
+                return (
+                  <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
+                    <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+                      <h1 class="text-center text-2xl">Error occured!</h1>
+                      <h2 class="text-center">{`Message: ${e.message}`}</h2>
+                      <CustomButton onClick={reset}>Try again</CustomButton>
+                    </div>
                   </div>
-                </div>
-              );
-            }}
-          >
-            <Suspense>
-              <NavBar />
-              <TransitionSlideGlobal>
-                <Routes>
-                  <FileRoutes />
-                </Routes>
-              </TransitionSlideGlobal>
-            </Suspense>
-          </ErrorBoundary>
-        </trpc.Provider>
+                );
+              }}
+            >
+              <Suspense>
+                <NavBar />
+                <TransitionSlideGlobal>
+                  <Routes>
+                    <FileRoutes />
+                  </Routes>
+                </TransitionSlideGlobal>
+              </Suspense>
+            </ErrorBoundary>
+          </trpc.Provider>
+        </QueryClientProvider>
         <Scripts />
       </Body>
     </Html>
