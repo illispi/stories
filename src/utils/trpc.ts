@@ -1,6 +1,6 @@
 // utils/trpc.ts
 import { QueryClient } from "@tanstack/solid-query";
-import type { IAppRouter } from "~/server/trpc/router/app";
+import type { IAppRouter } from "~/server/trpc/router/_app";
 
 import { httpBatchLink } from "@trpc/client";
 import { isServer } from "solid-js/web";
