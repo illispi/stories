@@ -16,7 +16,7 @@ export const createContextInner = async (opts: CreateInnerContextOptions) => {
   };
 };
 
-export const createContext = async (opts: CreateInnerContextOptions) => {
+export const createContext = async (opts: createSolidAPIHandlerContext) => {
   const authRequest = auth.handleRequest(opts.req!);
   const session = await authRequest.validate();
 

@@ -16,18 +16,18 @@ const getBaseUrl = () => {
 };
 
 export const trpc = createTRPCSolidStart<IAppRouter>({
-  config(event) {
+  config() {
     // PageEvent of Solid-start
     return {
       links: [
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
-          headers: () => {
-            if (isServer && event?.request) {
-              // do something
-            }
-            return {};
-          },
+          //   headers: () => {
+          //     if (isServer && event?.request) {
+          //       // do something
+          //     }
+          //     return {};
+          //   },
         }),
       ],
     };
