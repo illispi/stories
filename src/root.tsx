@@ -14,7 +14,6 @@ import {
 } from "solid-start";
 import NavBar from "./components/Navbar";
 import "./root.css";
-// import GlobalTransition from "./components/GlobalTransition";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
