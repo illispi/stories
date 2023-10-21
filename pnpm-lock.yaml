@@ -16,10 +16,10 @@ dependencies:
     version: 0.20.0(solid-js@1.8.3)
   '@routes-gen/solid-start':
     specifier: ^0.1.1
-    version: 0.1.1(solid-start@0.2.32)
+    version: 0.1.1(solid-start@0.3.7)
   '@solid-mediakit/trpc':
     specifier: ^1.0.2
-    version: 1.0.2(@tanstack/solid-query@5.0.0)(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.2.32)
+    version: 1.0.2(@tanstack/solid-query@5.0.0)(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.3.7)
   '@solid-primitives/refs':
     specifier: ^1.0.5
     version: 1.0.5(solid-js@1.8.3)
@@ -60,11 +60,11 @@ dependencies:
     specifier: ^1.8.3
     version: 1.8.3
   solid-start:
-    specifier: ^0.2.32
-    version: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+    specifier: ^0.3.7
+    version: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
   solid-start-trpc:
     specifier: ^0.0.16
-    version: 0.0.16(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.2.32)
+    version: 0.0.16(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.3.7)
   solid-transition-group:
     specifier: ^0.2.3
     version: 0.2.3(solid-js@1.8.3)
@@ -135,10 +135,10 @@ devDependencies:
     version: 1.69.4
   solid-devtools:
     specifier: ^0.27.7
-    version: 0.27.7(solid-js@1.8.3)(solid-start@0.2.32)(vite@4.5.0)
+    version: 0.27.7(solid-js@1.8.3)(solid-start@0.3.7)(vite@4.5.0)
   solid-start-node:
-    specifier: ^0.2.32
-    version: 0.2.32(solid-start@0.2.32)(undici@5.26.4)(vite@4.5.0)
+    specifier: ^0.3.7
+    version: 0.3.7(solid-start@0.3.7)(vite@4.5.0)
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3(ts-node@10.9.1)
@@ -2269,13 +2269,13 @@ packages:
       picomatch: 2.3.1
       rollup: 3.29.4
 
-  /@routes-gen/solid-start@0.1.1(solid-start@0.2.32):
+  /@routes-gen/solid-start@0.1.1(solid-start@0.3.7):
     resolution: {integrity: sha512-hpsEtVsJyxwU52NuyzaHcrVyOnnI5ywX+IHpI1GZIj2nk/y1LmdAbhIHfWbFt3+1sq/sl50n6gYHIED77DIOag==}
     peerDependencies:
       solid-start: ^0.2.10
     dependencies:
       routes-gen: 0.6.1
-      solid-start: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+      solid-start: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
     dev: false
 
   /@sideway/address@4.1.4:
@@ -2342,7 +2342,7 @@ packages:
       solid-js: 1.8.3
     dev: true
 
-  /@solid-mediakit/trpc@1.0.2(@tanstack/solid-query@5.0.0)(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.2.32):
+  /@solid-mediakit/trpc@1.0.2(@tanstack/solid-query@5.0.0)(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.3.7):
     resolution: {integrity: sha512-qsZDeSmH15BCcCWp4/guFAoIUUWOFkXy1n8qwmEkyJAN9cFw4v+UGvW8lQht49VgxLAmQBylsvHAA42MTNDxcw==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -2356,7 +2356,7 @@ packages:
       '@trpc/client': 10.41.0(@trpc/server@10.41.0)
       '@trpc/server': 10.41.0
       solid-js: 1.8.3
-      solid-start: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+      solid-start: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
     dev: false
 
   /@solid-primitives/bounds@0.0.114(solid-js@1.8.3):
@@ -2952,7 +2952,7 @@ packages:
       call-bind: 1.0.5
       define-properties: 1.2.1
       es-abstract: 1.22.3
-      es-shim-unscopables: 1.0.0
+      es-shim-unscopables: 1.0.2
     dev: true
 
   /arraybuffer.prototype.slice@1.0.2:
@@ -3593,7 +3593,7 @@ packages:
     dependencies:
       get-intrinsic: 1.2.2
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
     dev: true
 
   /define-lazy-prop@2.0.0:
@@ -3609,7 +3609,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       define-data-property: 1.1.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
       object-keys: 1.1.1
     dev: true
 
@@ -3721,7 +3721,7 @@ packages:
       get-symbol-description: 1.0.0
       globalthis: 1.0.3
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
       has-proto: 1.0.1
       has-symbols: 1.0.3
       hasown: 2.0.0
@@ -3763,10 +3763,10 @@ packages:
       hasown: 2.0.0
     dev: true
 
-  /es-shim-unscopables@1.0.0:
-    resolution: {integrity: sha512-Jm6GPcCdC30eMLbZ2x8z2WuRwAws3zTBBKuusffYVUrNj/GVSUAZ+xKMaUpfNDR5IbyNA5LJbaecoUVbmUcB1w==}
+  /es-shim-unscopables@1.0.2:
+    resolution: {integrity: sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==}
     dependencies:
-      has: 1.0.4
+      hasown: 2.0.0
     dev: true
 
   /es-to-primitive@1.2.1:
@@ -4417,8 +4417,8 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  /has-property-descriptors@1.0.0:
-    resolution: {integrity: sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==}
+  /has-property-descriptors@1.0.1:
+    resolution: {integrity: sha512-VsX8eaIewvas0xnvinAe9bw4WfIeODpGYikiWYLH+dma0Jw6KHYqWiWfhQlgOVK8D6PvjubK5Uc4P0iIhIcNVg==}
     dependencies:
       get-intrinsic: 1.2.2
     dev: true
@@ -4438,11 +4438,6 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       has-symbols: 1.0.3
-    dev: true
-
-  /has@1.0.4:
-    resolution: {integrity: sha512-qdSAmqLF6209RFj4VVItywPMbm3vWylknmB3nvNiUIs72xAimcM8nVYxYr7ncvZq5qzk9MKIZR8ijqD/1QuYjQ==}
-    engines: {node: '>= 0.4.0'}
     dev: true
 
   /hasown@2.0.0:
@@ -5560,6 +5555,9 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
 
+  /micromorph@0.3.1:
+    resolution: {integrity: sha512-dbX4sz405e/QQtbHFMJj0SaVP+xuBBpSpR44AQYTjsrPek8oKyeRXkbtYN1XyFVdV7WjHp5DZMwxJOJiBfH1Jw==}
+
   /mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -6547,7 +6545,7 @@ packages:
       define-data-property: 1.1.1
       get-intrinsic: 1.2.2
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
     dev: true
 
   /set-function-name@2.0.1:
@@ -6556,7 +6554,7 @@ packages:
     dependencies:
       define-data-property: 1.1.1
       functions-have-names: 1.2.3
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
     dev: true
 
   /sharp@0.32.6:
@@ -6645,7 +6643,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /solid-devtools@0.27.7(solid-js@1.8.3)(solid-start@0.2.32)(vite@4.5.0):
+  /solid-devtools@0.27.7(solid-js@1.8.3)(solid-start@0.3.7)(vite@4.5.0):
     resolution: {integrity: sha512-eRUk+mzszEM6nt+TNT2iU2J6T1F0NSJCRFPP4Y78Wt8HVAepnwB6H2WAE1S/5EH8PL0+NIHsVdHI/+6ReZPO5g==}
     peerDependencies:
       solid-js: ^1.7.0
@@ -6663,7 +6661,7 @@ packages:
       '@solid-devtools/debugger': 0.22.4(solid-js@1.8.3)
       '@solid-devtools/shared': 0.12.3(solid-js@1.8.3)
       solid-js: 1.8.3
-      solid-start: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+      solid-start: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
       vite: 4.5.0(@types/node@20.8.7)(sass@1.69.4)
     transitivePeerDependencies:
       - supports-color
@@ -6685,11 +6683,10 @@ packages:
       '@babel/types': 7.23.0
       solid-js: 1.8.3
 
-  /solid-start-node@0.2.32(solid-start@0.2.32)(undici@5.26.4)(vite@4.5.0):
-    resolution: {integrity: sha512-IG7V5O7rdesVPQQ15eDpdJ9wg1XXFT7zpd+o0M7ShW9TvxPxs0g5RJzZFNjSxwx8nmxVj58mO5lGw2Jr/HgLCQ==}
+  /solid-start-node@0.3.7(solid-start@0.3.7)(vite@4.5.0):
+    resolution: {integrity: sha512-BV7jJYM4mQTI7S1YJR1o5+6sK/mGms0/zG5qN+OdC7lrJir13d834MJOJSuhgu8LUMKN/iEG06uPfnbNMFd89A==}
     peerDependencies:
       solid-start: '*'
-      undici: ^5.8.0
       vite: '*'
     dependencies:
       '@rollup/plugin-commonjs': 24.1.0(rollup@3.29.4)
@@ -6699,14 +6696,13 @@ packages:
       polka: 1.0.0-next.22
       rollup: 3.29.4
       sirv: 2.0.3
-      solid-start: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+      solid-start: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
       terser: 5.22.0
-      undici: 5.26.4
       vite: 4.5.0(@types/node@20.8.7)(sass@1.69.4)
     transitivePeerDependencies:
       - supports-color
 
-  /solid-start-trpc@0.0.16(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.2.32):
+  /solid-start-trpc@0.0.16(@trpc/client@10.41.0)(@trpc/server@10.41.0)(solid-js@1.8.3)(solid-start@0.3.7):
     resolution: {integrity: sha512-99/EGIE0SObmCVhZR00bYpkEQpCDP22YgjalQpVgm0BKy2+tJzEC6vdvOII2Ppa0Fm7iPwc4LDZoFX2E3KYmsg==}
     peerDependencies:
       '@trpc/client': ^10.0.0
@@ -6717,11 +6713,11 @@ packages:
       '@trpc/client': 10.41.0(@trpc/server@10.41.0)
       '@trpc/server': 10.41.0
       solid-js: 1.8.3
-      solid-start: 0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0)
+      solid-start: 0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0)
     dev: false
 
-  /solid-start@0.2.32(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.2.32)(vite@4.5.0):
-    resolution: {integrity: sha512-5z8s7l2PiCbbqSuz+MAVSVIJ4/rnifesM9g0G/VldBVKdfwWet7noQdso0HC2xXkidFYKdD/mJG2M05o2bYiqw==}
+  /solid-start@0.3.7(@solidjs/meta@0.28.6)(@solidjs/router@0.8.3)(solid-js@1.8.3)(solid-start-node@0.3.7)(vite@4.5.0):
+    resolution: {integrity: sha512-16L+yaLbxjcovYwBovcdv9wi0zD8/SsHL9XYusqoxri1Xg2xy+uUPBWdmhOAUq6+R7qjyHJPX53ILUVJTj1qng==}
     hasBin: true
     peerDependencies:
       '@solidjs/meta': ^0.28.0
@@ -6775,6 +6771,7 @@ packages:
       esbuild-plugin-solid: 0.5.0(esbuild@0.17.19)(solid-js@1.8.3)
       fast-glob: 3.3.1
       get-port: 6.1.2
+      micromorph: 0.3.1
       parse-multipart-data: 1.5.0
       picocolors: 1.0.0
       rollup: 3.29.4
@@ -6784,7 +6781,7 @@ packages:
       set-cookie-parser: 2.6.0
       sirv: 2.0.3
       solid-js: 1.8.3
-      solid-start-node: 0.2.32(solid-start@0.2.32)(undici@5.26.4)(vite@4.5.0)
+      solid-start-node: 0.3.7(solid-start@0.3.7)(vite@4.5.0)
       terser: 5.22.0
       undici: 5.26.4
       vite: 4.5.0(@types/node@20.8.7)(sass@1.69.4)
