@@ -26,6 +26,9 @@ services:
     #   - ./:/app/project 
     container_name: stories
     restart: unless-stopped
+    volumes:
+      - ./:/app # Let us modify the contents of the container locally
+      - node_modules:/app/node_modules # A bit of node magic, this ensures the dependencies built for the image are not available locally.
     env_file:
       - .env
     networks:
@@ -35,6 +38,7 @@ services:
 volumes:
   postgres:
     driver: local
+  node_modules:
 
 
 
