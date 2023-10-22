@@ -24,8 +24,9 @@ async function migrateToLatest(dir: string[]) {
     log: ["error", "query"],
     dialect: new PostgresDialect({
       pool: new Pool({
-        host: "127.0.0.1",
-        database: "stories_dev",
+        host: process.env.NODE_ENV === "production" ? "postgres" : "127.0.0.1", //NOTE this is name of pg docker container
+        database:
+          process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
         password: process.env.PSQL_PASSWORD,
         user: process.env.PSQL_USERNAME,
         port: 5432,
