@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "prod"]
+CMD ["npm", "run", "prod"]
