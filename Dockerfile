@@ -10,8 +10,6 @@ RUN npm install --force --include=dev
 
 COPY . .
 
-RUN npm run build
-
 EXPOSE 8080
 
-CMD [ "npm", "start" ]
+CMD ["npm", "prod"]
