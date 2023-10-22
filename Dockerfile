@@ -8,6 +8,8 @@ COPY package*.json ./
 
 RUN npm install --force --include=dev
 
+RUN npm ci --force --include=dev
+
 COPY . .
 
 # EXPOSE 8080
