@@ -1,10 +1,10 @@
 name: Deploy # Name of the workflow
 
-# On a push with tag
+# On a push to the branch named master
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 
 jobs:
   publish-docker-hub:
