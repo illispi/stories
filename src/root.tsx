@@ -24,10 +24,12 @@ export default function Root() {
     history.scrollRestoration = "manual";
   });
 
-  Sentry.init({
-    dsn: "https://51628238717d44e7aada5a54e8f5decf@glitchtip.delvis.org/1",
-    tracesSampleRate: 0.01,
-  });
+  // Sentry.init({
+  //   dsn: "https://51628238717d44e7aada5a54e8f5decf@glitchtip.delvis.org/1",
+  //   tracesSampleRate: 0.01,
+  // });
+
+  // myUndefinedFunction();
 
   return (
     <Html lang="en">
