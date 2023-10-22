@@ -24,12 +24,27 @@ export default function Root() {
     history.scrollRestoration = "manual";
   });
 
+  Sentry.init({
+    dsn: "https://51628238717d44e7aada5a54e8f5decf@glitchtip.delvis.org/1",
+    tracesSampleRate: 0.01,
+  });
+
   return (
     <Html lang="en">
       <Head>
         <Title>Schizophrenia poll</Title>
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script
+          async
+          src="https://umami.delvis.org/script.js"
+          data-website-id="82edc5aa-205e-4d16-84ef-8326ca3b61f9"
+        ></script>
+
+        <script
+          src="https://browser.sentry-cdn.com/7.60.0/bundle.min.js"
+          crossorigin="anonymous"
+        ></script>
       </Head>
       <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
         <QueryClientProvider client={queryClient}>
