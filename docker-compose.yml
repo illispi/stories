@@ -1,0 +1,44 @@
+
+
+
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file:
+      - pg.env
+    ports:
+      - '5432:5432'
+    networks:
+      - caddy_caddynet
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+
+  stories:
+    build: . # Build with the Dockerfile here
+    command: npm start # Run npm start as the command
+    ports:
+      - 3002:3002
+    # volumes:
+    #   - ./:/app/project 
+    container_name: stories
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - caddy_caddynet
+    platform: linux/arm64
+
+volumes:
+  postgres:
+    driver: local
+
+
+
+
+networks:
+  caddy_caddynet:
+    external: true
