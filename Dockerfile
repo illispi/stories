@@ -1,6 +1,6 @@
 FROM --platform=linux/arm64 node:20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app/project
 
 ENV NODE_ENV=production
 
