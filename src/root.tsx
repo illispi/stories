@@ -29,7 +29,6 @@ export default function Root() {
   //   tracesSampleRate: 0.01,
   // });
 
-  // myUndefinedFunction();
 
   return (
     <Html lang="en">
