@@ -19,7 +19,7 @@ services:
 
   stories:
     build: . # Build with the Dockerfile here
-    command: npm start # Run npm start as the command
+    # command: npm start 
     ports:
       - 3002:3002
     # volumes:
