@@ -29,6 +29,9 @@ export default defineConfig(() => {
       solid({ ssr: true }),
     ],
     server: { https: process.env.NODE_ENV === "production" ? true : false },
+    build: {
+      outDir: "build",
+    },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
   };
