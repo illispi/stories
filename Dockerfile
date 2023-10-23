@@ -11,7 +11,7 @@ COPY . .
 # COPY package.json ./
 # COPY pnpm-lock.yaml ./
 
-RUN pnpm install
+RUN pnpm install --force
 
 RUN pnpm build
 

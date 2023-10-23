@@ -29,7 +29,8 @@ export default defineConfig(() => {
       solid({ ssr: true }),
     ],
     server: {
-      port: 3002,
+      strictPort: true,
+      port: 3000,
       host: true,
       https: process.env.NODE_ENV === "production" ? true : false,
     },
