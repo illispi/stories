@@ -28,7 +28,10 @@ export default defineConfig(() => {
       imagetools(),
       solid({ ssr: true }),
     ],
-    server: { https: process.env.NODE_ENV === "production" ? true : false },
+    server: {
+      host: true,
+      https: process.env.NODE_ENV === "production" ? true : false,
+    },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
   };
