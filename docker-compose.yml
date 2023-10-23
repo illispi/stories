@@ -1,6 +1,3 @@
-
-
-
 version: '3.8'
 
 services:
@@ -16,6 +13,7 @@ services:
       - caddy_caddynet
     volumes: 
       - ./db:/var/lib/postgresql/data
+    container_name: storiesPG
 
   stories:
     build: . # Build with the Dockerfile here
@@ -39,8 +37,6 @@ volumes:
   postgres:
     driver: local
   # node_modules:
-
-
 
 
 networks:
