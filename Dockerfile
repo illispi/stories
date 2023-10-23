@@ -11,11 +11,11 @@ COPY pnpm-lock.yaml ./
 
 RUN pnpm install
 
-COPY . .
+COPY /app/node_modules ./node_modules
 
 RUN pnpm build
 
-COPY . .
+COPY /app/dist .
 
 EXPOSE 3000
 
