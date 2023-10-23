@@ -33,4 +33,4 @@ COPY --from=builder /app/dist ./
 EXPOSE 3002
 
 
-CMD ["node", "server.js"]
+CMD ["pnpm", "start"]

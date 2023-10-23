@@ -1,20 +1,6 @@
 version: '3.8'
 
 services:
-
-  postgres-stories:
-    image: postgres:latest
-    restart: unless-stopped
-    env_file:
-      - pg.env
-    ports:
-      - '5432:5432'
-    networks:
-      - caddy_caddynet
-    volumes: 
-      - ./db:/var/lib/postgresql/data
-    container_name: storiesPG
-
   stories:
     build: . # Build with the Dockerfile here
     # command: node server.js 
@@ -32,6 +18,21 @@ services:
     networks:
       - caddy_caddynet
     platform: linux/arm64
+
+
+  postgres-stories:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file:
+      - pg.env
+    ports:
+      - '5432:5432'
+    networks:
+      - caddy_caddynet
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+    container_name: storiesPG
+
 
 # volumes:
 #   postgres:
