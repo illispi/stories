@@ -1,16 +1,14 @@
 FROM --platform=linux/arm64 node:20-alpine
 
-RUN npm i -g pnpm
-
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY package*.json ./
+COPY package.json ./
 
-RUN pnpm i
+RUN install --force
 
-COPY . .
+COPY . ./app
 
 EXPOSE 3002
 
