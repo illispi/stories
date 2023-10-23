@@ -15,7 +15,7 @@ COPY /app/node_modules ./node_modules
 
 RUN pnpm build
 
-COPY /dist .
+COPY . .
 
 EXPOSE 3000
 
