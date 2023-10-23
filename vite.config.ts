@@ -32,7 +32,7 @@ export default defineConfig(() => {
       strictPort: true,
       port: 3000,
       host: true,
-      https: process.env.NODE_ENV === "production" ? true : false,
+      // https: process.env.NODE_ENV === "production" ? true : false,
     },
     /*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
