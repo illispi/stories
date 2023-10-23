@@ -30,5 +30,7 @@ ENV NODE_ENV=production
 COPY package.json package.json
 COPY --from=builder /app/dist ./
 
+EXPOSE 3002
+
 
 CMD ["node", "server.js"]

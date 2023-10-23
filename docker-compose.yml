@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  postgres:
+  postgres-stories:
     image: postgres:latest
     restart: unless-stopped
     env_file:
@@ -33,9 +33,9 @@ services:
       - caddy_caddynet
     platform: linux/arm64
 
-volumes:
-  postgres:
-    driver: local
+# volumes:
+#   postgres:
+#     driver: local
   # node_modules:
 
 
