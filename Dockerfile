@@ -6,14 +6,16 @@ RUN npm install pnpm -g
 
 ENV NODE_ENV=production
 
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+
+RUN pnpm install
+
 COPY . .
 
-# COPY package.json ./
-# COPY pnpm-lock.yaml ./
-
-RUN pnpm install --force
-
 RUN pnpm build
+
+COPY . .
 
 EXPOSE 3000
 
