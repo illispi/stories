@@ -27,6 +27,7 @@ type SessionTable = {
 };
 
 export const pool = new Pool({
+  //TODO change these two to .env
   host:
     process.env.NODE_ENV === "production" ? "postgres-stories" : "127.0.0.1", //NOTE this is name of pg docker container
   database: process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
@@ -34,6 +35,8 @@ export const pool = new Pool({
   user: process.env.PSQL_USERNAME,
   port: 5432,
 });
+
+console.log("pool", pool)
 
 const dialect = new PostgresDialect({
   pool,
