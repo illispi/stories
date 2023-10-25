@@ -18,9 +18,9 @@ services:
     networks:
       - caddy_caddynet
     platform: linux/arm64
-    depends_on:
-      postgres-stories:
-        condition: service_healthy
+    # depends_on:
+    #   postgres-stories:
+    #     condition: service_healthy
 
 
   postgres-stories:
