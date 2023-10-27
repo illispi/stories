@@ -29,7 +29,9 @@ type SessionTable = {
 export const pool = new Pool({
   //TODO change these two to .env
   host:
-    process.env.NODE_ENV === "production" ? "postgres-stories" : "127.0.0.1", //NOTE this is name of pg docker container
+    process.env.NODE_ENV === "production"
+      ? process.env.PG_SERVICE
+      : "127.0.0.1", 
   database: process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
   password: process.env.PSQL_PASSWORD,
   user: process.env.PSQL_USERNAME,
