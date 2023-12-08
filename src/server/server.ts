@@ -31,14 +31,12 @@ export const pool = new Pool({
   host:
     process.env.NODE_ENV === "production"
       ? process.env.PG_SERVICE
-      : "127.0.0.1", 
+      : "127.0.0.1",
   database: process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
   password: process.env.PSQL_PASSWORD,
   user: process.env.PSQL_USERNAME,
-  port: 5433,
+  port: 5432,
 });
-
-console.log("pool", pool);
 
 const dialect = new PostgresDialect({
   pool,
