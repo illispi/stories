@@ -17,12 +17,18 @@ dependencies:
   '@routes-gen/solid-start':
     specifier: ^0.1.1
     version: 0.1.1(solid-start@0.3.10)
+  '@sentry/browser':
+    specifier: ^7.86.0
+    version: 7.86.0
   '@solid-mediakit/trpc':
     specifier: ^1.0.2
     version: 1.0.2(@tanstack/solid-query@5.12.1)(@trpc/client@10.44.1)(@trpc/server@10.44.1)(solid-js@1.8.7)(solid-start@0.3.10)
   '@solid-primitives/refs':
     specifier: ^1.0.5
     version: 1.0.5(solid-js@1.8.7)
+  '@solid-primitives/script-loader':
+    specifier: ^2.0.2
+    version: 2.0.2(solid-js@1.8.7)
   '@solid-primitives/transition-group':
     specifier: ^1.0.3
     version: 1.0.3(solid-js@1.8.7)
@@ -2361,6 +2367,66 @@ packages:
       solid-start: 0.3.10(@solidjs/meta@0.29.1)(@solidjs/router@0.8.4)(solid-js@1.8.7)(solid-start-node@0.3.10)(vite@4.5.1)
     dev: false
 
+  /@sentry-internal/feedback@7.86.0:
+    resolution: {integrity: sha512-6rl0JYjmAKnhm4/fuFaROh4Ht8oi9f6ZeIcViCuGJcrGICZJJY0s+R77XJI78rNa82PYFrSCcnWXcGji4T8E7g==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@sentry/core': 7.86.0
+      '@sentry/types': 7.86.0
+      '@sentry/utils': 7.86.0
+    dev: false
+
+  /@sentry-internal/tracing@7.86.0:
+    resolution: {integrity: sha512-b4dUsNWlPWRwakGwR7bhOkqiFlqQszH1hhVFwrm/8s3kqEBZ+E4CeIfCvuHBHQ1cM/fx55xpXX/BU163cy+3iQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.86.0
+      '@sentry/types': 7.86.0
+      '@sentry/utils': 7.86.0
+    dev: false
+
+  /@sentry/browser@7.86.0:
+    resolution: {integrity: sha512-nfYWpVOmug+W7KJO7/xhA1JScMZcYHcoOVHLsUFm4znx51U4qZEk+zZDM11Q2Nw6MuDyEYg6bsH1QCwaoC6nLw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry-internal/feedback': 7.86.0
+      '@sentry-internal/tracing': 7.86.0
+      '@sentry/core': 7.86.0
+      '@sentry/replay': 7.86.0
+      '@sentry/types': 7.86.0
+      '@sentry/utils': 7.86.0
+    dev: false
+
+  /@sentry/core@7.86.0:
+    resolution: {integrity: sha512-SbLvqd1bRYzhDS42u7GMnmbDMfth/zRiLElQWbLK/shmuZzTcfQSwNNdF4Yj+VfjOkqPFgGmICHSHVUc9dh01g==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.86.0
+      '@sentry/utils': 7.86.0
+    dev: false
+
+  /@sentry/replay@7.86.0:
+    resolution: {integrity: sha512-YYZO8bfQSx1H87Te/zzyHPLHvExWiYwUfMWW68yGX+PPZIIzxaM81/iCQHkoucxlvuPCOtxCgf7RSMbsnqEa8g==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@sentry-internal/tracing': 7.86.0
+      '@sentry/core': 7.86.0
+      '@sentry/types': 7.86.0
+      '@sentry/utils': 7.86.0
+    dev: false
+
+  /@sentry/types@7.86.0:
+    resolution: {integrity: sha512-pGAt0+bMfWgo0KG2epthfNV4Wae03tURpoxNjGo5Fr4cXxvLTSijSAQ6rmmO4bXBJ7+rErEjX30g30o/eEdP9g==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /@sentry/utils@7.86.0:
+    resolution: {integrity: sha512-6PejFtw9VTFFy5vu0ks+U7Ozkqz+eMt+HN8AZKBKErYzX5/xs0kpkOcSRpu3ETdTYcZf8VAmLVgFgE2BE+3WuQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.86.0
+    dev: false
+
   /@sideway/address@4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
@@ -2548,6 +2614,14 @@ packages:
     dependencies:
       solid-js: 1.8.7
     dev: true
+
+  /@solid-primitives/script-loader@2.0.2(solid-js@1.8.7):
+    resolution: {integrity: sha512-TZmUMpWcSpAzBFG46rIWXEQhiF+K1VvQBWsvtOoT3FRwBT64NDUCvjsXdR+0DWErWqZHXI1SXElnMphAu5xeCg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.8.7
+    dev: false
 
   /@solid-primitives/static-store@0.0.5(solid-js@1.8.7):
     resolution: {integrity: sha512-ssQ+s/wrlFAEE4Zw8GV499yBfvWx7SMm+ZVc11wvao4T5xg9VfXCL9Oa+x4h+vPMvSV/Knv5LrsLiUa+wlJUXQ==}
