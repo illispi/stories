@@ -2,9 +2,9 @@
   "name": "solid-stories",
   "scripts": {
     "dev": "solid-start dev --host",
-    "build": "solid-start build",
+    "build": "solid-start build && tsc ./src/utils/migrate.ts",
     "start": "solid-start start",
-    "prod": "solid-start build && soldi-start start",
+    "prod": "solid-start build && solid-start start",
     "start:dev": "solid-start start --host",
     "lint": "eslint --fix \"**/*.{ts,tsx,js,jsx}\"",
     "migrate:latest": "tsx ./src/utils/migrate.ts",
