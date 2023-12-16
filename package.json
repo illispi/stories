@@ -2,7 +2,7 @@
   "name": "solid-stories",
   "scripts": {
     "dev": "solid-start dev --host",
-    "build": "solid-start build && tsc ./src/utils/migrate.ts --target esnext --moduleResolution nodenext --module nodenext --outDir ../../dist/",
+    "build": "solid-start build && tsc ./src/utils/migrate.ts --target esnext --moduleResolution nodenext --module nodenext && mv ./src/utils/migrate.js ./dist/",
     "start": "solid-start start",
     "prod": "solid-start build && solid-start start",
     "start:dev": "solid-start start --host",
