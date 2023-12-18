@@ -26,8 +26,8 @@ async function migrateToLatest(dir: string[]) {
       pool: new Pool({
         host:
           process.env.NODE_ENV === "production"
-            ? "127.0.0.1" //NOTE this is name on docker but i dont know how to do it yet: "postgres-stories"
-            : "127.0.0.1", //NOTE this is name of pg docker container
+            ? "stories-postgres"
+            : "127.0.0.1",
         database:
           process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
         password: process.env.PSQL_PASSWORD,
