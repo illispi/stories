@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN chmod +x ./entrypoint.sh
+
 
 RUN pnpm build
 
@@ -33,10 +33,16 @@ ENV NODE_ENV=production
 COPY package.json package.json
 COPY --from=builder /app/dist ./
 
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
 
 
 EXPOSE 3000
 
 ENV PORT 3000
+
+# ENTRYPOINT ["./entrypoint.sh"]
+# CMD ["run"]
 
 CMD ["node", "server.js"]
