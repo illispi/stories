@@ -10,7 +10,7 @@ import { route } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
 import { A, Navigate } from "solid-start";
-import { Input, maxLength, minLength, nullable, object, string } from "valibot";
+import { Input, maxLength, minLength, nullable, object, optional, string } from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -28,66 +28,66 @@ const Box: ParentComponent = (props) => {
 };
 
 const PersonalFormSchema = object({
-  describe_hospital: nullable(
+  describe_hospital: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  what_kind_of_care_after: nullable(
+  ), null),
+  what_kind_of_care_after: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  personality_before: nullable(
+  ), null),
+  personality_before: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  personality_after: nullable(
+  ), null),
+  personality_after: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  other_help: nullable(
+  ), null),
+  other_help: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  goals_after: nullable(
+  ), null),
+  goals_after: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  responded_to_telling: nullable(
+  ) ,null),
+  responded_to_telling: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  life_satisfaction_description: nullable(
+  ), null),
+  life_satisfaction_description: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  what_others_should_know: nullable(
+  ), null),
+  what_others_should_know: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
-  not_have_schizophrenia_description: nullable(
+  ), null),
+  not_have_schizophrenia_description: optional(nullable(
     string([
       maxLength(600, "Your text is too long! (Max. 600 characters)"),
       minLength(4, 'Your text is too short, even "okay" is enough'),
     ])
-  ),
+  ), null),
 });
 
 type PersonalForm = Input<typeof PersonalFormSchema>;
