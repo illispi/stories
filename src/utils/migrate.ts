@@ -26,7 +26,7 @@ async function migrateToLatest(dir: string[]) {
       pool: new Pool({
         host:
           process.env.NODE_ENV === "production"
-            ? "stories-postgres"
+            ? "stories-postgres" //TODO switch to .env and for database below
             : "127.0.0.1",
         database:
           process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
