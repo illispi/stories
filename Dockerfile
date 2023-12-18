@@ -36,6 +36,7 @@ COPY --from=builder /app/dist ./
 COPY entrypoint.sh entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
+COPY --from=deps /app/node_modules ./node_modules
 
 
 EXPOSE 3000
