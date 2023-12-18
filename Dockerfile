@@ -42,7 +42,7 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-# ENTRYPOINT ["./entrypoint.sh"]
-# CMD ["run"]
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["run"]
 
-CMD ["node", "server.js"]
+# CMD ["node", "server.js"]
