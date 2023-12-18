@@ -20,6 +20,8 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+COPY entrypoint.sh /usr/local/bin
 RUN chmod +x ./entrypoint.sh
 
 RUN pnpm build
