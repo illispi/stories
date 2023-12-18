@@ -21,7 +21,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-COPY entrypoint.sh /usr/local/bin
 RUN chmod +x ./entrypoint.sh
 
 RUN pnpm build
@@ -40,5 +39,5 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["run"]
