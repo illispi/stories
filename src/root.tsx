@@ -27,13 +27,13 @@ export default function Root() {
   });
 
   Sentry.init({
-    dsn: "https://51628238717d44e7aada5a54e8f5decf@glitchtip.delvis.org/1",
+    dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
     tracesSampleRate: 0.01,
   });
 
   createScriptLoader({
     src: "https://umami.delvis.org/script.js",
-    "data-website-id": "82edc5aa-205e-4d16-84ef-8326ca3b61f9",
+    "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
     async: true,
   });
 
