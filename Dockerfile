@@ -4,8 +4,7 @@ RUN npm i -g pnpm
 
 FROM base AS deps
 WORKDIR /app
-COPY entrypoint.sh ./
-RUN chmod +x ./entrypoint.sh
+
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
@@ -32,6 +31,8 @@ ENV NODE_ENV=production
 COPY package.json package.json
 COPY --from=builder /app/dist ./
 
+COPY --from=deps entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
 
 
 EXPOSE 3000
