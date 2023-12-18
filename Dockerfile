@@ -30,12 +30,12 @@ ENV NODE_ENV=production
 COPY package.json package.json
 COPY --from=builder /app/dist ./
 
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
 
 
 EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["/entrypoint.sh"]
+CMD ["./entrypoint.sh"]
