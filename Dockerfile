@@ -38,7 +38,7 @@ RUN chmod +x ./entrypoint.sh
 
 COPY --from=deps /app/node_modules ./node_modules
 
-COPY /migrations ./migrations
+COPY /src/migrations ./migrations
 
 
 EXPOSE 3000
