@@ -31,8 +31,9 @@ ENV NODE_ENV=production
 COPY package.json package.json
 COPY --from=builder /app/dist ./
 
-COPY --from=deps entrypoint.sh ./
+COPY entrypoint.sh ./
 RUN chmod +x ./entrypoint.sh
+RUN dir -s
 
 
 EXPOSE 3000
