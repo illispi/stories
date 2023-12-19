@@ -1,5 +1,10 @@
 // @refresh reload
-import { Suspense, createEffect, createRenderEffect, onCleanup } from "solid-js";
+import {
+  Suspense,
+  createEffect,
+  createRenderEffect,
+  onCleanup,
+} from "solid-js";
 import {
   A,
   Body,
@@ -20,21 +25,32 @@ import { queryClient, trpc } from "./utils/trpc";
 import { QueryClientProvider } from "@tanstack/solid-query";
 import { createScriptLoader } from "@solid-primitives/script-loader";
 import { isServer } from "solid-js/web";
+import * as Sentry from "@sentry/browser";
+import { DEV } from "solid-js";
 
 export default function Root() {
   createEffect(() => {
     history.scrollRestoration = "manual";
   });
 
-  if (typeof window !== "undefined") {
-    window.sentryOnLoad = function () {
-      Sentry.init({
-        dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
-        tracesSampleRate: 1.0,
-      });
+  if (!DEV) {
+    Sentry.init({
+      dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
+      integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
-      console.log(Sentry, "sentry");
-    };
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      tracesSampleRate: 1.0,
+
+      // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+      // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+
+      // Capture Replay for 10% of all sessions,
+      // plus 100% of sessions with an error
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+    });
   }
 
   createScriptLoader({
@@ -47,9 +63,10 @@ export default function Root() {
   //   "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
   //   async: true,
   // });
+  let script;
 
-  const script = document.createElement("script");
   if (!isServer) {
+    script = document.createElement("script");
     script.src = "https://umami.delvis.org/script.js";
     script.async = true;
     script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
@@ -74,6 +91,7 @@ export default function Root() {
           <trpc.Provider queryClient={queryClient}>
             <ErrorBoundary
               fallback={(e, reset) => {
+                Sentry.captureException(e);
                 return (
                   <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
                     <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
