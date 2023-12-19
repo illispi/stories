@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 
 WORKDIR /app
 
-RUN npm ci
+RUN npm install
 
 RUN npm run build
 
