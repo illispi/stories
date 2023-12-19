@@ -18,7 +18,6 @@ import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
 import { QueryClientProvider } from "@tanstack/solid-query";
-import * as Sentry from "@sentry/browser";
 import { createScriptLoader } from "@solid-primitives/script-loader";
 
 export default function Root() {
