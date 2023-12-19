@@ -54,11 +54,27 @@ export default function Root() {
     });
   }
 
-  createScriptLoader({
-    src: "https://umami.delvis.org/script.js",
-    async: true,
-    "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
-  });
+  // createScriptLoader({
+  //   src: "https://umami.delvis.org/script.js",
+  //   async: true,
+  //   "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
+  // });
+
+  if (!isServer) {
+    const script = document.createElement("script");
+    script.src = "https://umami.delvis.org/script.js";
+    script.async = true;
+    script.setAttribute(
+      "data-website-id",
+      "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83"
+    );
+    createRenderEffect(() => {
+      document.head.appendChild(script);
+    });
+    onCleanup(
+      () => document.head.contains(script) && document.head.removeChild(script)
+    );
+  }
 
   return (
     <Html lang="en">
