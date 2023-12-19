@@ -34,6 +34,8 @@ export default function Root() {
   });
 
   if (!DEV) {
+
+    //NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
     Sentry.init({
       dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
       integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
@@ -41,7 +43,7 @@ export default function Root() {
       // Set tracesSampleRate to 1.0 to capture 100%
       // of transactions for performance monitoring.
       // We recommend adjusting this value in production
-      tracesSampleRate: 1.0,
+      tracesSampleRate: 0.1,
 
       // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
       // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
@@ -67,8 +69,9 @@ export default function Root() {
   if (!isServer) {
     const script = document.createElement("script");
     script.src = "https://umami.delvis.org/script.js";
-    // script.async = true;
-    script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
+    script.async = true;
+    // script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
+    script.setAttribute("data-website-id", "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83")
     createRenderEffect(() => {
       document.head.appendChild(script);
     });
