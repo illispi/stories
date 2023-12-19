@@ -1,3 +1,4 @@
 #!/bin/sh
 
-npm run migrate:latest && node /dist/server.js
+ls
+npm run migrate:latest && node ./dist/server.js
