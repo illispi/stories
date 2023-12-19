@@ -67,7 +67,7 @@ export default function Root() {
   if (!isServer) {
     const script = document.createElement("script");
     script.src = "https://umami.delvis.org/script.js";
-    script.async = true;
+    // script.async = true;
     script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
     createRenderEffect(() => {
       document.head.appendChild(script);

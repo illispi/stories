@@ -49,6 +49,7 @@
     "@modular-forms/solid": "^0.20.0",
     "@routes-gen/solid-start": "^0.1.1",
     "@sentry/browser": "^7.86.0",
+    "@sentry/vite-plugin": "^2.10.2",
     "@solid-mediakit/trpc": "^1.0.2",
     "@solid-primitives/refs": "^1.0.5",
     "@solid-primitives/script-loader": "^2.0.2",

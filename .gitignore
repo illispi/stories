@@ -63,3 +63,5 @@ yarn-error.log*
 
 # turbo
 .turbo
+# Sentry Config File
+.env.sentry-build-plugin
