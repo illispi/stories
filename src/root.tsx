@@ -1,5 +1,5 @@
 // @refresh reload
-import { Suspense, createEffect } from "solid-js";
+import { Suspense, createEffect, createRenderEffect, onCleanup } from "solid-js";
 import {
   A,
   Body,
@@ -17,7 +17,7 @@ import "./root.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
-import { QueryClientProvider } from "@tanstack/solid-query";
+import { QueryClientProvider, isServer } from "@tanstack/solid-query";
 import { createScriptLoader } from "@solid-primitives/script-loader";
 
 export default function Root() {
@@ -41,11 +41,25 @@ export default function Root() {
     crossorigin: "anonymous",
   });
 
-  createScriptLoader({
-    src: "https://umami.delvis.org/script.js",
-    "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
-    async: true,
+  // createScriptLoader({
+  //   src: "https://umami.delvis.org/script.js",
+  //   "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
+  //   async: true,
+  // });
+
+  const script = document.createElement("script");
+  if (!isServer) {
+    script.src = "https://umami.delvis.org/script.js";
+    script.async = true;
+    script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
+  }
+
+  createRenderEffect(() => {
+    document.head.appendChild(script);
   });
+  onCleanup(
+    () => document.head.contains(script) && document.head.removeChild(script)
+  );
 
   return (
     <Html lang="en">
@@ -72,7 +86,14 @@ export default function Root() {
             >
               <Suspense>
                 <NavBar />
-                <button onClick={methodDoesNotExist}>Break the world</button>;
+                <button
+                  onClick={() => {
+                    throw new Error("Sentry Frontend Error");
+                  }}
+                >
+                  Break the world
+                </button>
+                ;
                 <TransitionSlideGlobal>
                   <Routes>
                     <FileRoutes />
