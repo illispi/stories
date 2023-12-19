@@ -55,30 +55,14 @@ export default function Root() {
     });
   }
 
-  // createScriptLoader({
-  //   src: "https://browser.sentry-cdn.com/7.88.0/bundle.min.js",
-  //   crossorigin: "anonymous",
-  // });
 
-  // createScriptLoader({
-  //   src: "https://umami.delvis.org/script.js",
-  //   "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
-  //   async: true,
-  // });
+  createScriptLoader({
+    src: "https://umami.delvis.org/script.js",
+    "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
+    async: true,
+  });
 
-  if (!isServer) {
-    const script = document.createElement("script");
-    script.src = "https://umami.delvis.org/script.js";
-    script.async = true;
-    // script["data-website-id"] = "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83";
-    script.setAttribute("data-website-id", "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83")
-    createRenderEffect(() => {
-      document.head.appendChild(script);
-    });
-    onCleanup(
-      () => document.head.contains(script) && document.head.removeChild(script)
-    );
-  }
+
 
   return (
     <Html lang="en">
@@ -106,14 +90,6 @@ export default function Root() {
             >
               <Suspense>
                 <NavBar />
-                <button
-                  onClick={() => {
-                    throw new Error("Sentry Frontend Error");
-                  }}
-                >
-                  Break the world
-                </button>
-                ;
                 <TransitionSlideGlobal>
                   <Routes>
                     <FileRoutes />
