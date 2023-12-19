@@ -34,8 +34,7 @@ export default function Root() {
   createScriptLoader({
     src: "https://umami.delvis.org/script.js",
     "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcd2ebd83",
-    async: true,    
-
+    async: true,
   });
 
   return (
@@ -63,7 +62,7 @@ export default function Root() {
             >
               <Suspense>
                 <NavBar />
-                <button onClick={methodDoesNotExist}>Break the world</button>;
+                {/* <button onClick={methodDoesNotExist}>Break the world</button>; */}
                 <TransitionSlideGlobal>
                   <Routes>
                     <FileRoutes />
