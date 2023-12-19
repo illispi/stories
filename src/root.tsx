@@ -26,13 +26,17 @@ export default function Root() {
   });
 
   createScriptLoader({
-    src: "https://browser.sentry-cdn.com/7.60.0/bundle.min.js",
+    src: "https://browser.sentry-cdn.com/7.88.0/bundle.min.js",
     crossorigin: "anonymous",
     onLoad() {
-      Sentry.init({
-        dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
-        tracesSampleRate: 1.0,
-      });
+      window.sentryOnLoad = function () {
+        Sentry.init({
+          dsn: "https://6c35044a4e254aac8526a4ebe0391010@glitchtip.delvis.org/1",
+          tracesSampleRate: 1.0,
+        });
+
+        console.log(Sentry, "sentry");
+      };
     },
   });
 
