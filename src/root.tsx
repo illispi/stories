@@ -17,8 +17,9 @@ import "./root.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
-import { QueryClientProvider, isServer } from "@tanstack/solid-query";
+import { QueryClientProvider } from "@tanstack/solid-query";
 import { createScriptLoader } from "@solid-primitives/script-loader";
+import { isServer } from "solid-js/web";
 
 export default function Root() {
   createEffect(() => {
