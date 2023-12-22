@@ -54,7 +54,6 @@ export default function Root() {
     });
   }
 
-
   if (!isServer) {
     const script = document.createElement("script");
     script.src = "https://umami.delvis.org/script.js";
@@ -97,14 +96,6 @@ export default function Root() {
             >
               <Suspense>
                 <NavBar />
-                <button
-                  type="button"
-                  onClick={() => {
-                    throw new Error("Sentry Frontend Error");
-                  }}
-                >
-                  Throw error
-                </button>
                 <TransitionSlideGlobal>
                   <Routes>
                     <FileRoutes />
