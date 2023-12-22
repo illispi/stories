@@ -235,6 +235,7 @@ const Login = () => {
                       {...props}
                       required
                       placeholder="username"
+                      autocomplete="off"
                     />
                     {field.error && <div>{field.error}</div>}
                   </>
@@ -252,6 +253,7 @@ const Login = () => {
                       required
                       placeholder="password"
                       type="password"
+                      autocomplete="off"
                     />
                     {field.error && <div>{field.error}</div>}
                   </>
