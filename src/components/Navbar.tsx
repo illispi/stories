@@ -1,21 +1,28 @@
-import { route } from "routes-gen";
+import { route as routeGen } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
 import { Show, Suspense, createEffect, createSignal } from "solid-js";
 import { A, ErrorBoundary, Title, useSearchParams } from "solid-start";
-import { createServerData$ } from "solid-start/server";
 import Auth from "./Auth";
 import { auth } from "~/auth/lucia";
+import { cache, createAsync } from "@solidjs/router";
+import { getRequestEvent } from "solid-js/web";
 
-export const getSession = () => {
-  return createServerData$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (session) {
-      return session.user.username;
-    } else {
-      return null;
-    }
-  });
+const getSession = cache(async () => {
+  "use server";
+  const request = getRequestEvent()?.request;
+  if (!request) {
+    return null;
+  }
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  if (!session) {
+    return null;
+  }
+  return session.user.username;
+}, "session");
+
+export const route = {
+  load: () => getSession(),
 };
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
@@ -36,7 +43,7 @@ const Hamburger: Component<{
   setMenuOpen: Setter<boolean>;
 }> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sessionData = getSession();
+  const sessionData = createAsync(getSession);
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {
@@ -126,14 +133,14 @@ const Hamburger: Component<{
             }}
           >
             <Show when={sessionData()}>
-              <MenuItem route={route("/user/data")} content="Your data" />
+              <MenuItem route={routeGen("/user/data")} content="Your data" />
             </Show>
           </ErrorBoundary>
         </Suspense>
         <div class="w-full border-b-2 border-black" />
-        <MenuItem route={route("/pollResults/")} content="results" />
-        <MenuItem route={route("/questionares/")} content="poll" />
-        <MenuItem route={route("/articles/")} content="Articles" />
+        <MenuItem route={routeGen("/pollResults/")} content="results" />
+        <MenuItem route={routeGen("/questionares/")} content="poll" />
+        <MenuItem route={routeGen("/articles/")} content="Articles" />
         <button
           class="p-16 transition-all hover:scale-125"
           onClick={() => {
@@ -172,7 +179,7 @@ const NavBar: Component = () => {
         <A
           class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
           noScroll={true}
-          href={route("/")}
+          href={routeGen("/")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
