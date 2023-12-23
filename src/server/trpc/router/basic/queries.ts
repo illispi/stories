@@ -1,3 +1,4 @@
+"use server";
 import { z } from "zod";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";

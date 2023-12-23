@@ -51,7 +51,7 @@ export const appRouter = router({
   getArticles,
   editPersonal,
   editTheir,
-  fakeForDevBulk
+  fakeForDevBulk,
 });
 
 export type IAppRouter = typeof appRouter;

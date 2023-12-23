@@ -1,6 +1,7 @@
 // src/auth/lucia.ts
+// "use server";
 import { lucia } from "lucia";
-import { web } from "lucia/middleware";
+import { h3, node } from "lucia/middleware";
 import { pg } from "@lucia-auth/adapter-postgresql";
 import { pool } from "~/server/server";
 
@@ -15,14 +16,14 @@ export const auth = lucia({
     session: "user_session",
   }),
   env: process.env.NODE_ENV === "production" ? "PROD" : "DEV",
-  middleware: web(),
+  middleware: node(),
   sessionCookie: {
     expires: false,
   },
   getUserAttributes: (databaseUser) => {
     return {
       role: databaseUser.role,
-      username: databaseUser.username
+      username: databaseUser.username,
     };
   },
 });
