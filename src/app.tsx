@@ -28,7 +28,7 @@ export default function App() {
   });
 
   if (!DEV) {
-    //NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
+    //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
     Sentry.init({
       dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
       integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
