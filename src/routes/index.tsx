@@ -1,10 +1,10 @@
 import { route } from "routes-gen";
 import type { Component } from "solid-js";
-import { A } from "solid-start";
 import InfoBox from "~/components/InfoBox";
 import img1 from "../pictures/first.png?w=400;500;700;900;1200&format=webp&as=srcset";
 import img2 from "../pictures/second.png?w=400;500;700;900;1200&format=webp&as=srcset";
 import img3 from "../pictures/third.png?w=400;500;700;900;1200&format=webp&as=srcset";
+import { A } from "@solidjs/router";
 
 const Home: Component = () => {
   return (

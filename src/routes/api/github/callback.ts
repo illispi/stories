@@ -1,8 +1,9 @@
 import { auth, githubAuth } from "~/auth/lucia";
 import { OAuthRequestError } from "@lucia-auth/oauth";
-import { parseCookie, redirect } from "solid-start";
+import { redirect } from "@solidjs/router";
+import { parseCookie } from "lucia/dist/utils/cookie";
+import { type APIEvent } from "@solidjs/start/server";
 
-import type { APIEvent } from "solid-start";
 
 export const GET = async (event: APIEvent) => {
   const authRequest = auth.handleRequest(event.request);

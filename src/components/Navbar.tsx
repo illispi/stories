@@ -1,7 +1,6 @@
 import { route as routeGen } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
 import { Show, Suspense, createEffect, createSignal } from "solid-js";
-import { A, ErrorBoundary, Title, useSearchParams } from "solid-start";
 import Auth from "./Auth";
 import { auth } from "~/auth/lucia";
 import { cache, createAsync } from "@solidjs/router";

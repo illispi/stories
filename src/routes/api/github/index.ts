@@ -1,9 +1,9 @@
 // src/routes/login/github/index.ts
+import { redirect } from "@solidjs/router";
+import { serializeCookie } from "lucia/dist/utils/cookie";
 import { auth, githubAuth } from "~/auth/lucia";
-import { redirect } from "solid-start";
-import { serializeCookie } from "solid-start";
+import { type APIEvent } from "@solidjs/start/server";
 
-import type { APIEvent } from "solid-start";
 
 export const GET = async (event: APIEvent) => {
   const authRequest = auth.handleRequest(event.request);

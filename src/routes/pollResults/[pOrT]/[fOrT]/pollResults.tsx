@@ -1,3 +1,4 @@
+import { A, useParams } from "@solidjs/router";
 import { route } from "routes-gen";
 import type { Component, ParentComponent } from "solid-js";
 import {
@@ -8,7 +9,6 @@ import {
   createSignal,
   onCleanup,
 } from "solid-js";
-import { A, useParams } from "solid-start";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
 import { allStatsPersonalArr } from "~/data/stats/allStatsArr";

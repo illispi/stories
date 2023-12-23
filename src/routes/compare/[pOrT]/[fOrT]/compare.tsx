@@ -1,7 +1,7 @@
+import { useParams } from "@solidjs/router";
 import { route } from "routes-gen";
 import type { Component, Setter } from "solid-js";
 import { For, Show, createEffect, createSignal, onCleanup } from "solid-js";
-import { useParams, A as Alink } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { CompSelector } from "~/components/CompSelector";
 import CustomButton from "~/components/CustomButton";
@@ -13,6 +13,7 @@ import { byDiagnosisTheir } from "~/data/stats/compareTheir/byDiagnosisTheir";
 import { byGenderTheir } from "~/data/stats/compareTheir/byGenderTheir";
 import type { Bar, Doughnut, Stat, Text, YesOrNo } from "~/types/types";
 import { trpc } from "~/utils/trpc";
+import { A as ALink } from "@solidjs/router";
 
 type CompareOptions =
   | "all"
@@ -300,7 +301,7 @@ const CompareStats = () => {
             <p class="text-center text-lg">
               Poll needs to be done by at least 5 people on both comparisons
             </p>
-            <Alink
+            <ALink
               class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href={route("/questionares/:personalQuestions", {
                 personalQuestions:
@@ -310,8 +311,8 @@ const CompareStats = () => {
               })}
             >
               Do the poll now
-            </Alink>
-            <Alink
+            </ALink>
+            <ALink
               class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
               href={route("/compare/:pOrT/:fOrT/compare", {
                 fOrT: "fake",
@@ -319,7 +320,7 @@ const CompareStats = () => {
               })}
             >
               View results with fake data
-            </Alink>
+            </ALink>
           </div>
         </div>
       }

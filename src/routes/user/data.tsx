@@ -6,11 +6,19 @@ import {
   setValue,
   valiForm,
 } from "@modular-forms/solid";
-import { route } from "routes-gen";
+import { A, Navigate } from "@solidjs/router";
+import { route as routeGen } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
-import { A, Navigate } from "solid-start";
-import { Input, maxLength, minLength, nullable, object, optional, string } from "valibot";
+import {
+  Input,
+  maxLength,
+  minLength,
+  nullable,
+  object,
+  optional,
+  string,
+} from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -28,71 +36,101 @@ const Box: ParentComponent = (props) => {
 };
 
 const PersonalFormSchema = object({
-  describe_hospital: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  what_kind_of_care_after: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  personality_before: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  personality_after: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  other_help: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  goals_after: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ) ,null),
-  responded_to_telling: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  life_satisfaction_description: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  what_others_should_know: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
-  not_have_schizophrenia_description: optional(nullable(
-    string([
-      maxLength(600, "Your text is too long! (Max. 600 characters)"),
-      minLength(4, 'Your text is too short, even "okay" is enough'),
-    ])
-  ), null),
+  describe_hospital: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  what_kind_of_care_after: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  personality_before: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  personality_after: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  other_help: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  goals_after: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  responded_to_telling: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  life_satisfaction_description: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  what_others_should_know: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
+  not_have_schizophrenia_description: optional(
+    nullable(
+      string([
+        maxLength(600, "Your text is too long! (Max. 600 characters)"),
+        minLength(4, 'Your text is too short, even "okay" is enough'),
+      ])
+    ),
+    null
+  ),
 });
 
 type PersonalForm = Input<typeof PersonalFormSchema>;
 
-export const { routeData, Page } = ProtectedUser((session) => {
+export const { route, Page } = ProtectedUser((session) => {
   //TODO test roles
   console.log(session);
   const headers = {
@@ -233,8 +271,8 @@ export const { routeData, Page } = ProtectedUser((session) => {
                   personal.data?.accepted
                     ? "Accepted"
                     : personal.data?.accepted === null
-                    ? "Pending"
-                    : "Declined"
+                      ? "Pending"
+                      : "Declined"
                 }`}</h4>
                 <Show when={!personal.data?.accepted}>
                   {personal.data?.decline_reason}
@@ -324,7 +362,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </p>
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                href={route("/questionares/")}
+                href={routeGen("/questionares/")}
                 noScroll={false}
               >
                 Do other poll
@@ -413,7 +451,7 @@ export const { routeData, Page } = ProtectedUser((session) => {
               </p>
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                href={route("/articles/")}
+                href={routeGen("/articles/")}
                 noScroll={false}
               >
                 Submit articles

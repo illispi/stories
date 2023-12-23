@@ -1,8 +1,8 @@
 import type { SubmitHandler } from "@modular-forms/solid";
 import { createForm, valiForm } from "@modular-forms/solid";
+import { useSearchParams } from "@solidjs/router";
 import type { Component, Setter } from "solid-js";
 import { For, Show, Suspense, createSignal } from "solid-js";
-import { useSearchParams } from "solid-start";
 import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
 import CustomButton from "~/components/CustomButton";
