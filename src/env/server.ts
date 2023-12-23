@@ -1,3 +1,4 @@
+"use server";
 import { serverScheme } from "./schema";
 import type { ZodFormattedError } from "zod";
 

@@ -27,26 +27,26 @@ export default function App() {
     history.scrollRestoration = "manual";
   });
 
-  if (!DEV) {
-    //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
-    Sentry.init({
-      dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
-      integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+  // if (!DEV) {
+  //   //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
+  //   Sentry.init({
+  //     dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
+  //     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
-      // Set tracesSampleRate to 1.0 to capture 100%
-      // of transactions for performance monitoring.
-      // We recommend adjusting this value in production
-      tracesSampleRate: 0.1,
+  //     // Set tracesSampleRate to 1.0 to capture 100%
+  //     // of transactions for performance monitoring.
+  //     // We recommend adjusting this value in production
+  //     tracesSampleRate: 0.1,
 
-      // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-      // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+  //     // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+  //     // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
 
-      // Capture Replay for 10% of all sessions,
-      // plus 100% of sessions with an error
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1.0,
-    });
-  }
+  //     // Capture Replay for 10% of all sessions,
+  //     // plus 100% of sessions with an error
+  //     replaysSessionSampleRate: 0.1,
+  //     replaysOnErrorSampleRate: 1.0,
+  //   });
+  // }
 
   if (!isServer) {
     const script = document.createElement("script");
@@ -65,15 +65,15 @@ export default function App() {
   }
 
   return (
-    <Router
-      root={(props) => (
-        <MetaProvider>
-          <Title>Schizophrenia poll</Title>
-        </MetaProvider>
-      )}
-    >
-      <QueryClientProvider client={queryClient}>
-        <trpc.Provider queryClient={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <trpc.Provider queryClient={queryClient}>
+        <Router
+          root={(props) => (
+            <MetaProvider>
+              <Title>Schizophrenia poll</Title>
+            </MetaProvider>
+          )}
+        >
           <ErrorBoundary
             fallback={(e, reset) => {
               Sentry.captureException(e);
@@ -95,8 +95,8 @@ export default function App() {
               </TransitionSlideGlobal>
             </Suspense>
           </ErrorBoundary>
-        </trpc.Provider>
-      </QueryClientProvider>
-    </Router>
+        </Router>
+      </trpc.Provider>
+    </QueryClientProvider>
   );
 }
