@@ -1,10 +1,8 @@
 import {
-  Field,
-  Form,
   SubmitHandler,
   createForm,
   getValue,
-  valiForm,
+  valiForm
 } from "@modular-forms/solid";
 import {
   action,
@@ -16,7 +14,7 @@ import {
   useSubmission,
 } from "@solidjs/router";
 import { LuciaError } from "lucia";
-import { ErrorBoundary, Show, createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
 
 import { Input, maxLength, minLength, object, parse, string } from "valibot";

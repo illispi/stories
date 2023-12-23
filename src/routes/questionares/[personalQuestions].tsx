@@ -6,34 +6,41 @@ import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
-import { A, useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { ModalOptions } from "~/components/ModalOptions";
 import TransitionFade from "~/components/TransitionFade";
-import { route } from "routes-gen";
+import { route as routeGen } from "routes-gen";
 import { auth } from "~/auth/lucia";
-import { createServerData$ } from "solid-start/server";
 import { db } from "~/server/server";
+import { A, cache, createAsync, useParams } from "@solidjs/router";
+import { getRequestEvent } from "solid-js/web";
 
-export const getSessionAndData = () => {
-  return createServerData$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (session) {
-      const unSafe = await db
-        .selectFrom("Personal_questions")
-        .selectAll()
-        .where("user", "=", session.user.userId)
-        .executeTakeFirst();
+const getSessionAndData = cache(async () => {
+  "use server";
+  const request = getRequestEvent()?.request;
+  if (!request) {
+    return null;
+  }
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  if (session) {
+    const unSafe = await db
+      .selectFrom("Personal_questions")
+      .selectAll()
+      .where("user", "=", session.user.userId)
+      .executeTakeFirst();
 
-      if (!unSafe) {
-        return { logStatus: true, personalData: false };
-      }
-      return { logStatus: true, personalData: true };
-    } else {
-      return { logStatus: false, personalData: false };
+    if (!unSafe) {
+      return { logStatus: true, personalData: false };
     }
-  });
+    return { logStatus: true, personalData: true };
+  } else {
+    return { logStatus: false, personalData: false };
+  }
+}, "sessionAndData");
+
+export const route = {
+  load: () => getSessionAndData(),
 };
 
 const Counter: ParentComponent<{
@@ -153,7 +160,7 @@ const Questions: ParentComponent<{
 };
 
 const PersonalQuestions: ParentComponent = () => {
-  const session = getSessionAndData();
+  const session = createAsync(getSessionAndData);
 
   const params = useParams<{
     personalQuestions: "personalQuestions" | "theirQuestions";
@@ -292,7 +299,7 @@ const PersonalQuestions: ParentComponent = () => {
                     You have already submitted personal poll!
                   </h2>
                   <A
-                    href={route("/user/data")}
+                    href={routeGen("/user/data")}
                     class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                   >
                     See status of it
@@ -312,7 +319,7 @@ const PersonalQuestions: ParentComponent = () => {
                           Submitted successfully for apporval!
                         </h2>
                         <A
-                          href={route("/user/data")}
+                          href={routeGen("/user/data")}
                           class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                         >
                           See status
