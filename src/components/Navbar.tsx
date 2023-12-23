@@ -1,10 +1,11 @@
 import { route as routeGen } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
-import { Show, Suspense, createEffect, createSignal } from "solid-js";
+import { ErrorBoundary, Show, Suspense, createEffect, createSignal } from "solid-js";
 import Auth from "./Auth";
 import { auth } from "~/auth/lucia";
-import { cache, createAsync } from "@solidjs/router";
+import { A, cache, createAsync, useSearchParams } from "@solidjs/router";
 import { getRequestEvent } from "solid-js/web";
+import { Title } from "@solidjs/meta";
 
 const getSession = cache(async () => {
   "use server";
