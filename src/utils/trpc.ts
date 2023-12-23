@@ -4,7 +4,8 @@ import type { IAppRouter } from "~/server/trpc/router/_app";
 
 import { httpBatchLink } from "@trpc/client";
 import { isServer } from "solid-js/web";
-import { createTRPCSolidStart } from "@solid-mediakit/trpc";
+import { createTRPCSolidStart } from "@solid-mediakit/trpc/dist/createTRPCSolid";
+
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return "";
