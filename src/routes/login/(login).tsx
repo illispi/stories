@@ -6,29 +6,42 @@ import {
   getValue,
   valiForm,
 } from "@modular-forms/solid";
+import {
+  action,
+  cache,
+  createAsync,
+  useAction,
+  useNavigate,
+  useSearchParams,
+  useSubmission,
+} from "@solidjs/router";
 import { LuciaError } from "lucia";
 import { ErrorBoundary, Show, createEffect, createSignal } from "solid-js";
-import { useNavigate, useRouteData, useSearchParams } from "solid-start";
-import {
-  ServerError,
-  createServerAction$,
-  createServerData$,
-  redirect,
-} from "solid-start/server";
+import { getRequestEvent } from "solid-js/web";
+
 import { Input, maxLength, minLength, object, parse, string } from "valibot";
 import { auth } from "~/auth/lucia";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
 
-export const routeData = () => {
-  return createServerData$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (session) {
-      return "redir";
-    } 
-  });
+const getSession = cache(async () => {
+  "use server";
+  const request = getRequestEvent()?.request;
+  if (!request) {
+    //BUG beta 1 didint return null
+    return null;
+  }
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  if (!session) {
+    return "redir";
+  }
+  return session.user.username;
+}, "session");
+
+export const route = {
+  load: () => getSession(),
 };
 
 const userSchema = object({
@@ -46,8 +59,9 @@ type UserForm = Input<typeof userSchema>;
 type Action = { action: string };
 
 const Login = () => {
-  const [submission, submit] = createServerAction$(
-    async ({ password, username, action }: UserForm & Action, { request }) => {
+  const submitAction = action(
+    async ({ password, username, action }: UserForm & Action) => {
+      "use server";
       try {
         if (action === "cancel") {
           return { statusAcc: "cancel" };
@@ -106,12 +120,13 @@ const Login = () => {
           });
         }
       } catch (e) {
+        //TODO Error used to be ServerError
         if (
           e instanceof LuciaError &&
           // (e.message === "AUTH_INVALID_KEY_ID" ||
           e.message === "AUTH_INVALID_PASSWORD"
         ) {
-          throw new ServerError("Incorrect password");
+          throw new Error("Incorrect password");
         }
         if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
           return { username, statusAcc: "missing" };
@@ -119,16 +134,14 @@ const Login = () => {
         if (
           e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from kysely when using same name
         ) {
-          throw new ServerError("Username already taken");
+          throw new Error("Username already taken");
         }
         if (
           e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from valibot when failing validation
         ) {
-          throw new ServerError("Validation failed");
+          throw new Error("Validation failed");
         }
-        throw new ServerError("An unknown error occurred", {
-          status: 500,
-        });
+        throw new Error("An unknown error occurred");
       }
     }
   );
@@ -136,7 +149,7 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const session = useRouteData<typeof routeData>();
+  const session = createAsync(getSession);
 
   createEffect(() => {
     if (session()) {
@@ -151,6 +164,8 @@ const Login = () => {
     //   if(submission.result.)
   });
 
+  const submit = useAction(submitAction)
+
   const [userForm, { Form, Field }] = createForm<UserForm>({
     validate: valiForm(userSchema),
   });
@@ -161,8 +176,9 @@ const Login = () => {
   const [showAccountMissing, setShowAccountMissing] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
 
+  const submission = useSubmission(submitAction);
   createEffect(() => {
-    submission.result?.statusAcc === "missing"
+    submission.result.statusAcc === "missing"
       ? setShowAccountMissing(true)
       : null;
 
