@@ -19,19 +19,26 @@ import {
 } from "valibot";
 import { trpc } from "~/utils/trpc";
 import LoginA from "./LoginA";
-import { createServerData$ } from "solid-start/server";
 import { auth } from "~/auth/lucia";
+import { cache, createAsync } from "@solidjs/router";
+import { getRequestEvent } from "solid-js/web";
 
-export const getSession = () => {
-  return createServerData$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (session) {
-      return session.user.username;
-    } else {
-      return null;
-    }
-  });
+const getSession = cache(async () => {
+  "use server";
+  const request = getRequestEvent()?.request;
+  if (!request) {
+    return null;
+  }
+  const authRequest = auth.handleRequest(request);
+  const session = await authRequest.validate();
+  if (!session) {
+    return null;
+  }
+  return session.user.username;
+}, "session");
+
+export const route = {
+  load: () => getSession(),
 };
 
 const Box: ParentComponent<{ question: string }> = (props) => {
@@ -57,7 +64,7 @@ export const UnitQuestion: ParentComponent<{
   paginate: (newDirection: number) => void;
   setSubmissionStatus: Setter<string>;
 }> = (props) => {
-  const session = getSession();
+  const session = createAsync(getSession);
   const sendStats =
     props.LsName === "personalQuestions"
       ? trpc.postPersonalStats.useMutation()
