@@ -1,6 +1,5 @@
 import type { inferAsyncReturnType } from "@trpc/server";
-import { db } from "../server";
-import { Session } from "lucia";
+import { db } from "./server";
 import { auth } from "~/auth/lucia";
 
 // interface CreateInnerContextOptions
