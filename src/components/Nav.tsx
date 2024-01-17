@@ -1,7 +1,8 @@
-import { DEV, type Component } from "solid-js";
+import { DEV, type Component, ErrorBoundary } from "solid-js";
 import * as Sentry from "@sentry/browser";
-import { queryClient, trpc } from "../pages/trpc/[trpc]";
+import { queryClient, trpc } from "../utlis/trpcClient";
 import { QueryClientProvider } from "@tanstack/solid-query";
+import CustomButton from "./CustomButton";
 
 const Nav: Component<{}> = (props) => {
 
@@ -27,7 +28,7 @@ const Nav: Component<{}> = (props) => {
       }
   
   return (     <QueryClientProvider client={queryClient}>
-    <trpc.Provider queryClient={queryClient}>
+    
       <ErrorBoundary
         fallback={(e, reset) => {
           Sentry.captureException(e);
@@ -45,7 +46,6 @@ const Nav: Component<{}> = (props) => {
           <NavBar />
 
       </ErrorBoundary>
-    </trpc.Provider>
   </QueryClientProvider>);
 };
 

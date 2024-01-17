@@ -3,14 +3,12 @@ import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import type { AppRouter } from '../server/router';
 
 
-import { createTRPCSolidStart } from "@solid-mediakit/trpc";
-
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return "";
   return `${
     process.env.NODE_ENV === "production"
       ? process.env.SITE
-      : "http://localhost:3000"
+      : "http://localhost:4321"
   }`;
 };
 
