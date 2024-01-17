@@ -54,4 +54,4 @@ export const appRouter = router({
   fakeForDevBulk
 });
 
-export type IAppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter;

@@ -1,6 +1,6 @@
 import { DEV, type Component } from "solid-js";
 import * as Sentry from "@sentry/browser";
-import { queryClient, trpc } from "./utils/trpc";
+import { queryClient, trpc } from "../pages/trpc/[trpc]";
 import { QueryClientProvider } from "@tanstack/solid-query";
 
 const Nav: Component<{}> = (props) => {
