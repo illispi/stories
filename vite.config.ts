@@ -1,7 +1,7 @@
 import { imagetools } from "vite-imagetools";
-import devtools from "solid-devtools/vite";
-import { visualizer } from "rollup-plugin-visualizer";
-import basicSsl from "@vitejs/plugin-basic-ssl";
+// import devtools from "solid-devtools/vite";
+// import { visualizer } from "rollup-plugin-visualizer";
+// import basicSsl from "@vitejs/plugin-basic-ssl";
 
 //NOTE solidjs dev tools uncomment import in entry-client.tsx aswell
 

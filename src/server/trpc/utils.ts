@@ -1,4 +1,3 @@
-"use server";
 import { TRPCError, initTRPC } from "@trpc/server";
 import type { IContext } from "./context";
 
