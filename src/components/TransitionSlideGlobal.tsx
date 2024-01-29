@@ -14,6 +14,8 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 
   const [animate, setAnimate] = createSignal(false);
 
+  //TODO check that back gesture animates
+
   createEffect(() => {
     window.addEventListener('popstate', () => {
       setScrollNow(true);
