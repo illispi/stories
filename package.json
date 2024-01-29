@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "bun --bun vinxi dev --host",
     "build": "bun --bun vinxi build",
-    "start": "bun --bun vinxi start"
+    "start": "bun --bun vinxi start",
+    "migrate:latest": "bun ./src/utils/migrate.ts",
+    "migrate:down": "bun ./src/utils/migrate.ts down",
+    "new:migration": "bun ./src/utils/migrationFilename.ts",
+    "routes": "bun routes-gen -d @routes-gen/solid-start",
+    "sqlTypes": "bun kysely-codegen --dialect postgres"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
