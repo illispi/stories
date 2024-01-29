@@ -12,6 +12,8 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
   const [scrollNow, setScrollNow] = createSignal(false);
   const [scrollReload, setScrollReload] = createSignal(0);
 
+  const [animate, setAnimate] = createSignal(false);
+
   createEffect(() => {
     window.addEventListener('popstate', () => {
       setScrollNow(true);
@@ -24,6 +26,12 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
     window.addEventListener('beforeunload', () => {
       localStorage.setItem('scrollPos', String(scrollReload()));
     });
+
+    window.onload = () => {
+      setTimeout(() => {
+        setAnimate(true);
+      }, 500);
+    };
   });
   return (
     <>
@@ -44,19 +52,22 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
             window.scrollTo(0, Number(localStorage.getItem('scrollPos') ?? 0));
           }
 
-          const a = el.animate(
-            [
-              {
-                opacity: 0,
-                transform: 'translate(100px)',
-                easing: 'ease-out',
-              },
-              { opacity: 1, transform: 'translate(0)' },
-            ],
-            {
-              duration: 400,
-            }
-          );
+          const a = animate()
+            ? el.animate(
+                [
+                  {
+                    opacity: 0,
+                    transform: 'translate(100px)',
+                    easing: 'ease-out',
+                  },
+                  { opacity: 1, transform: 'translate(0)' },
+                ],
+                {
+                  duration: 400,
+                }
+              )
+            : el.animate([]);
+
           setVis(true);
           a.finished.then(done);
         }}
@@ -81,19 +92,21 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
       </Transition>
       <Transition
         onEnter={(el, done) => {
-          const a = el.animate(
-            [
-              {
-                opacity: 0,
-                transform: 'translate(100px)',
-                easing: 'ease-out',
-              },
-              { opacity: 1, transform: 'translate(0)' },
-            ],
-            {
-              duration: 400,
-            }
-          );
+          const a = animate()
+            ? el.animate(
+                [
+                  {
+                    opacity: 0,
+                    transform: 'translate(100px)',
+                    easing: 'ease-out',
+                  },
+                  { opacity: 1, transform: 'translate(0)' },
+                ],
+                {
+                  duration: 400,
+                }
+              )
+            : el.animate([]);
           a.finished.then(done);
         }}
         onExit={(el, done) => {
