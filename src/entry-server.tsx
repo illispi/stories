@@ -1,17 +1,22 @@
-import { createHandler, StartServer } from "@solidjs/start/server";
+import { createHandler } from '@solidjs/start/entry';
+import { StartServer } from '@solidjs/start/server';
 
 export default createHandler(() => (
   <StartServer
     document={({ assets, children, scripts }) => (
-      <html lang="en">
+      <html lang={'en'}>
         <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
+          <title>DBEST</title>
+          <meta charset={'utf-8'} />
+          <meta
+            name={'viewport'}
+            content={'width=device-width, initial-scale=1'}
+          />
+          <link rel={'icon'} href={'/favicon.png'} />
           {assets}
         </head>
-        <body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-          <div id="app">{children}</div>
+        <body>
+          <div id={'app'}>{children}</div>
           {scripts}
         </body>
       </html>

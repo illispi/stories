@@ -1,23 +1,17 @@
-FROM node:20-alpine AS base
+FROM oven/bun:latest
 
+ARG DATABASE_URL
+ARG VITE_HOST_URL
+
+ENV DATABASE_URL=$DATABASE_URL
+ENV VITE_HOST_URL=$VITE_HOST_URL
 
 WORKDIR /app
-
 COPY . .
 
-RUN npm install --force
-
-RUN npm run build
-
-RUN chmod +x ./entrypoint.sh
-
-ENV NODE_ENV=production
+RUN bun i
+RUN bun run build
 
 EXPOSE 3000
 
-ENV PORT 3000
-
-ENTRYPOINT ["./entrypoint.sh"]
-CMD ["run"]
-
-# CMD ["node", "server.js"]
+CMD ["bun", "start"]
