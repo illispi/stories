@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia';
-import { todoRoute } from './todo';
+import { testRoute } from './routes/testElysiaRoute';
 
-export const app = new Elysia({ prefix: '/api' }).use(todoRoute).compile();
+export const app = new Elysia({ prefix: '/api' }).use(testRoute).compile();
 
 export type App = typeof app;

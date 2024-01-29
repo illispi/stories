@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen";
 import { Pool } from "pg";
+
 dotenv.config();
 
 type Database = {
