@@ -50,6 +50,8 @@
     "tailwind-merge": "^2.2.0",
     "valibot": "^0.25.0",
     "vinxi": "0.1.10",
+    "@sentry/vite-plugin": "^2.10.2",
+    "solid-transition-group": "^0.2.3",
     "zod": "^3.22.4"
   }
 }
