@@ -6,7 +6,6 @@ export default createHandler(() => (
     document={({ assets, children, scripts }) => (
       <html lang={'en'}>
         <head>
-          <title>DBEST</title>
           <meta charset={'utf-8'} />
           <meta
             name={'viewport'}
