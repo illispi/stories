@@ -13,22 +13,21 @@ export const authRoute = new Elysia({ prefix: "/auth" })
       return context.user.id;
     }
   })
-  .post(
-    "logout",
-    async (context) => {
-      if (!context.user) {
-        return new Response(null, {
-          status: 401,
-        });
-      } else {
-        const sessionCookie = lucia.createBlankSessionCookie();
+  .post("/logout", async (context) => {
+    if (!context.user) {
+      return new Response(null, {
+        status: 401,
+      });
+    } else {
+      const sessionCookie = lucia.createBlankSessionCookie();
 
-        context.headers.set("Set-Cookie", sessionCookie.serialize());
-        context.setCookie(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes
-        );
-      }
+      context.headers.set("Set-Cookie", sessionCookie.serialize());
+      // context.setCookie(
+      //   sessionCookie.name,
+      //   sessionCookie.value,
+      //   sessionCookie.attributes
+      // );
+
+      context.set.redirect = "/";
     }
-  );
+  });

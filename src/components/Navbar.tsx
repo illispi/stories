@@ -12,6 +12,7 @@ import {
 } from "solid-js";
 import { eden } from "~/app";
 import { handleEden } from "~/utils";
+import Auth from "./Auth";
 
 
 
