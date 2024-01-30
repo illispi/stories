@@ -5,9 +5,9 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("auth_user")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("role", "text")
-    .addColumn("hashed_password", "text")
-    .addColumn("username", sql`varchar(31)`)
+    .addColumn("role", "text", (col) => col.notNull())
+    .addColumn("hashed_password", "text", (col) => col.notNull())
+    .addColumn("username", sql`varchar(31)`, (col) => col.notNull())
     .execute();
 
   await db.schema

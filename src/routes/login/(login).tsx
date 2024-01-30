@@ -91,9 +91,7 @@ const Login = () => {
           }
         }
 
-        if ((action = "signup")) {
-          
-        }
+      
       } catch (e) {
         //TODO Error used to be ServerError
         if (
