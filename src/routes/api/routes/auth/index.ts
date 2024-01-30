@@ -1,8 +1,7 @@
-import { Elysia } from "elysia";
-import { db } from "../db";
-import type {  App } from "../index";
 
-export const authRoute = (app: App) =>
+import type { App } from "../../index";
+
+export default (app: App) =>
   app.get("", async (context) => {
     if (!context.user) {
       return new Response(null, {

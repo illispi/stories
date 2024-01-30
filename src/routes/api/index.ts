@@ -1,12 +1,16 @@
 import { Elysia } from "elysia";
-import { testRoute } from "./routes/testElysiaRoute";
 import { verifyRequestOrigin } from "lucia";
 
 import type { User, Session } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
+import { autoroutes } from "elysia-autoroutes";
 
 export const app = new Elysia({ prefix: "/api" })
-  .use(testRoute)
+  .use(
+    autoroutes({
+      routesDir: "./routes",
+    })
+  )
   .derive(
     async (
       context
