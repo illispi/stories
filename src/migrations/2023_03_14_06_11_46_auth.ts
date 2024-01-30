@@ -6,16 +6,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("auth_user")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("role", "text")
-    .addColumn("username", sql`varchar(31)`)
-    .execute();
-
-  await db.schema
-    .createTable("user_key")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("user_id", "text", (col) =>
-      col.references("auth_user.id").onDelete("cascade").notNull()
-    )
     .addColumn("hashed_password", "text")
+    .addColumn("username", sql`varchar(31)`)
     .execute();
 
   await db.schema
