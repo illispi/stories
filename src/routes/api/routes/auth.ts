@@ -93,9 +93,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
           // Since protecting against this is none-trivial,
           // it is crucial your implementation is protected against brute-force attacks with login throttling etc.
           // If usernames are public, you may outright tell the user that the username is invalid.
-          return new Response("Incorrect username or password", {
-            status: 400,
-          });
+          return "No account yet";
         }
 
         const validPassword = await new Argon2id().verify(

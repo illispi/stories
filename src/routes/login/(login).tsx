@@ -5,42 +5,21 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import {
-  action,
-  cache,
   createAsync,
   useAction,
   useNavigate,
   useSearchParams,
   useSubmission,
 } from "@solidjs/router";
-import { LuciaError } from "lucia";
+import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createEffect, createSignal } from "solid-js";
-import { getRequestEvent } from "solid-js/web";
 
 import { Input, maxLength, minLength, object, parse, string } from "valibot";
-import { auth } from "~/auth/lucia";
+import { eden } from "~/app";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
-
-const getSession = cache(async () => {
-  "use server";
-  const request = getRequestEvent()?.request;
-  if (!request) {
-    //BUG beta 1 didint return null
-    return null;
-  }
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  if (!session) {
-    return "redir";
-  }
-  return session.user.username;
-}, "session");
-
-export const route = {
-  load: () => getSession(),
-};
+import { handleEden } from "~/utils";
 
 const userSchema = object({
   username: string([
@@ -54,108 +33,56 @@ const userSchema = object({
 });
 
 type UserForm = Input<typeof userSchema>;
-type Action = { action: string };
 
 const Login = () => {
-  const submitAction = action(
-    async ({ password, username, action }: UserForm & Action) => {
-      "use server";
-      try {
-        if (action === "cancel") {
-          return { statusAcc: "cancel" };
-        }
-
-        parse(userSchema, { password, username });
-
-        if (action === "signin") {
-          // find user by key
-          // and validate password
-          const key = await auth.useKey(
-            "username",
-            username.toLowerCase(),
-            password
-          );
-          if (key) {
-            const session = await auth.createSession({
-              userId: key.userId,
-              attributes: {},
-            });
-            const sessionCookie = auth.createSessionCookie(session);
-            // set cookie and redirect
-            return new Response(null, {
-              status: 200,
-              headers: {
-                "Set-Cookie": sessionCookie.serialize(),
-              },
-            });
-          }
-        }
-
-      
-      } catch (e) {
-        //TODO Error used to be ServerError
-        if (
-          e instanceof LuciaError &&
-          // (e.message === "AUTH_INVALID_KEY_ID" ||
-          e.message === "AUTH_INVALID_PASSWORD"
-        ) {
-          throw new Error("Incorrect password");
-        }
-        if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
-          return { username, statusAcc: "missing" };
-        }
-        if (
-          e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from kysely when using same name
-        ) {
-          throw new Error("Username already taken");
-        }
-        if (
-          e.message === "USER_TABLE_UNIQUE_CONSTRAINT_ERROR" //TODO see what to message is from valibot when failing validation
-        ) {
-          throw new Error("Validation failed");
-        }
-        throw new Error("An unknown error occurred");
-      }
-    }
-  );
+  const signUp = (password, username) => {
+    parse(userSchema, { password, username });
+  };
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const session = createAsync(getSession);
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () => handleEden(await eden.api.auth.get()),
+  }));
+
+  const signInMut = createMutation(() => ({
+    mutationFn: async (data) =>
+      handleEden(await eden.api.auth.signin.post({ $query: data })),
+    // onSuccess: () => setTodo(Create(todoInsertSchema)),
+  }));
+
+  const signUpMut = createMutation(() => ({
+    mutationFn: async (data) =>
+      handleEden(await eden.api.auth.signup.post({ $query: data })),
+    // onSuccess: () => setTodo(Create(todoInsertSchema)),
+  }));
 
   createEffect(() => {
-    if (session()) {
+    if (authQuery.data) {
       if (searchParams.redir) {
         navigate(searchParams.redir);
       } else {
         navigate("/");
       }
     }
-    // console.log(submission.result);
-
-    //   if(submission.result.)
   });
-
-  const submit = useAction(submitAction);
 
   const [userForm, { Form, Field }] = createForm<UserForm>({
     validate: valiForm(userSchema),
   });
   const handleSubmit: SubmitHandler<UserForm> = async (values, event) => {
-    submit({ ...values, action: "signin" });
+    signInMut.mutate(values);
   };
 
   const [showAccountMissing, setShowAccountMissing] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
 
-  const submission = useSubmission(submitAction);
   createEffect(() => {
-    submission.result.statusAcc === "missing"
-      ? setShowAccountMissing(true)
-      : null;
+    signInMut.data === "No account yet" ? setShowAccountMissing(true) : null;
 
-    submission.error?.message ? setError(submission.error.message) : null;
+    // submission.error?.message ? setError(submission.error.message) : null;
   });
 
   return (
@@ -173,10 +100,10 @@ const Login = () => {
             class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
             onClick={() => {
               setShowAccountMissing(false);
-              submit({
+
+              signUpMut.mutate({
                 username: getValue(userForm, "username"),
                 password: getValue(userForm, "password"),
-                action: "signup",
               });
             }}>
             Create new account!
@@ -184,11 +111,6 @@ const Login = () => {
           <CustomButton
             class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
             onClick={() => {
-              submit({
-                username: getValue(userForm, "username"),
-                password: getValue(userForm, "password"),
-                action: "cancel",
-              });
               setShowAccountMissing(false);
             }}>
             Cancel
