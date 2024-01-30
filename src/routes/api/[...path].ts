@@ -1,5 +1,6 @@
 import { type APIEvent } from '@solidjs/start/server/types';
-import { app } from '~/routes/api';
+import { app } from './elysia';
+
 
 const handler = async (event: APIEvent) => await app.handle(event.request);
 

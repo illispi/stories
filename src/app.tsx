@@ -95,7 +95,7 @@ export default function App() {
                   </div>
                 );
               }}>
-              {/* <NavBar /> */}
+              <NavBar />
               <TransitionSlideGlobal>
                 <Suspense>{props.children}</Suspense>
               </TransitionSlideGlobal>
