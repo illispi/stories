@@ -1,12 +1,12 @@
 // @refresh reload
-import { MetaProvider, Title } from '@solidjs/meta';
-import { Router } from '@solidjs/router';
-import { FileRoutes } from '@solidjs/start';
-import { QueryClient, QueryClientProvider } from '@tanstack/solid-query';
-import { edenTreaty } from '@elysiajs/eden';
-import { clientEnv } from '~/utils/env/client';
-import type { App } from './routes/api';
-import './app.css';
+import { MetaProvider, Title } from "@solidjs/meta";
+import { Router } from "@solidjs/router";
+import { FileRoutes } from "@solidjs/start";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import { edenTreaty } from "@elysiajs/eden";
+import { clientEnv } from "~/utils/env/client";
+import type { App } from "./routes/api/elysia";
+import "./app.css";
 import {
   DEV,
   ErrorBoundary,
@@ -14,21 +14,21 @@ import {
   createEffect,
   createRenderEffect,
   onCleanup,
-} from 'solid-js';
-import * as Sentry from '@sentry/browser';
-import { isServer } from 'solid-js/web';
-import CustomButton from './components/CustomButton';
-import NavBar from './components/Navbar';
-import TransitionSlideGlobal from './components/TransitionSlideGlobal';
+} from "solid-js";
+import * as Sentry from "@sentry/browser";
+import { isServer } from "solid-js/web";
+import CustomButton from "./components/CustomButton";
+import NavBar from "./components/Navbar";
+import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 
-export const app = edenTreaty<App>(clientEnv.HOST_URL);
+export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 
 export default function App() {
   //TODO enable suspense
   const queryClient = new QueryClient();
 
   createEffect(() => {
-    history.scrollRestoration = 'manual';
+    history.scrollRestoration = "manual";
   });
 
   //BUG below fails
@@ -57,12 +57,12 @@ export default function App() {
   //TODO script loader should work now
 
   if (!isServer) {
-    const script = document.createElement('script');
-    script.src = 'https://umami.delvis.org/script.js';
+    const script = document.createElement("script");
+    script.src = "https://umami.delvis.org/script.js";
     script.async = true;
     script.setAttribute(
-      'data-website-id',
-      'cbdde5c6-7ae6-4d53-9f16-cf558c6110bd'
+      "data-website-id",
+      "cbdde5c6-7ae6-4d53-9f16-cf558c6110bd"
     );
     createRenderEffect(() => {
       document.head.appendChild(script);
@@ -86,10 +86,10 @@ export default function App() {
                 // }
                 console.log(e);
                 return (
-                  <div class='flex min-h-screen w-full flex-col items-center justify-center gap-4'>
-                    <div class='flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16'>
-                      <h1 class='text-center text-2xl'>Error occured!</h1>
-                      <h2 class='text-center'>{`Message: ${e.message}`}</h2>
+                  <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
+                    <div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+                      <h1 class="text-center text-2xl">Error occured!</h1>
+                      <h2 class="text-center">{`Message: ${e.message}`}</h2>
                       <CustomButton onClick={reset}>Try again</CustomButton>
                     </div>
                   </div>

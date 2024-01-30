@@ -5,27 +5,14 @@ import { auth } from "~/auth/lucia";
 import LoginA from "./LoginA";
 import { action, cache, createAsync } from "@solidjs/router";
 import { getRequestEvent } from "solid-js/web";
-
-const getSession = cache(async () => {
-  "use server";
-  const request = getRequestEvent()?.request;
-  if (!request) {
-    return null;
-  }
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  if (!session) {
-    return null;
-  }
-  return session.user.username;
-}, "session");
-
-export const route = {
-  load: () => getSession(),
-};
+import { createQuery } from "@tanstack/solid-query";
+import { eden } from "~/app";
 
 const Auth: VoidComponent = () => {
-  const sessionData = createAsync(getSession);
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () => handleEden(await eden.api.auth.get()),
+  }));
 
   const signOut = action(async () => {
     "use server";
@@ -68,3 +55,7 @@ const Auth: VoidComponent = () => {
 };
 
 export default Auth;
+function handleEden(arg0: any): any {
+  throw new Error("Function not implemented.");
+}
+

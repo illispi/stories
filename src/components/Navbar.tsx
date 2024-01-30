@@ -1,37 +1,45 @@
+import { Title } from "@solidjs/meta";
+import { A, useSearchParams } from "@solidjs/router";
+import { createQuery } from "@tanstack/solid-query";
 import { route as routeGen } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
-import { ErrorBoundary, Show, Suspense, createEffect, createSignal } from "solid-js";
-import Auth from "./Auth";
-import { auth } from "~/auth/lucia";
-import { A, cache, createAsync, useSearchParams } from "@solidjs/router";
-import { getRequestEvent } from "solid-js/web";
-import { Title } from "@solidjs/meta";
+import {
+  ErrorBoundary,
+  Show,
+  Suspense,
+  createEffect,
+  createSignal,
+} from "solid-js";
+import { eden } from "~/app";
+import { handleEden } from "~/utils";
 
-const getSession = cache(async () => {
-  "use server";
-  const request = getRequestEvent()?.request;
-  if (!request) {
-    return null;
-  }
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  if (!session) {
-    return null;
-  }
-  return session.user.username;
-}, "session");
 
-export const route = {
-  load: () => getSession(),
-};
+
+
+// const getSession = cache(async () => {
+//   "use server";
+//   const request = getRequestEvent()?.request;
+//   if (!request) {
+//     return null;
+//   }
+//   const authRequest = auth.handleRequest(request);
+//   const session = await authRequest.validate();
+//   if (!session) {
+//     return null;
+//   }
+//   return session.user.username;
+// }, "session");
+
+// export const route = {
+//   load: () => getSession(),
+// };
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (
     <>
       <A
         class={`text-3xl font-light uppercase transition-all hover:scale-110 ${props.class}`}
-        href={props.route}
-      >
+        href={props.route}>
         {props.content}
       </A>
     </>
@@ -43,7 +51,11 @@ const Hamburger: Component<{
   setMenuOpen: Setter<boolean>;
 }> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const sessionData = createAsync(getSession);
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () => handleEden(await eden.api.auth.get()),
+  }));
+  
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {
@@ -67,8 +79,7 @@ const Hamburger: Component<{
             } else {
               setSearchParams({ nav: true });
             }
-          }}
-        >
+          }}>
           <Show
             when={searchParams.nav === "true"}
             fallback={
@@ -79,16 +90,14 @@ const Hamburger: Component<{
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                stroke-width={2}
-              >
+                stroke-width={2}>
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
-            }
-          >
+            }>
             <svg
               width="32"
               height="32"
@@ -96,8 +105,7 @@ const Hamburger: Component<{
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              stroke-width={2}
-            >
+              stroke-width={2}>
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -122,17 +130,15 @@ const Hamburger: Component<{
           searchParams.nav === "true"
             ? `translate-x-0 opacity-100 ease-out`
             : `translate-x-full opacity-0 ease-in`
-        } h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}
-      >
+        } h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}>
         <Auth />
         <Suspense>
           <ErrorBoundary
             fallback={(err) => {
               console.log(err);
               return <div>err</div>;
-            }}
-          >
-            <Show when={sessionData()}>
+            }}>
+            <Show when={authQuery.data}>
               <MenuItem route={routeGen("/user/data")} content="Your data" />
             </Show>
           </ErrorBoundary>
@@ -145,8 +151,7 @@ const Hamburger: Component<{
           class="p-16 transition-all hover:scale-125"
           onClick={() => {
             setSearchParams({ nav: null });
-          }}
-        >
+          }}>
           <div class="rounded-full border border-black p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -154,8 +159,7 @@ const Hamburger: Component<{
               viewBox="0 0 24 24"
               stroke-width="0.6"
               stroke="currentColor"
-              class="h-16 w-16"
-            >
+              class="h-16 w-16">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -179,14 +183,12 @@ const NavBar: Component = () => {
         <A
           class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
           noScroll={true}
-          href={routeGen("/")}
-        >
+          href={routeGen("/")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"
-            viewBox="0 0 24 24"
-          >
+            viewBox="0 0 24 24">
             <path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
           </svg>
         </A>

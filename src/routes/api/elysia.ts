@@ -3,14 +3,10 @@ import { verifyRequestOrigin } from "lucia";
 
 import type { User, Session } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
-import { autoroutes } from "elysia-autoroutes";
+import { authRoute } from "./routes/auth";
 
 export const app = new Elysia({ prefix: "/api" })
-  .use(
-    autoroutes({
-      routesDir: "./routes",
-    })
-  )
+  .use(authRoute)
   .derive(
     async (
       context
