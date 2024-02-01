@@ -7,10 +7,6 @@ import { db } from "../db";
 export const authRoute = new Elysia({ prefix: "/auth" })
   .get("", async (context) => {
     if (!context.user) {
-      // return new Response(null, {
-      //   status: 401,
-      // });
-
       return null;
     } else {
       return context.user.username;

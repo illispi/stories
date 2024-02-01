@@ -2,7 +2,7 @@ import {
   SubmitHandler,
   createForm,
   getValue,
-  valiForm
+  valiForm,
 } from "@modular-forms/solid";
 import {
   action,
@@ -13,7 +13,6 @@ import {
   useSearchParams,
   useSubmission,
 } from "@solidjs/router";
-import { LuciaError } from "lucia";
 import { createEffect, createSignal } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
 
@@ -162,7 +161,7 @@ const Login = () => {
     //   if(submission.result.)
   });
 
-  const submit = useAction(submitAction)
+  const submit = useAction(submitAction);
 
   const [userForm, { Form, Field }] = createForm<UserForm>({
     validate: valiForm(userSchema),
@@ -203,8 +202,7 @@ const Login = () => {
                 password: getValue(userForm, "password"),
                 action: "signup",
               });
-            }}
-          >
+            }}>
             Create new account!
           </CustomButton>
           <CustomButton
@@ -216,8 +214,7 @@ const Login = () => {
                 action: "cancel",
               });
               setShowAccountMissing(false);
-            }}
-          >
+            }}>
             Cancel
           </CustomButton>
         </div>
@@ -276,8 +273,7 @@ const Login = () => {
 
               <button
                 class="m-8 w-full max-w-xs flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                type="submit"
-              >
+                type="submit">
                 Sign up/in
               </button>
             </div>
@@ -310,8 +306,7 @@ const Login = () => {
           <div class="flex h-full items-center justify-center">
             <a
               class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-6 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-              href="/login/github"
-            >
+              href="/login/github">
               Sign up/in
             </a>
           </div>

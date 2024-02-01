@@ -14,7 +14,6 @@ import { eden } from "~/app";
 import { handleEden } from "~/utils";
 import Auth from "./Auth";
 
-
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (
     <>
@@ -36,7 +35,8 @@ const Hamburger: Component<{
     queryKey: ["auth"],
     queryFn: async () => handleEden(await eden.api.auth.get()),
   }));
-  
+
+  console.log(authQuery.data);
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {
