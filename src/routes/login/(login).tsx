@@ -53,6 +53,8 @@ const Login = () => {
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
   }));
 
+  console.log(authQuery.data);
+
   createEffect(() => {
     if (authQuery.data) {
       if (searchParams.redir) {

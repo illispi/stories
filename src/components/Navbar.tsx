@@ -15,26 +15,6 @@ import { handleEden } from "~/utils";
 import Auth from "./Auth";
 
 
-
-
-// const getSession = cache(async () => {
-//   "use server";
-//   const request = getRequestEvent()?.request;
-//   if (!request) {
-//     return null;
-//   }
-//   const authRequest = auth.handleRequest(request);
-//   const session = await authRequest.validate();
-//   if (!session) {
-//     return null;
-//   }
-//   return session.user.username;
-// }, "session");
-
-// export const route = {
-//   load: () => getSession(),
-// };
-
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (
     <>
