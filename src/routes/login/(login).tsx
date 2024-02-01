@@ -4,13 +4,7 @@ import {
   getValue,
   valiForm,
 } from "@modular-forms/solid";
-import {
-  createAsync,
-  useAction,
-  useNavigate,
-  useSearchParams,
-  useSubmission,
-} from "@solidjs/router";
+import { useNavigate, useSearchParams } from "@solidjs/router";
 import { createMutation, createQuery } from "@tanstack/solid-query";
 import { createEffect, createSignal } from "solid-js";
 
@@ -95,7 +89,7 @@ const Login = () => {
           </h2>
 
           <h3 class="text-center text-lg">{`No account found with username: `}</h3>
-          <h4 class="text-center text-xl font-semibold">{`${submission.result?.username}`}</h4>
+          <h4 class="text-center text-xl font-semibold">{`${getValue(userForm, "username")}`}</h4>
           <CustomButton
             class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
             onClick={() => {

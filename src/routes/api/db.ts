@@ -5,29 +5,6 @@ import { Pool } from "pg";
 
 dotenv.config();
 
-type Database = {
-  user: UserTable;
-  key: KeyTable;
-  session: SessionTable;
-};
-
-type UserTable = {
-  id: string;
-};
-
-type KeyTable = {
-  id: string;
-  user_id: string;
-  hashed_password: string | null;
-};
-
-type SessionTable = {
-  id: string;
-  user_id: string;
-  active_expires: bigint;
-  idle_expires: bigint;
-};
-
 export const pool = new Pool({
   //TODO change these two to .env
   host:
@@ -44,10 +21,7 @@ const dialect = new PostgresDialect({
   pool,
 });
 
-interface Combined extends Database, DB {}
-
-export const db = new Kysely<Combined>({
+export const db = new Kysely<DB>({
   log: ["error"],
   dialect,
 });
-
