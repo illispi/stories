@@ -1,6 +1,6 @@
 // @refresh reload
 import { MetaProvider, Title } from "@solidjs/meta";
-import { Router } from "@solidjs/router";
+import { Router, useIsRouting } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { edenTreaty } from "@elysiajs/eden";
@@ -23,17 +23,16 @@ import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
+//TODO enable suspense
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 
 export default function App() {
-  //TODO enable suspense
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        suspense: true,
-      },
-    },
-  });
-
   createEffect(() => {
     history.scrollRestoration = "manual";
   });
@@ -103,10 +102,9 @@ export default function App() {
                 );
               }}>
               <Suspense>
-                {/* <NavBar /> */}
+                <NavBar />
                 <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
               </Suspense>
-              {/* {props.children} */}
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
