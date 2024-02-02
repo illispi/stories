@@ -9,7 +9,7 @@ import LoginA from "./LoginA";
 const Auth: VoidComponent = () => {
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
-    queryFn: async () => handleEden(await eden.api.auth.get()),
+    queryFn: async () => handleEden(await eden.api.auth.status.get()),
   }));
 
   const logOutMut = createMutation(() => ({

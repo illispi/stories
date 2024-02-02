@@ -38,7 +38,7 @@ const Login = () => {
 
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
-    queryFn: async () => handleEden(await eden.api.auth.get()),
+    queryFn: async () => handleEden(await eden.api.auth.status.get()),
   }));
 
   const signInMut = createMutation(() => ({
@@ -52,7 +52,6 @@ const Login = () => {
       handleEden(await eden.api.auth.signup.post({ $query: data })),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
   }));
-
 
   createEffect(() => {
     if (authQuery.data) {

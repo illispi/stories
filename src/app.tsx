@@ -81,8 +81,8 @@ export default function App() {
   return (
     <Router
       root={(props) => (
-        <QueryClientProvider client={queryClient}>
-          <MetaProvider>
+        <MetaProvider>
+          <QueryClientProvider client={queryClient}>
             <Title>Schizophrenia poll</Title>
             <ErrorBoundary
               fallback={(e, reset) => {
@@ -101,13 +101,13 @@ export default function App() {
                   </div>
                 );
               }}>
-              <NavBar />
-              <TransitionSlideGlobal>
-                <Suspense>{props.children}</Suspense>
-              </TransitionSlideGlobal>
+              <Suspense>
+                <NavBar />
+                <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
+              </Suspense>
             </ErrorBoundary>
-          </MetaProvider>
-        </QueryClientProvider>
+          </QueryClientProvider>
+        </MetaProvider>
       )}>
       <FileRoutes />
     </Router>

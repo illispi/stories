@@ -36,7 +36,7 @@ const Hamburger: Component<{
     queryFn: async () => handleEden(await eden.api.auth.status.get()),
   }));
 
-  console.log(authQuery.data);
+  // console.log(authQuery.data);
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {

@@ -6,13 +6,11 @@ import { db } from "../db";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
   .get("/status", async (context) => {
-    // if (!context.user) {
-    //   return null;
-    // } else {
-    //   return context.user.username;
-    // }
-    console.log(context);
-    return "damn";
+    if (!context.user) {
+      return null;
+    } else {
+      return context.user.username;
+    }
   })
   .post("/logout", async (context) => {
     if (!context.user) {

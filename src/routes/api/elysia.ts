@@ -4,6 +4,7 @@ import { verifyRequestOrigin } from "lucia";
 import type { User, Session } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
 import { authRoute } from "./routes/auth";
+import { testRoute } from "./routes/testRoute";
 
 export const app = new Elysia({ prefix: "/api" })
   .derive(
@@ -62,6 +63,7 @@ export const app = new Elysia({ prefix: "/api" })
     }
   )
   .use(authRoute)
+  .use(testRoute)
   .compile();
 
 export type App = typeof app;
