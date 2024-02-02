@@ -25,7 +25,13 @@ export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 
 export default function App() {
   //TODO enable suspense
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        suspense: true,
+      },
+    },
+  });
 
   createEffect(() => {
     history.scrollRestoration = "manual";
@@ -75,9 +81,9 @@ export default function App() {
   return (
     <Router
       root={(props) => (
-        <MetaProvider>
-          <Title>Schizophrenia poll</Title>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <MetaProvider>
+            <Title>Schizophrenia poll</Title>
             <ErrorBoundary
               fallback={(e, reset) => {
                 //TODO re-enable
@@ -100,8 +106,8 @@ export default function App() {
                 <Suspense>{props.children}</Suspense>
               </TransitionSlideGlobal>
             </ErrorBoundary>
-          </QueryClientProvider>
-        </MetaProvider>
+          </MetaProvider>
+        </QueryClientProvider>
       )}>
       <FileRoutes />
     </Router>

@@ -6,7 +6,6 @@ import { lucia } from "~/lib/auth/lucia";
 import { authRoute } from "./routes/auth";
 
 export const app = new Elysia({ prefix: "/api" })
-  .use(authRoute)
   .derive(
     async (
       context
@@ -62,6 +61,7 @@ export const app = new Elysia({ prefix: "/api" })
       };
     }
   )
+  .use(authRoute)
   .compile();
 
 export type App = typeof app;

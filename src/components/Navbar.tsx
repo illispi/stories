@@ -33,7 +33,7 @@ const Hamburger: Component<{
   const [searchParams, setSearchParams] = useSearchParams();
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
-    queryFn: async () => handleEden(await eden.api.auth.get()),
+    queryFn: async () => handleEden(await eden.api.auth.status.get()),
   }));
 
   console.log(authQuery.data);

@@ -5,12 +5,14 @@ import { lucia } from "~/lib/auth/lucia";
 import { db } from "../db";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
-  .get("", async (context) => {
-    if (!context.user) {
-      return null;
-    } else {
-      return context.user.username;
-    }
+  .get("/status", async (context) => {
+    // if (!context.user) {
+    //   return null;
+    // } else {
+    //   return context.user.username;
+    // }
+    console.log(context);
+    return "damn";
   })
   .post("/logout", async (context) => {
     if (!context.user) {
