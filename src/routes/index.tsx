@@ -7,9 +7,9 @@ import InfoBox from "~/components/InfoBox";
 import { A } from "@solidjs/router";
 
 const Home: Component = () => {
-
   return (
     <div class="flex w-full flex-col items-center justify-center">
+      <A href="/test">test</A>
       <div class="col-span-2 row-span-2 flex w-full items-center justify-center bg-gradient-angle from-blue-500 to-fuchsia-500 ">
         <div class="grid grid-cols-1 items-center justify-items-center lg:grid-cols-2 xl:max-w-screen-2xl">
           <h1 class="mb-12 mt-24 max-w-md text-center font-mono text-3xl text-white lg:hidden">
@@ -70,6 +70,7 @@ const Home: Component = () => {
             </A>
           </div>
         </div>
+        A
       </div>
       <div class="flex w-full items-center justify-center bg-slate-100">
         <div class="grid w-full max-w-screen-2xl grid-cols-1 justify-items-center gap-12 py-16 lg:grid-cols-2">

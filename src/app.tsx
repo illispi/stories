@@ -20,6 +20,7 @@ import { isServer } from "solid-js/web";
 import CustomButton from "./components/CustomButton";
 import NavBar from "./components/Navbar";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
+import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 
@@ -82,8 +83,8 @@ export default function App() {
     <Router
       root={(props) => (
         <MetaProvider>
+          <Title>Schizophrenia poll</Title>
           <QueryClientProvider client={queryClient}>
-            <Title>Schizophrenia poll</Title>
             <ErrorBoundary
               fallback={(e, reset) => {
                 //TODO re-enable
@@ -102,10 +103,12 @@ export default function App() {
                 );
               }}>
               <Suspense>
-                <NavBar />
+                {/* <NavBar /> */}
                 <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
               </Suspense>
+              {/* {props.children} */}
             </ErrorBoundary>
+            <SolidQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </MetaProvider>
       )}>
