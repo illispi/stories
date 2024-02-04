@@ -3,8 +3,8 @@ import CustomButton from "./CustomButton";
 
 import { createMutation, createQuery } from "@tanstack/solid-query";
 import { eden } from "~/app";
-import { handleEden } from "~/utils";
 import LoginA from "./LoginA";
+import { handleEden } from "~/utils/handleEden";
 
 const Auth: VoidComponent = () => {
   const authQuery = createQuery(() => ({

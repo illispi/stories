@@ -11,8 +11,9 @@ import {
   createSignal,
 } from "solid-js";
 import { eden } from "~/app";
-import { handleEden } from "~/utils";
+
 import Auth from "./Auth";
+import { handleEden } from "~/utils/handleEden";
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (

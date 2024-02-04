@@ -1,5 +1,6 @@
 import { Type as t } from '@sinclair/typebox/type';
-import { parse } from '~/utils';
+import { parse } from '~/utils/handleEden';
+
 
 const serverEnvSchema = t.Object({
   DATABASE_URL: t.String({
