@@ -1,6 +1,6 @@
 import { NodePostgresAdapter } from "@lucia-auth/adapter-postgresql";
 import { Lucia } from "lucia";
-import { pool } from "~/routes/api/db";
+import { pool } from "../../routes/api/db";
 
 interface DatabaseUserAttributes {
   role: "admin" | "user";

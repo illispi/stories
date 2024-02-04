@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 import { generateId } from "lucia";
 import { Argon2id } from "oslo/password";
-import { lucia } from "~/lib/auth/lucia";
+import { lucia } from "../../../lib/auth/lucia";
 import { db } from "../db";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
