@@ -2,9 +2,9 @@ import { Elysia } from "elysia";
 import { verifyRequestOrigin } from "lucia";
 
 import type { User, Session } from "lucia";
+import { lucia } from "~/lib/auth/lucia";
 import { authRoute } from "./routes/auth";
 import { testRoute } from "./routes/testRoute";
-import { lucia } from "../../lib/auth/lucia";
 
 export const app = new Elysia({ prefix: "/api" })
   .derive(

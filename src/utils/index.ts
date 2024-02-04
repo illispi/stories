@@ -1,14 +1,14 @@
-import type { EdenFetchError } from "@elysiajs/eden/src/errors";
-import type { TSchema, Static } from "@sinclair/typebox/type";
-import { Check } from "@sinclair/typebox/value";
+import type { EdenFetchError } from '@elysiajs/eden/src/errors';
+import type { TSchema, Static } from '@sinclair/typebox/type';
+import { Check } from '@sinclair/typebox/value';
 import {
   Errors,
   SetErrorFunction,
   DefaultErrorFunction,
-} from "@sinclair/typebox/errors";
+} from '@sinclair/typebox/errors';
 
 SetErrorFunction((error) => {
-  if (typeof error.schema.error === "string") return error.schema.error;
+  if (typeof error.schema.error === 'string') return error.schema.error;
   return DefaultErrorFunction(error);
 });
 
