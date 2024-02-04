@@ -45,6 +45,5 @@ export function handleEden<T>(
   }
 ): T {
   if (response.error) throw response.error;
-  console.log(response.data, "response");
   return response.data;
 }
