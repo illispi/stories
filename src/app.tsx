@@ -24,7 +24,9 @@ import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 //TODO enable suspense
-const queryClient = new QueryClient({defaultOptions: {queries: {suspense: true}}});
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { suspense: true } },
+});
 
 export default function App() {
   createEffect(() => {
@@ -96,8 +98,10 @@ export default function App() {
                 );
               }}>
               <Suspense>
-                {/* <NavBar /> */}
-                <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
+                <NavBar />
+                <TransitionSlideGlobal>
+                  <Suspense>{props.children}</Suspense>
+                </TransitionSlideGlobal>
               </Suspense>
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />
