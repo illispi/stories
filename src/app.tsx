@@ -21,6 +21,7 @@ import CustomButton from "./components/CustomButton";
 import NavBar from "./components/Navbar";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
+import { Transition } from "solid-transition-group";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 //TODO enable suspense
@@ -99,7 +100,8 @@ export default function App() {
               }}>
               <Suspense>
                 <NavBar />
-                <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
+                {/* <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal> */}
+                <Transition>{props.children}</Transition>
               </Suspense>
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />

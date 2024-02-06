@@ -13,7 +13,8 @@ import { eden } from "~/app";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
-import { handleEden } from "~/utils";
+import { handleEden } from "~/utils/handleEden";
+
 
 const userSchema = object({
   username: string([
