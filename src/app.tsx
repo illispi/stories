@@ -99,9 +99,7 @@ export default function App() {
               }}>
               <Suspense>
                 <NavBar />
-                <TransitionSlideGlobal>
-                  <Suspense>{props.children}</Suspense>
-                </TransitionSlideGlobal>
+                <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
               </Suspense>
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />
