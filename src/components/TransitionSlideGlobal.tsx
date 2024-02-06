@@ -1,7 +1,7 @@
-import type { ParentComponent } from 'solid-js';
-import { Show, createEffect, createSignal } from 'solid-js';
-import { Transition } from 'solid-transition-group';
-import Footer from './Footer';
+import type { ParentComponent } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
+import { Transition } from "solid-transition-group";
+import Footer from "./Footer";
 
 const TransitionSlideGlobal: ParentComponent = (props) => {
   const [vis, setVis] = createSignal(false);
@@ -17,16 +17,16 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
   //TODO check that back gesture animates
 
   createEffect(() => {
-    window.addEventListener('popstate', () => {
+    window.addEventListener("popstate", () => {
       setScrollNow(true);
     });
 
-    window.addEventListener('scroll', () => {
+    window.addEventListener("scroll", () => {
       setScrollReload(window.scrollY);
     });
 
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('scrollPos', String(scrollReload()));
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("scrollPos", String(scrollReload()));
     });
 
     window.onload = () => {
@@ -36,7 +36,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
     };
   });
   return (
-    <>
+    <div>
       <Transition
         onBeforeExit={() => {
           setScrollPrev(scrollTo());
@@ -51,7 +51,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
           } else if (reload() === false) {
             window.scrollTo(0, 0);
           } else {
-            window.scrollTo(0, Number(localStorage.getItem('scrollPos') ?? 0));
+            window.scrollTo(0, Number(localStorage.getItem("scrollPos") ?? 0));
           }
 
           const a = animate()
@@ -59,10 +59,10 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
                 [
                   {
                     opacity: 0,
-                    transform: 'translate(100px)',
-                    easing: 'ease-out',
+                    transform: "translate(100px)",
+                    easing: "ease-out",
                   },
-                  { opacity: 1, transform: 'translate(0)' },
+                  { opacity: 1, transform: "translate(0)" },
                 ],
                 {
                   duration: 300,
@@ -78,10 +78,10 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
             [
               {
                 opacity: 1,
-                transform: 'translate(0)',
-                easing: 'ease-in',
+                transform: "translate(0)",
+                easing: "ease-in",
               },
-              { opacity: 0, transform: 'translate(-100px)' },
+              { opacity: 0, transform: "translate(-100px)" },
             ],
             {
               duration: 300,
@@ -89,7 +89,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
           );
           a.finished.then(done);
         }}
-        mode='outin'>
+        mode="outin">
         {props.children}
       </Transition>
       <Transition
@@ -99,10 +99,10 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
                 [
                   {
                     opacity: 0,
-                    transform: 'translate(100px)',
-                    easing: 'ease-out',
+                    transform: "translate(100px)",
+                    easing: "ease-out",
                   },
-                  { opacity: 1, transform: 'translate(0)' },
+                  { opacity: 1, transform: "translate(0)" },
                 ],
                 {
                   duration: 300,
@@ -116,10 +116,10 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
             [
               {
                 opacity: 1,
-                transform: 'translate(0)',
-                easing: 'ease-in',
+                transform: "translate(0)",
+                easing: "ease-in",
               },
-              { opacity: 0, transform: 'translate(-100px)' },
+              { opacity: 0, transform: "translate(-100px)" },
             ],
             {
               duration: 300,
@@ -127,12 +127,12 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
           );
           a.finished.then(done);
         }}
-        mode='outin'>
+        mode="outin">
         <Show when={vis()}>
           <Footer />
         </Show>
       </Transition>
-    </>
+    </div>
   );
 };
 export default TransitionSlideGlobal;
