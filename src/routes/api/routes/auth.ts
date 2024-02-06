@@ -63,7 +63,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
       }
     },
     {
-      query: t.Object({
+      body: t.Object({
         password: t.String(),
         username: t.String(),
       }),
@@ -114,7 +114,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
       }
     },
     {
-      query: t.Object({
+      body: t.Object({
         password: t.String(),
         username: t.String(),
       }),
