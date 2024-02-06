@@ -24,13 +24,7 @@ import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 //TODO enable suspense
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      suspense: true,
-    },
-  },
-});
+const queryClient = new QueryClient({defaultOptions: {queries: {suspense: true}}});
 
 export default function App() {
   createEffect(() => {
@@ -81,9 +75,9 @@ export default function App() {
   return (
     <Router
       root={(props) => (
-        <MetaProvider>
-          <Title>Schizophrenia poll</Title>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <MetaProvider>
+            <Title>Schizophrenia poll</Title>
             <ErrorBoundary
               fallback={(e, reset) => {
                 //TODO re-enable
@@ -102,13 +96,13 @@ export default function App() {
                 );
               }}>
               <Suspense>
-                <NavBar />
+                {/* <NavBar /> */}
                 <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
               </Suspense>
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </MetaProvider>
+          </MetaProvider>
+        </QueryClientProvider>
       )}>
       <FileRoutes />
     </Router>
