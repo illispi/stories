@@ -15,7 +15,6 @@ import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
 import { handleEden } from "~/utils/handleEden";
 
-
 const userSchema = object({
   username: string([
     minLength(4, "Your username is too short, min 4 characters"),
@@ -34,6 +33,9 @@ const Login = () => {
     parse(userSchema, { password, username });
   };
 
+  // const [username, setUsername] = createSignal<null | string>(null);
+  // const [password, setPassword] = createSignal<null | string>(null);
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -44,13 +46,13 @@ const Login = () => {
 
   const signInMut = createMutation(() => ({
     mutationFn: async (data) =>
-      handleEden(await eden.api.auth.signin.post({ $query: data })),
+      handleEden(await eden.api.auth.signin.post(data)),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
   }));
 
   const signUpMut = createMutation(() => ({
     mutationFn: async (data) =>
-      handleEden(await eden.api.auth.signup.post({ $query: data })),
+      handleEden(await eden.api.auth.signup.post(data)),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
   }));
 

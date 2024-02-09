@@ -6,6 +6,7 @@ import { db } from "../db";
 import { derive } from "./derive";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
+  .use(derive)
   .get("/status", async (context) => {
     if (!context.user) {
       return null;
@@ -27,6 +28,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
       );
 
       context.set.redirect = "/";
+      return;
     }
   })
   .post(
@@ -34,11 +36,10 @@ export const authRoute = new Elysia({ prefix: "/auth" })
     async (context) => {
       if (context.user) {
         context.set.redirect = "/";
+        return;
       } else {
         const userId = generateId(15);
-        const hashedPassword = await new Argon2id().hash(
-          context.query.password
-        );
+        const hashedPassword = await new Argon2id().hash(context.body.password);
 
         // TODO: check if username is already used
 
@@ -48,19 +49,19 @@ export const authRoute = new Elysia({ prefix: "/auth" })
             id: userId,
             hashed_password: hashedPassword,
             role: "user",
-            username: context.query.username,
+            username: context.body.username,
           })
           .executeTakeFirst();
 
         const session = await lucia.createSession(userId, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
-        context.cookie.set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes
-        );
+        context.cookie[sessionCookie.name].set({
+          value: sessionCookie.value,
+          ...sessionCookie.attributes,
+        });
 
         context.set.redirect = "/";
+        return;
       }
     },
     {
@@ -75,10 +76,13 @@ export const authRoute = new Elysia({ prefix: "/auth" })
     async (context) => {
       if (context.user) {
         context.set.redirect = "/";
+        return;
       } else {
+        //BUG should check for username from context
         const existingUser = await db
           .selectFrom("auth_user")
           .selectAll("auth_user")
+          .where("username", "=", context.body.username)
           .executeTakeFirst();
         if (!existingUser) {
           // NOTE:
@@ -95,7 +99,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
 
         const validPassword = await new Argon2id().verify(
           existingUser.hashed_password,
-          context.query.password
+          context.body.password
         );
         if (!validPassword) {
           return new Response("Incorrect username or password", {
@@ -105,13 +109,13 @@ export const authRoute = new Elysia({ prefix: "/auth" })
 
         const session = await lucia.createSession(existingUser.id, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
-        context.cookies.set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes
-        );
+        context.cookie[sessionCookie.name].set({
+          value: sessionCookie.value,
+          ...sessionCookie.attributes,
+        });
         //BUG does this hang since nothing is returned?
         context.set.redirect = "/";
+        return;
       }
     },
     {
@@ -120,4 +124,4 @@ export const authRoute = new Elysia({ prefix: "/auth" })
         username: t.String(),
       }),
     }
-  )
+  );
