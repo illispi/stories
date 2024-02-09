@@ -100,8 +100,8 @@ export default function App() {
               }}>
               <Suspense>
                 <NavBar />
-                {/* <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal> */}
-                <Transition>{props.children}</Transition>
+                <TransitionSlideGlobal>{props.children}</TransitionSlideGlobal>
+                {/* <Transition>{props.children}</Transition> */}
               </Suspense>
             </ErrorBoundary>
             <SolidQueryDevtools initialIsOpen={false} />
