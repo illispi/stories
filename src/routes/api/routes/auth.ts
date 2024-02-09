@@ -6,7 +6,6 @@ import { db } from "../db";
 import { derive } from "./derive";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
-  .use(derive)
   .get("/status", async (context) => {
     if (!context.user) {
       return null;
@@ -121,4 +120,4 @@ export const authRoute = new Elysia({ prefix: "/auth" })
         username: t.String(),
       }),
     }
-  );
+  )

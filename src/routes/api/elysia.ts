@@ -14,3 +14,12 @@ export const app = new Elysia({ prefix: "/api" })
   .compile();
 
 export type App = typeof app;
+
+
+declare module "elysia" {
+  interface Context {
+    elysia: typeof Elysia;
+    user: User | null;
+    session: Session | null;
+  }
+}
