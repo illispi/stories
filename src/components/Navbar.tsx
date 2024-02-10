@@ -15,6 +15,7 @@ import { eden } from "~/app";
 import Auth from "./Auth";
 import { handleEden } from "~/utils/handleEden";
 import { getRequestEvent, isServer } from "solid-js/web";
+import { serverFetch } from "~/utils/serverFetch";
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
   return (
@@ -36,18 +37,19 @@ const Hamburger: Component<{
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
     queryFn: async () => {
-      const event = isServer ? getRequestEvent() : null;
-      return handleEden(
-        await eden.api.auth.status.get({
-          $fetch: {
-            headers: event
-              ? {
-                  ...Object.fromEntries(event?.request.headers),
-                }
-              : "",
-          },
-        })
-      );
+      // const event = isServer ? getRequestEvent() : null;
+      // return handleEden(
+      //   await eden.api.auth.status.get({
+      //     $fetch: {
+      //       headers: event
+      //         ? {
+      //             ...Object.fromEntries(event?.request.headers),
+      //           }
+      //         : "",
+      //     },
+      //   })
+      // );
+      return handleEden(await serverFetch(eden.api.auth.status.get));
     },
   }));
 
