@@ -2,7 +2,6 @@ import { getRequestEvent, isServer } from "solid-js/web";
 
 const server = <T>(func: () => T): T => {
   "use server";
-  console.log("server");
   return func({
     $fetch: {
       headers: getRequestEvent()
@@ -15,7 +14,6 @@ const server = <T>(func: () => T): T => {
 };
 
 const client = <T>(func: () => T): T => {
-  console.log("client");
   return func();
 };
 
