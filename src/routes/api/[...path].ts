@@ -1,10 +1,7 @@
 import { type APIEvent } from "@solidjs/start/server/types";
 import { app } from "./elysia";
 
-const handler = async (event: APIEvent) => {
-  console.log(event.request.headers);
-  return await app.handle(event.request);
-};
+const handler = async (event: APIEvent) => await app.handle(event.request);
 
 export const GET = handler;
 export const POST = handler;

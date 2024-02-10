@@ -24,7 +24,7 @@ import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 import { Transition } from "solid-transition-group";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
-//TODO enable suspense
+
 const queryClient = new QueryClient({
   defaultOptions: { queries: { suspense: true } },
 });
