@@ -29,7 +29,7 @@ export const derive = new Elysia().derive(
 
     // use headers instead of Cookie API to prevent type coercion
     const cookieHeader = context.request.headers.get("Cookie") ?? "";
-    console.log("🚀 ~ Header:", context.request.headers);
+    // console.log("🚀 ~ Header:", context.request.headers);
     const sessionId = lucia.readSessionCookie(cookieHeader);
     if (!sessionId) {
       return {
