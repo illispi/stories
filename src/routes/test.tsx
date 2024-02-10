@@ -2,15 +2,12 @@ import { createQuery } from "@tanstack/solid-query";
 import { Component, Show, Suspense } from "solid-js";
 import { eden } from "~/app";
 import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
 
 const test: Component = (props) => {
-  const authQuery = createQuery(() => ({
+  const testQuery = createQuery(() => ({
     queryKey: ["test"],
-    queryFn: async () => {
-      const test = handleEden(await eden.api.test.get());
-      console.log(test);
-      return test;
-    },
+    queryFn: async () => handleEden(await serverFetch(eden.api.test.get)),
 
     //NOTE below works:
     // queryFn: async () => {
@@ -32,7 +29,7 @@ const test: Component = (props) => {
     <div>
       <Suspense fallback="fallback">
         {/* <Show when={authQuery.data}>{(test) => <p>{test()[0].id}</p>}</Show> */}
-        <Show when={authQuery.data}>{(test) => <p>{test()}</p>}</Show>
+        <Show when={testQuery.data}>{(test) => <p>{test()}</p>}</Show>
       </Suspense>
     </div>
   );

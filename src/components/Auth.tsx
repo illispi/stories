@@ -5,11 +5,13 @@ import { createMutation, createQuery } from "@tanstack/solid-query";
 import { eden } from "~/app";
 import LoginA from "./LoginA";
 import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
 
 const Auth: VoidComponent = () => {
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
-    queryFn: async () => handleEden(await eden.api.auth.status.get()),
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.auth.status.get)),
   }));
 
   const logOutMut = createMutation(() => ({

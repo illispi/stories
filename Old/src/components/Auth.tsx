@@ -6,7 +6,6 @@ import LoginA from "./LoginA";
 import { action, cache, createAsync } from "@solidjs/router";
 import { getRequestEvent } from "solid-js/web";
 import { createQuery } from "@tanstack/solid-query";
-import { eden } from "~/app";
 
 const Auth: VoidComponent = () => {
   const authQuery = createQuery(() => ({

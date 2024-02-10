@@ -37,23 +37,9 @@ const Hamburger: Component<{
   const authQuery = createQuery(() => ({
     queryKey: ["auth"],
     queryFn: async () => {
-      // const event = isServer ? getRequestEvent() : null;
-      // return handleEden(
-      //   await eden.api.auth.status.get({
-      //     $fetch: {
-      //       headers: event
-      //         ? {
-      //             ...Object.fromEntries(event?.request.headers),
-      //           }
-      //         : "",
-      //     },
-      //   })
-      // );
       return handleEden(await serverFetch(eden.api.auth.status.get));
     },
   }));
-
-  // console.log(authQuery.data);
 
   createEffect(() => {
     window.addEventListener("popstate", function (event) {

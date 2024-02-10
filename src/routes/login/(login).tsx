@@ -14,6 +14,7 @@ import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
 import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
 
 const userSchema = object({
   username: string([
@@ -39,10 +40,11 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const authQuery = createQuery(() => ({
-    queryKey: ["auth"],
-    queryFn: async () => handleEden(await eden.api.auth.status.get()),
-  }));
+const authQuery = createQuery(() => ({
+  queryKey: ['auth'],
+  queryFn: async () => handleEden(await serverFetch(eden.api.auth.status.get)),
+}));
+
 
   const signInMut = createMutation(() => ({
     mutationFn: async (data) =>
