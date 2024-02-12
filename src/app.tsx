@@ -35,7 +35,6 @@ export default function App() {
     history.scrollRestoration = "manual";
   });
 
-
   if (import.meta.dev) {
     //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
     Sentry.init({
@@ -57,10 +56,9 @@ export default function App() {
     });
   }
 
-
   if (!isServer) {
     createScriptLoader({
-      src: "https://umami.domain.org/script.js",
+      src: "https://umami.delvis.org/script.js",
       "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcdeffeefedfed2ebd83",
       async: true,
     });

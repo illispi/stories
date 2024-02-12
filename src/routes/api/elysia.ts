@@ -7,6 +7,7 @@ import { authRoute } from "./routes/auth";
 import { testRoute } from "./routes/testRoute";
 import { derive } from "./routes/derive";
 import { ConfigEnv } from "vinxi/dist/types/lib/vite-dev";
+import { userRoute } from "./routes/user";
 
 interface ContextUser {
   user: User | null;
@@ -16,6 +17,7 @@ interface ContextUser {
 export const app = new Elysia({ prefix: "/api" })
   .use(authRoute)
   .use(testRoute)
+  .use(userRoute)
   .compile();
 
 export type App = typeof app;
