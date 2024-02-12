@@ -144,8 +144,6 @@ const Questions: ParentComponent<{
 const PersonalQuestions: ParentComponent = () => {
   const session = createAsync(getSessionAndData);
 
-  console.log(session());
-
   const params = useParams<{
     personalQuestions: "personalQuestions" | "theirQuestions";
   }>();

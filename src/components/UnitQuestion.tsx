@@ -215,7 +215,6 @@ export const UnitQuestion: ParentComponent<{
           (value[questionDB] === true || value[questionDB] === "yes") &&
           skip
         ) {
-          console.log(value[questionDB]);
           junctions = {
             ...junctions,
             [questionDB]:
