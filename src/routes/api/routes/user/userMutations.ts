@@ -1,115 +1,105 @@
-import { TRPCError } from "@trpc/server";
-import { userProcedure } from "../../utils";
 import { z } from "zod";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
 } from "~/types/zodFromTypes";
+import { sessionDer } from "../session";
+import { Elysia, t } from "elysia";
+import { db } from "../../db";
 
-export const removeAccountAndData = userProcedure.mutation(async ({ ctx }) => {
-  const deletion = await ctx.db
-    .deleteFrom("auth_user")
-    .where("id", "=", ctx.user.id)
-    .executeTakeFirst();
-
-  if (!deletion) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Deletion failed",
-    });
-  }
-
-  return "Deleted succesfully";
-});
-
-export const removePersonal = userProcedure.mutation(async ({ ctx }) => {
-  const deletion = await ctx.db
-    .deleteFrom("Personal_questions")
-    .where("user", "=", ctx.user.id)
-    .executeTakeFirst();
-
-  if (!deletion) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Deletion failed",
-    });
-  }
-
-  return "Deleted succesfully";
-});
-
-export const removeTheir = userProcedure
-  .input(z.object({ id: z.number() }))
-  .mutation(async ({ ctx, input }) => {
-    const deletion = await ctx.db
-      .deleteFrom("Their_questions")
-      .where("user", "=", ctx.user.id)
-      .where("id", "=", input.id)
+export const userMutationsRoute = new Elysia({ prefix: "/user/data/post" })
+  .use(sessionDer)
+  .post("/removeAccountAndData", async (context) => {
+    const deletion = await db
+      .deleteFrom("auth_user")
+      .where("id", "=", context.user?.id)
       .executeTakeFirst();
 
     if (!deletion) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Deletion failed",
-      });
+      throw new Error("Deletion failed");
     }
 
     return "Deleted succesfully";
-  });
-
-export const removeArticle = userProcedure
-  .input(z.object({ id: z.number() }))
-  .mutation(async ({ ctx, input }) => {
-    const deletion = await ctx.db
-      .deleteFrom("Articles")
-      .where("user", "=", ctx.user.id)
-      .where("id", "=", input.id)
+  })
+  .post("/removePersonal", async (context) => {
+    const deletion = await db
+      .deleteFrom("Personal_questions")
+      .where("user", "=", context.user?.id)
       .executeTakeFirst();
 
     if (!deletion) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Deletion failed",
-      });
+      throw new Error("Deletion failed");
     }
 
     return "Deleted succesfully";
-  });
+  })
+  .post(
+    "/removeTheir",
+    async (context) => {
+      const deletion = await db
+        .deleteFrom("Their_questions")
+        .where("user", "=", context.user?.id)
+        .where("id", "=", context.body.id)
+        .executeTakeFirst();
 
-export const editPersonal = userProcedure
-  .input(personalQuestionsSchema)
-  .mutation(async ({ ctx, input }) => {
-    const updated = await ctx.db
+      if (!deletion) {
+        throw new Error("Deletion failed");
+      }
+
+      return "Deleted succesfully";
+    },
+    { body: t.Object({ id: t.Number() }) }
+  )
+  .post(
+    "/removeArticle",
+    async (context) => {
+      const deletion = await db
+        .deleteFrom("Articles")
+        .where("user", "=", context.user?.id)
+        .where("id", "=", context.body.id)
+        .executeTakeFirst();
+
+      if (!deletion) {
+        throw new Error("Deletion failed");
+      }
+
+      return "Deleted succesfully";
+    },
+    { body: t.Object({ id: t.Number() }) }
+  )
+  .post("/editPersonal", async (context) => {
+    personalQuestionsSchema.parse(context.body);
+    //BUG test that this parse thows error
+    const updated = await db
       .updateTable("Personal_questions")
-      .set({ ...input, accepted: null })
-      .where("user", "=", ctx.user.id)
+      .set({ ...context.body, accepted: null })
+      .where("user", "=", context.user?.id)
       .executeTakeFirst();
 
     if (!updated) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Update failed",
-      });
+      throw new Error("Update failed");
     }
 
     return "Updated succesfully";
-  });
+  })
+  .post(
+    "/editTheir",
+    async (context) => {
+      theirQuestionsSchema.parse(context.body.data);
+      const updated = await db
+        .updateTable("Their_questions")
+        .set({ ...context.body.data, accepted: null })
+        .where("user", "=", context.user?.id)
+        .executeTakeFirst();
 
-export const editTheir = userProcedure
-  .input(z.object({ data: theirQuestionsSchema, id: z.number() }))
-  .mutation(async ({ ctx, input }) => {
-    const updated = await ctx.db
-      .updateTable("Their_questions")
-      .set({ ...input.data, accepted: null })
-      .where("user", "=", ctx.user.id)
-      .executeTakeFirst();
+      if (!updated) {
+        throw new Error("Update failed");
+      }
 
-    if (!updated) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Update failed",
-      });
-    }
-
-    return "Updated succesfully";
+      return "Updated succesfully";
+    },
+    { body: t.Object({ data: t.Object(), id: t.Number() }) }
+  )
+  .onError(({ error }) => {
+    return error.message;
   });

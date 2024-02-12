@@ -9,6 +9,8 @@ import { sessionDer } from "./routes/session";
 import { ConfigEnv } from "vinxi/dist/types/lib/vite-dev";
 import { userRoute } from "./routes/user";
 import { basicMutationsRoute } from "./routes/basic/mutations";
+import { userQueriesRoute } from "./routes/user/userQueries";
+import { userMutationsRoute } from "./routes/user/userMutations";
 
 interface ContextUser {
   user: User | null;
@@ -20,6 +22,8 @@ export const app = new Elysia({ prefix: "/api" })
   .use(testRoute)
   .use(userRoute)
   .use(basicMutationsRoute)
+  .use(userQueriesRoute)
+  .use(userMutationsRoute)
   .compile();
 
 export type App = typeof app;

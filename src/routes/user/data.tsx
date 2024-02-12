@@ -7,6 +7,7 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import { A, Navigate } from "@solidjs/router";
+import { createMutation } from "@tanstack/solid-query";
 import { route as routeGen } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
@@ -19,12 +20,14 @@ import {
   optional,
   string,
 } from "valibot";
+import { eden } from "~/app";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
+import { handleEden } from "~/utils/handleEden";
 
 const Box: ParentComponent = (props) => {
   return (
@@ -145,7 +148,6 @@ export const { route, Page } = ProtectedUser((session) => {
     not_have_schizophrenia_description: "Have or not have schizophrenia:",
   };
 
-  const utils = trpc.useContext();
 
   const [showPersonal, setShowPersonal] = createSignal(false);
   const [showTheirs, setShowTheirs] = createSignal(false);
@@ -157,7 +159,12 @@ export const { route, Page } = ProtectedUser((session) => {
 
   const [dir, setDir] = createSignal(1);
 
-  const removeAccAndDataMut = trpc.removeAccountAndData.useMutation();
+
+  const removeAccAndDataMut = createMutation(() => ({
+    mutationFn: async (data) => handleEden(await eden.api.user.data.post(data)),
+    // onSuccess: () => setTodo(Create(todoInsertSchema)),
+  }));
+  
 
   const personal = trpc.getPersonal.useQuery();
   const their = trpc.getTheirs.useQuery();

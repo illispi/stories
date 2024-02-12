@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { sessionDer } from "../session";
 import { db } from "../../db";
 
-export const testRoute = new Elysia({ prefix: "/user/get" })
+export const userQueriesRoute = new Elysia({ prefix: "/user/data/get" })
   .use(sessionDer)
   .get("/personal", async (context) => {
     const unSafe = await db
