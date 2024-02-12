@@ -4,7 +4,7 @@ import { db } from "../db";
 
 export const userRoute = new Elysia({ prefix: "/user" })
   .use(derive)
-  .get("", async (context) => {
+  .get("/personalQData", async (context) => {
     if (context.session?.userId) {
       const unSafe = await db
         .selectFrom("Personal_questions")

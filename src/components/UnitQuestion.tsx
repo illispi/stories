@@ -17,9 +17,7 @@ import {
   safeParse,
   string,
 } from "valibot";
-import { trpc } from "~/utils/trpc";
 import LoginA from "./LoginA";
-import { auth } from "~/auth/lucia";
 import { cache, createAsync } from "@solidjs/router";
 import { getRequestEvent } from "solid-js/web";
 
