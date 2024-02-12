@@ -18,26 +18,10 @@ import {
   string,
 } from "valibot";
 import LoginA from "./LoginA";
-import { cache, createAsync } from "@solidjs/router";
-import { getRequestEvent } from "solid-js/web";
-
-const getSession = cache(async () => {
-  "use server";
-  const request = getRequestEvent()?.request;
-  if (!request) {
-    return null;
-  }
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  if (!session) {
-    return null;
-  }
-  return session.user.username;
-}, "session");
-
-export const route = {
-  load: () => getSession(),
-};
+import { createQuery } from "@tanstack/solid-query";
+import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
+import { eden } from "~/app";
 
 const Box: ParentComponent<{ question: string }> = (props) => {
   return (
@@ -62,7 +46,12 @@ export const UnitQuestion: ParentComponent<{
   paginate: (newDirection: number) => void;
   setSubmissionStatus: Setter<string>;
 }> = (props) => {
-  const session = createAsync(getSession);
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.auth.status.get)),
+  }));
+
   const sendStats =
     props.LsName === "personalQuestions"
       ? trpc.postPersonalStats.useMutation()
@@ -364,8 +353,7 @@ export const UnitQuestion: ParentComponent<{
                       v === selection()
                         ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                         : " w-56"
-                    }
-                  >
+                    }>
                     {firstLetterUpperCase(v)}
                   </CustomButton>
                 </div>
@@ -379,8 +367,7 @@ export const UnitQuestion: ParentComponent<{
           <div class="flex flex-col items-center justify-end">
             <For
               each={["yes", "no", "unknown"]}
-              fallback={<div>No selection found</div>}
-            >
+              fallback={<div>No selection found</div>}>
               {(v) => (
                 <div class="m-2">
                   <CustomButton
@@ -406,8 +393,7 @@ export const UnitQuestion: ParentComponent<{
                       v === selection()
                         ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                         : "w-56"
-                    }
-                  >
+                    }>
                     {firstLetterUpperCase(v)}
                   </CustomButton>
                 </div>
@@ -417,8 +403,7 @@ export const UnitQuestion: ParentComponent<{
         </Box>
       </Match>
       <Match
-        when={questionType === "integer" && questionDB === "weight_amount"}
-      >
+        when={questionType === "integer" && questionDB === "weight_amount"}>
         <Box question={question}>
           <form onSubmit={handleNumber}>
             <div class="flex flex-col items-center justify-end">
@@ -444,8 +429,7 @@ export const UnitQuestion: ParentComponent<{
                   !metric()
                     ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500  active:bg-green-600"
                     : "w-56"
-                }
-              >
+                }>
                 Imperial (lbs)
               </CustomButton>
               <CustomButton
@@ -454,8 +438,7 @@ export const UnitQuestion: ParentComponent<{
                   metric()
                     ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                     : "w-56"
-                }
-              >
+                }>
                 Metric (kg)
               </CustomButton>
               <CustomButton class="mt-12" type="submit">
@@ -537,8 +520,7 @@ export const UnitQuestion: ParentComponent<{
                   ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                   : " w-56"
               }
-              onClick={() => handleSubmit({ [questionDB]: true })}
-            >
+              onClick={() => handleSubmit({ [questionDB]: true })}>
               Yes
             </CustomButton>
             <CustomButton
@@ -558,8 +540,7 @@ export const UnitQuestion: ParentComponent<{
                         1
                     : undefined
                 )
-              }
-            >
+              }>
               No
             </CustomButton>
           </div>
@@ -575,7 +556,7 @@ export const UnitQuestion: ParentComponent<{
                   <CustomButton
                     class={
                       multiSelections()[v[0]] === true
-                        ? "bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600 w-56"
+                        ? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
                         : "w-56"
                     }
                     onClick={() => {
@@ -585,8 +566,7 @@ export const UnitQuestion: ParentComponent<{
                           : { ...multiSelections(), [v[0]]: true }
                       );
                       setError(null);
-                    }}
-                  >
+                    }}>
                     {v[1]}
                   </CustomButton>
                 </>
@@ -594,8 +574,7 @@ export const UnitQuestion: ParentComponent<{
             </For>
             <CustomButton
               class="mt-12"
-              onClick={() => handleMultiSubmit(multiSelections())}
-            >
+              onClick={() => handleMultiSubmit(multiSelections())}>
               Next
             </CustomButton>
           </div>
@@ -606,7 +585,7 @@ export const UnitQuestion: ParentComponent<{
       <Match when={questionType === "submit"}>
         <Box question={question}>
           <Show
-            when={session()}
+            when={authQuery.data}
             fallback={
               <div class="flex w-11/12 flex-col items-center justify-center gap-6">
                 <h3 class="text-center text-lg font-semibold">
@@ -614,8 +593,7 @@ export const UnitQuestion: ParentComponent<{
                 </h3>
                 <LoginA />
               </div>
-            }
-          >
+            }>
             <Show
               when={!sendStats.isPending || sendStats.isSuccess}
               fallback={
@@ -624,8 +602,7 @@ export const UnitQuestion: ParentComponent<{
                     Submitting
                   </CustomButton>
                 </>
-              }
-            >
+              }>
               <>
                 <CustomButton onClick={submitResults}>Submit</CustomButton>
               </>
