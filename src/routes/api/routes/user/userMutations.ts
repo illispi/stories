@@ -1,4 +1,3 @@
-import { z } from "zod";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
@@ -98,7 +97,7 @@ export const userMutationsRoute = new Elysia({ prefix: "/user/data/post" })
 
       return "Updated succesfully";
     },
-    { body: t.Object({ data: t.Object(), id: t.Number() }) }
+    { body: t.Object({ data: t.Any(), id: t.Number() }) }
   )
   .onError(({ error }) => {
     return error.message;

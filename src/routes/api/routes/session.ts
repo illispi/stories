@@ -6,9 +6,9 @@ export const sessionDer = new Elysia().derive(
   async (
     context
   ): Promise<{
-    user: User | null;
-    session: Session | null;
-  }> => {
+    user: User;
+    session: Session;
+  } | null> => {
     // CSRF check
     if (process.env.NODE_ENV === "production")
       if (context.request.method) {
@@ -20,10 +20,7 @@ export const sessionDer = new Elysia().derive(
           !hostHeader ||
           !verifyRequestOrigin(originHeader, [hostHeader])
         ) {
-          return {
-            user: null,
-            session: null,
-          };
+          return null;
         }
       }
 
@@ -31,10 +28,7 @@ export const sessionDer = new Elysia().derive(
     const cookieHeader = context.request.headers.get("Cookie") ?? "";
     const sessionId = lucia.readSessionCookie(cookieHeader);
     if (!sessionId) {
-      return {
-        user: null,
-        session: null,
-      };
+      return null;
     }
 
     const { session, user } = await lucia.validateSession(sessionId);
