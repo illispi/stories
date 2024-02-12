@@ -603,16 +603,20 @@ export const UnitQuestion: ParentComponent<{
               </div>
             }>
             <Show
-              when={!sendStats.isPending || sendStats.isSuccess}
+              when={!sendStats.isSuccess}
               fallback={
                 <>
-                  <CustomButton class="bg-gray-500 hover:bg-gray-600 focus:bg-gray-500 active:bg-gray-600">
-                    Submitting
-                  </CustomButton>
+                  <div class="text-lg font-semibold">
+                    Submitted succesfully!
+                  </div>
                 </>
               }>
               <>
-                <CustomButton onClick={submitResults}>Submit</CustomButton>
+                <CustomButton
+                  disabled={sendStats.isPending}
+                  onClick={submitResults}>
+                  Submit
+                </CustomButton>
               </>
             </Show>
           </Show>

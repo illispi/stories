@@ -14,7 +14,7 @@ export default createHandler(() => (
           <link rel={"icon"} href={"/favicon.png"} />
           {assets}
         </head>
-        <body>
+        <body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
           <div id={"app"}>{children}</div>
           {scripts}
         </body>
