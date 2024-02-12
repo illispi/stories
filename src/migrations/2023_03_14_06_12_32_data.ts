@@ -266,6 +266,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("gender", "text", (col) =>
       col.notNull().check(sql`gender in ('male', 'female', 'other')`)
     )
+    .addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
     .addColumn("relatives", "text", (col) =>
       col.notNull().check(sql`relatives in ('yes', 'no', 'unknown')`)
     )

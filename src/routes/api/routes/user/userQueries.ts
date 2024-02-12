@@ -19,59 +19,39 @@ export const testRoute = new Elysia({ prefix: "/user/get" })
 
     return safe;
   })
-  .get("/theirs", async (context) => {})
-  .get("/articles", async (context) => {});
+  .get("/theirs", async (context) => {
+    const unSafe = await db
+      .selectFrom("Their_questions")
+      .selectAll()
+      .where("user", "=", context.user?.id)
+      .execute();
 
-export const getPersonal = userProcedure.query(async ({ ctx }) => {
-  const unSafe = await ctx.db
-    .selectFrom("Personal_questions")
-    .selectAll()
-    .where("user", "=", ctx.user.id)
-    .executeTakeFirst();
+    if (!unSafe.length) {
+      return null;
+    }
 
-  if (!unSafe) {
-    return null;
-  }
+    const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
+      const { user, id, created_at, ...safeTemp } = unSafeEl;
+      return safeTemp;
+    });
 
-  const { user, created_at, id, ...safe } = unSafe;
+    return safe;
+  })
+  .get("/articles", async (context) => {
+    const unSafe = await db
+      .selectFrom("Articles")
+      .selectAll()
+      .where("user", "=", context.user?.id)
+      .execute();
 
-  return safe;
-});
+    if (!unSafe.length) {
+      return null;
+    }
 
-export const getTheirs = userProcedure.query(async ({ ctx }) => {
-  const unSafe = await ctx.db
-    .selectFrom("Their_questions")
-    .selectAll()
-    .where("user", "=", ctx.user.id)
-    .execute();
+    const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
+      const { user, created_at, ...safeTemp } = unSafeEl;
+      return safeTemp;
+    });
 
-  if (!unSafe.length) {
-    return null;
-  }
-
-  const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
-    const { user, created_at, ...safeTemp } = unSafeEl;
-    return safeTemp;
+    return safe;
   });
-
-  return safe;
-});
-
-export const getArticles = userProcedure.query(async ({ ctx }) => {
-  const unSafe = await ctx.db
-    .selectFrom("Articles")
-    .selectAll()
-    .where("user", "=", ctx.user.id)
-    .execute();
-
-  if (!unSafe.length) {
-    return null;
-  }
-
-  const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
-    const { user, created_at, ...safeTemp } = unSafeEl;
-    return safeTemp;
-  });
-
-  return safe;
-});
