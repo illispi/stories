@@ -180,7 +180,7 @@ export const { route, Page } = ProtectedUser((session) => {
   const personalDataQuery = createQuery(() => ({
     queryKey: ["personalData"],
     queryFn: async () =>
-      handleEden(await serverFetch(eden.api.user.data.get.articles.get)),
+      handleEden(await serverFetch(eden.api.user.data.get.personal.get)),
   }));
 
   const theirDataQuery = createQuery(() => ({
@@ -195,20 +195,20 @@ export const { route, Page } = ProtectedUser((session) => {
       handleEden(await serverFetch(eden.api.user.data.get.articles.get)),
   }));
 
-  const remeovePersonalMut = createMutation(() => ({
+  const removePersonalMut = createMutation(() => ({
     mutationFn: async () =>
       handleEden(await eden.api.user.data.post.removePersonal.post()),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["personalData"] }),
   }));
 
-  const remeoveTheirMut = createMutation(() => ({
+  const removeTheirMut = createMutation(() => ({
     mutationFn: async (data: number) =>
       handleEden(await eden.api.user.data.post.removeTheir.post({ id: data })),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["theirData"] }),
   }));
 
-  const remeoveArticleMut = createMutation(() => ({
+  const removeArticleMut = createMutation(() => ({
     mutationFn: async (data: number) =>
       handleEden(
         await eden.api.user.data.post.removeArticle.post({ id: data })
@@ -235,12 +235,12 @@ export const { route, Page } = ProtectedUser((session) => {
   });
 
   createEffect(() => {
-    if (personal.data) {
+    if (personalDataQuery.data) {
       const arrKeys = Object.keys(headers);
       const initial = Object.fromEntries(
         arrKeys
-          .filter((e) => personal.data?.[e])
-          .map((k) => [k, personal.data?.[k]])
+          .filter((e) => personalDataQuery.data?.[e])
+          .map((k) => [k, personalDataQuery.data?.[k]])
       );
       arrKeys.forEach((e) => setValue(personalForm, e, initial?.[e]));
     }
@@ -250,7 +250,7 @@ export const { route, Page } = ProtectedUser((session) => {
     values,
     event
   ) => {
-    editPersonalMut.mutateAsync({ ...personal.data, ...values });
+    editPersonalMut.mutateAsync({ ...personalDataQuery.data, ...values });
     setPersonalEdit(false);
   };
 
@@ -265,7 +265,7 @@ export const { route, Page } = ProtectedUser((session) => {
           Personal poll data
         </h2>
         <Show
-          when={personal.data}
+          when={personalDataQuery.data}
           fallback={
             <div class="flex w-full flex-col items-center justify-center gap-8">
               <p class="text-center text-lg">
@@ -273,7 +273,7 @@ export const { route, Page } = ProtectedUser((session) => {
               </p>
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-                href={route("/questionares/")}
+                href={routeGen("/questionares/")}
                 noScroll={false}>
                 Do personal poll
               </A>
@@ -314,14 +314,14 @@ export const { route, Page } = ProtectedUser((session) => {
                   </CustomButton>
                 </Show>
                 <h4 class="text-lg font-semibold">{`status: ${
-                  personal.data?.accepted
+                  personalDataQuery.data?.accepted
                     ? "Accepted"
-                    : personal.data?.accepted === null
+                    : personalDataQuery.data?.accepted === null
                       ? "Pending"
                       : "Declined"
                 }`}</h4>
-                <Show when={!personal.data?.accepted}>
-                  {personal.data?.decline_reason}
+                <Show when={!personalDataQuery.data?.accepted}>
+                  {personalDataQuery.data?.decline_reason}
                 </Show>
 
                 <Show
@@ -333,7 +333,10 @@ export const { route, Page } = ProtectedUser((session) => {
                           Object.keys(headers) as Array<keyof typeof headers>
                         }>
                         {(el) => (
-                          <div classList={{ ["hidden"]: !personal.data?.[el] }}>
+                          <div
+                            classList={{
+                              ["hidden"]: !personalDataQuery.data?.[el],
+                            }}>
                             <h2 class="text-2xl font-bold lg:text-3xl">
                               {headers[el]}
                             </h2>
@@ -376,11 +379,11 @@ export const { route, Page } = ProtectedUser((session) => {
                   <For
                     each={Object.keys(headers) as Array<keyof typeof headers>}>
                     {(el) => (
-                      <Show when={personal.data?.[el]}>
+                      <Show when={personalDataQuery.data?.[el]}>
                         <h2 class="text-2xl font-bold lg:text-3xl">
                           {headers[el]}
                         </h2>
-                        <p>{personal.data?.[el]}</p>
+                        <p>{personalDataQuery.data?.[el]}</p>
                       </Show>
                     )}
                   </For>
@@ -396,7 +399,7 @@ export const { route, Page } = ProtectedUser((session) => {
           Other poll data
         </h2>
         <Show
-          when={their.data}
+          when={theirDataQuery.data}
           fallback={
             <div class="flex w-full flex-col items-center justify-center gap-8">
               <p class="text-center text-lg">
@@ -419,7 +422,7 @@ export const { route, Page } = ProtectedUser((session) => {
           </CustomButton>
 
           <CssTranstionGrow visible={showTheirs()}>
-            <Show when={their.data}>
+            <Show when={theirDataQuery.data}>
               {(their) => (
                 <div class="flex w-full flex-col gap-16">
                   <div class="flex items-center justify-center">
@@ -480,7 +483,7 @@ export const { route, Page } = ProtectedUser((session) => {
           Your submitted articles
         </h2>
         <Show
-          when={their.data}
+          when={theirDataQuery.data}
           fallback={
             <div class="flex w-full flex-col items-center justify-center gap-8">
               <p class="text-center text-lg">
@@ -503,7 +506,7 @@ export const { route, Page } = ProtectedUser((session) => {
           </CustomButton>
 
           <CssTranstionGrow visible={showArticles()}>
-            <Show when={articles.data}>
+            <Show when={articlesDataQuery.data}>
               {(articles) => (
                 <div class="flex w-full flex-col gap-16">
                   <div class="flex items-center justify-center">
