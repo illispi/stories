@@ -3,10 +3,10 @@ import { generateId } from "lucia";
 import { Argon2id } from "oslo/password";
 import { lucia } from "~/lib/auth/lucia";
 import { db } from "../db";
-import { derive } from "./derive";
+import { sessionDer } from "./session";
 
 export const authRoute = new Elysia({ prefix: "/auth" })
-  .use(derive)
+  .use(sessionDer)
   .get("/status", async (context) => {
     if (!context.user) {
       return null;

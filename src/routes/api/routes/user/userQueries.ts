@@ -1,4 +1,26 @@
-import { userProcedure } from "../../utils";
+import { Elysia } from "elysia";
+import { sessionDer } from "../session";
+import { db } from "../../db";
+
+export const testRoute = new Elysia({ prefix: "/user/get" })
+  .use(sessionDer)
+  .get("/personal", async (context) => {
+    const unSafe = await db
+      .selectFrom("Personal_questions")
+      .selectAll()
+      .where("user", "=", context.user?.id)
+      .executeTakeFirst();
+
+    if (!unSafe) {
+      return null;
+    }
+
+    const { user, created_at, id, ...safe } = unSafe;
+
+    return safe;
+  })
+  .get("/theirs", async (context) => {})
+  .get("/articles", async (context) => {});
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
   const unSafe = await ctx.db

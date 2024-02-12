@@ -25,7 +25,6 @@ import PaginationNav from "~/components/PaginationNav";
 import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
-import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent = (props) => {
   return (

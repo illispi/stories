@@ -1,9 +1,9 @@
 import { Elysia } from "elysia";
-import { derive } from "./derive";
+import { sessionDer } from "./session";
 import { db } from "../db";
 
 export const userRoute = new Elysia({ prefix: "/user" })
-  .use(derive)
+  .use(sessionDer)
   .get("/personalQData", async (context) => {
     if (context.session?.userId) {
       const unSafe = await db

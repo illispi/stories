@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { Elysia, t } from "elysia";
 import { db } from "../../db";
-import { derive } from "../derive";
+import { sessionDer } from "../session";
 import {
   personalQuestionsSchema,
   theirQuestionsSchema,
 } from "~/types/zodFromTypes";
 
 export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
-  .use(derive)
+  .use(sessionDer)
   .post("/personal", async (context) => {
     personalQuestionsSchema.parse(context.body);
 
@@ -16,7 +16,7 @@ export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
       .selectFrom("Personal_questions")
       .innerJoin("auth_user", "Personal_questions.user", "auth_user.id")
       .select(["Personal_questions.id"])
-      .where("auth_user.id", "=", context.session?.userId)
+      .where("auth_user.id", "=", context.user?.id)
       .executeTakeFirst();
 
     if (existsAlready) {
@@ -27,7 +27,7 @@ export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
         .insertInto("Personal_questions")
         .values({
           ...context.body,
-          user: context.session?.userId,
+          user: context.user?.id,
           accepted: null,
         })
         .executeTakeFirst();
@@ -47,7 +47,7 @@ export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
       .insertInto("Their_questions")
       .values({
         ...context.body,
-        user: context.session?.userId,
+        user: context.user?.id,
         accepted: null,
       })
       .executeTakeFirst();
@@ -76,7 +76,7 @@ export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
       .insertInto("Articles")
       .values({
         ...context.body,
-        user: context.session?.userId,
+        user: context.user?.id,
         accepted: null,
       })
       .executeTakeFirst();

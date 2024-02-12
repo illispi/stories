@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { Session, User, verifyRequestOrigin } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
 
-export const derive = new Elysia().derive(
+export const sessionDer = new Elysia().derive(
   async (
     context
   ): Promise<{

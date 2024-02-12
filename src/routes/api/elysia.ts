@@ -5,7 +5,7 @@ import type { User, Session } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
 import { authRoute } from "./routes/auth";
 import { testRoute } from "./routes/testRoute";
-import { derive } from "./routes/derive";
+import { sessionDer } from "./routes/session";
 import { ConfigEnv } from "vinxi/dist/types/lib/vite-dev";
 import { userRoute } from "./routes/user";
 import { basicMutationsRoute } from "./routes/basic/mutations";
