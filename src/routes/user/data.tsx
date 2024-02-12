@@ -7,7 +7,11 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import { A, Navigate } from "@solidjs/router";
-import { createMutation } from "@tanstack/solid-query";
+import {
+  createMutation,
+  createQuery,
+  useQueryClient,
+} from "@tanstack/solid-query";
 import { route as routeGen } from "routes-gen";
 import type { ParentComponent } from "solid-js";
 import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
@@ -28,6 +32,7 @@ import ProtectedUser from "~/components/ProtectedUser";
 import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
 import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
 
 const Box: ParentComponent = (props) => {
   return (
@@ -132,6 +137,11 @@ const PersonalFormSchema = object({
 
 type PersonalForm = Input<typeof PersonalFormSchema>;
 
+interface theirEdit {
+  data: any;
+  id: number;
+}
+
 export const { route, Page } = ProtectedUser((session) => {
   //TODO test roles
   console.log(session);
@@ -148,7 +158,6 @@ export const { route, Page } = ProtectedUser((session) => {
     not_have_schizophrenia_description: "Have or not have schizophrenia:",
   };
 
-
   const [showPersonal, setShowPersonal] = createSignal(false);
   const [showTheirs, setShowTheirs] = createSignal(false);
   const [showArticles, setShowArticles] = createSignal(false);
@@ -159,28 +168,66 @@ export const { route, Page } = ProtectedUser((session) => {
 
   const [dir, setDir] = createSignal(1);
 
-
   const removeAccAndDataMut = createMutation(() => ({
-    mutationFn: async (data) => handleEden(await eden.api.user.data.post(data)),
-    // onSuccess: () => setTodo(Create(todoInsertSchema)),
+    mutationFn: async () =>
+      handleEden(await eden.api.user.data.post.removeAccountAndData.post()),
   }));
-  
 
-  const personal = trpc.getPersonal.useQuery();
-  const their = trpc.getTheirs.useQuery();
-  const articles = trpc.getArticles.useQuery();
+  //BUG should removeAcc redirect?
 
-  const removePersonalMut = trpc.removePersonal.useMutation(() => ({
-    onSuccess: () => utils.getPersonal.invalidate(),
+  const queryClient = useQueryClient();
+
+  const personalDataQuery = createQuery(() => ({
+    queryKey: ["personalData"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.user.data.get.articles.get)),
   }));
-  const removeTheirMut = trpc.removeTheir.useMutation(() => ({
-    onSuccess: () => utils.getTheirs.invalidate(),
+
+  const theirDataQuery = createQuery(() => ({
+    queryKey: ["theirData"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.user.data.get.theirs.get)),
   }));
-  const removeArticleMut = trpc.removeArticle.useMutation(() => ({
-    onSuccess: () => utils.getArticles.invalidate(),
+
+  const articlesDataQuery = createQuery(() => ({
+    queryKey: ["articlesData"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.user.data.get.articles.get)),
   }));
-  const editPersonalMut = trpc.editPersonal.useMutation(() => ({
-    onSuccess: () => utils.getPersonal.invalidate(),
+
+  const remeovePersonalMut = createMutation(() => ({
+    mutationFn: async () =>
+      handleEden(await eden.api.user.data.post.removePersonal.post()),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["personalData"] }),
+  }));
+
+  const remeoveTheirMut = createMutation(() => ({
+    mutationFn: async (data: number) =>
+      handleEden(await eden.api.user.data.post.removeTheir.post({ id: data })),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["theirData"] }),
+  }));
+
+  const remeoveArticleMut = createMutation(() => ({
+    mutationFn: async (data: number) =>
+      handleEden(
+        await eden.api.user.data.post.removeArticle.post({ id: data })
+      ),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["articlesData"] }),
+  }));
+
+  const editPersonalMut = createMutation(() => ({
+    mutationFn: async () =>
+      handleEden(await eden.api.user.data.post.editPersonal.post()),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["personalData"] }),
+  }));
+
+  const editTheirMut = createMutation(() => ({
+    mutationFn: async (data: theirEdit) =>
+      handleEden(await eden.api.user.data.post.editTheir.post({ ...data })),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["theirData"] }),
   }));
 
   const [personalForm, { Form, Field }] = createForm<PersonalForm>({
@@ -227,18 +274,15 @@ export const { route, Page } = ProtectedUser((session) => {
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={route("/questionares/")}
-                noScroll={false}
-              >
+                noScroll={false}>
                 Do personal poll
               </A>
             </div>
-          }
-        >
+          }>
           <CustomButton
             onClick={() => {
               setShowPersonal(() => !showPersonal());
-            }}
-          >
+            }}>
             {`${!showPersonal() ? "Show" : "Close"} personal questions data`}
           </CustomButton>
 
@@ -249,8 +293,7 @@ export const { route, Page } = ProtectedUser((session) => {
                   class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
                   onClick={() => {
                     removePersonalMut.mutateAsync();
-                  }}
-                >
+                  }}>
                   Delete this personal poll data
                 </CustomButton>
                 <Show
@@ -259,17 +302,14 @@ export const { route, Page } = ProtectedUser((session) => {
                     <CustomButton
                       onClick={() => {
                         setPersonalEdit(false);
-                      }}
-                    >
+                      }}>
                       Cancel editing personal poll data
                     </CustomButton>
-                  }
-                >
+                  }>
                   <CustomButton
                     onClick={() => {
                       setPersonalEdit(true);
-                    }}
-                  >
+                    }}>
                     Edit this personal poll data
                   </CustomButton>
                 </Show>
@@ -291,8 +331,7 @@ export const { route, Page } = ProtectedUser((session) => {
                       <For
                         each={
                           Object.keys(headers) as Array<keyof typeof headers>
-                        }
-                      >
+                        }>
                         {(el) => (
                           <div classList={{ ["hidden"]: !personal.data?.[el] }}>
                             <h2 class="text-2xl font-bold lg:text-3xl">
@@ -329,16 +368,13 @@ export const { route, Page } = ProtectedUser((session) => {
                             );
                           });
                         }}
-                        type="submit"
-                      >
+                        type="submit">
                         Submit Edit
                       </CustomButton>
                     </Form>
-                  }
-                >
+                  }>
                   <For
-                    each={Object.keys(headers) as Array<keyof typeof headers>}
-                  >
+                    each={Object.keys(headers) as Array<keyof typeof headers>}>
                     {(el) => (
                       <Show when={personal.data?.[el]}>
                         <h2 class="text-2xl font-bold lg:text-3xl">
@@ -369,19 +405,16 @@ export const { route, Page } = ProtectedUser((session) => {
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={routeGen("/questionares/")}
-                noScroll={false}
-              >
+                noScroll={false}>
                 Do other poll
               </A>
             </div>
-          }
-        >
+          }>
           <CustomButton
             class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
             onClick={() => {
               setShowTheirs(() => !showTheirs());
-            }}
-          >
+            }}>
             {`${!showTheirs() ? "Show" : "Close"} your other poll data`}
           </CustomButton>
 
@@ -409,8 +442,7 @@ export const { route, Page } = ProtectedUser((session) => {
                             removeTheirMut.mutateAsync({
                               id: their()[pageTheir()].id,
                             });
-                          }}
-                        >
+                          }}>
                           Delete this poll data
                         </CustomButton>
                         <Show when={their()[pageTheir()].personality_before}>
@@ -427,8 +459,7 @@ export const { route, Page } = ProtectedUser((session) => {
                           <p>{their()[pageTheir()].personality_after}</p>
                         </Show>
                         <Show
-                          when={their()[pageTheir()].what_others_should_know}
-                        >
+                          when={their()[pageTheir()].what_others_should_know}>
                           <h2 class="text-2xl font-bold lg:text-3xl">
                             What others should know about schizophrenia:
                           </h2>
@@ -458,19 +489,16 @@ export const { route, Page } = ProtectedUser((session) => {
               <A
                 class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
                 href={routeGen("/articles/")}
-                noScroll={false}
-              >
+                noScroll={false}>
                 Submit articles
               </A>
             </div>
-          }
-        >
+          }>
           <CustomButton
             class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
             onClick={() => {
               setShowArticles(() => !showArticles());
-            }}
-          >
+            }}>
             {`${!showArticles() ? "Show" : "Close"} your submitted articles`}
           </CustomButton>
 
@@ -491,15 +519,13 @@ export const { route, Page } = ProtectedUser((session) => {
                   <TransitionSlide dir={dir()}>
                     <Show
                       when={pageArticles() === 0 ? true : pageArticles()}
-                      keyed
-                    >
+                      keyed>
                       <div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
                         <For
                           each={articles().slice(
                             pageArticles() * 5,
                             pageArticles() * 5 + 5
-                          )}
-                        >
+                          )}>
                           {(fiveArticles) => (
                             <div class="flex w-full flex-col items-center justify-center gap-8">
                               <CustomButton
@@ -508,14 +534,12 @@ export const { route, Page } = ProtectedUser((session) => {
                                   removeArticleMut.mutateAsync({
                                     id: fiveArticles.id,
                                   });
-                                }}
-                              >
+                                }}>
                                 Delete this article
                               </CustomButton>
                               <a
                                 class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
-                                href={fiveArticles.link}
-                              >
+                                href={fiveArticles.link}>
                                 {fiveArticles.link}
                               </a>
                               <p class="w-full flex-1 border-b-2 border-b-fuchsia-400 pb-8 text-base">
@@ -550,8 +574,7 @@ export const { route, Page } = ProtectedUser((session) => {
           class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
           onClick={() => {
             setShowDeleteAccount(!showDeleteAccount());
-          }}
-        >
+          }}>
           {`${!showDeleteAccount() ? "Show" : "Close"}`}
         </CustomButton>
 
@@ -565,15 +588,13 @@ export const { route, Page } = ProtectedUser((session) => {
                 class=" bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                 onClick={() => {
                   removeAccAndDataMut.mutateAsync();
-                }}
-              >
+                }}>
                 Delete account and data
               </CustomButton>
               <CustomButton
                 onClick={() => {
                   setShowDeleteAccount(false);
-                }}
-              >
+                }}>
                 Cancel deleting account/data
               </CustomButton>
             </div>
