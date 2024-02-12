@@ -7,7 +7,7 @@ import { Elysia, t } from "elysia";
 import { db } from "../../db";
 import { derive } from "../derive";
 
-export const testRoute = new Elysia({ prefix: "/basic/post" })
+export const basicMutationsRoute = new Elysia({ prefix: "/basic/post" })
   .use(derive)
   .post(
     "/personal",

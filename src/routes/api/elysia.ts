@@ -8,6 +8,7 @@ import { testRoute } from "./routes/testRoute";
 import { derive } from "./routes/derive";
 import { ConfigEnv } from "vinxi/dist/types/lib/vite-dev";
 import { userRoute } from "./routes/user";
+import { basicMutationsRoute } from "./routes/basic/mutations";
 
 interface ContextUser {
   user: User | null;
@@ -18,6 +19,7 @@ export const app = new Elysia({ prefix: "/api" })
   .use(authRoute)
   .use(testRoute)
   .use(userRoute)
+  .use(basicMutationsRoute)
   .compile();
 
 export type App = typeof app;

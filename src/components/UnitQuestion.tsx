@@ -18,7 +18,7 @@ import {
   string,
 } from "valibot";
 import LoginA from "./LoginA";
-import { createQuery } from "@tanstack/solid-query";
+import { createMutation, createQuery } from "@tanstack/solid-query";
 import { handleEden } from "~/utils/handleEden";
 import { serverFetch } from "~/utils/serverFetch";
 import { eden } from "~/app";
@@ -52,10 +52,18 @@ export const UnitQuestion: ParentComponent<{
       handleEden(await serverFetch(eden.api.auth.status.get)),
   }));
 
+  const personalMut = createMutation(() => ({
+    mutationFn: async (data) =>
+      handleEden(await eden.api.basic.post.personal.post(data)),
+  }));
+
+  const theirMut = createMutation(() => ({
+    mutationFn: async (data) =>
+      handleEden(await eden.api.basic.post.their.post(data)),
+  }));
+
   const sendStats =
-    props.LsName === "personalQuestions"
-      ? trpc.postPersonalStats.useMutation()
-      : trpc.postTheirStats.useMutation();
+    props.LsName === "personalQuestions" ? personalMut : theirMut;
 
   createEffect(() => {
     if (sendStats.isSuccess) {
