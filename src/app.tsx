@@ -22,6 +22,7 @@ import NavBar from "./components/Navbar";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 import { Transition } from "solid-transition-group";
+import { createScriptLoader } from "@solid-primitives/script-loader";
 
 export const eden = edenTreaty<App>(clientEnv.HOST_URL);
 
@@ -34,45 +35,35 @@ export default function App() {
     history.scrollRestoration = "manual";
   });
 
-  //BUG below fails
 
-  // if (!DEV) {
-  //   //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
-  //   Sentry.init({
-  //     dsn: 'https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1',
-  //     integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+  if (import.meta.dev) {
+    //TODO update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
+    Sentry.init({
+      dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
+      integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
-  //     // Set tracesSampleRate to 1.0 to capture 100%
-  //     // of transactions for performance monitoring.
-  //     // We recommend adjusting this value in production
-  //     tracesSampleRate: 0.1,
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      tracesSampleRate: 0.1,
 
-  //     // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-  //     // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+      // // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+      // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
 
-  //     // Capture Replay for 10% of all sessions,
-  //     // plus 100% of sessions with an error
-  //     replaysSessionSampleRate: 0.1,
-  //     replaysOnErrorSampleRate: 1.0,
-  //   });
-  // }
+      // Capture Replay for 10% of all sessions,
+      // plus 100% of sessions with an error
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+    });
+  }
 
-  //TODO script loader should work now
 
   if (!isServer) {
-    const script = document.createElement("script");
-    script.src = "https://umami.delvis.org/script.js";
-    script.async = true;
-    script.setAttribute(
-      "data-website-id",
-      "cbdde5c6-7ae6-4d53-9f16-cf558c6110bd"
-    );
-    createRenderEffect(() => {
-      document.head.appendChild(script);
+    createScriptLoader({
+      src: "https://umami.domain.org/script.js",
+      "data-website-id": "ba170e55-8926-4fc2-a36f-a4bbcdeffeefedfed2ebd83",
+      async: true,
     });
-    onCleanup(
-      () => document.head.contains(script) && document.head.removeChild(script)
-    );
   }
 
   return (
@@ -83,10 +74,9 @@ export default function App() {
             <Title>Schizophrenia poll</Title>
             <ErrorBoundary
               fallback={(e, reset) => {
-                //TODO re-enable
-                // if (!DEV) {
-                //   Sentry.captureException(e);
-                // }
+                if (import.meta.dev) {
+                  Sentry.captureException(e);
+                }
                 console.log(e);
                 return (
                   <div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">

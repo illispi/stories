@@ -5,7 +5,12 @@ import {
   valiForm,
 } from "@modular-forms/solid";
 import { useNavigate, useSearchParams } from "@solidjs/router";
-import { createMutation, createQuery } from "@tanstack/solid-query";
+import {
+  QueryClient,
+  createMutation,
+  createQuery,
+  useQueryClient,
+} from "@tanstack/solid-query";
 import { createEffect, createSignal } from "solid-js";
 
 import { Input, maxLength, minLength, object, parse, string } from "valibot";
@@ -34,28 +39,32 @@ const Login = () => {
     parse(userSchema, { password, username });
   };
 
+  const queryClient = useQueryClient();
+
   // const [username, setUsername] = createSignal<null | string>(null);
   // const [password, setPassword] = createSignal<null | string>(null);
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-const authQuery = createQuery(() => ({
-  queryKey: ['auth'],
-  queryFn: async () => handleEden(await serverFetch(eden.api.auth.status.get)),
-}));
-
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.auth.status.get)),
+  }));
 
   const signInMut = createMutation(() => ({
     mutationFn: async (data) =>
       handleEden(await eden.api.auth.signin.post(data)),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   const signUpMut = createMutation(() => ({
     mutationFn: async (data) =>
       handleEden(await eden.api.auth.signup.post(data)),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   createEffect(() => {

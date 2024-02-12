@@ -1,7 +1,11 @@
 import { Show, type VoidComponent } from "solid-js";
 import CustomButton from "./CustomButton";
 
-import { createMutation, createQuery } from "@tanstack/solid-query";
+import {
+  createMutation,
+  createQuery,
+  useQueryClient,
+} from "@tanstack/solid-query";
 import { eden } from "~/app";
 import LoginA from "./LoginA";
 import { handleEden } from "~/utils/handleEden";
@@ -14,9 +18,13 @@ const Auth: VoidComponent = () => {
       handleEden(await serverFetch(eden.api.auth.status.get)),
   }));
 
+
+  const queryClient = useQueryClient();
+
   const logOutMut = createMutation(() => ({
     mutationFn: async () => handleEden(await eden.api.auth.logout.post()),
     // onSuccess: () => setTodo(Create(todoInsertSchema)),
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   return (

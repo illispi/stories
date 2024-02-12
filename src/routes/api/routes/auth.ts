@@ -19,13 +19,12 @@ export const authRoute = new Elysia({ prefix: "/auth" })
       return null;
     } else {
       const sessionCookie = lucia.createBlankSessionCookie();
-
-      context.headers.set("Set-Cookie", sessionCookie.serialize());
-      context.cookie.set(
-        sessionCookie.name,
-        sessionCookie.value,
-        sessionCookie.attributes
-      );
+      // TODO check from lucia docs how to log out
+      // context.headers.set("Set-Cookie", sessionCookie.serialize());
+      context.cookie[sessionCookie.name].set({
+        value: sessionCookie.value,
+        ...sessionCookie.attributes,
+      });
 
       context.set.redirect = "/";
       return;
