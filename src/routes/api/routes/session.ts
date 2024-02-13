@@ -49,6 +49,7 @@ export const sessionDer = new Elysia().derive(
     return {
       user,
       session,
+      role: user?.role
     };
   }
 );

@@ -1,68 +1,77 @@
 import { z } from "zod";
-import { adminProcedure } from "../../utils";
+import { sessionDer } from "../session";
+import { Elysia, TSchema, t } from "elysia";
+import { db } from "../../db";
 
-export const listSubmissions = adminProcedure
-  .input(
-    z.object({
-      page: z.number().int(),
-      pOrT: z.enum(["Personal_questions", "Their_questions"]),
-      accepted: z.boolean().nullable(),
-    })
-  )
-  .query(async ({ ctx, input }) => {
-    //TODO update selects when you update database
+enum selection {
+  "Personal_questions",
+  "Their_questions",
+}
+const Nullable = <T extends TSchema>(schema: T) => t.Union([schema, t.Null()]);
 
-    const personalQuery = ctx.db
-      .selectFrom("Personal_questions")
-      .select([
-        "id",
-        "describe_hospital",
-        "what_kind_of_care_after",
-        "personality_before",
-        "personality_after",
-        "other_help",
-        "goals_after",
-        "responded_to_telling",
-        "life_satisfaction_description",
-        "what_others_should_know",
-        "not_have_schizophrenia_description",
-      ]);
+export const adminQueriesRoute = new Elysia({ prefix: "/admin/data/" })
+  .use(sessionDer)
+  .get(
+    "/personal",
+    async (context) => {
+      const personalQuery = db
+        .selectFrom("Personal_questions")
+        .select([
+          "id",
+          "describe_hospital",
+          "what_kind_of_care_after",
+          "personality_before",
+          "personality_after",
+          "other_help",
+          "goals_after",
+          "responded_to_telling",
+          "life_satisfaction_description",
+          "what_others_should_know",
+          "not_have_schizophrenia_description",
+        ]);
 
-    const theirQuery = ctx.db
-      .selectFrom("Their_questions")
-      .select([
-        "id",
-        "personality_before",
-        "personality_after",
-        "what_others_should_know",
-      ]);
+      const theirQuery = db
+        .selectFrom("Their_questions")
+        .select([
+          "id",
+          "personality_before",
+          "personality_after",
+          "what_others_should_know",
+        ]);
 
-    const pOrTQuery =
-      input.pOrT === "Personal_questions" ? personalQuery : theirQuery;
+      const pOrTQuery =
+        context.body.pOrT === "Personal_questions" ? personalQuery : theirQuery;
 
-    //TODO Use try and catch here and then return error with serverError
+      //TODO Use try and catch here and then return error with serverError
 
-    const poll = await pOrTQuery
-      .where("accepted", "is", input.accepted)
-      .offset(input.page * 25)
-      .limit(25)
-      .execute();
+      const poll = await pOrTQuery
+        .where("accepted", "is", context.body.accepted)
+        .offset(context.body.page * 25)
+        .limit(25)
+        .execute();
 
-    //BUG this might return undefined, should be returnin null in that case
+      //BUG this might return undefined, should be returnin null in that case
 
+      const { countAll } = db.fn;
 
-    const { countAll } = ctx.db.fn;
+      const { count } = (await db
+        .selectFrom(context.body.pOrT)
+        .select(countAll().as("count"))
+        .where("accepted", "is", context.body.accepted)
+        .executeTakeFirst()) ?? { count: 0 };
 
-    const { count } = (await ctx.db
-      .selectFrom(input.pOrT)
-      .select(countAll().as("count"))
-      .where("accepted", "is", input.accepted)
-      .executeTakeFirst()) ?? { count: 0 };
+      const total = Number(count);
 
-    const total = Number(count);
-
-    return { poll, total };
-  });
+      return { poll, total };
+    },
+    {
+      body: t.Object({
+        page: t.Number(),
+        pOrT: t.Enum(selection),
+        accepted: Nullable(t.Boolean({})),
+      }),
+    }
+  );
 
 export const listArticles = adminProcedure
   .input(
