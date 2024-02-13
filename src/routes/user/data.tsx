@@ -223,12 +223,14 @@ export const { route, Page } = ProtectedUser((session) => {
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["personalData"] }),
   }));
-
+  //TODO editTheir mut
   const editTheirMut = createMutation(() => ({
     mutationFn: async (data: theirEdit) =>
       handleEden(await eden.api.user.data.post.editTheir.post({ ...data })),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["theirData"] }),
   }));
+
+  //TODO editArticle mut
 
   const [personalForm, { Form, Field }] = createForm<PersonalForm>({
     validate: valiForm(PersonalFormSchema),
@@ -442,9 +444,7 @@ export const { route, Page } = ProtectedUser((session) => {
                         <CustomButton
                           class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                           onClick={() => {
-                            removeTheirMut.mutateAsync({
-                              id: their()[pageTheir()].id,
-                            });
+                            removeTheirMut.mutateAsync(their()[pageTheir()].id);
                           }}>
                           Delete this poll data
                         </CustomButton>
@@ -534,9 +534,7 @@ export const { route, Page } = ProtectedUser((session) => {
                               <CustomButton
                                 class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                                 onClick={() => {
-                                  removeArticleMut.mutateAsync({
-                                    id: fiveArticles.id,
-                                  });
+                                  removeArticleMut.mutateAsync(fiveArticles.id);
                                 }}>
                                 Delete this article
                               </CustomButton>

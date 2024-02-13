@@ -11,7 +11,7 @@ export const authRoute = new Elysia({ prefix: "/auth" })
     if (!context.user) {
       return null;
     } else {
-      return context.user.username;
+      return { username: context.user.username, role: context.user.role };
     }
   })
   .post("/logout", async (context) => {

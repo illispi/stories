@@ -1,20 +1,22 @@
 import { cache, createAsync, redirect } from "@solidjs/router";
+import { createQuery } from "@tanstack/solid-query";
 import type { Component } from "solid-js";
 import { Show } from "solid-js";
 import { getRequestEvent } from "solid-js/web";
-import { auth } from "~/auth/lucia";
+import { eden } from "~/app";
+import { handleEden } from "~/utils/handleEden";
+import { serverFetch } from "~/utils/serverFetch";
 
 const getSession = cache(async () => {
   "use server";
-  const request = getRequestEvent()?.request;
-  if (!request) {
-    return redirect("/");
-  }
-  const authRequest = auth.handleRequest(request);
-  const session = await authRequest.validate();
-  const user = await auth.getUser(session?.user.userId);
-  if (session && user.role === "admin") {
-    return session.user.username;
+  const authQuery = createQuery(() => ({
+    queryKey: ["auth"],
+    queryFn: async () =>
+      handleEden(await serverFetch(eden.api.auth.status.get)),
+  }));
+
+  if (authQuery.data?.role && authQuery.data.role === "admin") {
+    return authQuery.data.username;
   } else {
     return redirect("/");
   }
