@@ -171,6 +171,7 @@ export const { route, Page } = ProtectedUser((session) => {
   const removeAccAndDataMut = createMutation(() => ({
     mutationFn: async () =>
       handleEden(await eden.api.user.data.post.removeAccountAndData.post()),
+    onSuccess: () => queryClient.invalidateQueries(),
   }));
 
   //BUG should removeAcc redirect?
@@ -576,7 +577,7 @@ export const { route, Page } = ProtectedUser((session) => {
           onClick={() => {
             setShowDeleteAccount(!showDeleteAccount());
           }}>
-          {`${!showDeleteAccount() ? "Show" : "Close"}`}
+          {`${!showDeleteAccount() ? "Open" : "Close"}`}
         </CustomButton>
 
         <CssTranstionGrow visible={showDeleteAccount()}>

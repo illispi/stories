@@ -7,16 +7,10 @@ import { handleEden } from "~/utils/handleEden";
 import { serverFetch } from "~/utils/serverFetch";
 
 const getSession = cache(async () => {
-  "use server";
+  const authQuery = handleEden(await serverFetch(eden.api.auth.status.get));
 
-  const authQuery = createQuery(() => ({
-    queryKey: ["auth"],
-    queryFn: async () =>
-      handleEden(await serverFetch(eden.api.auth.status.get)),
-  }));
-
-  if (authQuery.data?.role && authQuery.data.role === "user") {
-    return authQuery.data.username;
+  if (authQuery?.role && authQuery.role === "user") {
+    return authQuery.username;
   } else {
     return redirect("/");
   }
