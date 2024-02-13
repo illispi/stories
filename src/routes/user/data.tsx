@@ -444,7 +444,6 @@ export const { route, Page } = ProtectedUser((session) => {
                         <CustomButton
                           class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                           onClick={() => {
-                            console.log(pageTheir(), "page", their(), their);
                             removeTheirMut.mutateAsync(their()[pageTheir()].id);
                           }}>
                           Delete this poll data
