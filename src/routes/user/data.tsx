@@ -144,7 +144,6 @@ interface theirEdit {
 
 export const { route, Page } = ProtectedUser((session) => {
   //TODO test roles
-  console.log(session);
   const headers = {
     describe_hospital: "Describe hospital:",
     what_kind_of_care_after: "What kind of hospital care:",
@@ -445,6 +444,7 @@ export const { route, Page } = ProtectedUser((session) => {
                         <CustomButton
                           class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
                           onClick={() => {
+                            console.log(pageTheir(), "page", their(), their);
                             removeTheirMut.mutateAsync(their()[pageTheir()].id);
                           }}>
                           Delete this poll data
@@ -484,7 +484,7 @@ export const { route, Page } = ProtectedUser((session) => {
           Your submitted articles
         </h2>
         <Show
-          when={theirDataQuery.data}
+          when={articlesDataQuery.data}
           fallback={
             <div class="flex w-full flex-col items-center justify-center gap-8">
               <p class="text-center text-lg">

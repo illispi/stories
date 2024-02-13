@@ -31,7 +31,7 @@ export const userQueriesRoute = new Elysia({ prefix: "/user/data/get" })
     }
 
     const safe = unSafe.map((unSafeEl: (typeof unSafe)[0]) => {
-      const { user, id, created_at, ...safeTemp } = unSafeEl;
+      const { user, created_at, ...safeTemp } = unSafeEl;
       return safeTemp;
     });
 
