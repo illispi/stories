@@ -1,11 +1,11 @@
 {
   "name": "solid-stories",
   "scripts": {
-    "dev": "solid-start dev --host",
-    "build": "solid-start build",
-    "start": "solid-start start",
-    "prod": "solid-start build && solid-start start",
-    "start:dev": "solid-start start --host",
+    "dev": "vinxi dev --host",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "prod": "vinxi build && vinxi start",
+    "start:dev": "vinxi start --host",
     "lint": "eslint --fix \"**/*.{ts,tsx,js,jsx}\"",
     "migrate:latest": "tsx ./src/utils/migrate.ts",
     "migrate:down": "tsx ./src/utils/migrate.ts down",
@@ -69,7 +69,8 @@
     "solid-transition-group": "^0.2.3",
     "tailwind-merge": "^2.3.0",
     "valibot": "^0.30.0",
-    "zod": "^3.23.6"
+    "zod": "^3.23.6",
+    "vinxi": "^0.3.11"
   },
   "engines": {
     "node": ">=20"
