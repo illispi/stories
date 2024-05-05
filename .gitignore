@@ -68,3 +68,34 @@ yarn-error.log*
 .turbo
 # Sentry Config File
 .env.sentry-build-plugin
+
+
+
+dist
+.solid
+.output
+.vercel
+.netlify
+netlify
+.vinxi
+
+# Environment
+.env
+.env*.local
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+# Temp
+gitignore
+
+# System Files
+.DS_Store
+Thumbs.db
