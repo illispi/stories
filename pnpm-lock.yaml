@@ -65,6 +65,9 @@ importers:
       lucia:
         specifier: ^3.2.0
         version: 3.2.0
+      oslo:
+        specifier: ^1.1.0
+        version: 1.2.0
       pg:
         specifier: ^8.11.5
         version: 8.11.5
