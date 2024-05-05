@@ -18,9 +18,6 @@ netlify
 # Temp
 gitignore
 
-# trpc test
-trpc/
-
 # System Files
 .DS_Store
 Thumbs.db

@@ -10,7 +10,7 @@ import { Meta, MetaProvider, Title } from "@solidjs/meta";
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 
-import NavBar from "./components/Navbar";
+// import NavBar from "./components/Navbar";
 import "./app.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
