@@ -28,7 +28,10 @@ import { isServer } from "solid-js/web";
 import * as Sentry from "@sentry/browser";
 import { DEV } from "solid-js";
 
-export default function Root() {
+
+
+export default function App() {
+
   createEffect(() => {
     history.scrollRestoration = "manual";
   });
@@ -71,16 +74,19 @@ export default function Root() {
   }
 
   return (
-    <Html lang="en">
-      <Head>
-        <Title>Schizophrenia poll</Title>
+    <Router
+      root={(props) => (
+        <MetaProvider>
+          <Title>SolidStart - Basic</Title>
+          <Title>Schizophrenia poll</Title>
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      <Body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-        <QueryClientProvider client={queryClient}>
-          <trpc.Provider queryClient={queryClient}>
-            <ErrorBoundary
+          <Suspense>
+            <body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+
+            <QueryClientProvider client={queryClient}>
+              <trpc.Provider queryClient={queryClient}>
+                <ErrorBoundary
               fallback={(e, reset) => {
                 Sentry.captureException(e);
                 return (
@@ -93,20 +99,22 @@ export default function Root() {
                   </div>
                 );
               }}
-            >
+              >
               <Suspense>
                 <NavBar />
                 <TransitionSlideGlobal>
-                  <Routes>
-                    <FileRoutes />
-                  </Routes>
+                {props.children} 
                 </TransitionSlideGlobal>
               </Suspense>
             </ErrorBoundary>
-          </trpc.Provider>
-        </QueryClientProvider>
-        <Scripts />
-      </Body>
-    </Html>
-  );
+              </trpc.Provider>
+            </QueryClientProvider>
+              </body>
+          </Suspense>
+        </MetaProvider>
+      )}
+    >
+      <FileRoutes />
+    </Router>
+  )
 }
