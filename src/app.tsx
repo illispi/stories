@@ -92,7 +92,7 @@ export default function App() {
               }}
               >
               <Suspense>
-                <NavBar />
+                {/* <NavBar /> */}
                 <TransitionSlideGlobal>
                 {props.children} 
                 </TransitionSlideGlobal>
