@@ -1,24 +1,17 @@
 // @refresh reload
 import {
+  ErrorBoundary,
   Suspense,
   createEffect,
   createRenderEffect,
   onCleanup,
 } from "solid-js";
-import {
-  A,
-  Body,
-  ErrorBoundary,
-  FileRoutes,
-  Head,
-  Html,
-  Meta,
-  Routes,
-  Scripts,
-  Title,
-} from "solid-start";
+import { Meta, MetaProvider, Title } from "@solidjs/meta";
+import { Router } from "@solidjs/router";
+import { FileRoutes } from "@solidjs/start/router";
+
 import NavBar from "./components/Navbar";
-import "./root.css";
+import "./app.css";
 import CustomButton from "./components/CustomButton";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import { queryClient, trpc } from "./utils/trpc";
@@ -77,12 +70,10 @@ export default function App() {
     <Router
       root={(props) => (
         <MetaProvider>
-          <Title>SolidStart - Basic</Title>
           <Title>Schizophrenia poll</Title>
         <Meta charset="utf-8" />
         <Meta name="viewport" content="width=device-width, initial-scale=1" />
           <Suspense>
-            <body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
 
             <QueryClientProvider client={queryClient}>
               <trpc.Provider queryClient={queryClient}>
@@ -109,7 +100,6 @@ export default function App() {
             </ErrorBoundary>
               </trpc.Provider>
             </QueryClientProvider>
-              </body>
           </Suspense>
         </MetaProvider>
       )}
