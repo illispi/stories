@@ -39,7 +39,6 @@ export const createContext = async (opts: createSolidAPIHandlerContext) => {
 
 	const sessionId = getCookie(lucia.sessionCookieName);
 	if (!sessionId) {
-		console.log("what");
 		return new Response(null, {
 			status: 401,
 		});
@@ -51,9 +50,8 @@ export const createContext = async (opts: createSolidAPIHandlerContext) => {
 		appendResponseHeader("Set-Cookie", sessionCookie.serialize());
 	}
 
-	if (session && session.fresh) {
+	if (session?.fresh) {
 		const sessionCookie = lucia.createSessionCookie(session.id);
-		console.log("here");
 		appendResponseHeader("Set-Cookie", sessionCookie.serialize());
 	}
 	const contextInner = await createContextInner({ session, user });

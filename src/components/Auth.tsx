@@ -12,19 +12,17 @@ import { trpc } from "~/utils/trpc";
 const Auth: VoidComponent = () => {
 	const authQuery = trpc.authStatus.createQuery();
 
-	// const queryClient = useQueryClient();
+	const utils = trpc.useContext();
 
-	// const logOutMut = createMutation(() => ({
-	// 	mutationFn: async () => handleEden(await eden.api.auth.logout.post()),
-	// 	// onSuccess: () => setTodo(Create(todoInsertSchema)),
-	// 	onSuccess: () => queryClient.invalidateQueries(),
-	// }));
+	const logOutMut = trpc.logOut.createMutation(() => ({
+		onSuccess: () => utils.authStatus.invalidate(),
+	}));
 
 	return (
 		<Show when={authQuery.data} fallback={<LoginA />}>
 			<CustomButton
 				onClick={() => {
-					// logOutMut.mutate();
+					logOutMut.mutate();
 				}}
 				class="w-44"
 			>
