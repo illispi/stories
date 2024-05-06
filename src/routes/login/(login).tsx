@@ -92,7 +92,7 @@ const Login = () => {
 						Create new account?
 					</h2>
 
-					<h3 class="text-center text-lg">{`No account found with username: `}</h3>
+					<h3 class="text-center text-lg">No account found with username:</h3>
 					<h4 class="text-center text-xl font-semibold">{`${getValue(
 						userForm,
 						"username",
