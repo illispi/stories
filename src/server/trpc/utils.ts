@@ -6,9 +6,11 @@ export const t = initTRPC.context<IContext>().create();
 export const router = t.router;
 export const publicProcedure = t.procedure;
 export const apiProcedure = publicProcedure.use((opts) => {
-  if (!opts.ctx.req || !opts.ctx.res) {
-    throw new Error("You are missing `req` or `res` in your call.");
-  }
+
+  //BUG this might be needed to re-enable
+  // if (!opts.ctx.req || !opts.ctx.res) {
+  //   throw new Error("You are missing `req` or `res` in your call.");
+  // }
   return opts.next({
     ctx: {
       // We overwrite the context with the truthy `req` & `res`, which will also overwrite the types used in your procedure.
