@@ -1,186 +1,188 @@
 import { Title } from "@solidjs/meta";
 import { A, useSearchParams } from "@solidjs/router";
-import { createQuery } from "@tanstack/solid-query";
 import { route as routeGen } from "routes-gen";
 import type { Accessor, Component, Setter } from "solid-js";
 import {
-  ErrorBoundary,
-  Show,
-  Suspense,
-  createEffect,
-  createSignal,
+	ErrorBoundary,
+	Show,
+	Suspense,
+	createEffect,
+	createSignal,
 } from "solid-js";
-import { eden } from "~/app";
 
 import Auth from "./Auth";
-import { handleEden } from "~/utils/handleEden";
-import { getRequestEvent, isServer } from "solid-js/web";
-import { serverFetch } from "~/utils/serverFetch";
+import { trpc } from "~/utils/trpc";
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
-  return (
-    <>
-      <A
-        class={`text-3xl font-light uppercase transition-all hover:scale-110 ${props.class}`}
-        href={props.route}>
-        {props.content}
-      </A>
-    </>
-  );
+	return (
+		<>
+			<A
+				class={`text-3xl font-light uppercase transition-all hover:scale-110 ${props.class}`}
+				href={props.route}
+			>
+				{props.content}
+			</A>
+		</>
+	);
 };
 
 const Hamburger: Component<{
-  menuOpen: Accessor<boolean>;
-  setMenuOpen: Setter<boolean>;
+	menuOpen: Accessor<boolean>;
+	setMenuOpen: Setter<boolean>;
 }> = (props) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const authQuery = createQuery(() => ({
-    queryKey: ["auth"],
-    queryFn: async () => {
-      return handleEden(await serverFetch(eden.api.auth.status.get));
-    },
-  }));
+	const [searchParams, setSearchParams] = useSearchParams();
+	const authQuery = trpc.authStatus.createQuery();
 
-  createEffect(() => {
-    window.addEventListener("popstate", function (event) {
-      if (searchParams.nav === "true") {
-        setSearchParams({ nav: null });
-      }
-    });
+	createEffect(() => {
+		window.addEventListener("popstate", (event) => {
+			if (searchParams.nav === "true") {
+				setSearchParams({ nav: null });
+			}
+		});
 
-    //TODO if open and close nav and then go back history is gone
-    //BUG on mobile refresh has nav on bit weird position, might be able to solve with start disabled, see personalQuestions.tsx motion.one
-  });
+		//TODO if open and close nav and then go back history is gone
+		//BUG on mobile refresh has nav on bit weird position, might be able to solve with start disabled, see personalQuestions.tsx motion.one
+	});
 
-  return (
-    <>
-      <div class="relative flex items-center justify-center">
-        <button
-          class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 "
-          onClick={() => {
-            if (searchParams.nav === "true") {
-              setSearchParams({ nav: null });
-            } else {
-              setSearchParams({ nav: true });
-            }
-          }}>
-          <Show
-            when={searchParams.nav === "true"}
-            fallback={
-              <svg
-                width="32"
-                height="32"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width={2}>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            }>
-            <svg
-              width="32"
-              height="32"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width={2}>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </Show>
-        </button>
-      </div>
-      <div
-        class="fixed right-0 top-14 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
-        classList={{
-          ["opacity-0 invisible"]: !searchParams.nav,
-          ["visible, opacity-40"]: searchParams.nav === "true",
-        }}
-        onClick={() => {
-          setSearchParams({ nav: null });
-        }}
-      />
-      <div
-        class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-6 p-8 ${
-          searchParams.nav === "true"
-            ? `translate-x-0 opacity-100 ease-out`
-            : `translate-x-full opacity-0 ease-in`
-        } h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}>
-        <Auth />
-        <Suspense>
-          <ErrorBoundary
-            fallback={(err) => {
-              console.log(err);
-              return <div>err</div>;
-            }}>
-            <Show when={authQuery.data}>
-              <MenuItem route={routeGen("/user/data")} content="Your data" />
-            </Show>
-          </ErrorBoundary>
-        </Suspense>
-        <div class="w-full border-b-2 border-black" />
-        <MenuItem route={routeGen("/pollResults/")} content="results" />
-        <MenuItem route={routeGen("/questionares/")} content="poll" />
-        <MenuItem route={routeGen("/articles/")} content="Articles" />
-        <button
-          class="p-16 transition-all hover:scale-125"
-          onClick={() => {
-            setSearchParams({ nav: null });
-          }}>
-          <div class="rounded-full border border-black p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="0.6"
-              stroke="currentColor"
-              class="h-16 w-16">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </div>
-        </button>
-      </div>
-    </>
-  );
+	return (
+		<>
+			<div class="relative flex items-center justify-center">
+				<button
+					class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 "
+					onClick={() => {
+						if (searchParams.nav === "true") {
+							setSearchParams({ nav: null });
+						} else {
+							setSearchParams({ nav: true });
+						}
+					}}
+				>
+					<Show
+						when={searchParams.nav === "true"}
+						fallback={
+							<svg
+								width="32"
+								height="32"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								stroke-width={2}
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M4 6h16M4 12h16M4 18h16"
+								/>
+							</svg>
+						}
+					>
+						<svg
+							width="32"
+							height="32"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width={2}
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</Show>
+				</button>
+			</div>
+			<div
+				class="fixed right-0 top-14 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				classList={{
+					["opacity-0 invisible"]: !searchParams.nav,
+					["visible, opacity-40"]: searchParams.nav === "true",
+				}}
+				onClick={() => {
+					setSearchParams({ nav: null });
+				}}
+			/>
+			<div
+				class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-6 p-8 ${
+					searchParams.nav === "true"
+						? `translate-x-0 opacity-100 ease-out`
+						: `translate-x-full opacity-0 ease-in`
+				} h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}
+			>
+				<Auth />
+				<Suspense>
+					<ErrorBoundary
+						fallback={(err) => {
+							console.log(err);
+							return <div>err</div>;
+						}}
+					>
+						<Show when={authQuery.data}>
+							<MenuItem route={routeGen("/user/data")} content="Your data" />
+						</Show>
+					</ErrorBoundary>
+				</Suspense>
+				<div class="w-full border-b-2 border-black" />
+				<MenuItem route={routeGen("/pollResults/")} content="results" />
+				<MenuItem route={routeGen("/questionares/")} content="poll" />
+				<MenuItem route={routeGen("/articles/")} content="Articles" />
+				<button
+					class="p-16 transition-all hover:scale-125"
+					onClick={() => {
+						setSearchParams({ nav: null });
+					}}
+				>
+					<div class="rounded-full border border-black p-2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="0.6"
+							stroke="currentColor"
+							class="h-16 w-16"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</div>
+				</button>
+			</div>
+		</>
+	);
 };
 
 const NavBar: Component = () => {
-  const [menuOpen, setMenuOpen] = createSignal(false);
+	const [menuOpen, setMenuOpen] = createSignal(false);
 
-  return (
-    <>
-      <Title>Home</Title>
-      <div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
-        <A
-          class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
-          noScroll={true}
-          href={routeGen("/")}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 24 24">
-            <path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
-          </svg>
-        </A>
+	return (
+		<>
+			<Title>Home</Title>
+			<div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
+				<A
+					class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
+					noScroll={true}
+					href={routeGen("/")}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="32"
+						height="32"
+						viewBox="0 0 24 24"
+					>
+						<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
+					</svg>
+				</A>
 
-        <Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-      </div>
-    </>
-  );
+				<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+			</div>
+		</>
+	);
 };
 
 export default NavBar;

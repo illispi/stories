@@ -24,14 +24,14 @@ import {
 	editTheir,
 	editPersonal,
 } from "./user/userMutations";
-import { getPersonal, getTheirs, getArticles } from "./user/userQueries";
+import { getPersonal, getTheirs, getArticles, authStatus } from "./user/userQueries";
 
 export const test = apiProcedure.query(async ({ input: payload, ctx }) => {
 	return "working thing";
 });
 
 export const appRouter = router({
-	test,
+	authStatus,
 	allStats,
 	articlesPagination,
 	textPagination,

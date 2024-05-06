@@ -20,6 +20,7 @@ import { createScriptLoader } from "@solid-primitives/script-loader";
 import { isServer } from "solid-js/web";
 import * as Sentry from "@sentry/browser";
 import { DEV } from "solid-js";
+import NavBar from "./components/Navbar";
 
 export default function App() {
 	createEffect(() => {
@@ -87,7 +88,7 @@ export default function App() {
 									}}
 								>
 									<Suspense>
-										{/* <NavBar /> */}
+										<NavBar />
 										{/* <TransitionSlideGlobal> */}
 										{props.children}
 										{/* </TransitionSlideGlobal> */}
