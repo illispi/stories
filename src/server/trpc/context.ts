@@ -1,8 +1,8 @@
 import type { inferAsyncReturnType } from "@trpc/server";
-import type { createSolidAPIHandlerContext } from "solid-start-trpc";
 import { db } from "../server";
 import { type Session, verifyRequestOrigin, type User } from "lucia";
 import { lucia } from "~/lib/auth/lucia";
+import type { createSolidAPIHandlerContext } from "@solid-mediakit/trpc/handler";
 
 interface CreateInnerContextOptions
 	extends Partial<createSolidAPIHandlerContext> {
