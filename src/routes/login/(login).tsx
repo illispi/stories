@@ -1,22 +1,25 @@
 import {
-	SubmitHandler,
+	type SubmitHandler,
 	createForm,
 	getValue,
 	valiForm,
 } from "@modular-forms/solid";
 import { useNavigate, useSearchParams } from "@solidjs/router";
-import {
-	QueryClient,
-	createMutation,
-	createQuery,
-	useQueryClient,
-} from "@tanstack/solid-query";
+
 import { createEffect, createSignal } from "solid-js";
 
-import { Input, maxLength, minLength, object, parse, string } from "valibot";
+import {
+	type Input,
+	maxLength,
+	minLength,
+	object,
+	parse,
+	string,
+} from "valibot";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
 import ModalPopUp from "~/components/ModalPopUp";
+import { trpc } from "~/utils/trpc";
 
 const userSchema = object({
 	username: string([
@@ -32,34 +35,26 @@ const userSchema = object({
 type UserForm = Input<typeof userSchema>;
 
 const Login = () => {
-	const signUp = (password, username) => {
-		parse(userSchema, { password, username });
-	};
+	// const signUp = (password, username) => {
+	// 	parse(userSchema, { password, username });
+	// };
+
+	const utils = trpc.useContext();
 
 	// const [username, setUsername] = createSignal<null | string>(null);
 	// const [password, setPassword] = createSignal<null | string>(null);
+	//http://localhost:3000/api/trpc/authStatus
 
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
-	//TODO convert authQuery to server action
-	const authQuery = createQuery(() => ({
-		queryKey: ["auth"],
-		queryFn: async () =>
-			handleEden(await serverFetch(eden.api.auth.status.get)),
+	//TODO convert authQuery to server action, test first with default
+	const authQuery = trpc.authStatus.createQuery();
+	const signInMut = trpc.signIn.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
 	}));
 
-	const signInMut = createMutation(() => ({
-		mutationFn: async (data) =>
-			handleEden(await eden.api.auth.signin.post(data)),
-		// onSuccess: () => setTodo(Create(todoInsertSchema)),
-		onSuccess: () => queryClient.invalidateQueries(),
-	}));
-
-	const signUpMut = createMutation(() => ({
-		mutationFn: async (data) =>
-			handleEden(await eden.api.auth.signup.post(data)),
-		// onSuccess: () => setTodo(Create(todoInsertSchema)),
-		onSuccess: () => queryClient.invalidateQueries(),
+	const signUpMut = trpc.signUp.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
 	}));
 
 	createEffect(() => {

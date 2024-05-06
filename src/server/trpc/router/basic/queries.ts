@@ -10,6 +10,7 @@ import { TRPCError } from "@trpc/server";
 import { lucia } from "~/lib/auth/lucia";
 import { db } from "~/server/db";
 import { maxLength, minLength, object, string } from "valibot";
+import { generateId } from "lucia";
 //TODO remember to only update this every once in a while in production
 
 export const allStats = apiProcedure
@@ -499,92 +500,3 @@ export const articlesPagination = apiProcedure
 		return { articles, count };
 	});
 
-export const authStatus = apiProcedure.query(async ({ ctx }) => {
-	//TODO this is bit hacky
-	try {
-		if (ctx.session) {
-			const user = await ctx.db
-				.selectFrom("auth_user")
-				.select(["id", "role"])
-				.where("id", "=", ctx.user?.id)
-				.executeTakeFirstOrThrow();
-
-			if (!user) {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "User was not found",
-				});
-			}
-			return true;
-		}
-
-		return false;
-	} catch (error) {
-		const wError = error as ReturnError;
-		console.error(wError);
-		return wError;
-	}
-});
-
-export const signIn = apiProcedure
-	.input(
-		wrap(
-			object({
-				username: string([
-					minLength(4, "Your username is too short, min 4 characters"),
-					maxLength(30, "Your username is too long, 30 characters max"),
-				]),
-				password: string([
-					minLength(4, "Your password is too short, min 4 characters"),
-					maxLength(255, "Your password is too long, 255 characters max"),
-				]),
-			}),
-		),
-	)
-	.query(async ({ ctx, input }) => {
-		try {
-			//BUG should check for username from context
-			const existingUser = await db
-				.selectFrom("auth_user")
-				.selectAll("auth_user")
-				.where("username", "=", ctx.user?.id)
-				.executeTakeFirst();
-			if (!existingUser) {
-				// NOTE:
-				// Returning immediately allows malicious actors to figure out valid usernames from response times,
-				// allowing them to only focus on guessing passwords in brute-force attacks.
-				// As a preventive measure, you may want to hash passwords even for invalid usernames.
-				// However, valid usernames can be already be revealed with the signup page among other methods.
-				// It will also be much more resource intensive.
-				// Since protecting against this is none-trivial,
-				// it is crucial your implementation is protected against brute-force attacks with login throttling etc.
-				// If usernames are public, you may outright tell the user that the username is invalid.
-				return "No account yet";
-			}
-
-			const validPassword = await new Argon2id().verify(
-				existingUser.hashed_password,
-				input.password,
-			);
-			if (!validPassword) {
-				return new Response("Incorrect username or password", {
-					status: 400,
-				});
-			}
-
-			const session = await lucia.createSession(existingUser.id, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			//BUG res might not have cookie and set!!!
-			ctx.res.cookie[sessionCookie.name].set({
-				value: sessionCookie.value,
-				...sessionCookie.attributes,
-			});
-			//BUG does this hang since nothing is returned?
-			ctx.res.set.redirect = "/";
-			return;
-		} catch (error) {
-			const wError = error as ReturnError;
-			console.error(wError);
-			return wError;
-		}
-	});

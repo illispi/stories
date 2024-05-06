@@ -10,12 +10,13 @@ import {
 	fakeForFake,
 } from "./admin/adminMutations";
 import { listArticles, listSubmissions } from "./admin/adminQueries";
+import { authStatus, logOut, signIn, signUp } from "./basic/authQandM";
 import {
 	postArticle,
 	postPersonalStats,
 	postTheirStats,
 } from "./basic/mutations";
-import { allStats, articlesPagination, textPagination } from "./basic/queries";
+import { allStats, articlesPagination,  textPagination } from "./basic/queries";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -24,13 +25,16 @@ import {
 	editTheir,
 	editPersonal,
 } from "./user/userMutations";
-import { getPersonal, getTheirs, getArticles, authStatus } from "./user/userQueries";
+import { getPersonal, getTheirs, getArticles } from "./user/userQueries";
 
 export const test = apiProcedure.query(async ({ input: payload, ctx }) => {
 	return "working thing";
 });
 
 export const appRouter = router({
+	signIn,
+	signUp,
+	logOut,
 	authStatus,
 	allStats,
 	articlesPagination,
