@@ -1,5 +1,5 @@
 // src/middleware.ts
-import { , appendHeader, getCookie, getHeader } from "vinxi/http";
+import {  appendHeader, getCookie, getHeader } from "vinxi/http";
 import { Session, User, verifyRequestOrigin } from "lucia";
 import { createMiddleware } from "@solidjs/start/middleware";
 import { lucia } from "~/lib/auth/lucia";

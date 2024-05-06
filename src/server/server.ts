@@ -1,30 +1,9 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import { Kysely, PostgresDialect } from "kysely";
-import type { DB } from "kysely-codegen";
+import type { DB } from "kysely-codegen/dist/db";
 import { Pool } from "pg";
 
-type Database = {
-  user: UserTable;
-  key: KeyTable;
-  session: SessionTable;
-};
-
-type UserTable = {
-  id: string;
-};
-
-type KeyTable = {
-  id: string;
-  user_id: string;
-  hashed_password: string | null;
-};
-
-type SessionTable = {
-  id: string;
-  user_id: string;
-  active_expires: bigint;
-  idle_expires: bigint;
-};
+dotenv.config();
 
 export const pool = new Pool({
   //TODO change these two to .env
@@ -42,9 +21,7 @@ const dialect = new PostgresDialect({
   pool,
 });
 
-interface Combined extends Database, DB {}
-
-export const db = new Kysely<Combined>({
+export const db = new Kysely<DB>({
   log: ["error"],
   dialect,
 });

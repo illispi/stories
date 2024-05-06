@@ -1,29 +1,62 @@
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { createSolidAPIHandlerContext } from "solid-start-trpc";
 import { db } from "../server";
-import { Session } from "lucia";
-import { auth } from "~/auth/lucia";
+import { type Session, verifyRequestOrigin, type User } from "lucia";
+import { lucia } from "~/lib/auth/lucia";
 
 interface CreateInnerContextOptions
-  extends Partial<createSolidAPIHandlerContext> {
-  session: Session | null;
+	extends Partial<createSolidAPIHandlerContext> {
+	session: Session | null;
+	user: User | null;
 }
 
 export const createContextInner = async (opts: CreateInnerContextOptions) => {
-  return {
-    db,
-    session: opts.session,
-  };
+	return {
+		db,
+		session: opts.session,
+		user: opts.user,
+	};
 };
 
 export const createContext = async (opts: createSolidAPIHandlerContext) => {
-  const authRequest = auth.handleRequest(opts.req!);
-  const session = await authRequest.validate();
+	// Only required in non-GET requests (POST, PUT, DELETE, PATCH, etc)
+	const originHeader = opts.req.headers.get("Origin");
+	// NOTE: You may need to use `X-Forwarded-Host` instead
+	const hostHeader = opts.req.headers.get("Host");
+	if (
+		!originHeader ||
+		!hostHeader ||
+		!verifyRequestOrigin(originHeader, [hostHeader])
+	) {
+		//BUG see if you can even return this response in the first place
+		return new Response(null, {
+			status: 403,
+		});
+	}
 
-  // access context of vinxi
+	const cookieHeader = opts.req.headers.get("Cookie");
+	const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+	if (!sessionId) {
+		return new Response(null, {
+			status: 401,
+		});
+	}
+	//BUG does this new headers thing work here
+	const headers = new Headers();
 
-  const contextInner = await createContextInner({ session });
-  return { ...contextInner, req: opts.req, res: opts.res };
+	const { session, user } = await lucia.validateSession(sessionId);
+	if (!session) {
+		const sessionCookie = lucia.createBlankSessionCookie();
+		headers.append("Set-Cookie", sessionCookie.serialize());
+	}
+
+	if (session && session.fresh) {
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		headers.append("Set-Cookie", sessionCookie.serialize());
+	}
+
+	const contextInner = await createContextInner({ session, user });
+	return { ...contextInner, req: opts.req, res: opts.res };
 };
 
 export type IContext = inferAsyncReturnType<typeof createContextInner>;
