@@ -1,1 +1,2 @@
-    		// TODO: check if username is already used
+- check if username is already used
+- Prevent same user names
