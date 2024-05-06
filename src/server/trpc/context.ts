@@ -20,6 +20,8 @@ export const createContext = async (opts: createSolidAPIHandlerContext) => {
   const authRequest = auth.handleRequest(opts.req!);
   const session = await authRequest.validate();
 
+  // access context of vinxi
+
   const contextInner = await createContextInner({ session });
   return { ...contextInner, req: opts.req, res: opts.res };
 };
