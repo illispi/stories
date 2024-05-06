@@ -92,11 +92,11 @@ export const adminProcedure = apiProcedure.use(async (opts) => {
 	}
 });
 
-type WError = {
+export type WError = {
 	message: string;
 	code: string;
 };
 
-type ReturnError = {
+export type ReturnError = {
 	error: WError;
 };

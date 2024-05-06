@@ -1,4 +1,5 @@
-import { userProcedure } from "../../utils";
+import { TRPCError } from "@trpc/server";
+import { ReturnError, apiProcedure, userProcedure } from "../../utils";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
 	const unSafe = await ctx.db
@@ -54,9 +55,29 @@ export const getArticles = userProcedure.query(async ({ ctx }) => {
 	return safe;
 });
 
-export const authStatus = userProcedure.query(async ({ ctx }) => {
-	if (ctx.user) {
-		return true;
+export const authStatus = apiProcedure.query(async ({ ctx }) => {
+	//TODO this is bit hacky
+	try {
+		if (ctx.session) {
+			const user = await ctx.db
+				.selectFrom("auth_user")
+				.select(["id", "role"])
+				.where("id", "=", ctx.user?.id)
+				.executeTakeFirstOrThrow();
+
+			if (!user) {
+				throw new TRPCError({
+					code: "INTERNAL_SERVER_ERROR",
+					message: "User was not found",
+				});
+			}
+			return true;
+		}
+
+		return false;
+	} catch (error) {
+		const wError = error as ReturnError;
+		console.error(wError);
+		return wError;
 	}
-	return false;
 });
