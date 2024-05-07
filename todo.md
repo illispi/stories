@@ -13,6 +13,7 @@
 
 - Test if this .executeTakeFirstOrThrow(); would allow not checking for null in return
 - When creating new account there is small layout shif
+
 ```
 Returning immediately allows malicious actors to figure out valid usernames from response times,
  allowing them to only focus on guessing passwords in brute-force attacks.
@@ -21,6 +22,9 @@ Returning immediately allows malicious actors to figure out valid usernames from
  It will also be much more resource intensive.
  Since protecting against this is none-trivial,
  it is crucial your implementation is protected against brute-force attacks with login throttling etc.
- If usernames are public, you may outright tell the user that the username is invalid. 
- ```
- ### If you have hydration mismatch just add <Suspense>
+ If usernames are public, you may outright tell the user that the username is invalid.
+```
+
+### If you have hydration mismatch just add <Suspense>
+
+- Sometimes even reboot helps for that mismatch
