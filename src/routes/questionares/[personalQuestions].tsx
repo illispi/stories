@@ -6,12 +6,20 @@ import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { UnitQuestion } from "~/components/UnitQuestion";
-import { A, useParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import { ModalOptions } from "~/components/ModalOptions";
 import TransitionFade from "~/components/TransitionFade";
-import { route } from "routes-gen";
+import { route as routeGen } from "routes-gen";
 import { trpc } from "~/utils/trpc";
+import {
+	A,
+	cache,
+	type RouteDefinition,
+	useParams,
+	createAsync,
+} from "@solidjs/router";
+import { db } from "~/server/db";
+import { validateSession } from "~/server/trpc/context";
 
 // export const getSessionAndData = () => {
 //   return createServerData$(async (_, event) => {
@@ -33,6 +41,33 @@ import { trpc } from "~/utils/trpc";
 //     }
 //   });
 // };
+
+const fetchUser = cache(async () => {
+	"use server";
+
+	//TODO only allow GET requests
+
+	const { user } = await validateSession();
+
+	if (user) {
+		const unSafe = await db
+			.selectFrom("Personal_questions")
+			.selectAll()
+			.where("user", "=", user.id)
+			.executeTakeFirst();
+
+		if (!unSafe) {
+			return { user: true, data: false };
+		}
+
+		return { user: true, data: true };
+	}
+	return { user: false, data: false };
+}, "user");
+
+export const route = {
+	load: () => fetchUser(),
+} satisfies RouteDefinition;
 
 const Counter: ParentComponent<{
 	page: number;
@@ -151,9 +186,7 @@ const Questions: ParentComponent<{
 };
 
 const PersonalQuestions: ParentComponent = () => {
-	const user = trpc.authStatus.createQuery();
-	const userData = trpc.getPersonal.createQuery();
-
+	const user = createAsync(() => fetchUser());
 	const params = useParams<{
 		personalQuestions: "personalQuestions" | "theirQuestions";
 	}>();
@@ -214,7 +247,7 @@ const PersonalQuestions: ParentComponent = () => {
 				}
 			>
 				<Show
-					when={user.data}
+					when={user()?.user}
 					fallback={
 						<div class="flex h-screen w-full flex-col items-center justify-start">
 							<div class="flex h-full w-full flex-col items-center justify-start lg:h-5/6 lg:justify-center">
@@ -282,9 +315,7 @@ const PersonalQuestions: ParentComponent = () => {
 					}
 				>
 					<Show
-						when={
-							userData.data || params.personalQuestions === "theirQuestions"
-						}
+						when={user()?.data || params.personalQuestions === "theirQuestions"}
 						fallback={
 							<div class="flex h-screen w-full flex-col items-center justify-center">
 								<div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
@@ -292,7 +323,7 @@ const PersonalQuestions: ParentComponent = () => {
 										You have already submitted personal poll!
 									</h2>
 									<A
-										href={route("/user/data")}
+										href={routeGen("/user/data")}
 										class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
 									>
 										See status of it
@@ -312,7 +343,7 @@ const PersonalQuestions: ParentComponent = () => {
 													Submitted successfully for apporval!
 												</h2>
 												<A
-													href={route("/user/data")}
+													href={routeGen("/user/data")}
 													class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
 												>
 													See status

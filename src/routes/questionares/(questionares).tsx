@@ -3,7 +3,6 @@ import { Suspense, type Component } from "solid-js";
 import InfoBox from "~/components/InfoBox";
 
 const Questionares: Component = () => {
-	console.log("hello");
 	return (
 		<Suspense>
 			<div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
