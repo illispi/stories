@@ -145,7 +145,7 @@ export const signUp = apiProcedure
 			// });
 
 			// ctx.res.set.redirect = "/";
-			return;
+			// return;
 		} catch (error) {
 			const wError = error as ReturnError;
 			console.error(wError);
@@ -161,7 +161,7 @@ export const logOut = apiProcedure.mutation(async ({ ctx, input }) => {
 
 		// ctx.res.set.redirect = "/";
 		sendRedirect("/");
-		return;
+		// return;
 	} catch (error) {
 		const wError = error as ReturnError;
 		console.error(wError);

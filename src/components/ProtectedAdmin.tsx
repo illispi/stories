@@ -1,12 +1,6 @@
 import { cache, createAsync, redirect } from "@solidjs/router";
-import { createQuery } from "@tanstack/solid-query";
-import type { Component } from "solid-js";
-import { Show } from "solid-js";
-import { eden } from "~/app";
-import { db } from "~/server/db";
+import { Show, type Component } from "solid-js";
 import { validateSession } from "~/server/trpc/context";
-import { handleEden } from "~/utils/handleEden";
-import { serverFetch } from "~/utils/serverFetch";
 
 const getSession = cache(async () => {
 	"use server";
@@ -29,10 +23,10 @@ const ProtectedAdmin = (Comp: IProtectedComponent) => {
 	return {
 		route,
 		Page: () => {
-			const session = createAsync(getSession);
+			const session = createAsync(() => getSession());
 			return (
 				<Show when={session()} keyed>
-					{(sess) => <Comp {...sess} />}
+					{(sess) => <Comp  />}
 				</Show>
 			);
 		},
