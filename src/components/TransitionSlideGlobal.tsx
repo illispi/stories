@@ -13,6 +13,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 	const [scrollReload, setScrollReload] = createSignal(0);
 
 	const [animate, setAnimate] = createSignal(false);
+	const [historyPrev, setHistoryPrev] = createSignal(0);
 
 	//TODO check that back gesture animates
 
@@ -34,6 +35,13 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 				setAnimate(true);
 			}, 500);
 		};
+		setHistoryPrev(window.history.length);
+
+		if (window.history.length > historyPrev()) {
+			console.log(window.history.length);
+			setAnimate(true);
+			setHistoryPrev(window.history.length);
+		}
 	});
 	return (
 		<div>
