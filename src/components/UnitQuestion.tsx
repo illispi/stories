@@ -328,7 +328,7 @@ export const UnitQuestion: ParentComponent<{
 		if (!result.success) {
 			setError(result.issues[0].message);
 		} else {
-			handleSubmit({ [questionDB]: result });
+			handleSubmit({ [questionDB]: result.output });
 			setError(null);
 		}
 	};
