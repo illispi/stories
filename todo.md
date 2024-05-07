@@ -1,2 +1,6 @@
-- check if username is already used
-- Prevent same user names
+## TODO
+
+- Do I even need username?
+- Double check that CSRF stuff
+
+## Notes

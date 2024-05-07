@@ -57,6 +57,7 @@ const fetchUser = cache(async () => {
 			.executeTakeFirst();
 
 		if (!unSafe) {
+			console.log("fkawepfawk", unSafe);
 			return { user: true, data: false };
 		}
 
@@ -315,7 +316,7 @@ const PersonalQuestions: ParentComponent = () => {
 					}
 				>
 					<Show
-						when={user()?.data || params.personalQuestions === "theirQuestions"}
+						when={!user()?.data || params.personalQuestions === "theirQuestions"}
 						fallback={
 							<div class="flex h-screen w-full flex-col items-center justify-center">
 								<div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
@@ -340,7 +341,7 @@ const PersonalQuestions: ParentComponent = () => {
 										<div class="flex h-screen w-full flex-col items-center justify-center">
 											<div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
 												<h2 class="m-8 text-lg">
-													Submitted successfully for apporval!
+													Submitted successfully for approval!
 												</h2>
 												<A
 													href={routeGen("/user/data")}

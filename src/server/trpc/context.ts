@@ -43,7 +43,6 @@ export const createContext = async (opts: createSolidAPIHandlerContext) => {
 		}
 	}
 	const { session, user } = await validateSession();
-	console.log(session);
 
 	const contextInner = await createContextInner({ session, user });
 

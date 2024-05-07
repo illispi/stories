@@ -62,7 +62,7 @@ export const signIn = apiProcedure
 			const existingUser = await db
 				.selectFrom("auth_user")
 				.selectAll("auth_user")
-				.where("username", "=", ctx.user?.id)
+				.where("id", "=", ctx.user?.id)
 				.executeTakeFirst();
 			if (!existingUser) {
 				// NOTE:
