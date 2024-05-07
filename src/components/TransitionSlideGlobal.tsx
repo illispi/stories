@@ -2,6 +2,7 @@ import type { ParentComponent } from "solid-js";
 import { Show, Suspense, createEffect, createSignal } from "solid-js";
 import { Transition } from "solid-transition-group";
 import Footer from "./Footer";
+import { useIsRouting } from "@solidjs/router";
 
 const TransitionSlideGlobal: ParentComponent = (props) => {
 	const [vis, setVis] = createSignal(false);
@@ -13,7 +14,8 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 	const [scrollReload, setScrollReload] = createSignal(0);
 
 	const [animate, setAnimate] = createSignal(false);
-	const [historyPrev, setHistoryPrev] = createSignal(0);
+
+	const isRouting = useIsRouting();
 
 	//TODO check that back gesture animates
 
@@ -35,12 +37,9 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 				setAnimate(true);
 			}, 500);
 		};
-		setHistoryPrev(window.history.length);
 
-		if (window.history.length > historyPrev()) {
-			console.log(window.history.length);
+		if (isRouting()) {
 			setAnimate(true);
-			setHistoryPrev(window.history.length);
 		}
 	});
 	return (

@@ -98,76 +98,83 @@ const AllStatsPage: ParentComponent = () => {
 
 	return (
 		<Suspense>
-			<Show
-				when={
-					((allStatsData.data?.total && allStatsData.data?.total >= 5) ||
-						params.fOrT === "fake") &&
-					allStatsData.data
-				}
-				fallback={
-					<div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-						<div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
-							<h2 class="text-center text-2xl font-bold lg:text-3xl">
-								{`${allStatsData.data?.total ?? 0}/5`}
-							</h2>
-							<p class="text-center text-lg">
-								Poll needs to be done by at least 5 people
-							</p>
-							<A
-								class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-								href={route("/questionares/:personalQuestions", {
-									personalQuestions:
-										params.pOrT === "Personal_questions"
-											? "personalQuestions"
-											: "theirQuestions",
-								})}
-							>
-								Do the poll now
-							</A>
-							<A
-								class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
-								href={route("/pollResults/:pOrT/:fOrT/pollResults", {
-									fOrT: "fake",
-									pOrT: params.pOrT,
-								})}
-							>
-								View results with fake data
-							</A>
-						</div>
-					</div>
-				}
-			>
-				{(data) => (
-					<div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-						<div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
-							<div class="flex h-16 items-center justify-center bg-blue-300 p-4">
-								<h1 class="text-center font-semibold">Statistics personal</h1>
-							</div>
-							<div class="flex flex-col items-center justify-center">
-								<div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
-									<CompareButton />
+			<div>
+				<Show
+					when={
+						((allStatsData.data?.total && allStatsData.data?.total >= 5) ||
+							params.fOrT === "fake") &&
+						allStatsData.data
+					}
+					fallback={
+						<Suspense>
+							<Show when={allStatsData.data}>
+								<div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+									<div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
+										<h2 class="text-center text-2xl font-bold lg:text-3xl">
+											{`${allStatsData.data?.total ?? 0}/5`}
+											{console.log("feasfs")}
+										</h2>
+										<p class="text-center text-lg">
+											Poll needs to be done by at least 5 people
+										</p>
+										<A
+											class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+											href={route("/questionares/:personalQuestions", {
+												personalQuestions:
+													params.pOrT === "Personal_questions"
+														? "personalQuestions"
+														: "theirQuestions",
+											})}
+										>
+											Do the poll now
+										</A>
+										<A
+											class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+											href={route("/pollResults/:pOrT/:fOrT/pollResults", {
+												fOrT: "fake",
+												pOrT: params.pOrT,
+											})}
+										>
+											View results with fake data
+										</A>
+									</div>
+								</div>
+							</Show>
+						</Suspense>
+					}
+				>
+					{(data) => (
+						<div class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+							<div class="my-32 flex w-11/12 flex-col overflow-hidden rounded-3xl bg-white shadow-sm shadow-slate-500 md:max-w-xl">
+								<div class="flex h-16 items-center justify-center bg-blue-300 p-4">
+									<h1 class="text-center font-semibold">Statistics personal</h1>
+								</div>
+								<div class="flex flex-col items-center justify-center">
+									<div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
+										<CompareButton />
+										{console.log("las")}
+										<For each={compOrder}>
+											{(comp) => (
+												<CompSelector
+													{...comp}
+													data={data()}
+													ref={(el: Element) => setTargets((p) => [...p, el])}
+													shown={shown()}
+													removeShown={removeShown}
+													pOrT={params.pOrT}
+													fOrT={params.fOrT}
+												/>
+											)}
+										</For>
 
-									<For each={compOrder}>
-										{(comp) => (
-											<CompSelector
-												{...comp}
-												data={data()}
-												ref={(el: Element) => setTargets((p) => [...p, el])}
-												shown={shown()}
-												removeShown={removeShown}
-												pOrT={params.pOrT}
-												fOrT={params.fOrT}
-											/>
-										)}
-									</For>
-
-									<CompareButton />
+										<CompareButton />
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				)}
-			</Show>
+					)}
+				</Show>
+			</div>
 		</Suspense>
 	);
 };
