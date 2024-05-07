@@ -35,6 +35,7 @@ export default defineConfig({
 	/*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
 	ssr: true,
+	vite: { plugins: [imagetools()] },
 });
 
 //NOTE solidjs dev tools uncomment import in entry-client.tsx aswell
