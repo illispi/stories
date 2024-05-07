@@ -31,13 +31,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 		window.addEventListener("beforeunload", () => {
 			localStorage.setItem("scrollPos", String(scrollReload()));
 		});
-
-		window.onload = () => {
-			setTimeout(() => {
-				setAnimate(true);
-			}, 500);
-		};
-
+	
 		if (isRouting()) {
 			setAnimate(true);
 		}
