@@ -7,6 +7,7 @@
 - Compress images and add srcset
 - Make body have only side blue fade and then bottom and up blue fade on element, to prevent jerky blue animation
 - Hash username
+- Admin shortcut ui in hamburger
 
 ## Notes
 
@@ -22,3 +23,4 @@ Returning immediately allows malicious actors to figure out valid usernames from
  it is crucial your implementation is protected against brute-force attacks with login throttling etc.
  If usernames are public, you may outright tell the user that the username is invalid. 
  ```
+ ### If you have hydration mismatch just add <Suspense>

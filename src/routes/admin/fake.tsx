@@ -4,9 +4,9 @@ import ProtectedAdmin from "~/components/ProtectedAdmin";
 import { trpc } from "~/utils/trpc";
 
 export const { routeData, Page } = ProtectedAdmin((session) => {
-  const fakeForFakeMut = trpc.fakeForFake.useMutation();
-  const fakeForDevMut = trpc.fakeForDev.useMutation();
-  const fakeArticlesForDevMut = trpc.fakeArticlesForDev.useMutation();
+  const fakeForFakeMut = trpc.fakeForFake.createMutation();
+  const fakeForDevMut = trpc.fakeForDev.createMutation();
+  const fakeArticlesForDevMut = trpc.fakeArticlesForDev.createMutation();
   return (
     <div>
       <Suspense>

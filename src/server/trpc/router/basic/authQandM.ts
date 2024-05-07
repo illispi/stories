@@ -65,7 +65,7 @@ export const signIn = apiProcedure
 				.where("username", "=", input.username)
 				.executeTakeFirst();
 			if (!existingUser) {
-				// NOTE:
+				// BUG:
 				// Returning immediately allows malicious actors to figure out valid usernames from response times,
 				// allowing them to only focus on guessing passwords in brute-force attacks.
 				// As a preventive measure, you may want to hash passwords even for invalid usernames.
