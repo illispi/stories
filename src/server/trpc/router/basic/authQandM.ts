@@ -62,7 +62,7 @@ export const signIn = apiProcedure
 			const existingUser = await db
 				.selectFrom("auth_user")
 				.selectAll("auth_user")
-				.where("id", "=", ctx.user?.id)
+				.where("username", "=", input.username)
 				.executeTakeFirst();
 			if (!existingUser) {
 				// NOTE:
@@ -92,8 +92,7 @@ export const signIn = apiProcedure
 				"Set-Cookie",
 				lucia.createSessionCookie(session.id).serialize(),
 			);
-			sendRedirect("/");
-			return;
+		
 		} catch (error) {
 			const wError = error as ReturnError;
 			console.error(wError);
@@ -117,10 +116,20 @@ export const signUp = apiProcedure
 	)
 	.mutation(async ({ ctx, input }) => {
 		try {
+			const usernameDb = await db
+				.selectFrom("auth_user")
+				.select(["username"])
+				.where("id", "=", ctx.user?.id)
+				.executeTakeFirst();
+
+			if (usernameDb?.username === input.username) {
+				throw new TRPCError({
+					code: "BAD_REQUEST",
+					message: `Username ${input.username} already exits`,
+				});
+			}
 			const userId = generateId(15);
 			const hashedPassword = await new Argon2id().hash(input.password);
-
-			// TODO: check if username is already used
 
 			await db
 				.insertInto("auth_user")
@@ -130,7 +139,7 @@ export const signUp = apiProcedure
 					role: "user",
 					username: input.username,
 				})
-				.executeTakeFirst();
+				.executeTakeFirstOrThrow();
 
 			const session = await lucia.createSession(userId, {});
 			appendResponseHeader(
@@ -138,14 +147,7 @@ export const signUp = apiProcedure
 				lucia.createSessionCookie(session.id).serialize(),
 			);
 			sendRedirect("/");
-			// const sessionCookie = lucia.createSessionCookie(session.id);
-			// ctx.res.cookie[sessionCookie.name].set({
-			// 	value: sessionCookie.value,
-			// 	...sessionCookie.attributes,
-			// });
 
-			// ctx.res.set.redirect = "/";
-			// return;
 		} catch (error) {
 			const wError = error as ReturnError;
 			console.error(wError);
@@ -156,12 +158,9 @@ export const logOut = apiProcedure.mutation(async ({ ctx, input }) => {
 	try {
 		const sessionCookie = lucia.createBlankSessionCookie();
 		// TODO check from lucia docs how to log out
-		// context.headers.set("Set-Cookie", sessionCookie.serialize());
 		appendResponseHeader("Set-Cookie", sessionCookie.serialize());
 
-		// ctx.res.set.redirect = "/";
 		sendRedirect("/");
-		// return;
 	} catch (error) {
 		const wError = error as ReturnError;
 		console.error(wError);
