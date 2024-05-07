@@ -76,6 +76,7 @@ export default function App() {
 								<ErrorBoundary
 									fallback={(e, reset) => {
 										Sentry.captureException(e);
+										console.log(e);
 										return (
 											<div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
 												<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
