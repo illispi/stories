@@ -10,7 +10,7 @@ import {
 	onCleanup,
 } from "solid-js";
 import type { ChartistData } from "~/types/types";
-import "../styles/index.css";
+import "../../styles/index.css";
 import { useIsRouting } from "@solidjs/router";
 
 interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {

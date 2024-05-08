@@ -8,6 +8,7 @@
 - Make body have only side blue fade and then bottom and up blue fade on element, to prevent jerky blue animation
 - Hash username
 - Admin shortcut ui in hamburger
+- clsx
 
 ## Notes
 

@@ -2,7 +2,7 @@ import type { ParentComponent } from "solid-js";
 import {
 	Suspense
 } from "solid-js";
-import BarChartCustomtest from "~/components/TestChart";
+import BarChartCustomtest from "~/components/testing/TestChart";
 
 const Test: ParentComponent = () => {
 	return (

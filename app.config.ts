@@ -4,6 +4,14 @@ import dotenv from "dotenv";
 import devtools from "solid-devtools/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+import { fileURLToPath } from "node:url";
+
+const filesNeedToExclude = ["src/routes/testing/", "src/components/testing/"];
+
+const filesPathToExclude = filesNeedToExclude.map((src) => {
+	return fileURLToPath(new URL(src, import.meta.url));
+});
+console.log(filesPathToExclude);
 
 export default defineConfig({
 	//[ssr: process.env.NODE_ENV === "DEV" ? false : true }
@@ -35,7 +43,15 @@ export default defineConfig({
 	/*  build: { target: "es2020" },
     optimizeDeps: { esbuildOptions: "es2020" }, */
 	ssr: true,
-	vite: { plugins: [imagetools()] },
+	vite: {
+		plugins: [imagetools()],
+		build: {
+			manifest: true,
+			rollupOptions: {
+				external: [...filesPathToExclude],
+			},
+		},
+	},
 });
 
 //NOTE solidjs dev tools uncomment import in entry-client.tsx aswell

@@ -1,5 +1,4 @@
 import { ErrorBoundary, For, Show, Suspense, createSignal } from "solid-js";
-import { useParams, useSearchParams } from "solid-start";
 import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -8,6 +7,7 @@ import { questions } from "~/data/personalQuestionsArr";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
+import { useParams, useSearchParams } from "@solidjs/router";
 
 const StatsText = () => {
   const params = useParams<{

@@ -129,6 +129,9 @@ const Hamburger: Component<{
 				<MenuItem route={routeGen("/pollResults/")} content="results" />
 				<MenuItem route={routeGen("/questionares/")} content="poll" />
 				<MenuItem route={routeGen("/articles/")} content="Articles" />
+				<Show when={import.meta.env.DEV}>
+					<MenuItem route={"/testing/"} content="Testing" />
+				</Show>
 				<button
 					class="p-16 transition-all hover:scale-125"
 					onClick={() => {
