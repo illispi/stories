@@ -132,6 +132,9 @@ const Hamburger: Component<{
 				<Show when={import.meta.env.DEV}>
 					<MenuItem route={"/testing/"} content="Testing" />
 				</Show>
+				<Show when={authQuery.data?.admin}>
+					<MenuItem route={"/admin/"} content="admin" />
+				</Show>
 				<button
 					class="p-16 transition-all hover:scale-125"
 					onClick={() => {

@@ -90,9 +90,9 @@ export default function App() {
 								>
 									<Suspense>
 										<NavBar />
-										<TransitionSlideGlobal>
+										{/* <TransitionSlideGlobal> */}
 											{props.children}
-										</TransitionSlideGlobal>
+										{/* </TransitionSlideGlobal> */}
 									</Suspense>
 								</ErrorBoundary>
 							</trpc.Provider>

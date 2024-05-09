@@ -29,10 +29,13 @@ export const authStatus = apiProcedure.query(async ({ ctx }) => {
 					message: "User was not found",
 				});
 			}
-			return true;
+			if (user.role === "admin") {
+				return { user: true, admin: true };
+			}
+			return { user: true, admin: false };
 		}
 
-		return false;
+		return { user: false, admin: false };
 	} catch (error) {
 		const wError = error as ReturnError;
 		console.error(wError);
@@ -92,7 +95,6 @@ export const signIn = apiProcedure
 				"Set-Cookie",
 				lucia.createSessionCookie(session.id).serialize(),
 			);
-		
 		} catch (error) {
 			const wError = error as ReturnError;
 			console.error(wError);
@@ -147,7 +149,6 @@ export const signUp = apiProcedure
 				lucia.createSessionCookie(session.id).serialize(),
 			);
 			sendRedirect("/");
-
 		} catch (error) {
 			const wError = error as ReturnError;
 			console.error(wError);

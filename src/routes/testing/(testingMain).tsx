@@ -5,11 +5,9 @@ import BarChartCustomtest from "~/components/testing/TestChart";
 
 const TestingMain: ParentComponent = () => {
 	return (
-		<Suspense>
-			<div>
-				<A href="/testing/test/" />
-			</div>
-		</Suspense>
+		<div>
+			<A href="/testing/test/" />
+		</div>
 	);
 };
 
