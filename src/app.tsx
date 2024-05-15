@@ -27,7 +27,7 @@ export default function App() {
 		history.scrollRestoration = "manual";
 	});
 
-	if (!DEV) {
+	if (import.meta.env.PROD) {
 		//NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
 		Sentry.init({
 			dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
@@ -47,8 +47,8 @@ export default function App() {
 			replaysOnErrorSampleRate: 1.0,
 		});
 	}
-
-	if (!isServer) {
+	//TODO change these to env files and use fixed script loader, same with dsn:
+	if (!isServer && import.meta.env.PROD) {
 		const script = document.createElement("script");
 		script.src = "https://umami.delvis.org/script.js";
 		script.async = true;
@@ -91,7 +91,7 @@ export default function App() {
 									<Suspense>
 										<NavBar />
 										{/* <TransitionSlideGlobal> */}
-											{props.children}
+										{props.children}
 										{/* </TransitionSlideGlobal> */}
 									</Suspense>
 								</ErrorBoundary>

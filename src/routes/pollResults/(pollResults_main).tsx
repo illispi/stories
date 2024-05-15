@@ -8,7 +8,7 @@ const PollResults: Component = () => (
 			<h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">
 				Poll results
 			</h1>
-			<div class="mb-16 flex h-full w-11/12 max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
+			<div class="mb-16 flex h-full w-full md:w-11/12 max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
 				<InfoBox
 					header="Personal experiences with schizophrenia"
 					link="Personal poll results"
