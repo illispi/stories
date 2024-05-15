@@ -175,6 +175,11 @@ const PersonalQuestions: ParentComponent = () => {
 
 	const [submissionStatus, setSubmissionStatus] = createSignal("");
 
+	createEffect(() => {
+		page();
+		window.scrollTo({ behavior: "smooth", top: 0 });
+	});
+
 	const questions =
 		params.personalQuestions === "personalQuestions"
 			? questionsPersonal
