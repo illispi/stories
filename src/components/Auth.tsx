@@ -24,7 +24,7 @@ const Auth: VoidComponent = () => {
 	}));
 
 	return (
-		<Show when={authQuery.data} fallback={<LoginA />}>
+		<Show when={authQuery.data?.user} fallback={<LoginA />}>
 			<CustomButton
 				onClick={() => {
 					logOutMut.mutate();

@@ -7,7 +7,7 @@ import { getRequestEvent, isServer } from "solid-js/web";
 import { createTRPCSolidStart } from "@solid-mediakit/trpc";
 
 const getBaseUrl = () => {
-	if (typeof window !== "undefined") return "";
+	// if (typeof window !== "undefined") return "";
 	return `${
 		process.env.NODE_ENV === "production"
 			? process.env.SITE

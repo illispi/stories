@@ -14,33 +14,26 @@ import {
 } from "vinxi/server";
 
 export const authStatus = apiProcedure.query(async ({ ctx }) => {
-	//TODO this is bit hacky
-	try {
-		if (ctx.session) {
-			const user = await ctx.db
-				.selectFrom("auth_user")
-				.select(["id", "role"])
-				.where("id", "=", ctx.user?.id)
-				.executeTakeFirstOrThrow();
+	if (ctx.session) {
+		const user = await ctx.db
+			.selectFrom("auth_user")
+			.select(["id", "role"])
+			.where("id", "=", ctx.user?.id)
+			.executeTakeFirst();
 
-			if (!user) {
-				throw new TRPCError({
-					code: "INTERNAL_SERVER_ERROR",
-					message: "User was not found",
-				});
-			}
-			if (user.role === "admin") {
-				return { user: true, admin: true };
-			}
-			return { user: true, admin: false };
+		if (!user) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "User was not found",
+			});
 		}
-
-		return { user: false, admin: false };
-	} catch (error) {
-		const wError = error as ReturnError;
-		console.error(wError);
-		return wError;
+		if (user.role === "admin") {
+			return { user: true, admin: true };
+		}
+		return { user: true, admin: false };
 	}
+
+	return { user: false, admin: false };
 });
 
 export const signIn = apiProcedure
