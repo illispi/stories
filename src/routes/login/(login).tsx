@@ -58,7 +58,7 @@ const Login = () => {
 	}));
 
 	createEffect(() => {
-		if (authQuery.data) {
+		if (authQuery.data?.user) {
 			if (searchParams.redir) {
 				navigate(searchParams.redir);
 			} else {
