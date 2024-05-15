@@ -33,12 +33,24 @@ const Hamburger: Component<{
 	const [searchParams, setSearchParams] = useSearchParams();
 	const authQuery = trpc.authStatus.createQuery();
 
+	const [reloaded, setReloaded] = createSignal(false);
+
 	createEffect(() => {
 		window.addEventListener("popstate", (event) => {
 			if (searchParams.nav === "true") {
 				setSearchParams({ nav: null });
 			}
 		});
+		if (window.performance.getEntriesByType && !reloaded()) {
+			if (
+				window.performance.getEntriesByType("navigation")[0].type === "reload"
+			) {
+				setReloaded(true);
+				if (searchParams.nav === "true") {
+					setSearchParams({ nav: null });
+				}
+			}
+		}
 
 		//TODO if open and close nav and then go back history is gone
 		//BUG on mobile refresh has nav on bit weird position, might be able to solve with start disabled, see personalQuestions.tsx motion.one

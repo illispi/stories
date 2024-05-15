@@ -75,7 +75,7 @@ export default function App() {
 							<trpc.Provider queryClient={queryClient}>
 								<ErrorBoundary
 									fallback={(e, reset) => {
-										Sentry.captureException(e);
+										import.meta.env.PROD ?? Sentry.captureException(e);
 										console.log(e);
 										return (
 											<div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">

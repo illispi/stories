@@ -5,13 +5,12 @@ import type { IAppRouter } from "~/server/trpc/router/_app";
 import { httpBatchLink } from "@trpc/client";
 import { getRequestEvent, isServer } from "solid-js/web";
 import { createTRPCSolidStart } from "@solid-mediakit/trpc";
-import { clientEnv } from "./env/client";
 
 const getBaseUrl = () => {
 	// if (typeof window !== "undefined") return "";
 	return `${
-		clientEnv.PUBLIC_NODE_ENV === "production"
-			? clientEnv.PUBLIC_SITE
+		process.env.PUBLIC_NODE_ENV === "production"
+			? process.env.PUBLIC_SITE
 			: "http://localhost:3000"
 	}`;
 };
