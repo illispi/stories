@@ -78,8 +78,8 @@ export default function App() {
 										import.meta.env.PROD ?? Sentry.captureException(e);
 										console.log(e);
 										return (
-											<div class="flex min-h-screen w-full flex-col items-center justify-center gap-4">
-												<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+											<div class="fixed flex items-center justify-center left-0 top-0 z-40 h-screen w-screen bg-black/30 transition-all duration-500 backdrop-blur-sm ">
+												<div class="flex w-11/12 max-w-2xl max-h-96 flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
 													<h1 class="text-center text-2xl">Error occured!</h1>
 													<h2 class="text-center">{`Message: ${e.message}`}</h2>
 													<CustomButton onClick={reset}>Try again</CustomButton>
@@ -90,6 +90,7 @@ export default function App() {
 								>
 									<Suspense>
 										<NavBar />
+
 										{/* <TransitionSlideGlobal> */}
 										{props.children}
 										{/* </TransitionSlideGlobal> */}

@@ -10,6 +10,7 @@
 - clsx
 - biome
 - Add cloudflare post request rate limiter
+- How to make better error page
 
 ## Notes
 
