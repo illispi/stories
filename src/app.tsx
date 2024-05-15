@@ -49,19 +49,11 @@ export default function App() {
 	}
 	//TODO change these to env files and use fixed script loader, same with dsn:
 	if (!isServer && import.meta.env.PROD) {
-		const script = document.createElement("script");
-		script.src = "https://umami.delvis.org/script.js";
-		script.async = true;
-		script.setAttribute(
-			"data-website-id",
-			"cbdde5c6-7ae6-4d53-9f16-cf558c6110bd",
-		);
-		createRenderEffect(() => {
-			document.head.appendChild(script);
+		createScriptLoader({
+			src: "https://umami.delvis.org/script.js",
+			"data-website-id": "cbdde5c6-7ae6-4d53-9f16-cf558c6110bd",
+			async: true,
 		});
-		onCleanup(
-			() => document.head.contains(script) && document.head.removeChild(script),
-		);
 	}
 
 	return (
