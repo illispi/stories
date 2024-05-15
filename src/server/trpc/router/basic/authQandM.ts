@@ -1,6 +1,13 @@
 import { wrap } from "@typeschema/valibot";
 import { type ReturnError, apiProcedure } from "../../utils";
-import { maxLength, minLength, object, string } from "valibot";
+import {
+	excludes,
+	maxLength,
+	minLength,
+	object,
+	string,
+	toTrimmed,
+} from "valibot";
 import { generateId } from "lucia";
 import { Argon2id } from "oslo/password";
 import { db } from "~/server/db";
@@ -41,10 +48,12 @@ export const signIn = apiProcedure
 		wrap(
 			object({
 				username: string([
+					excludes(" ", "The username can't contain spaces"),
 					minLength(4, "Your username is too short, min 4 characters"),
 					maxLength(30, "Your username is too long, 30 characters max"),
 				]),
 				password: string([
+					excludes(" ", "The password can't contain spaces"),
 					minLength(4, "Your password is too short, min 4 characters"),
 					maxLength(255, "Your password is too long, 255 characters max"),
 				]),
@@ -76,9 +85,7 @@ export const signIn = apiProcedure
 			input.password,
 		);
 		if (!validPassword) {
-			return new Response("Incorrect username or password", {
-				status: 400,
-			});
+			return "Incorrect username or password";
 		}
 
 		const session = await lucia.createSession(existingUser.id, {});
@@ -92,10 +99,12 @@ export const signUp = apiProcedure
 		wrap(
 			object({
 				username: string([
+					excludes(" ", "The username can't contain spaces"),
 					minLength(4, "Your username is too short, min 4 characters"),
 					maxLength(30, "Your username is too long, 30 characters max"),
 				]),
 				password: string([
+					excludes(" ", "The password can't contain spaces"),
 					minLength(4, "Your password is too short, min 4 characters"),
 					maxLength(255, "Your password is too long, 255 characters max"),
 				]),

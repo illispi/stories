@@ -15,6 +15,8 @@ import {
 	object,
 	parse,
 	string,
+	toTrimmed,
+	excludes,
 } from "valibot";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
@@ -23,10 +25,12 @@ import { trpc } from "~/utils/trpc";
 
 const userSchema = object({
 	username: string([
+		excludes(" ", "The username can't contain spaces"),
 		minLength(4, "Your username is too short, min 4 characters"),
 		maxLength(30, "Your username is too long, 30 characters max"),
 	]),
 	password: string([
+		excludes(" ", "The password can't contain spaces"),
 		minLength(4, "Your password is too short, min 4 characters"),
 		maxLength(255, "Your password is too long, 255 characters max"),
 	]),
@@ -75,10 +79,14 @@ const Login = () => {
 	};
 
 	const [showAccountMissing, setShowAccountMissing] = createSignal(false);
+	const [showIncorrect, setShowIncorrect] = createSignal(false);
 	const [error, setError] = createSignal<string | null>(null);
 
 	createEffect(() => {
 		signInMut.data === "No account yet" ? setShowAccountMissing(true) : null;
+		signInMut.data === "Incorrect username or password"
+			? setShowIncorrect(true)
+			: null;
 
 		// submission.error?.message ? setError(submission.error.message) : null;
 	});
@@ -120,6 +128,22 @@ const Login = () => {
 					</CustomButton>
 				</div>
 			</ModalOptions>
+			<ModalOptions show={showIncorrect()} setShow={setShowIncorrect}>
+				<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+					<h2 class="text-center text-2xl font-bold lg:text-3xl">
+						Incorrect username or password
+					</h2>
+
+					<CustomButton
+						class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+						onClick={() => {
+							setShowIncorrect(false);
+						}}
+					>
+						Try again
+					</CustomButton>
+				</div>
+			</ModalOptions>
 			<h1 class="my-16 text-5xl font-bold lg:mt-48 lg:text-6xl">Sign up/in</h1>
 			<div class="mb-16 flex h-full w-full md:w-11/12 max-w-screen-2xl flex-col items-center justify-center gap-8 lg:mb-72 lg:flex-row  lg:items-stretch">
 				<div class="flex w-11/12 max-w-2xl flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
@@ -149,7 +173,9 @@ const Login = () => {
 											placeholder="username"
 											autocomplete="off"
 										/>
-										{field.error && <div>{field.error}</div>}
+										{field.error && (
+											<div class="text-red-600">{field.error}</div>
+										)}
 									</>
 								)}
 							</Field>
@@ -167,7 +193,9 @@ const Login = () => {
 											type="password"
 											autocomplete="off"
 										/>
-										{field.error && <div>{field.error}</div>}
+										{field.error && (
+											<div class="text-red-600">{field.error}</div>
+										)}
 									</>
 								)}
 							</Field>

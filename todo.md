@@ -35,7 +35,6 @@ Returning immediately allows malicious actors to figure out valid usernames from
 
 
 
-Fake data doesn't work for texts window
 
 If you have space after username it will create new user. Trim white space in valibot so to speak. Also on backend. On fact don't allow spaces at all
 
