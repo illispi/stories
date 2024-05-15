@@ -502,6 +502,10 @@ export const UnitQuestion: ParentComponent<{
 								value={text()}
 								onInput={(e) => {
 									setText(e.target.value);
+									localStorage.setItem(
+										props.LsName,
+										JSON.stringify({ ...questionsLs, [questionDB]: text() }),
+									);
 									setError(null);
 								}}
 							/>

@@ -140,7 +140,7 @@ const articles: Component = () => {
 
 	return (
 		<Suspense>
-			<div class="my-16 flex w-full flex-col items-center justify-start gap-8">
+			<div class="my-16 min-h-screen flex w-full flex-col items-center justify-start gap-8">
 				<Suspense>
 					<Show
 						when={submitVis()}

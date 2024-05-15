@@ -11,6 +11,7 @@
 - biome
 - Add cloudflare post request rate limiter
 - How to make better error page
+- Animate articles submit
 
 ## Notes
 
@@ -31,3 +32,18 @@ Returning immediately allows malicious actors to figure out valid usernames from
 ### If you have hydration mismatch just add <Suspense>
 
 - Sometimes even reboot helps for that mismatch
+
+
+Lbs localstorage conversion
+
+Fake data doesn't work for texts window
+
+If you have space after username it will create new user. Trim white space in valibot so to speak. Also on backend. On fact don't allow spaces at all
+
+And next has that stacking of unit questions in mobile so animations happen too high. Maybe scroll smooth on next to tio or minh and make sure question boxes are absolute
+
+Enable smoothscroll css like in home site
+
+notification if approved or declined, bell icon on nav
+
+Scriptloader
