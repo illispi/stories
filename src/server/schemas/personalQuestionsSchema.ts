@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const personalQuestionsSchemaCustom = z
   .object({
+    systemMetric: z.boolean(),
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
     gender: z.enum(["other", "male", "female"]),
     //BUG maybe refine that age_of_onset is smaller than current age

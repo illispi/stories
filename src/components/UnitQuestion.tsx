@@ -133,7 +133,10 @@ export const UnitQuestion: ParentComponent<{
 			.filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
 			.forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-		sendStats.mutateAsync(questionsLs);
+		sendStats.mutateAsync({
+			...questionsLs,
+			systemMetric: JSON.parse(localStorage.getItem("system") ?? '"true"'),
+		});
 	};
 
 	const handleMultiSubmit = (
@@ -337,7 +340,11 @@ export const UnitQuestion: ParentComponent<{
 		<Switch fallback={<div>Error</div>}>
 			<Match when={questionType === "selection"}>
 				<Box question={question}>
-					<div class="flex flex-col items-center justify-end">
+					<div
+						class={`flex flex-col items-center justify-end ${
+							questionDB === "current_med" ? "mt-20" : ""
+						}`}
+					>
 						<For each={selections} fallback={<div>No selection found</div>}>
 							{(v) => (
 								<div class="m-2">
@@ -422,7 +429,10 @@ export const UnitQuestion: ParentComponent<{
 								}}
 							/>
 							<CustomButton
-								onClick={() => setMetric(false)}
+								onClick={() => {
+									setMetric(false);
+									setNumber("0");
+								}}
 								class={
 									!metric()
 										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500  active:bg-green-600"
@@ -432,7 +442,10 @@ export const UnitQuestion: ParentComponent<{
 								Imperial (lbs)
 							</CustomButton>
 							<CustomButton
-								onClick={() => setMetric(true)}
+								onClick={() => {
+									setMetric(true);
+									setNumber("0");
+								}}
 								class={
 									metric()
 										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
