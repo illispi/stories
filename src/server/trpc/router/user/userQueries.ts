@@ -63,14 +63,10 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.where("user", "=", ctx.user.id)
 		.executeTakeFirst();
 
-	let statusPersonal;
-	if (personal === undefined) {
-		statusPersonal = undefined;
-	}
-
-	else{
-		statusPersonal = {status: personal.accepted, time: personal.}
-	}
+	const statusPersonal =
+		personal !== undefined
+			? { status: personal.accepted, time: personal.updated_at }
+			: undefined;
 
 	const their = await ctx.db
 		.selectFrom("Their_questions")
@@ -78,5 +74,29 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.where("user", "=", ctx.user.id)
 		.execute();
 
-	const statusTheir = their.filter((e) => e.accepted);
+	const statusTheir = !their.length
+		? their.map((e) => ({
+				status: their.accepted,
+				time: their.updated_at,
+			}))
+		: undefined;
+
+	const articles = await ctx.db
+		.selectFrom("Articles")
+		.selectAll()
+		.where("user", "=", ctx.user.id)
+		.execute();
+
+	const statusArticles = !articles.length
+		? articles.map((e) => ({
+				status: their.accepted,
+				time: their.updated_at,
+			}))
+		: undefined;
+
+	return {
+		articles: statusArticles,
+		personal: statusPersonal,
+		their: statusTheir,
+	};
 });
