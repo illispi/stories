@@ -16,7 +16,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("description", "text", (col) => col.notNull())
 		.addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
 		.addColumn("updated_at", "timestamp", (col) =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
+			col.notNull().defaultTo(sql`NOW()`),
 		)
 		.execute();
 }

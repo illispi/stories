@@ -1,4 +1,4 @@
-import { apiProcedure, router } from "../utils";
+import { router } from "../utils";
 import {
 	acceptArticle,
 	acceptSubmission,
@@ -16,7 +16,7 @@ import {
 	postPersonalStats,
 	postTheirStats,
 } from "./basic/mutations";
-import { allStats, articlesPagination,  textPagination } from "./basic/queries";
+import { allStats, articlesPagination, textPagination } from "./basic/queries";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -25,13 +25,15 @@ import {
 	editTheir,
 	editPersonal,
 } from "./user/userMutations";
-import { getPersonal, getTheirs, getArticles } from "./user/userQueries";
-
-export const test = apiProcedure.query(async ({ input: payload, ctx }) => {
-	return "working thing";
-});
+import {
+	getPersonal,
+	getTheirs,
+	getArticles,
+	getNotifications,
+} from "./user/userQueries";
 
 export const appRouter = router({
+	getNotifications,
 	signIn,
 	signUp,
 	logOut,

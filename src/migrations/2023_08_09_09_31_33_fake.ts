@@ -248,7 +248,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 		.addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
 		.addColumn("updated_at", "timestamp", (col) =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
+			col.notNull().defaultTo(sql`NOW()`),
 		)
 		.execute();
 
@@ -269,7 +269,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 		.addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
 		.addColumn("updated_at", "timestamp", (col) =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
+			col.notNull().defaultTo(sql`NOW()`),
 		)
 		.addColumn("relatives", "text", (col) =>
 			col.notNull().check(sql`relatives in ('yes', 'no', 'unknown')`),

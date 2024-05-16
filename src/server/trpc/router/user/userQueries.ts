@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
-import { unescape } from "querystring";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
 	const unSafe = await ctx.db
@@ -76,8 +75,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 
 	const statusTheir = !their.length
 		? their.map((e) => ({
-				status: their.accepted,
-				time: their.updated_at,
+				status: e.accepted,
+				time: e.updated_at,
 			}))
 		: undefined;
 
@@ -89,8 +88,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 
 	const statusArticles = !articles.length
 		? articles.map((e) => ({
-				status: their.accepted,
-				time: their.updated_at,
+				status: e.accepted,
+				time: e.updated_at,
 			}))
 		: undefined;
 

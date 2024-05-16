@@ -253,9 +253,11 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("not_have_schizophrenia_description", "text", (col) =>
 			col.notNull(),
 		)
-		.addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
+		.addColumn("created_at", "timestamp", (col) =>
+			col.notNull().defaultTo(sql`NOW()`),
+		)
 		.addColumn("updated_at", "timestamp", (col) =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
+			col.notNull().defaultTo(sql`NOW()`),
 		)
 		.execute();
 
@@ -277,9 +279,11 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("gender", "text", (col) =>
 			col.notNull().check(sql`gender in ('male', 'female', 'other')`),
 		)
-		.addColumn("created_at", "timestamp", (col) => col.defaultTo(sql`NOW()`))
+		.addColumn("created_at", "timestamp", (col) =>
+			col.notNull().defaultTo(sql`NOW()`),
+		)
 		.addColumn("updated_at", "timestamp", (col) =>
-			col.defaultTo(sql`CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`),
+			col.notNull().defaultTo(sql`NOW()`),
 		)
 		.addColumn("relatives", "text", (col) =>
 			col.notNull().check(sql`relatives in ('yes', 'no', 'unknown')`),
