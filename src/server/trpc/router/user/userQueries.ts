@@ -64,7 +64,11 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 
 	const statusPersonal =
 		personal !== undefined
-			? { status: personal.accepted, time: personal.updated_at }
+			? {
+					status: personal.accepted,
+					time: personal.updated_at,
+					seen: personal.seen,
+				}
 			: undefined;
 
 	const their = await ctx.db
@@ -77,6 +81,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		? their.map((e) => ({
 				status: e.accepted,
 				time: e.updated_at,
+				seen: e.seen,
 			}))
 		: undefined;
 
@@ -90,6 +95,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		? articles.map((e) => ({
 				status: e.accepted,
 				time: e.updated_at,
+				seen: e.seen,
 			}))
 		: undefined;
 

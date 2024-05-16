@@ -259,6 +259,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("updated_at", "timestamp", (col) =>
 			col.notNull().defaultTo(sql`NOW()`),
 		)
+		.addColumn("seen", "boolean", (col) => col.notNull().defaultTo(false))
 		.execute();
 
 	//TODO add modified_at and created_at and modified_at to these two schemas, also see from gallery web dev instructions
@@ -275,6 +276,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 				.notNull(),
 		)
 		.addColumn("accepted", "boolean", (col) => col.defaultTo(null))
+		.addColumn("seen", "boolean", (col) => col.notNull().defaultTo(false))
 		.addColumn("decline_reason", "text")
 		.addColumn("gender", "text", (col) =>
 			col.notNull().check(sql`gender in ('male', 'female', 'other')`),
