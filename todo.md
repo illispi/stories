@@ -2,7 +2,6 @@
 
 - Double check that CSRF stuff
 - Some of the choices could have "none of the above" choice
-- Prevent same usernames, beware of finding name by spamming it
 - Check that scroll restoration works
 - Compress images and add srcset
 - Make body have only side blue fade and then bottom and up blue fade on element, to prevent jerky blue animation
@@ -12,10 +11,12 @@
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Animate articles submit panel
+- Make global touch faster, look from delvis.org
+- Some kind of notify could be good for at least canceled
 
 ## Notes
 
-- Test if this .executeTakeFirstOrThrow(); would allow not checking for null in return
+- Test if this .executeTakeFirstOrThrow(); would allow not checking for null in return, unless empty array doesnt throw
 - When creating new account there is small layout shif
 
 ```
@@ -32,7 +33,3 @@ Returning immediately allows malicious actors to figure out valid usernames from
 ### If you have hydration mismatch just add <Suspense>
 
 - Sometimes even reboot helps for that mismatch
-
-
-
-notification if approved or declined, bell icon on nav

@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { ReturnError, apiProcedure, userProcedure } from "../../utils";
+import {  userProcedure } from "../../utils";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
 	const unSafe = await ctx.db

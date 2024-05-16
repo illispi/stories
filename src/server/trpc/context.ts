@@ -9,21 +9,15 @@ import {
 } from "vinxi/server";
 import { db } from "../db";
 
-interface CreateInnerContextOptions
-	extends Partial<createSolidAPIHandlerContext> {
-	session: Session | null;
-	user: User | null;
-}
+export const createContext = async (opts: createSolidAPIHandlerContext) => {
+	const { session, user } = await validateSession(opts);
 
-export const createContextInner = async (opts: CreateInnerContextOptions) => {
-	return {
-		db,
-		session: opts.session,
-		user: opts.user,
-	};
+	return { db, session, user, req: opts.req, res: opts.res };
 };
 
-export const createContext = async (opts: createSolidAPIHandlerContext) => {
+export type Context = Awaited<ReturnType<typeof createContext>>;
+
+export const validateSession = async (opts: createSolidAPIHandlerContext) => {
 	if (import.meta.env.PROD && opts.req.method !== "GET") {
 		// Only required in non-GET requests (POST, PUT, DELETE, PATCH, etc)
 		const originHeader = opts.req.headers.get("Origin");
@@ -34,24 +28,9 @@ export const createContext = async (opts: createSolidAPIHandlerContext) => {
 			!hostHeader ||
 			!verifyRequestOrigin(originHeader, [hostHeader])
 		) {
-			//BUG see if you can even return this response in the first place
-			// return new Response(null, {
-			// 	status: 403,
-			// });
-			setResponseStatus(401);
-			return;
+			return { session: null, user: null };
 		}
 	}
-	const { session, user } = await validateSession();
-
-	const contextInner = await createContextInner({ session, user });
-
-	return { ...contextInner, req: opts.req, res: opts.res };
-};
-
-export type IContext = inferAsyncReturnType<typeof createContextInner>;
-
-export const validateSession = async () => {
 	const sessionId = getCookie(lucia.sessionCookieName);
 	if (!sessionId) {
 		setResponseStatus(401);
