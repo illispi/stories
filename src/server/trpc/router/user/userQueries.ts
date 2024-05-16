@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
-import {  userProcedure } from "../../utils";
+import { userProcedure } from "../../utils";
+import { unescape } from "querystring";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
 	const unSafe = await ctx.db
@@ -55,3 +56,27 @@ export const getArticles = userProcedure.query(async ({ ctx }) => {
 	return safe;
 });
 
+export const getNotifications = userProcedure.query(async ({ ctx }) => {
+	const personal = await ctx.db
+		.selectFrom("Personal_questions")
+		.selectAll()
+		.where("user", "=", ctx.user.id)
+		.executeTakeFirst();
+
+	let statusPersonal;
+	if (personal === undefined) {
+		statusPersonal = undefined;
+	}
+
+	else{
+		statusPersonal = {status: personal.accepted, time: personal.}
+	}
+
+	const their = await ctx.db
+		.selectFrom("Their_questions")
+		.selectAll()
+		.where("user", "=", ctx.user.id)
+		.execute();
+
+	const statusTheir = their.filter((e) => e.accepted);
+});
