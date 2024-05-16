@@ -12,6 +12,7 @@ import {
 
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
+import BellNotification from "./BellNotification";
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
 	return (
@@ -196,8 +197,10 @@ const NavBar: Component = () => {
 						<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
 					</svg>
 				</A>
-
-				<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+				<div class="flex justify-between items-center w-32">
+					<BellNotification />
+					<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+				</div>
 			</div>
 		</>
 	);

@@ -3,7 +3,6 @@ import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
-import { ReturnError, apiProcedure } from "../../utils";
 import { wrap } from "@typeschema/valibot";
 import { Argon2id } from "oslo/password";
 import { TRPCError } from "@trpc/server";
@@ -11,9 +10,10 @@ import { lucia } from "~/lib/auth/lucia";
 import { db } from "~/server/db";
 import { maxLength, minLength, object, string } from "valibot";
 import { generateId } from "lucia";
+import { publicProcedure } from "../../utils";
 //TODO remember to only update this every once in a while in production
 
-export const allStats = apiProcedure
+export const allStats = publicProcedure
 	.input(
 		z.object({
 			value: z.enum([
@@ -390,7 +390,7 @@ export const allStats = apiProcedure
 		}
 	});
 
-export const textPagination = apiProcedure
+export const textPagination = publicProcedure
 	.input(
 		z.object({
 			page: z.number(),
@@ -476,7 +476,7 @@ export const textPagination = apiProcedure
 		return { stats, ...count };
 	});
 
-export const articlesPagination = apiProcedure
+export const articlesPagination = publicProcedure
 	.input(
 		z.object({
 			page: z.number().int(),
@@ -499,4 +499,3 @@ export const articlesPagination = apiProcedure
 
 		return { articles, count };
 	});
-

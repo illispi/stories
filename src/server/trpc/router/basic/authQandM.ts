@@ -1,5 +1,4 @@
 import { wrap } from "@typeschema/valibot";
-import { type ReturnError, apiProcedure } from "../../utils";
 import {
 	excludes,
 	maxLength,
@@ -19,8 +18,9 @@ import {
 	sendRedirect,
 	setCookie,
 } from "vinxi/server";
+import { publicProcedure } from "../../utils";
 
-export const authStatus = apiProcedure.query(async ({ ctx }) => {
+export const authStatus = publicProcedure.query(async ({ ctx }) => {
 	if (ctx.session?.userId) {
 		const user = await ctx.db
 			.selectFrom("auth_user")
@@ -43,7 +43,7 @@ export const authStatus = apiProcedure.query(async ({ ctx }) => {
 	return { user: false, admin: false };
 });
 
-export const signIn = apiProcedure
+export const signIn = publicProcedure
 	.input(
 		wrap(
 			object({
@@ -94,7 +94,7 @@ export const signIn = apiProcedure
 			lucia.createSessionCookie(session.id).serialize(),
 		);
 	});
-export const signUp = apiProcedure
+export const signUp = publicProcedure
 	.input(
 		wrap(
 			object({
@@ -112,40 +112,38 @@ export const signUp = apiProcedure
 		),
 	)
 	.mutation(async ({ ctx, input }) => {
-		if (ctx.session?.userId) {
-			const usernameDb = await db
-				.selectFrom("auth_user")
-				.select(["username"])
-				.where("id", "=", ctx.session.userId)
-				.executeTakeFirst();
+		const usernameDb = await db
+			.selectFrom("auth_user")
+			.select(["username"])
+			.where("id", "=", input.username)
+			.executeTakeFirst();
 
-			if (usernameDb?.username === input.username) {
-				throw new TRPCError({
-					code: "BAD_REQUEST",
-					message: `Username ${input.username} already exits`,
-				});
-			}
-			const userId = generateId(15);
-			const hashedPassword = await new Argon2id().hash(input.password);
-
-			await db
-				.insertInto("auth_user")
-				.values({
-					id: userId,
-					hashed_password: hashedPassword,
-					role: "user",
-					username: input.username,
-				})
-				.executeTakeFirstOrThrow();
-
-			const session = await lucia.createSession(userId, {});
-			appendResponseHeader(
-				"Set-Cookie",
-				lucia.createSessionCookie(session.id).serialize(),
-			);
+		if (usernameDb?.username === input.username) {
+			throw new TRPCError({
+				code: "BAD_REQUEST",
+				message: `Username ${input.username} already exits`,
+			});
 		}
+		const userId = generateId(15);
+		const hashedPassword = await new Argon2id().hash(input.password);
+
+		await db
+			.insertInto("auth_user")
+			.values({
+				id: userId,
+				hashed_password: hashedPassword,
+				role: "user",
+				username: input.username,
+			})
+			.executeTakeFirstOrThrow();
+
+		const session = await lucia.createSession(userId, {});
+		appendResponseHeader(
+			"Set-Cookie",
+			lucia.createSessionCookie(session.id).serialize(),
+		);
 	});
-export const logOut = apiProcedure.mutation(async ({ ctx, input }) => {
+export const logOut = publicProcedure.mutation(async ({ ctx, input }) => {
 	const sessionCookie = lucia.createBlankSessionCookie();
 	// TODO check from lucia docs how to log out
 	appendResponseHeader("Set-Cookie", sessionCookie.serialize());
