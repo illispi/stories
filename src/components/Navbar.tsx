@@ -77,7 +77,7 @@ const Hamburger: Component<{
 								width="32"
 								height="32"
 								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
+								fill="currentColor"
 								viewBox="0 0 24 24"
 								stroke="currentColor"
 								stroke-width={2}
@@ -94,7 +94,7 @@ const Hamburger: Component<{
 							width="32"
 							height="32"
 							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
+							fill="currentColor"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
 							stroke-width={2}
@@ -157,7 +157,7 @@ const Hamburger: Component<{
 					<div class="rounded-full border border-black p-2">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
+							fill="currentColor"
 							viewBox="0 0 24 24"
 							stroke-width="0.6"
 							stroke="currentColor"

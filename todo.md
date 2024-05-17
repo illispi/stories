@@ -13,6 +13,7 @@
 - Animate articles submit panel
 - Make global touch faster, look from delvis.org
 - Some kind of notify could be good for at least canceled
+- Fade in transition to notifications, see login page
 
 ## Notes
 
