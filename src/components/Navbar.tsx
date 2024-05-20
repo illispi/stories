@@ -59,9 +59,9 @@ const Hamburger: Component<{
 
 	return (
 		<>
-			<div class="relative flex items-center justify-center">
+			<div class="w-12 h-12 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 flex justify-center items-center ">
 				<button
-					class="absolute m-3 mr-8 -translate-x-1/2 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 "
+					type="button"
 					onClick={() => {
 						if (searchParams.nav === "true") {
 							setSearchParams({ nav: null });
@@ -74,40 +74,40 @@ const Hamburger: Component<{
 						when={searchParams.nav === "true"}
 						fallback={
 							<svg
-								width="32"
-								height="32"
+								fill="none"
+								stroke-width="2"
 								xmlns="http://www.w3.org/2000/svg"
-								fill="currentColor"
-								viewBox="0 0 24 24"
 								stroke="currentColor"
-								stroke-width={2}
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								viewBox="0 0 24 24"
+								height="2em"
+								width="2em"
+								style="overflow: visible; color: currentcolor;"
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M4 6h16M4 12h16M4 18h16"
-								/>
+								<title>Menu</title>
+								<path d="M3 12 21 12" />
+								<path d="M3 6 21 6" />
+								<path d="M3 18 21 18" />
 							</svg>
 						}
 					>
 						<svg
-							width="32"
-							height="32"
-							xmlns="http://www.w3.org/2000/svg"
 							fill="currentColor"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width={2}
+							stroke-width="0"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 1024 1024"
+							height="2em"
+							width="2em"
+							style="overflow: visible; color: currentcolor;"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M6 18L18 6M6 6l12 12"
-							/>
+							<title>Close</title>
+							<path d="m563.8 512 262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z" />
 						</svg>
 					</Show>
 				</button>
 			</div>
+
 			<div
 				class="fixed right-0 top-14 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
@@ -149,6 +149,7 @@ const Hamburger: Component<{
 					<MenuItem route={"/admin/"} content="admin" />
 				</Show>
 				<button
+					type="button"
 					class="p-16 transition-all hover:scale-125"
 					onClick={() => {
 						setSearchParams({ nav: null });
@@ -163,6 +164,7 @@ const Hamburger: Component<{
 							stroke="currentColor"
 							class="h-16 w-16"
 						>
+							<title>idk</title>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -194,10 +196,11 @@ const NavBar: Component = () => {
 						height="32"
 						viewBox="0 0 24 24"
 					>
+						<title>Home</title>
 						<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
 					</svg>
 				</A>
-				<div class="flex justify-between items-center w-32">
+				<div class="flex justify-end items-center gap-4">
 					<BellNotification />
 					<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</div>

@@ -11,9 +11,10 @@
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Animate articles submit panel
-- Make global touch faster, look from delvis.org
+- Make global transition faster, look from delvis.org
 - Some kind of notify could be good for at least canceled
 - Fade in transition to notifications, see login page
+- Vite imagetools
 
 ## Notes
 
