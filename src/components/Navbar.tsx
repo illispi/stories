@@ -59,9 +59,10 @@ const Hamburger: Component<{
 
 	return (
 		<>
-			<div class="w-12 h-12 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 flex justify-center items-center ">
+			<div class="relative w-12 h-12  flex justify-center items-center ">
 				<button
 					type="button"
+					class="absolute transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
 					onClick={() => {
 						if (searchParams.nav === "true") {
 							setSearchParams({ nav: null });

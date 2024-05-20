@@ -1,6 +1,6 @@
 ## TODO
 
-- Double check that CSRF stuff
+- Double check that CSRF stuff, use curl
 - Check that scroll restoration works
 - Hash username
 - clsx
@@ -8,8 +8,8 @@
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Animate articles submit panel
-- Make global transition faster, look from delvis.org
 - Vite imagetools
+- Show pending status on other and articles, fix too many pages only 2 pages but shows 3
 
 ## Notes
 
@@ -25,6 +25,17 @@ Returning immediately allows malicious actors to figure out valid usernames from
  Since protecting against this is none-trivial,
  it is crucial your implementation is protected against brute-force attacks with login throttling etc.
  If usernames are public, you may outright tell the user that the username is invalid.
+```
+
+Maybe this where you have null placeholder bellnotification:
+
+```js
+const articlesData = trpc.articlesPagination.createQuery(
+  () => ({
+    page: page(),
+  }),
+  () => ({ placeholderData: (prev) => prev })
+);
 ```
 
 ### If you have hydration mismatch just add <Suspense>

@@ -24,7 +24,10 @@ const ArticleSchema = object({
 type ArticleForm = Input<typeof ArticleSchema>;
 
 const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
-	const articleMut = trpc.postArticle.createMutation();
+	const utils = trpc.useContext();
+	const articleMut = trpc.postArticle.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
+	}));
 	const [articleForm, { Form, Field }] = createForm<ArticleForm>({
 		validate: valiForm(ArticleSchema),
 	});
@@ -66,6 +69,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 							stroke="currentColor"
 							class="h-8 w-8"
 						>
+							<title>Close</title>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"

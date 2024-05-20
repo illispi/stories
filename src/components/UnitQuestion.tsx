@@ -435,12 +435,12 @@ export const UnitQuestion: ParentComponent<{
 							<CustomButton
 								onClick={() => {
 									setMetric(false);
-									setNumber("0");
+									setNumber(null);
 								}}
 								class={
 									!metric()
 										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500  active:bg-green-600"
-										: "w-56"
+										: "w-56  bg-orange-500 hover:bg-orange-600 focus:bg-orange-500 active:bg-orange-600"
 								}
 							>
 								Imperial (lbs)
@@ -448,12 +448,12 @@ export const UnitQuestion: ParentComponent<{
 							<CustomButton
 								onClick={() => {
 									setMetric(true);
-									setNumber("0");
+									setNumber(null);
 								}}
 								class={
 									metric()
 										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-										: "w-56"
+										: "w-56 bg-orange-500 hover:bg-orange-600 focus:bg-orange-500 active:bg-orange-600"
 								}
 							>
 								Metric (kg)

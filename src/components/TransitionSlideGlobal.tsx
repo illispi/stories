@@ -31,7 +31,7 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 		window.addEventListener("beforeunload", () => {
 			localStorage.setItem("scrollPos", String(scrollReload()));
 		});
-	
+
 		if (isRouting()) {
 			setAnimate(true);
 		}
@@ -69,7 +69,18 @@ const TransitionSlideGlobal: ParentComponent = (props) => {
 									duration: 300,
 								},
 							)
-						: el.animate([]);
+						: el.animate(
+								[
+									{
+										opacity: 0,
+										easing: "ease-out",
+									},
+									{ opacity: 1 },
+								],
+								{
+									duration: 600,
+								},
+							);
 
 					setVis(true);
 					a.finished.then(done);

@@ -34,7 +34,11 @@ const BellNotification = () => {
 						onClick={() => setShowNotifications(!showNotifications())}
 					>
 						<Show
-							when={notificationsQuery.data}
+							when={
+								notificationsQuery.data?.articles ||
+								notificationsQuery.data?.personal ||
+								notificationsQuery.data?.their
+							}
 							fallback={
 								<svg
 									fill="currentColor"
@@ -108,8 +112,13 @@ const BellNotification = () => {
 							/>
 						)}
 					</For>
-					<Show when={notificationsQuery.data}>
-						{console.log(notificationsQuery.data)}
+					<Show
+						when={
+							notificationsQuery.data?.articles ||
+							notificationsQuery.data?.personal ||
+							notificationsQuery.data?.their
+						}
+					>
 						<CustomButton
 							onClick={() => {
 								setShowNotifications(false);

@@ -60,6 +60,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Personal_questions")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		.where("seen", "=", false)
 		.executeTakeFirst();
 
 	const statusPersonal =
@@ -75,6 +76,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Their_questions")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		.where("seen", "=", false)
 		.execute();
 
 	const statusTheir = their.length
@@ -89,6 +91,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Articles")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		.where("seen", "=", false)
 		.execute();
 
 	const statusArticles = articles.length
@@ -99,12 +102,9 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 			}))
 		: undefined;
 
-	if (statusArticles && statusPersonal && statusTheir) {
-		return {
-			articles: statusArticles,
-			personal: statusPersonal,
-			their: statusTheir,
-		};
-	}
-	return null;
+	return {
+		articles: statusArticles,
+		personal: statusPersonal,
+		their: statusTheir,
+	};
 });
