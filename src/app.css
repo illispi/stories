@@ -31,3 +31,6 @@ a {
 .fade-exit-to {
   opacity: 0;
 }
+body {
+  scroll-behavior: smooth;
+}

@@ -1,6 +1,6 @@
+import { A } from "@solidjs/router";
 import { route } from "routes-gen";
 import { Component } from "solid-js";
-import { A } from "solid-start";
 
 const Footer: Component<{}> = (props) => {
   return (

@@ -1,33 +1,38 @@
+import { cache, createAsync, redirect } from "@solidjs/router";
+import { createQuery } from "@tanstack/solid-query";
 import type { Component } from "solid-js";
 import { Show } from "solid-js";
-import { useRouteData } from "solid-start";
-import { createServerData$, redirect } from "solid-start/server";
-import { auth } from "~/auth/lucia";
+import { validateSession } from "~/server/trpc/context";
+
+const getSession = cache(async () => {
+	"use server";
+
+	//TODO only allow GET requests
+
+	const { user } = await validateSession();
+
+	if (user?.role === "user" || user?.role === "admin") {
+		return true;
+	}
+	return redirect("/");
+}, "session");
+
+export const route = {
+	load: () => getSession(),
+};
 
 const ProtectedUser = (Comp: IProtectedComponent) => {
-  const routeData = () => {
-    return createServerData$(async (_, event) => {
-      const authRequest = auth.handleRequest(event.request);
-      const session = await authRequest.validate();
-      if (session) {
-        return session.user.username;
-      } else {
-        return redirect("/");
-      }
-    });
-  };
-
-  return {
-    routeData,
-    Page: () => {
-      const session = useRouteData<typeof routeData>();
-      return (
-        <Show when={session()} keyed>
-          {(sess) => <Comp {...sess} />}
-        </Show>
-      );
-    },
-  };
+	return {
+		route,
+		Page: () => {
+			const session = createAsync(() => getSession());
+			return (
+				<Show when={session()} keyed>
+					{(sess) => <Comp />}
+				</Show>
+			);
+		},
+	};
 };
 
 type IProtectedComponent = Component;

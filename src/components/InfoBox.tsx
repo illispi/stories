@@ -1,5 +1,5 @@
+import { A } from "@solidjs/router";
 import type { Component } from "solid-js";
-import { A } from "solid-start";
 
 const InfoBox: Component<{
   header: string;

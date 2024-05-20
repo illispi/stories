@@ -1,7 +1,7 @@
+import { A } from "@solidjs/router";
 import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
-import { A } from "solid-start";
 
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";

@@ -1,64 +1,40 @@
-import { Show, type VoidComponent } from "solid-js";
-import {
-  ServerError,
-  createServerAction$,
-  createServerData$,
-} from "solid-start/server";
+import { Show, createEffect, type VoidComponent } from "solid-js";
 import CustomButton from "./CustomButton";
-import { auth } from "~/auth/lucia";
-import { A } from "solid-start";
-import LoginA from "./LoginA";
 
-const getSession = () => {
-  return createServerData$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (!session) {
-      return null;
-    }
-    return session.user.username;
-  });
-};
+import {
+	createMutation,
+	createQuery,
+	useQueryClient,
+} from "@tanstack/solid-query";
+import LoginA from "./LoginA";
+import { trpc } from "~/utils/trpc";
+import { useNavigate } from "@solidjs/router";
 
 const Auth: VoidComponent = () => {
-  const sessionData = getSession();
+	const authQuery = trpc.authStatus.createQuery();
 
-  const [signOutStatus, signOut] = createServerAction$(async (_, event) => {
-    const authRequest = auth.handleRequest(event.request);
-    const session = await authRequest.validate();
-    if (!session) {
-      throw new ServerError("Unauthorized", {
-        status: 401,
-      });
-    }
-    await auth.invalidateSession(session.sessionId); // invalidate session
-    const sessionCookie = auth.createSessionCookie(null);
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/login",
-        "Set-Cookie": sessionCookie.serialize(),
-      },
-    });
-  });
+	const utils = trpc.useContext();
+	const navigate = useNavigate();
 
-  return (
-    <Show
-      when={sessionData()}
-      fallback={
-       <LoginA/>
-      }
-    >
-      <CustomButton
-        onClick={() => {
-          signOut();
-        }}
-        class="w-44"
-      >
-        Sign out
-      </CustomButton>
-    </Show>
-  );
+	const logOutMut = trpc.logOut.createMutation(() => ({
+		onSuccess: () => {
+			utils.invalidate();
+			navigate("/");
+		},
+	}));
+
+	return (
+		<Show when={authQuery.data?.user} fallback={<LoginA />}>
+			<CustomButton
+				onClick={() => {
+					logOutMut.mutate();
+				}}
+				class="w-44"
+			>
+				Sign out
+			</CustomButton>
+		</Show>
+	);
 };
 
 export default Auth;
