@@ -182,6 +182,8 @@ const Hamburger: Component<{
 const NavBar: Component = () => {
 	const [menuOpen, setMenuOpen] = createSignal(false);
 
+	const authStatusQ = trpc.authStatus.createQuery();
+
 	return (
 		<>
 			<Title>Home</Title>
@@ -202,7 +204,9 @@ const NavBar: Component = () => {
 					</svg>
 				</A>
 				<div class="flex justify-end items-center gap-4">
-					<BellNotification />
+					<Show when={authStatusQ.data?.user}>
+						<BellNotification />
+					</Show>
 					<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 				</div>
 			</div>

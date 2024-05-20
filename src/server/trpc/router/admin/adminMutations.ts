@@ -134,10 +134,17 @@ export const fakeForFake = adminProcedure
 					? personalQuestionsSchema.parse(fakeData)
 					: theirQuestionsSchema.parse(fakeData);
 
+				let fakeDataPruned = fakeData;
+
+				if (input.pOrT === "Personal_questions_fake") {
+					const { systemMetric, ...rest } = fakeData;
+					fakeDataPruned = rest;
+				}
+
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
 					.values({
-						...fakeData,
+						...fakeDataPruned,
 					})
 					.executeTakeFirst();
 
@@ -171,10 +178,17 @@ export const fakeForDev = adminProcedure
 				? personalQuestionsSchema.parse(fakeData)
 				: theirQuestionsSchema.parse(fakeData);
 
+			let fakeDataPruned = fakeData;
+
+			if (input.pOrT === "Personal_questions") {
+				const { systemMetric, ...rest } = fakeData;
+				fakeDataPruned = rest;
+			}
+
 			const fakeInsert = await ctx.db
 				.insertInto(input.pOrT)
 				.values({
-					...fakeData,
+					...fakeDataPruned,
 					user: ctx.user.id,
 					accepted: null,
 				})
@@ -189,6 +203,7 @@ export const fakeForDev = adminProcedure
 
 			return "Insertion success";
 		} catch (error) {
+			console.error(error);
 			throw new TRPCError({
 				code: "INTERNAL_SERVER_ERROR",
 				message: error.message,
@@ -232,6 +247,7 @@ export const fakeForDevBulk = adminProcedure
 			}
 			return "Insertion success";
 		} catch (error) {
+			console.error(error);
 			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 		}
 	});
