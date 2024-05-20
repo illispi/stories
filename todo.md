@@ -9,7 +9,7 @@
 - How to make better error page
 - Animate articles submit panel
 - Vite imagetools
-- Show pending status on other and articles, fix too many pages only 2 pages but shows 3
+- Show pending status on other and articles
 
 ## Notes
 

@@ -1,6 +1,7 @@
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen/dist/db";
-import { Pool } from "pg";
+import pkg from "pg";
+const { Pool } = pkg;
 
 export const pool = new Pool({
 	host: process.env.PSQL_HOST,

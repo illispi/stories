@@ -31,7 +31,7 @@ export default function App() {
 		//NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
 		Sentry.init({
 			dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
-			integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
+			// integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
 			// Set tracesSampleRate to 1.0 to capture 100%
 			// of transactions for performance monitoring.
@@ -67,7 +67,9 @@ export default function App() {
 							<trpc.Provider queryClient={queryClient}>
 								<ErrorBoundary
 									fallback={(e, reset) => {
-										import.meta.env.PROD ?? Sentry.captureException(e);
+										if (import.meta.env.PROD) {
+											Sentry.captureException(e);
+										}
 										console.log(e);
 										return (
 											<div class="fixed flex items-center justify-center left-0 top-0 z-40 h-screen w-screen bg-black/30 transition-all duration-500 backdrop-blur-sm ">
@@ -83,9 +85,9 @@ export default function App() {
 									<Suspense>
 										<NavBar />
 
-										<TransitionSlideGlobal>
-											{props.children}
-										</TransitionSlideGlobal>
+										{/* <TransitionSlideGlobal> */}
+										{props.children}
+										{/* </TransitionSlideGlobal> */}
 									</Suspense>
 								</ErrorBoundary>
 							</trpc.Provider>
