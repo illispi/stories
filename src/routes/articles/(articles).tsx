@@ -131,7 +131,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 
 const articles: Component = () => {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1 ?? 0);
+	const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1);
 	const [submitVis, setSubmitVis] = createSignal(false);
 	const articlesData = trpc.articlesPagination.createQuery(
 		() => ({

@@ -9,9 +9,7 @@ import { createTRPCSolidStart } from "@solid-mediakit/trpc";
 const getBaseUrl = () => {
 	// if (typeof window !== "undefined") return "";
 	return `${
-		process.env.PUBLIC_NODE_ENV === "production"
-			? process.env.PUBLIC_SITE
-			: "http://localhost:3000"
+		import.meta.env.PROD ? process.env.PUBLIC_SITE : "http://localhost:3000"
 	}`;
 };
 
