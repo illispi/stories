@@ -1,3 +1,3 @@
 #!/bin/sh
 
-npm run migrate:latest && node ./dist/server.js
+bun run migrate:latest && bun run .output/server/index.mjs

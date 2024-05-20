@@ -35,6 +35,7 @@ export const userProcedure = publicProcedure.use(async (opts) => {
 
 		return opts.next({
 			ctx: {
+				session: opts.ctx.session,
 				user,
 			},
 		});
@@ -63,6 +64,7 @@ export const adminProcedure = publicProcedure.use(async (opts) => {
 		if (user.role === "admin") {
 			return opts.next({
 				ctx: {
+					session: opts.ctx.session,
 					user,
 				},
 			});
@@ -79,5 +81,3 @@ export const adminProcedure = publicProcedure.use(async (opts) => {
 		message: "You are not authorized",
 	});
 });
-
-
