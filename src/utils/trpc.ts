@@ -8,6 +8,11 @@ import { createTRPCSolidStart } from "@solid-mediakit/trpc";
 
 const getBaseUrl = () => {
 	// if (typeof window !== "undefined") return "";
+	console.log(
+		`${
+			import.meta.env.PROD ? process.env.PUBLIC_SITE : "http://localhost:3000"
+		}`,
+	);
 	return `${
 		import.meta.env.PROD ? process.env.PUBLIC_SITE : "http://localhost:3000"
 	}`;
