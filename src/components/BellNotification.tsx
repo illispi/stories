@@ -11,12 +11,12 @@ import { ModalOptions } from "./ModalOptions";
 
 const BellNotification = () => {
 	const authQuery = trpc.authStatus.createQuery();
+
+	//NOTE this is to get around trpc/solidquery hydration error
 	const notificationsQuery = trpc.getNotifications.createQuery(
 		undefined,
 		() => ({ placeholderData: null }),
 	);
-
-	console.log(authQuery, notificationsQuery);
 
 	const [showNotifications, setShowNotifications] = createSignal(false);
 	return (
@@ -28,7 +28,7 @@ const BellNotification = () => {
 						onClick={() => setShowNotifications(!showNotifications())}
 					>
 						<Show
-							when={!notificationsQuery.data}
+							when={notificationsQuery.data}
 							fallback={
 								<svg
 									fill="currentColor"
@@ -122,9 +122,11 @@ const Notification: Component<{
 		<>
 			<Show when={props.seen === false}>
 				<div class="flex flex-col gap-4">
-					<h3>{props.name}</h3>
-					<p>{props.time.toLocaleDateString()}</p>
-					<p>
+					<div class="flex items-center justify-between">
+						<h3 class="text-lg">{`${props.name}:`}</h3>
+						<p>{new Date(props.time).toLocaleDateString()}</p>
+					</div>
+					<p class="italic">
 						<Switch>
 							<Match when={props.status === true}>Accepted</Match>
 							<Match when={props.status === false}>Denied</Match>

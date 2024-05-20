@@ -77,7 +77,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.where("user", "=", ctx.user.id)
 		.execute();
 
-	const statusTheir = !their.length
+	const statusTheir = their.length
 		? their.map((e) => ({
 				status: e.accepted,
 				time: e.updated_at,
