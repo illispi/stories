@@ -47,11 +47,16 @@ export const UnitQuestion: ParentComponent<{
 	paginate: (newDirection: number) => void;
 	setSubmissionStatus: Setter<string>;
 }> = (props) => {
+	const utils = trpc.useContext();
 	const authQuery = trpc.authStatus.createQuery();
 
-	const personalMut = trpc.postPersonalStats.createMutation();
+	const personalMut = trpc.postPersonalStats.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
+	}));
 
-	const theirMut = trpc.postTheirStats.createMutation();
+	const theirMut = trpc.postTheirStats.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
+	}));
 
 	const sendStats =
 		props.LsName === "personalQuestions" ? personalMut : theirMut;
