@@ -24,6 +24,7 @@ import {
 	removeArticle,
 	editTheir,
 	editPersonal,
+	markRead,
 } from "./user/userMutations";
 import {
 	getPersonal,
@@ -33,6 +34,7 @@ import {
 } from "./user/userQueries";
 
 export const appRouter = router({
+	markRead,
 	getNotifications,
 	signIn,
 	signUp,

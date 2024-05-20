@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 import { trpc } from "~/utils/trpc";
 import { ModalOptions } from "./ModalOptions";
+import CustomButton from "./CustomButton";
 
 const BellNotification = () => {
 	const authQuery = trpc.authStatus.createQuery();
@@ -17,6 +18,11 @@ const BellNotification = () => {
 		undefined,
 		() => ({ placeholderData: null }),
 	);
+	const utils = trpc.useContext();
+
+	const markReadMut = trpc.markRead.createMutation(() => ({
+		onSuccess: () => utils.invalidate(),
+	}));
 
 	const [showNotifications, setShowNotifications] = createSignal(false);
 	return (
@@ -66,46 +72,55 @@ const BellNotification = () => {
 				</Show>
 			</div>
 
-			<Show when={showNotifications()}>
-				<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
-					<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
-						<h2 class="text-center text-2xl font-bold lg:text-3xl">
-							Notifications
-						</h2>
-						<Show when={notificationsQuery.data?.personal}>
-							{(item) => (
-								<Notification
-									seen={item().seen}
-									time={item().time}
-									status={item().status}
-									name="Personal Poll"
-								/>
-							)}
-						</Show>
+			<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
+				<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
+					<h2 class="text-center text-2xl font-bold lg:text-3xl mb-8">
+						Notifications
+					</h2>
+					<Show when={notificationsQuery.data?.personal}>
+						{(item) => (
+							<Notification
+								seen={item().seen}
+								time={item().time}
+								status={item().status}
+								name="Personal Poll"
+							/>
+						)}
+					</Show>
 
-						<For each={notificationsQuery.data?.their}>
-							{(item) => (
-								<Notification
-									seen={item.seen}
-									time={item.time}
-									status={item.status}
-									name="Other Poll"
-								/>
-							)}
-						</For>
-						<For each={notificationsQuery.data?.articles}>
-							{(item) => (
-								<Notification
-									seen={item.seen}
-									time={item.time}
-									status={item.status}
-									name="Articles"
-								/>
-							)}
-						</For>
-					</div>
-				</ModalOptions>
-			</Show>
+					<For each={notificationsQuery.data?.their}>
+						{(item) => (
+							<Notification
+								seen={item.seen}
+								time={item.time}
+								status={item.status}
+								name="Other Poll"
+							/>
+						)}
+					</For>
+					<For each={notificationsQuery.data?.articles}>
+						{(item) => (
+							<Notification
+								seen={item.seen}
+								time={item.time}
+								status={item.status}
+								name="Articles"
+							/>
+						)}
+					</For>
+					<Show when={notificationsQuery.data}>
+						{console.log(notificationsQuery.data)}
+						<CustomButton
+							onClick={() => {
+								setShowNotifications(false);
+								markReadMut.mutate();
+							}}
+						>
+							Mark all as read
+						</CustomButton>
+					</Show>
+				</div>
+			</ModalOptions>
 		</>
 	);
 };

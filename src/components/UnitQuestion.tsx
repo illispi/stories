@@ -20,13 +20,17 @@ import {
 import LoginA from "./LoginA";
 import { trpc } from "~/utils/trpc";
 
-const Box: ParentComponent<{ question: string }> = (props) => {
+const Box: ParentComponent<{ question: string; start?: boolean }> = (props) => {
 	return (
 		<>
 			<div class="flex h-24 w-80 items-center justify-center rounded-t-3xl bg-blue-300 p-8">
 				<label class="text-center font-semibold">{props.question}</label>
 			</div>
-			<div class="flex h-full flex-col items-center justify-center overflow-hidden overflow-y-auto">
+			<div
+				class={`flex h-full flex-col items-center  ${
+					props.start ? "justify-start" : "justify-center"
+				} overflow-hidden overflow-y-auto`}
+			>
 				{props.children}
 			</div>
 		</>
@@ -500,15 +504,15 @@ export const UnitQuestion: ParentComponent<{
 			</Match>
 
 			<Match when={questionType === "text"}>
-				<Box question={question}>
+				<Box question={question} start={true}>
 					<ModalPopUp message={error()} setMessage={setError} />
 
 					<form onSubmit={handleText}>
-						<div class="flex flex-col items-center justify-end">
+						<div class="flex flex-col items-center justify-start">
 							<textarea
 								rows={14}
 								cols={30}
-								class="m-4 box-border resize-none p-4 focus-visible:outline-none"
+								class="p-4 box-border resize-none focus-visible:outline-none"
 								placeholder="Text"
 								autocomplete="off"
 								id="int"

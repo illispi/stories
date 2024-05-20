@@ -113,3 +113,34 @@ export const editTheir = userProcedure
 
 		return "Updated succesfully";
 	});
+
+export const markRead = userProcedure.mutation(async ({ ctx }) => {
+	const markReadPersonal = await ctx.db
+		.updateTable("Personal_questions")
+		.set({
+			seen: true,
+		})
+		.executeTakeFirst();
+
+	const markReadTheir = await ctx.db
+		.updateTable("Their_questions")
+		.set({
+			seen: true,
+		})
+		.execute();
+
+	const markReadArticles = await ctx.db
+		.updateTable("Articles")
+		.set({
+			seen: true,
+		})
+		.execute();
+
+	if (markReadPersonal && markReadArticles && markReadArticles) {
+		return true;
+	}
+	throw new TRPCError({
+		code: "INTERNAL_SERVER_ERROR",
+		message: "Update failed",
+	});
+});

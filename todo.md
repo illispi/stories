@@ -1,10 +1,7 @@
 ## TODO
 
 - Double check that CSRF stuff
-- Some of the choices could have "none of the above" choice
 - Check that scroll restoration works
-- Compress images and add srcset
-- Make body have only side blue fade and then bottom and up blue fade on element, to prevent jerky blue animation
 - Hash username
 - clsx
 - biome
@@ -12,8 +9,6 @@
 - How to make better error page
 - Animate articles submit panel
 - Make global transition faster, look from delvis.org
-- Some kind of notify could be good for at least canceled
-- Fade in transition to notifications, see login page
 - Vite imagetools
 
 ## Notes

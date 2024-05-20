@@ -91,7 +91,7 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.where("user", "=", ctx.user.id)
 		.execute();
 
-	const statusArticles = !articles.length
+	const statusArticles = articles.length
 		? articles.map((e) => ({
 				status: e.accepted,
 				time: e.updated_at,
@@ -99,9 +99,12 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 			}))
 		: undefined;
 
-	return {
-		articles: statusArticles,
-		personal: statusPersonal,
-		their: statusTheir,
-	};
+	if (statusArticles && statusPersonal && statusTheir) {
+		return {
+			articles: statusArticles,
+			personal: statusPersonal,
+			their: statusTheir,
+		};
+	}
+	return null;
 });
