@@ -1,23 +1,19 @@
+import { TRPCError } from "@trpc/server";
 import { wrap } from "@typeschema/valibot";
+import { generateId } from "lucia";
+import { Argon2id } from "oslo/password";
 import {
 	excludes,
 	maxLength,
 	minLength,
 	object,
-	string,
-	toTrimmed,
+	string
 } from "valibot";
-import { generateId } from "lucia";
-import { Argon2id } from "oslo/password";
-import { db } from "~/server/db";
-import { lucia } from "~/lib/auth/lucia";
-import { TRPCError } from "@trpc/server";
 import {
-	appendResponseHeader,
-	deleteCookie,
-	sendRedirect,
-	setCookie,
+	appendResponseHeader
 } from "vinxi/server";
+import { lucia } from "~/lib/auth/lucia";
+import { db } from "~/server/db";
 import { publicProcedure } from "../../utils";
 
 export const authStatus = publicProcedure.query(async ({ ctx }) => {
