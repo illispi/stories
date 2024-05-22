@@ -204,6 +204,7 @@ const Login = () => {
 							<button
 								class="m-8 w-full max-w-xs flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-400 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
 								type="submit"
+								disabled={signInMut.isPending}
 							>
 								Sign up/in
 							</button>
@@ -231,7 +232,7 @@ const Login = () => {
 					<br />
 					<p class="text-lg font-semibold">
 						These two sign up methods are separate, and you can't combine them
-						into single account.
+						into a single account.
 					</p>
 					{/* TODO Modal for options */}
 					<div class="flex h-full items-center justify-center">

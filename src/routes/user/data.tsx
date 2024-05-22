@@ -34,7 +34,7 @@ import { trpc } from "~/utils/trpc";
 
 const Box: ParentComponent = (props) => {
 	return (
-		<div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 overflow-hidden rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+		<div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 overflow-hidden rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 			{props.children}
 		</div>
 	);
@@ -237,12 +237,12 @@ export const { route, Page } = ProtectedUser((session) => {
 
 	return (
 		<div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 py-20 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-			<h1 class="my-28 text-4xl font-bold lg:my-40 lg:text-6xl">
+			<h1 class="my-28 font-bold text-4xl lg:my-40 lg:text-6xl">
 				Your account and data
 			</h1>
 
-			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center text-2xl font-bold lg:text-3xl">
+			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">
 					Personal poll data
 				</h2>
 				<Show
@@ -253,7 +253,7 @@ export const { route, Page } = ProtectedUser((session) => {
 								You haven't submitted personal poll data yet
 							</p>
 							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/questionares/")}
 								noScroll={false}
 							>
@@ -274,7 +274,7 @@ export const { route, Page } = ProtectedUser((session) => {
 						<Show when={showPersonal()}>
 							<div class="flex flex-col items-center justify-start gap-8">
 								<CustomButton
-									class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+									class="bg-orange-500 active:bg-orange-600 focus:bg-orange-600 hover:bg-orange-600"
 									onClick={() => {
 										removePersonalMut.mutateAsync();
 									}}
@@ -301,7 +301,7 @@ export const { route, Page } = ProtectedUser((session) => {
 										Edit this personal poll data
 									</CustomButton>
 								</Show>
-								<h4 class="text-lg font-semibold">{`status: ${
+								<h4 class="font-semibold text-lg">{`status: ${
 									personalDataQuery.data?.accepted
 										? "Accepted"
 										: personalDataQuery.data?.accepted === null
@@ -324,10 +324,10 @@ export const { route, Page } = ProtectedUser((session) => {
 												{(el) => (
 													<div
 														classList={{
-															["hidden"]: !personalDataQuery.data?.[el],
+															hidden: !personalDataQuery.data?.[el],
 														}}
 													>
-														<h2 class="text-2xl font-bold lg:text-3xl">
+														<h2 class="font-bold text-2xl lg:text-3xl">
 															{headers[el]}
 														</h2>
 														<Field name={el}>
@@ -361,6 +361,7 @@ export const { route, Page } = ProtectedUser((session) => {
 														);
 													});
 												}}
+												
 												type="submit"
 											>
 												Submit Edit
@@ -373,7 +374,7 @@ export const { route, Page } = ProtectedUser((session) => {
 									>
 										{(el) => (
 											<Show when={personalDataQuery.data?.[el]}>
-												<h2 class="text-2xl font-bold lg:text-3xl">
+												<h2 class="font-bold text-2xl lg:text-3xl">
 													{headers[el]}
 												</h2>
 												<p>{personalDataQuery.data?.[el]}</p>
@@ -387,8 +388,8 @@ export const { route, Page } = ProtectedUser((session) => {
 				</Show>
 			</div>
 
-			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center text-2xl font-bold lg:text-3xl">
+			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">
 					Other poll data
 				</h2>
 				<Show
@@ -399,7 +400,7 @@ export const { route, Page } = ProtectedUser((session) => {
 								You haven't submitted other poll data yet
 							</p>
 							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/questionares/")}
 								noScroll={false}
 							>
@@ -409,7 +410,7 @@ export const { route, Page } = ProtectedUser((session) => {
 					}
 				>
 					<CustomButton
-						class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+						class="bg-fuchsia-500 active:bg-fuchsia-600 focus:bg-fuchsia-600 hover:bg-fuchsia-600"
 						onClick={() => {
 							setShowTheirs(() => !showTheirs());
 						}}
@@ -434,9 +435,9 @@ export const { route, Page } = ProtectedUser((session) => {
 
 									<TransitionSlide dir={dir()}>
 										<Show when={pageTheir() === 0 ? true : pageTheir()} keyed>
-											<div class="flex flex-col items-center justify-center gap-8 ">
+											<div class="flex flex-col items-center justify-center gap-8">
 												<CustomButton
-													class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+													class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 													onClick={() => {
 														removeTheirMut.mutateAsync({
 															id: their()[pageTheir()].id,
@@ -446,13 +447,13 @@ export const { route, Page } = ProtectedUser((session) => {
 													Delete this poll data
 												</CustomButton>
 												<Show when={their()[pageTheir()].personality_before}>
-													<h2 class="text-2xl font-bold lg:text-3xl">
+													<h2 class="font-bold text-2xl lg:text-3xl">
 														Their personality before:
 													</h2>
 													<p>{their()[pageTheir()].personality_before}</p>
 												</Show>
 												<Show when={their()[pageTheir()].personality_after}>
-													<h2 class="text-2xl font-bold lg:text-3xl">
+													<h2 class="font-bold text-2xl lg:text-3xl">
 														Their personality after:
 													</h2>
 
@@ -461,7 +462,7 @@ export const { route, Page } = ProtectedUser((session) => {
 												<Show
 													when={their()[pageTheir()].what_others_should_know}
 												>
-													<h2 class="text-2xl font-bold lg:text-3xl">
+													<h2 class="font-bold text-2xl lg:text-3xl">
 														What others should know about schizophrenia:
 													</h2>
 													<p>{their()[pageTheir()].what_others_should_know}</p>
@@ -476,8 +477,8 @@ export const { route, Page } = ProtectedUser((session) => {
 				</Show>
 			</div>
 
-			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center text-2xl font-bold lg:text-3xl">
+			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">
 					Your submitted articles
 				</h2>
 				<Show
@@ -488,7 +489,7 @@ export const { route, Page } = ProtectedUser((session) => {
 								You haven't submitted any articles yet
 							</p>
 							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/articles/")}
 								noScroll={false}
 							>
@@ -498,7 +499,7 @@ export const { route, Page } = ProtectedUser((session) => {
 					}
 				>
 					<CustomButton
-						class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+						class="bg-fuchsia-500 active:bg-fuchsia-600 focus:bg-fuchsia-600 hover:bg-fuchsia-600"
 						onClick={() => {
 							setShowArticles(() => !showArticles());
 						}}
@@ -535,7 +536,7 @@ export const { route, Page } = ProtectedUser((session) => {
 													{(fiveArticles) => (
 														<div class="flex w-full flex-col items-center justify-center gap-8">
 															<CustomButton
-																class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+																class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 																onClick={() => {
 																	removeArticleMut.mutateAsync({
 																		id: fiveArticles.id,
@@ -545,7 +546,7 @@ export const { route, Page } = ProtectedUser((session) => {
 																Delete this article
 															</CustomButton>
 															<a
-																class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+																class="flex-1 text-fuchsia-600 text-lg transition-all hover:scale-110 visited:text-fuchsia-800"
 																href={fiveArticles.link}
 															>
 																{fiveArticles.link}
@@ -566,8 +567,8 @@ export const { route, Page } = ProtectedUser((session) => {
 				</Show>
 			</div>
 
-			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center text-2xl font-bold lg:text-3xl">
+			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">
 					Delete account
 				</h2>
 				<p class="text-center text-lg">
@@ -579,7 +580,7 @@ export const { route, Page } = ProtectedUser((session) => {
 				</Show>
 
 				<CustomButton
-					class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+					class="bg-fuchsia-500 active:bg-fuchsia-600 focus:bg-fuchsia-600 hover:bg-fuchsia-600"
 					onClick={() => {
 						setShowDeleteAccount(!showDeleteAccount());
 					}}
@@ -589,12 +590,12 @@ export const { route, Page } = ProtectedUser((session) => {
 
 				<CssTranstionGrow visible={showDeleteAccount()}>
 					<div class="flex flex-col items-center justify-center gap-16 rounded-lg border-2 border-fuchsia-600 p-8">
-						<h2 class="text-center text-2xl font-bold lg:text-3xl">
+						<h2 class="text-center font-bold text-2xl lg:text-3xl">
 							Are you sure you want to delete all your data?
 						</h2>
 						<div class="flex flex-col items-center justify-center gap-8">
 							<CustomButton
-								class=" bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+								class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 								onClick={() => {
 									removeAccAndDataMut.mutateAsync();
 								}}
