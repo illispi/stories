@@ -23,7 +23,7 @@ const PaginationNav: Component<{
 					"visible opacity-100 transition-all duration-300",
 					`${
 						props.page === 0
-							? "bg-gray-500 hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-600"
+							? "bg-gray-500 active:bg-gray-600 focus:bg-gray-600 hover:bg-gray-600"
 							: props.classButton
 					}`,
 				)}
@@ -35,13 +35,13 @@ const PaginationNav: Component<{
 			>
 				Back
 			</CustomButton>
-			<h5 class="text-lg font-bold">{`Page: ${props.page + 1}/${pageMax}`}</h5>
+			<h5 class="font-bold text-lg">{`Page: ${props.page + 1}/${pageMax}`}</h5>
 			<CustomButton
 				class={twMerge(
 					"visible opacity-100 transition-all duration-300",
 					`${
 						props.arrLength / ((props.page + 1) * props.perPageNum) <= 1
-							? "bg-gray-500 hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-600"
+							? "bg-gray-500 active:bg-gray-600 focus:bg-gray-600 hover:bg-gray-600"
 							: props.classButton
 					}`,
 				)}

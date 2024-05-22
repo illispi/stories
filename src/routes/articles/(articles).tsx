@@ -39,10 +39,10 @@ const articles: Component = () => {
 
 	return (
 		<Suspense>
-			<div class="my-16 min-h-screen flex w-full flex-col items-center justify-start gap-8">
+			<div class="my-16 flex min-h-screen w-full flex-col items-center justify-start gap-8">
 				<Suspense>
-					<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-t-4 border-fuchsia-600 bg-white py-12 shadow-xl ">
-						<h2 class="text-2xl font-bold lg:text-3xl">
+					<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-fuchsia-600 border-t-4 bg-white py-12 shadow-xl">
+						<h2 class="font-bold text-2xl lg:text-3xl">
 							Submit article/interview
 						</h2>
 						<Show when={user()} fallback={<LoginA />}>
@@ -50,7 +50,7 @@ const articles: Component = () => {
 								class={
 									!submitVis()
 										? ""
-										: "bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
+										: "bg-orange-500 active:bg-orange-600 focus:bg-orange-600 hover:bg-orange-600"
 								}
 								onClick={() => {
 									setSubmitVis(!submitVis());
@@ -63,7 +63,7 @@ const articles: Component = () => {
 							<ArticleSubmit setSubmitVis={setSubmitVis} />
 						</CssTranstionGrow>
 					</div>
-					<h2 class="mt-8 text-4xl font-bold">Articles:</h2>
+					<h2 class="mt-8 font-bold text-4xl">Articles:</h2>
 					<Show when={articlesData.data?.count}>
 						{(data) => (
 							<div class="flex w-full max-w-md items-center justify-around">
@@ -99,9 +99,9 @@ const articles: Component = () => {
 									<For each={articles().articles}>
 										{(twentyfiveArticles) => (
 											<div class="flex w-full flex-col items-center justify-center gap-8">
-												<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16 ">
+												<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 													<a
-														class="flex-1 text-lg text-fuchsia-600 transition-all visited:text-fuchsia-800 hover:scale-110"
+														class="flex-1 text-fuchsia-600 text-lg transition-all hover:scale-110 visited:text-fuchsia-800"
 														href={twentyfiveArticles.link}
 													>
 														{twentyfiveArticles.link}

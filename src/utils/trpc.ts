@@ -10,7 +10,10 @@ import { env } from "./env";
 const getBaseUrl = () => {
 	if (typeof window !== "undefined") return "";
 
-	return `${env.VITE_SITE}`;
+	return `${
+		import.meta.env.PROD ? "https://stories.delvis.org" : "localhost:3000"
+	}`;
+	// return `${env.VITE_SITE}`;
 };
 
 export const trpc = createTRPCSolidStart<IAppRouter>({
