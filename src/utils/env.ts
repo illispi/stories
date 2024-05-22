@@ -28,7 +28,7 @@ export const env = createEnv({
 		VITE_DISCORD_CLIENT_ID: z.string(),
 	},
 	// We need to manually list the env's for the frontend bundle
-	runtimeEnv: process.env,
+	runtimeEnv: { ...process.env, ...import.meta.env },
 	skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 	emptyStringAsUndefined: true,
 });
