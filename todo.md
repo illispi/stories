@@ -4,7 +4,6 @@
 - Check that scroll restoration works
 - Hash username
 - clsx
-- biome
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Vite imagetools

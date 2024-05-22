@@ -107,6 +107,7 @@ const Login = () => {
 					)}`}</h4>
 					<CustomButton
 						class="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
+						disabled={signUpMut.isPending}
 						onClick={() => {
 							setShowAccountMissing(false);
 
