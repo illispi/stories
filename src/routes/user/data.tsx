@@ -231,7 +231,7 @@ export const { route, Page } = ProtectedUser((session) => {
 		values,
 		event,
 	) => {
-		editPersonalMut.mutateAsync({ ...personalDataQuery.data, ...values });
+		editPersonalMut.mutate({ ...personalDataQuery.data, ...values });
 		setPersonalEdit(false);
 	};
 
@@ -274,9 +274,10 @@ export const { route, Page } = ProtectedUser((session) => {
 						<Show when={showPersonal()}>
 							<div class="flex flex-col items-center justify-start gap-8">
 								<CustomButton
+									disabled={removePersonalMut.isPending}
 									class="bg-orange-500 active:bg-orange-600 focus:bg-orange-600 hover:bg-orange-600"
 									onClick={() => {
-										removePersonalMut.mutateAsync();
+										removePersonalMut.mutate();
 									}}
 								>
 									Delete this personal poll data
@@ -350,6 +351,7 @@ export const { route, Page } = ProtectedUser((session) => {
 												)}
 											</For>
 											<CustomButton
+												disabled={editPersonalMut.isPending}
 												onClick={() => {
 													Object.keys(headers).forEach((e) => {
 														setValue(
@@ -361,7 +363,6 @@ export const { route, Page } = ProtectedUser((session) => {
 														);
 													});
 												}}
-												
 												type="submit"
 											>
 												Submit Edit
@@ -437,9 +438,10 @@ export const { route, Page } = ProtectedUser((session) => {
 										<Show when={pageTheir() === 0 ? true : pageTheir()} keyed>
 											<div class="flex flex-col items-center justify-center gap-8">
 												<CustomButton
+													disabled={removeTheirMut.isPending}
 													class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 													onClick={() => {
-														removeTheirMut.mutateAsync({
+														removeTheirMut.mutate({
 															id: their()[pageTheir()].id,
 														});
 													}}
@@ -536,9 +538,10 @@ export const { route, Page } = ProtectedUser((session) => {
 													{(fiveArticles) => (
 														<div class="flex w-full flex-col items-center justify-center gap-8">
 															<CustomButton
+																disabled={removeArticleMut.isPending}
 																class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 																onClick={() => {
-																	removeArticleMut.mutateAsync({
+																	removeArticleMut.mutate({
 																		id: fiveArticles.id,
 																	});
 																}}
@@ -595,9 +598,10 @@ export const { route, Page } = ProtectedUser((session) => {
 						</h2>
 						<div class="flex flex-col items-center justify-center gap-8">
 							<CustomButton
+								disabled={removeAccAndDataMut.isPending}
 								class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
 								onClick={() => {
-									removeAccAndDataMut.mutateAsync();
+									removeAccAndDataMut.mutate();
 								}}
 							>
 								Delete account and data

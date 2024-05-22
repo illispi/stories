@@ -12,20 +12,21 @@ export const { Page } = ProtectedAdmin((session) => {
 			<Suspense>
 				<div class="flex flex-col items-center gap-2">
 					<Show when={import.meta.env.DEV === true}>
-						<CustomButton onClick={() => fakeArticlesForDevMut.mutateAsync()}>
+						<CustomButton
+							disabled={fakeArticlesForDevMut.isPaused}
+							onClick={() => fakeArticlesForDevMut.mutate()}
+						>
 							Articles for dev
 						</CustomButton>
 						<CustomButton
 							onClick={() =>
-								fakeForDevMut.mutateAsync({ pOrT: "Personal_questions" })
+								fakeForDevMut.mutate({ pOrT: "Personal_questions" })
 							}
 						>
 							Personal for dev
 						</CustomButton>
 						<CustomButton
-							onClick={() =>
-								fakeForDevMut.mutateAsync({ pOrT: "Their_questions" })
-							}
+							onClick={() => fakeForDevMut.mutate({ pOrT: "Their_questions" })}
 						>
 							Their for dev
 						</CustomButton>
@@ -33,15 +34,17 @@ export const { Page } = ProtectedAdmin((session) => {
 				</div>
 				<div class="flex flex-col items-center gap-2">
 					<CustomButton
+						disabled={fakeForFakeMut.isPending}
 						onClick={() =>
-							fakeForFakeMut.mutateAsync({ pOrT: "Personal_questions_fake" })
+							fakeForFakeMut.mutate({ pOrT: "Personal_questions_fake" })
 						}
 					>
 						Fake for fake page, Personal
 					</CustomButton>
 					<CustomButton
+						disabled={fakeForFakeMut.isPending}
 						onClick={() =>
-							fakeForFakeMut.mutateAsync({ pOrT: "Their_questions_fake" })
+							fakeForFakeMut.mutate({ pOrT: "Their_questions_fake" })
 						}
 					>
 						Fake for fake page, Their

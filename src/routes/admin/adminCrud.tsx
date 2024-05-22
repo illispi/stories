@@ -79,13 +79,13 @@ export const { route, Page } = ProtectedAdmin((session) => {
 
 	const handleDecline: SubmitHandler<DeclineForm> = async (values, event) => {
 		if (tab() === "poll") {
-			declineMut.mutateAsync({
+			declineMut.mutate({
 				id: entryEdit(),
 				pOrT: pOrT(),
 				decline_reason: values.decline_reason,
 			});
 		} else if (tab() === "articles") {
-			declineArticleMut.mutateAsync({
+			declineArticleMut.mutate({
 				id: entryEdit(),
 				decline_reason: values.decline_reason,
 			});
@@ -97,8 +97,8 @@ export const { route, Page } = ProtectedAdmin((session) => {
 			<div class="flex flex-col items-center">
 				<Show when={showModal()}>
 					<dialog open>
-						<div class="fixed left-0 top-0 z-40 h-screen w-screen bg-black opacity-50" />
-						<div class="fixed left-1/2 top-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
+						<div class="fixed top-0 left-0 z-40 h-screen w-screen bg-black opacity-50" />
+						<div class="fixed top-1/2 left-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
 							<Form onSubmit={handleDecline}>
 								<Field name="decline_reason">
 									{(field, props) => (
@@ -116,7 +116,12 @@ export const { route, Page } = ProtectedAdmin((session) => {
 										</>
 									)}
 								</Field>
-								<CustomButton type="submit">Decline</CustomButton>
+								<CustomButton
+									disabled={declineArticleMut.isPending || declineMut.isPending}
+									type="submit"
+								>
+									Decline
+								</CustomButton>
 								<CustomButton
 									onClick={() => {
 										setShowModal(false);
@@ -148,14 +153,15 @@ export const { route, Page } = ProtectedAdmin((session) => {
 									{(article, index) => (
 										<div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
 											<div class="m-8 flex items-center justify-between">
-												<h3 class="text-xl font-bold">{index()}</h3>
+												<h3 class="font-bold text-xl">{index()}</h3>
 												<Show
 													when={accepted()}
 													fallback={
 														<>
 															<CustomButton
+																disabled={acceptArticleMut.isPending}
 																onclick={() => {
-																	acceptArticleMut.mutateAsync({
+																	acceptArticleMut.mutate({
 																		id: article.id,
 																	});
 																}}
@@ -187,7 +193,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 											<For each={Object.keys(article)}>
 												{(keys) => (
 													<>
-														<h4 class="w-full text-lg font-bold">{keys}</h4>
+														<h4 class="w-full font-bold text-lg">{keys}</h4>
 														<p class="w-full">{article[keys]}</p>
 													</>
 												)}
@@ -205,7 +211,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 								>
 									Back
 								</CustomButton>
-								<h5 class="text-lg font-bold">{`Page: ${pageArticles() + 1}/${
+								<h5 class="font-bold text-lg">{`Page: ${pageArticles() + 1}/${
 									Math.floor(articles.data[0].count / 25) + 1
 								}`}</h5>
 
@@ -233,7 +239,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 						<CustomButton
 							class={`${
 								pOrT() === "Personal_questions"
-									? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
 									: ""
 							}`}
 							onClick={() => setPOrT("Personal_questions")}
@@ -243,7 +249,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 						<CustomButton
 							class={`${
 								accepted()
-									? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
 									: ""
 							}`}
 							onClick={() => setAccepted(accepted() === true ? null : true)}
@@ -253,7 +259,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 						<CustomButton
 							class={`${
 								pOrT() === "Their_questions"
-									? "bg-blue-900 focus:bg-blue-900 active:bg-blue-900"
+									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
 									: ""
 							}`}
 							onClick={() => setPOrT("Their_questions")}
@@ -266,14 +272,15 @@ export const { route, Page } = ProtectedAdmin((session) => {
 							{(entry, index) => (
 								<div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
 									<div class="m-8 flex items-center justify-between">
-										<h3 class="text-xl font-bold">{index()}</h3>
+										<h3 class="font-bold text-xl">{index()}</h3>
 										<Show
 											when={accepted()}
 											fallback={
 												<>
 													<CustomButton
+														disabled={acceptMut.isPending}
 														onclick={() => {
-															acceptMut.mutateAsync({
+															acceptMut.mutate({
 																id: entry.id,
 																pOrT: pOrT(),
 															});
@@ -306,7 +313,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 									<For each={Object.keys(entry)}>
 										{(keys) => (
 											<>
-												<h4 class="w-full text-lg font-bold">{keys}</h4>
+												<h4 class="w-full font-bold text-lg">{keys}</h4>
 												<p class="w-full">{entry[keys]}</p>
 											</>
 										)}
@@ -322,7 +329,7 @@ export const { route, Page } = ProtectedAdmin((session) => {
 						>
 							Back
 						</CustomButton>
-						<h5 class="text-lg font-bold">{`Page: ${page() + 1}/${
+						<h5 class="font-bold text-lg">{`Page: ${page() + 1}/${
 							Math.floor(submissions.data?.total / 25) + 1
 						}`}</h5>
 

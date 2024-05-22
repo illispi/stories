@@ -27,9 +27,9 @@ const Box: ParentComponent<{ question: string; start?: boolean }> = (props) => {
 				<label class="text-center font-semibold">{props.question}</label>
 			</div>
 			<div
-				class={`flex h-full flex-col items-center  ${
+				class={`flex h-full flex-col items-center${
 					props.start ? "justify-start" : "justify-center"
-				} overflow-hidden overflow-y-auto`}
+				}overflow-hidden overflow-y-auto`}
 			>
 				{props.children}
 			</div>
@@ -137,12 +137,11 @@ export const UnitQuestion: ParentComponent<{
 
 		questions
 			.filter((e) => e.multiSelect)
-			.map((e) => e.multiSelect?.map((el) => el[0]))
-			.flat()
+			.flatMap((e) => e.multiSelect?.map((el) => el[0]))
 			.filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
 			.forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-		sendStats.mutateAsync({
+		sendStats.mutate({
 			...questionsLs,
 			systemMetric: JSON.parse(localStorage.getItem("system") ?? '"true"'),
 		});
@@ -194,7 +193,7 @@ export const UnitQuestion: ParentComponent<{
 				!metric() &&
 				typeof value === "string"
 			) {
-				value = { [questionDB]: Math.floor(parseInt(value) * 0.45359237) };
+				value = { [questionDB]: Math.floor(Number.parseInt(value) * 0.45359237) };
 			}
 			setSelection(value[questionDB] as string);
 			setYesOrNO(value[questionDB] as boolean);
@@ -225,7 +224,7 @@ export const UnitQuestion: ParentComponent<{
 						JSON.stringify(junctions),
 					);
 				} else {
-					if (junctions && junctions[questionDB]) {
+					if (junctions?.[questionDB]) {
 						const LsTotal = localStorage.getItem(props.LsName);
 						const curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
 
@@ -350,7 +349,7 @@ export const UnitQuestion: ParentComponent<{
 			<Match when={questionType === "selection"}>
 				<Box question={question}>
 					<div
-						class={`flex flex-col items-center justify-end ${
+						class={`flex flex-col items-center justify-end${
 							questionDB === "current_med" ? "mt-20" : ""
 						}`}
 					>
@@ -361,8 +360,8 @@ export const UnitQuestion: ParentComponent<{
 										onClick={() => handleSubmit({ [questionDB]: v })}
 										class={
 											v === selection()
-												? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-												: " w-56"
+												? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
+												: "w-56"
 										}
 									>
 										{firstLetterUpperCase(v)}
@@ -403,7 +402,7 @@ export const UnitQuestion: ParentComponent<{
 										}}
 										class={
 											v === selection()
-												? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+												? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
 												: "w-56"
 										}
 									>
@@ -444,8 +443,8 @@ export const UnitQuestion: ParentComponent<{
 								}}
 								class={
 									!metric()
-										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500  active:bg-green-600"
-										: "w-56  bg-orange-500 hover:bg-orange-600 focus:bg-orange-500 active:bg-orange-600"
+										? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
+										: "w-56 bg-orange-500 active:bg-orange-600 focus:bg-orange-500 hover:bg-orange-600"
 								}
 							>
 								Imperial (lbs)
@@ -457,8 +456,8 @@ export const UnitQuestion: ParentComponent<{
 								}}
 								class={
 									metric()
-										? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-										: "w-56 bg-orange-500 hover:bg-orange-600 focus:bg-orange-500 active:bg-orange-600"
+										? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
+										: "w-56 bg-orange-500 active:bg-orange-600 focus:bg-orange-500 hover:bg-orange-600"
 								}
 							>
 								Metric (kg)
@@ -517,7 +516,7 @@ export const UnitQuestion: ParentComponent<{
 							<textarea
 								rows={14}
 								cols={30}
-								class="p-4 box-border resize-none focus-visible:outline-none"
+								class="box-border resize-none p-4 focus-visible:outline-none"
 								placeholder="Text"
 								autocomplete="off"
 								id="int"
@@ -538,13 +537,13 @@ export const UnitQuestion: ParentComponent<{
 			</Match>
 			<Match when={questionType === "yesOrNo"}>
 				<Box question={question}>
-					<div class="flex flex-col items-center justify-end gap-8 ">
+					<div class="flex flex-col items-center justify-end gap-8">
 						<CustomButton
 							// TODO might better to use state of yesOrNO instead of valueOfLS
 							class={
 								yesOrNO() === true
-									? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-									: " w-56"
+									? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
+									: "w-56"
 							}
 							onClick={() => handleSubmit({ [questionDB]: true })}
 						>
@@ -553,8 +552,8 @@ export const UnitQuestion: ParentComponent<{
 						<CustomButton
 							class={
 								yesOrNO() === false
-									? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
-									: " w-56"
+									? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
+									: "w-56"
 							}
 							onClick={() =>
 								handleSubmit(
@@ -576,7 +575,7 @@ export const UnitQuestion: ParentComponent<{
 			</Match>
 			<Match when={questionType === "multiSelect"}>
 				<Box question={question}>
-					<div class="flex flex-col items-center justify-end ">
+					<div class="flex flex-col items-center justify-end">
 						<ModalPopUp message={error()} setMessage={setError} />
 						<For fallback={<div>Multiselect error</div>} each={multiSelect}>
 							{(v) => (
@@ -584,7 +583,7 @@ export const UnitQuestion: ParentComponent<{
 									<CustomButton
 										class={
 											multiSelections()[v[0]] === true
-												? "w-56 bg-green-500 hover:bg-green-600 focus:bg-green-500 active:bg-green-600"
+												? "w-56 bg-green-500 active:bg-green-600 focus:bg-green-500 hover:bg-green-600"
 												: "w-56"
 										}
 										onClick={() => {
@@ -618,7 +617,7 @@ export const UnitQuestion: ParentComponent<{
 						when={authQuery.data}
 						fallback={
 							<div class="flex w-11/12 flex-col items-center justify-center gap-6">
-								<h3 class="text-center text-lg font-semibold">
+								<h3 class="text-center font-semibold text-lg">
 									You have to be signed up/in to submit
 								</h3>
 								<LoginA />
@@ -629,7 +628,7 @@ export const UnitQuestion: ParentComponent<{
 							when={!sendStats.isSuccess}
 							fallback={
 								<>
-									<div class="text-lg font-semibold">
+									<div class="font-semibold text-lg">
 										Submitted succesfully!
 									</div>
 								</>

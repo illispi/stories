@@ -27,7 +27,7 @@ const BellNotification = () => {
 	const [showNotifications, setShowNotifications] = createSignal(false);
 	return (
 		<>
-			<div class="w-12 h-12 transition-transform duration-200 ease-out hover:scale-125 active:scale-150 flex items-center justify-center">
+			<div class="flex h-12 w-12 items-center justify-center transition-transform duration-200 ease-out active:scale-150 hover:scale-125">
 				<Show when={authQuery.data?.user}>
 					<button
 						type="button"
@@ -77,8 +77,8 @@ const BellNotification = () => {
 			</div>
 
 			<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
-				<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-8 shadow-xl ">
-					<h2 class="text-center text-2xl font-bold lg:text-3xl mb-8">
+				<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white p-8 shadow-xl">
+					<h2 class="mb-8 text-center font-bold text-2xl lg:text-3xl">
 						Notifications
 					</h2>
 					<Show when={notificationsQuery.data?.personal}>
@@ -120,6 +120,7 @@ const BellNotification = () => {
 						}
 					>
 						<CustomButton
+							disabled={markReadMut.isPending}
 							onClick={() => {
 								setShowNotifications(false);
 								markReadMut.mutate();

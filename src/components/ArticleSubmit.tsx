@@ -26,7 +26,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 		validate: valiForm(ArticleSchema),
 	});
 	const handleSubmit: SubmitHandler<ArticleForm> = async (values, event) => {
-		articleMut.mutateAsync(values);
+		articleMut.mutate(values);
 	};
 
 	return (
@@ -34,8 +34,8 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 			<Show
 				when={!articleMut.isSuccess}
 				fallback={
-					<div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl ">
-						<h2 class="text-lg font-bold">
+					<div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl">
+						<h2 class="font-bold text-lg">
 							Your article was submitted for review!
 						</h2>
 						<CustomButton
@@ -88,7 +88,9 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 								</>
 							)}
 						</Field>
-						<CustomButton type="submit">Submit</CustomButton>
+						<CustomButton disabled={articleMut.isPending} type="submit">
+							Submit
+						</CustomButton>
 					</div>
 				</Form>
 			</Show>
