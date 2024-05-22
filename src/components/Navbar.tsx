@@ -27,6 +27,8 @@ const MenuItem: Component<{ route: string; content: string }> = (props) => {
 	);
 };
 
+//NOTE remove this comment
+
 const Hamburger: Component<{
 	menuOpen: Accessor<boolean>;
 	setMenuOpen: Setter<boolean>;
