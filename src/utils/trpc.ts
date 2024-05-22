@@ -8,15 +8,9 @@ import { createTRPCSolidStart } from "@solid-mediakit/trpc";
 import { env } from "./env";
 
 const getBaseUrl = () => {
-	// if (typeof window !== "undefined") return "";
-	console.log(
-		`${
-			import.meta.env.PROD ? env.VITE_SITE : "http://localhost:3000"
-		}`,
-	);
-	return `${
-		import.meta.env.PROD ? env.VITE_SITE : "http://localhost:3000"
-	}`;
+	if (typeof window !== "undefined") return "";
+
+	return `${env.VITE_SITE}`;
 };
 
 export const trpc = createTRPCSolidStart<IAppRouter>({

@@ -134,7 +134,7 @@ const Hamburger: Component<{
 							return <div>err</div>;
 						}}
 					>
-						<Show when={authQuery.data}>
+						<Show when={authQuery.data?.user}>
 							<MenuItem route={routeGen("/user/data")} content="Your data" />
 						</Show>
 					</ErrorBoundary>

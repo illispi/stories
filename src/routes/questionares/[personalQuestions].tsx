@@ -20,13 +20,13 @@ import {
 } from "@solidjs/router";
 import { db } from "~/server/db";
 import { validateSession } from "~/server/trpc/context";
+import { userLoader } from "~/server/loader/userLoader";
 
 const fetchUser = cache(async () => {
 	"use server";
 
-	//TODO only allow GET requests
 
-	const { user } = await validateSession();
+	const user = await userLoader()
 
 	if (user) {
 		const unSafe = await db

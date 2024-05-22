@@ -7,9 +7,10 @@
 - biome
 - Add cloudflare post request rate limiter
 - How to make better error page
-- Animate articles submit panel
 - Vite imagetools
 - Show pending status on other and articles
+- Page counter still has bug
+- Check that valibot still works v.0.3
 
 ## Notes
 
