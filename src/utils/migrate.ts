@@ -11,6 +11,7 @@ import {
 // import { Database } from "./dbTypes";
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import { env } from "./env";
 
 const __dirname = fileURLToPath(new URL("../", import.meta.url));
 
@@ -25,13 +26,13 @@ async function migrateToLatest(dir: string[]) {
     dialect: new PostgresDialect({
       pool: new Pool({
         host:
-          process.env.NODE_ENV === "production"
+          env.NODE_ENV === "production"
             ? "stories-postgres" //TODO switch to .env and for database below
             : "127.0.0.1",
         database:
-          process.env.NODE_ENV === "production" ? "stories" : "stories_dev",
-        password: process.env.PSQL_PASSWORD,
-        user: process.env.PSQL_USERNAME,
+          env.NODE_ENV === "production" ? "stories" : "stories_dev",
+        password: env.PSQL_PASSWORD,
+        user: env.PSQL_USERNAME,
         port: 5432,
       }),
     }),

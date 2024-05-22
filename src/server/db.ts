@@ -1,13 +1,14 @@
 import { Kysely, PostgresDialect } from "kysely";
 import type { DB } from "kysely-codegen/dist/db";
 import pkg from "pg";
+import { env } from "~/utils/env";
 const { Pool } = pkg;
 
 export const pool = new Pool({
-	host: process.env.PSQL_HOST,
-	database: process.env.PSQL_DATABASE,
-	password: process.env.PSQL_PASSWORD,
-	user: process.env.PSQL_USERNAME,
+	host: env.PSQL_HOST,
+	database: env.PSQL_DATABASE,
+	password: env.PSQL_PASSWORD,
+	user: env.PSQL_USERNAME,
 	port: 5432,
 });
 
