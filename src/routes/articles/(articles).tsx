@@ -5,6 +5,7 @@ import type { Component, Setter } from "solid-js";
 import { For, Show, Suspense, createSignal } from "solid-js";
 import type { Input } from "valibot";
 import { maxLength, minLength, object, string } from "valibot";
+import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import TransitionSlide from "~/components/TransitionSlide";
@@ -36,7 +37,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 	};
 
 	return (
-		<>
+		<div>
 			<Show
 				when={!articleMut.isSuccess}
 				fallback={
@@ -125,7 +126,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 					</Form>
 				</div>
 			</Show>
-		</>
+		</div>
 	);
 };
 
@@ -146,27 +147,21 @@ const articles: Component = () => {
 		<Suspense>
 			<div class="my-16 min-h-screen flex w-full flex-col items-center justify-start gap-8">
 				<Suspense>
-					<Show
-						when={submitVis()}
-						fallback={
-							<>
-								<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-t-4 border-fuchsia-600 bg-white py-12 shadow-xl ">
-									<h2 class="text-2xl font-bold lg:text-3xl">
-										Submit article/interview
-									</h2>
-									<CustomButton
-										onClick={() => {
-											setSubmitVis(true);
-										}}
-									>
-										Submit new!
-									</CustomButton>
-								</div>
-							</>
-						}
-					>
-						<ArticleSubmit setSubmitVis={setSubmitVis} />
-					</Show>
+					<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-t-4 border-fuchsia-600 bg-white py-12 shadow-xl ">
+						<h2 class="text-2xl font-bold lg:text-3xl">
+							Submit article/interview
+						</h2>
+						<CustomButton
+							onClick={() => {
+								setSubmitVis(!submitVis());
+							}}
+						>
+							{`${submitVis() ? "Cancel" : "Submit new!"}`}
+						</CustomButton>
+						<CssTranstionGrow visible={submitVis()}>
+							<ArticleSubmit setSubmitVis={setSubmitVis} />
+						</CssTranstionGrow>
+					</div>
 					<h2 class="mt-8 text-4xl font-bold">Articles:</h2>
 					<Show when={articlesData.data?.count}>
 						{(data) => (

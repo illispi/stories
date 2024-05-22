@@ -10,6 +10,7 @@
 - Animate articles submit panel
 - Vite imagetools
 - Show pending status on other and articles
+- Page counter still has bug
 
 ## Notes
 
