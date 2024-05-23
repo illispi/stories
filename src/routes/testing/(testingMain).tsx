@@ -6,7 +6,7 @@ import BarChartCustomtest from "~/components/testing/TestChart";
 const TestingMain: ParentComponent = () => {
 	return (
 		<div>
-			<A href="/testing/test/" />
+			<A href="/testing/test/">gesgesgsg</A>
 		</div>
 	);
 };

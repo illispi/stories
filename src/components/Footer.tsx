@@ -17,6 +17,14 @@ const Footer: Component<{}> = (props) => {
 					>
 						Github
 					</a>
+
+					<a class="text-white text-xl" href="https://x.com/delvis1640088">
+						Twitter
+					</a>
+
+					<A class="text-white text-xl" href="/privacyNotice">
+						Privacy notice
+					</A>
 				</div>
 				<div class="flex flex-col items-center justify-around gap-4">
 					<h5 class="m-4 border-white border-b text-3xl text-white">

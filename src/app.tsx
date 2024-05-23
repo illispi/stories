@@ -1,26 +1,20 @@
 // @refresh reload
-import {
-	ErrorBoundary,
-	Suspense,
-	createEffect,
-	createRenderEffect,
-	onCleanup,
-} from "solid-js";
-import { Meta, MetaProvider, Title } from "@solidjs/meta";
+import { MetaProvider, Title } from "@solidjs/meta";
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
+import { ErrorBoundary, Suspense, createEffect } from "solid-js";
 
 // import NavBar from "./components/Navbar";
+import * as Sentry from "@sentry/browser";
+import { createScriptLoader } from "@solid-primitives/script-loader";
+import { QueryClientProvider } from "@tanstack/solid-query";
+import { isServer } from "solid-js/web";
 import "./app.css";
 import CustomButton from "./components/CustomButton";
-import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
-import { queryClient, trpc } from "./utils/trpc";
-import { QueryClientProvider } from "@tanstack/solid-query";
-import { createScriptLoader } from "@solid-primitives/script-loader";
-import { isServer } from "solid-js/web";
-import * as Sentry from "@sentry/browser";
-import { DEV } from "solid-js";
 import NavBar from "./components/Navbar";
+import { queryClient, trpc } from "./utils/trpc";
+import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
+import Footer from "./components/Footer";
 
 export default function App() {
 	createEffect(() => {
@@ -72,8 +66,8 @@ export default function App() {
 										}
 										console.log(e);
 										return (
-											<div class="fixed flex items-center justify-center left-0 top-0 z-40 h-screen w-screen bg-black/30 transition-all duration-500 backdrop-blur-sm ">
-												<div class="flex w-11/12 max-w-2xl max-h-96 flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+											<div class="fixed top-0 left-0 z-40 flex h-screen w-screen items-center justify-center bg-black/30 backdrop-blur-sm transition-all duration-500">
+												<div class="flex max-h-96 w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 													<h1 class="text-center text-2xl">Error occured!</h1>
 													<h2 class="text-center">{`Message: ${e.message}`}</h2>
 													<CustomButton onClick={reset}>Try again</CustomButton>
@@ -88,6 +82,7 @@ export default function App() {
 										{/* <TransitionSlideGlobal> */}
 										{props.children}
 										{/* </TransitionSlideGlobal> */}
+										<Footer></Footer>
 									</Suspense>
 								</ErrorBoundary>
 							</trpc.Provider>
