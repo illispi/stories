@@ -1,14 +1,13 @@
 ## TODO
 
-- Double check that CSRF stuff, use curl
 - Check that scroll restoration works
-- clsx
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Show pending status on other and articles
 - Check that valibot still works v.0.3
 - Test that testing are excluded in prod
 - Test that srcset works in prod
+- Remove that console log from db.ts
 
 ## Notes
 

@@ -34,7 +34,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 			<Show
 				when={!articleMut.isSuccess}
 				fallback={
-					<div class="relative flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl">
+					<div class="flex w-full flex-col items-center justify-center">
 						<h2 class="font-bold text-lg">
 							Your article was submitted for review!
 						</h2>
