@@ -12,7 +12,7 @@ export const pool = new Pool({
 	user: env.PSQL_USERNAME,
 	port: 5432,
 });
-
+//TODO remove
 console.log(pool, "hello");
 
 const dialect = new PostgresDialect({
