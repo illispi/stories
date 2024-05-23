@@ -19,6 +19,7 @@ import {
 } from "valibot";
 import LoginA from "./LoginA";
 import { trpc } from "~/utils/trpc";
+import clsx from "clsx";
 
 const Box: ParentComponent<{ question: string; start?: boolean }> = (props) => {
 	return (
@@ -27,9 +28,10 @@ const Box: ParentComponent<{ question: string; start?: boolean }> = (props) => {
 				<label class="text-center font-semibold">{props.question}</label>
 			</div>
 			<div
-				class={`flex h-full flex-col items-center${
-					props.start ? "justify-start" : "justify-center"
-				}overflow-hidden overflow-y-auto`}
+				class={clsx(
+					"flex h-full flex-col items-center overflow-hidden overflow-y-auto",
+					props.start ? "justify-start" : "justify-center",
+				)}
 			>
 				{props.children}
 			</div>
@@ -193,7 +195,9 @@ export const UnitQuestion: ParentComponent<{
 				!metric() &&
 				typeof value === "string"
 			) {
-				value = { [questionDB]: Math.floor(Number.parseInt(value) * 0.45359237) };
+				value = {
+					[questionDB]: Math.floor(Number.parseInt(value) * 0.45359237),
+				};
 			}
 			setSelection(value[questionDB] as string);
 			setYesOrNO(value[questionDB] as boolean);
