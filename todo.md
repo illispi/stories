@@ -5,10 +5,10 @@
 - clsx
 - Add cloudflare post request rate limiter
 - How to make better error page
-- Vite imagetools
 - Show pending status on other and articles
 - Check that valibot still works v.0.3
-- Test that testitng are excluded
+- Test that testing are excluded in prod
+- Test that srcset works in prod
 
 ## Notes
 

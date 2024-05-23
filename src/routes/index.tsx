@@ -5,7 +5,7 @@ import InfoBox from "~/components/InfoBox";
 import first from "../assets/pictures/first.png?w=300;600;1200&format=avif&as=srcset";
 import second from "../assets/pictures/second.png?w=300;600;1200&format=avif&as=srcset";
 import third from "../assets/pictures/third.png?w=300;600;1200&format=avif&as=srcset";
-import firstOg from "../assets/pictures/first.png??format=avif";
+import firstOg from "../assets/pictures/first.png?format=avif";
 import secondOg from "../assets/pictures/second.png?format=avif";
 import thirdOg from "../assets/pictures/third.png?format=avif";
 
@@ -39,19 +39,32 @@ const Home: Component = () => {
 						</div>
 					</div>
 					<div class="grid w-full auto-cols-max grid-flow-col justify-items-center gap-8 overflow-x-auto p-8 lg:auto-cols-auto lg:grid-flow-row lg:grid-cols-2 lg:gap-12 lg:p-12">
-						<picture class="max-h-96 overflow-hidden rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg">
+						<picture>
 							<source srcset={first} />
-							<img src={firstOg} alt="poll" />
+							<img
+								class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
+								src={firstOg}
+								alt="poll"
+							/>
 						</picture>
 
-						<picture class="max-h-96 overflow-hidden rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg">
+						<picture>
 							<source srcset={second} />
-							<img src={secondOg} alt="poll" />
+							<img
+								class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
+								src={secondOg}
+								alt="poll"
+							/>
 						</picture>
 
-						<picture class="col-span-2 max-h-96 overflow-hidden rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg">
+						<picture class="col-span-2">
 							<source srcset={third} />
-							<img src={thirdOg} alt="poll" />
+							<img
+								class="h-full rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
+								src={thirdOg}
+								alt="poll"
+								sizes="1006px"
+							/>
 						</picture>
 					</div>
 					<div class="my-16 flex w-full max-w-md items-center justify-center gap-4 p-6 lg:hidden">
