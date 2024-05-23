@@ -60,7 +60,7 @@ const Home: Component = () => {
 						<picture class="col-span-2">
 							<source srcset={third} />
 							<img
-								class="h-full rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
+								class="h-full max-h-96 rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
 								src={thirdOg}
 								alt="poll"
 								sizes="1006px"
