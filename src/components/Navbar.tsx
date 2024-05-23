@@ -9,7 +9,7 @@ import {
 	createEffect,
 	createSignal,
 } from "solid-js";
-
+import clsx from "clsx";
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
 import BellNotification from "./BellNotification";
@@ -18,7 +18,7 @@ const MenuItem: Component<{ route: string; content: string }> = (props) => {
 	return (
 		<>
 			<A
-				class={`text-3xl font-light uppercase transition-all hover:scale-110 ${props.class}`}
+				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class}`}
 				href={props.route}
 			>
 				{props.content}
@@ -61,10 +61,10 @@ const Hamburger: Component<{
 
 	return (
 		<>
-			<div class="relative w-12 h-12  flex justify-center items-center ">
+			<div class="relative flex h-12 w-12 items-center justify-center">
 				<button
 					type="button"
-					class="absolute transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
+					class="absolute transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
 					onClick={() => {
 						if (searchParams.nav === "true") {
 							setSearchParams({ nav: null });
@@ -112,21 +112,23 @@ const Hamburger: Component<{
 			</div>
 
 			<div
-				class="fixed right-0 top-14 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				class="fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
-					["opacity-0 invisible"]: !searchParams.nav,
-					["visible, opacity-40"]: searchParams.nav === "true",
+					"opacity-0 invisible": !searchParams.nav,
+					"visible, opacity-40": searchParams.nav === "true",
 				}}
 				onClick={() => {
 					setSearchParams({ nav: null });
 				}}
 			/>
 			<div
-				class={`fixed right-0 top-14 z-30 flex items-center justify-start gap-6 p-8 ${
+				class={clsx(
+					"fixed top-14 right-0 z-30 flex items-center justify-start gap-6 p-8",
 					searchParams.nav === "true"
-						? `translate-x-0 opacity-100 ease-out`
-						: `translate-x-full opacity-0 ease-in`
-				} h-screen w-80 flex-col border-l border-blue-400 bg-blue-200 transition-all duration-300`}
+						? "translate-x-0 opacity-100 ease-out"
+						: "translate-x-full opacity-0 ease-in",
+					"h-screen w-80 flex-col border-blue-400 border-l bg-blue-200 transition-all duration-300",
+				)}
 			>
 				<Auth />
 				<Suspense>
@@ -141,7 +143,7 @@ const Hamburger: Component<{
 						</Show>
 					</ErrorBoundary>
 				</Suspense>
-				<div class="w-full border-b-2 border-black" />
+				<div class="w-full border-black border-b-2" />
 				<MenuItem route={routeGen("/pollResults/")} content="results" />
 				<MenuItem route={routeGen("/questionares/")} content="poll" />
 				<MenuItem route={routeGen("/articles/")} content="Articles" />
@@ -188,10 +190,9 @@ const NavBar: Component = () => {
 
 	return (
 		<>
-			<Title>Home</Title>
 			<div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
 				<A
-					class="p-3 transition-transform duration-200 ease-out hover:scale-125 active:scale-150"
+					class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
 					noScroll={true}
 					href={routeGen("/")}
 				>
@@ -205,7 +206,7 @@ const NavBar: Component = () => {
 						<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
 					</svg>
 				</A>
-				<div class="flex justify-end items-center gap-4">
+				<div class="flex items-center justify-end gap-4">
 					<Show when={authStatusQ.data?.user}>
 						<BellNotification />
 					</Show>
