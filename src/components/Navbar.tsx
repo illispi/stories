@@ -9,7 +9,7 @@ import {
 	createEffect,
 	createSignal,
 } from "solid-js";
-
+import clsx from "clsx";
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
 import BellNotification from "./BellNotification";
@@ -122,11 +122,13 @@ const Hamburger: Component<{
 				}}
 			/>
 			<div
-				class={`fixed top-14 right-0 z-30 flex items-center justify-start gap-6 p-8${
+				class={clsx(
+					"fixed top-14 right-0 z-30 flex items-center justify-start gap-6 p-8",
 					searchParams.nav === "true"
 						? "translate-x-0 opacity-100 ease-out"
-						: "translate-x-full opacity-0 ease-in"
-				}h-screen w-80 flex-col border-blue-400 border-l bg-blue-200 transition-all duration-300`}
+						: "translate-x-full opacity-0 ease-in",
+					"h-screen w-80 flex-col border-blue-400 border-l bg-blue-200 transition-all duration-300",
+				)}
 			>
 				<Auth />
 				<Suspense>
