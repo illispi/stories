@@ -11,9 +11,7 @@ const getBaseUrl = () => {
 	if (typeof window !== "undefined") return "";
 
 	return `${
-		env.NODE_ENV === "production"
-			? "https://stories.delvis.org"
-			: "localhost:3000"
+		!import.meta.env.VITE_SITE ? "https://stories.delvis.org" : "localhost:3000"
 	}`;
 	// return `${env.VITE_SITE}`;
 };
