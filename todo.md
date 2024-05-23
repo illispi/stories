@@ -5,9 +5,7 @@
 - How to make better error page
 - Show pending status on other and articles
 - Check that valibot still works v.0.3
-- Test that testing are excluded in prod
-- Test that srcset works in prod
-- Remove that console log from db.ts
+- Test that testing are excluded in prod, they are not
 
 ## Notes
 

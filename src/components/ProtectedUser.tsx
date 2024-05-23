@@ -2,30 +2,21 @@ import { cache, createAsync, redirect } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import type { Component } from "solid-js";
 import { Show } from "solid-js";
-import { validateSession } from "~/server/trpc/context";
+import { userLoader } from "~/server/loader/userLoader";
 
-const getSession = cache(async () => {
-	"use server";
-
-	//TODO only allow GET requests
-
-	const { user } = await validateSession();
-
-	if (user?.role === "user" || user?.role === "admin") {
-		return true;
-	}
-	return redirect("/");
-}, "session");
+const getUser = cache(async () => {
+	return await userLoader();
+}, "user");
 
 export const route = {
-	load: () => getSession(),
+	load: () => getUser(),
 };
 
 const ProtectedUser = (Comp: IProtectedComponent) => {
 	return {
 		route,
 		Page: () => {
-			const session = createAsync(() => getSession());
+			const session = createAsync(() => getUser());
 			return (
 				<Show when={session()} keyed>
 					{(sess) => <Comp />}
