@@ -255,7 +255,6 @@ export const { route, Page } = ProtectedUser((session) => {
 							<A
 								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/questionares/")}
-								noScroll={false}
 							>
 								Do personal poll
 							</A>
@@ -403,7 +402,6 @@ export const { route, Page } = ProtectedUser((session) => {
 							<A
 								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/questionares/")}
-								noScroll={false}
 							>
 								Do other poll
 							</A>
@@ -493,7 +491,6 @@ export const { route, Page } = ProtectedUser((session) => {
 							<A
 								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={routeGen("/articles/")}
-								noScroll={false}
 							>
 								Submit articles
 							</A>

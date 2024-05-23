@@ -23,7 +23,6 @@ const CompareButton: Component = () => {
 	return (
 		<div class="m-6 flex flex-col items-center justify-between rounded-3xl border-2 border-gray-300 bg-gray-100 p-6">
 			<A
-				noScroll={true}
 				href={route("/compare/:pOrT/:fOrT/compare", {
 					pOrT: params.pOrT,
 					fOrT: params.fOrT,

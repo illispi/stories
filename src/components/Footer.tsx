@@ -22,7 +22,10 @@ const Footer: Component<{}> = (props) => {
 						Twitter
 					</a>
 
-					<A class="text-white text-xl" href="/privacyNotice">
+					<A
+						class="rounded-xl border p-2 text-white text-xl"
+						href="/privacyNotice"
+					>
 						Privacy notice
 					</A>
 				</div>

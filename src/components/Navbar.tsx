@@ -155,12 +155,12 @@ const Hamburger: Component<{
 				</Show>
 				<button
 					type="button"
-					class="p-16 transition-all hover:scale-125"
+					class="p-16"
 					onClick={() => {
 						setSearchParams({ nav: null });
 					}}
 				>
-					<div class="rounded-full border border-black p-2">
+					<div class="rounded-full border border-black p-2 transition-all hover:scale-125">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="currentColor"
@@ -193,7 +193,6 @@ const NavBar: Component = () => {
 			<div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
 				<A
 					class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
-					noScroll={true}
 					href={routeGen("/")}
 				>
 					<svg

@@ -25,14 +25,12 @@ const Home: Component = () => {
 							<A
 								class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-400 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={route("/questionares/")}
-								noScroll={false}
 							>
 								Take the poll
 							</A>
 							<A
 								class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-400 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={route("/articles/")}
-								noScroll={false}
 							>
 								Share article
 							</A>
