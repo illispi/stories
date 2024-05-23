@@ -3,6 +3,7 @@ import type { DB } from "kysely-codegen/dist/db";
 import pkg from "pg";
 import { env } from "~/utils/env";
 const { Pool } = pkg;
+//import { Pool } from "pg";
 
 export const pool = new Pool({
 	host: env.PSQL_HOST,

@@ -1,7 +1,7 @@
-import * as path from "path";
+import * as path from "node:path";
 import PG from "pg";
 const Pool = PG.Pool;
-import { promises as fs } from "fs";
+import { promises as fs } from "node:fs";
 import {
   Kysely,
   Migrator,
@@ -10,7 +10,7 @@ import {
 } from "kysely";
 // import { Database } from "./dbTypes";
 import * as dotenv from "dotenv";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 import { env } from "./env";
 
 const __dirname = fileURLToPath(new URL("../", import.meta.url));
@@ -25,10 +25,7 @@ async function migrateToLatest(dir: string[]) {
     log: ["error", "query"],
     dialect: new PostgresDialect({
       pool: new Pool({
-        host:
-          env.NODE_ENV === "production"
-            ? "stories-postgres" //TODO switch to .env and for database below
-            : "127.0.0.1",
+        host: env.
         database:
           env.NODE_ENV === "production" ? "stories" : "stories_dev",
         password: env.PSQL_PASSWORD,

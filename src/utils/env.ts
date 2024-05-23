@@ -15,7 +15,6 @@ export const env = createEnv({
 		AUTH_SECRET: z.string(),
 		AUTH_TRUST_HOST: z.string(),
 		DISCORD_CLIENT_SECRET: z.string(),
-		DATABASE_URL: z.string(),
 		PSQL_HOST: z.string(),
 		PSQL_DATABASE: z.string(),
 		NODE_ENV: z.enum(["development", "production"]).default("development"),
