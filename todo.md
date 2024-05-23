@@ -2,7 +2,6 @@
 
 - Double check that CSRF stuff, use curl
 - Check that scroll restoration works
-- Hash username
 - clsx
 - Add cloudflare post request rate limiter
 - How to make better error page
