@@ -13,9 +13,11 @@ const PaginationNav: Component<{
 	perPageNum: number;
 }> = (props) => {
 	const pageMax =
-		props.arrLength % props.perPageNum === 0
-			? Math.floor(props.arrLength / props.perPageNum)
-			: Math.floor(props.arrLength / props.perPageNum) + 1;
+		props.arrLength === 0
+			? 1
+			: props.arrLength % props.perPageNum === 0
+				? Math.floor(props.arrLength / props.perPageNum)
+				: Math.floor(props.arrLength / props.perPageNum) + 1;
 	return (
 		<>
 			<CustomButton

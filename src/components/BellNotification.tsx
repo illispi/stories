@@ -77,7 +77,7 @@ const BellNotification = () => {
 			</div>
 
 			<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
-				<div class="flex w-11/12 flex-col justify-start gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white p-8 shadow-xl">
+				<div class="flex max-h-[600px] w-11/12 max-w-xl flex-col justify-start gap-6 overflow-y-auto rounded-3xl border-fuchsia-600 border-t-4 bg-white p-8 shadow-xl">
 					<h2 class="mb-8 text-center font-bold text-2xl lg:text-3xl">
 						Notifications
 					</h2>

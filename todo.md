@@ -5,7 +5,7 @@
 - How to make better error page
 - Show pending status on other and articles
 - Check that valibot still works v.0.3
-- Test that testing are excluded in prod, they are not
+- Figure out how to exclude some routes and components on prod
 
 ## Notes
 

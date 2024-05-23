@@ -3,12 +3,12 @@ import { Transition } from "solid-transition-group";
 import CustomButton from "./CustomButton";
 
 export const ModalOptions: ParentComponent<{
-  show: boolean;
-  setShow: Setter<boolean>;
+	show: boolean;
+	setShow: Setter<boolean>;
 }> = (props) => {
-  return (
-    <>
-      {/* <Transition
+	return (
+		<>
+			{/* <Transition
         onEnter={(el, done) => {
           const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
             duration: 500,
@@ -24,28 +24,28 @@ export const ModalOptions: ParentComponent<{
           a.finished.then(done);
         }}
       > */}
-      {/* <Show when={props.show}> */}
-      <div>
-        <div
-          onClick={() => {
-            props.setShow(false);
-            document.body.style.overflow = "auto";
-          }}
-          class="fixed left-0 top-0 z-40 flex h-screen w-screen bg-black/30 transition-all duration-500"
-          classList={{
-            ["backdrop-blur-sm visible opacity-100"]: props.show,
-            ["invisible opacity-0"]: !props.show,
-          }}
-        />
+			{/* <Show when={props.show}> */}
+			<div>
+				<div
+					onClick={() => {
+						props.setShow(false);
+						document.body.style.overflow = "auto";
+					}}
+					class="fixed left-0 top-0 z-40 flex h-screen w-screen bg-black/30 transition-all duration-500"
+					classList={{
+						["backdrop-blur-sm visible opacity-100"]: props.show,
+						["invisible opacity-0"]: !props.show,
+					}}
+				/>
 
-        <div
-          classList={{
-            ["visible opacity-100"]: props.show,
-            ["invisible opacity-0"]: !props.show,
-          }}
-          class="fixed left-1/2 top-1/2 z-40 flex w-full max-w-xs -translate-x-1/2 -translate-y-1/2  flex-col  items-center justify-center transition-all duration-500"
-        >
-          {/* <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
+				<div
+					classList={{
+						["visible opacity-100"]: props.show,
+						["invisible opacity-0"]: !props.show,
+					}}
+					class="fixed left-1/2 top-1/2 z-40 flex w-full -translate-x-1/2 max-w-xl -translate-y-1/2  flex-col  items-center justify-center transition-all duration-500"
+				>
+					{/* <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
             <CustomButton
               class="bg-red-600 p-2 text-center hover:bg-red-900 focus:bg-red-900 active:bg-red-900"
               onClick={() => {
@@ -69,11 +69,11 @@ export const ModalOptions: ParentComponent<{
               </svg>
             </CustomButton>
           </div> */}
-          {props.children}
-        </div>
-      </div>
-      {/* </Show> */}
-      {/* </Transition> */}
-    </>
-  );
+					{props.children}
+				</div>
+			</div>
+			{/* </Show> */}
+			{/* </Transition> */}
+		</>
+	);
 };

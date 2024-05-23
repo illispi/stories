@@ -13,16 +13,19 @@ const PrivacyNotice = () => {
 						nothing important to lose. If you log in using social media
 						providers only openId is saved into database, so even in that case
 						nothing important should get lost. You can delete account and data
-						at any point easily
+						at any point easily.
 					</p>
 					<p class="text-lg">
 						If you forget your username or password just direct message me on
 						twitter with snippet of polls or articles text field so you I can
 						remove the correct account and data.
-						<a class="text-xl" href="https://x.com/delvis1640088">
-							Twitter
-						</a>
 					</p>
+					<a
+						class="mx-auto text-blue-900 text-xl"
+						href="https://x.com/delvis1640088"
+					>
+						Twitter
+					</a>
 				</div>
 			</div>
 		</div>
