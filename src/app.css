@@ -34,3 +34,37 @@ a {
 body {
   scroll-behavior: smooth;
 }
+@keyframes slideOutFade {
+  from {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+
+  to {
+    transform: translateX(-100px);
+    opacity: 0%;
+  }
+}
+@keyframes slideInFade {
+  from {
+    transform: translateX(100px);
+    opacity: 0%;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+}
+
+::view-transition-old(slide) {
+  animation: 300ms both slideOutFade;
+}
+
+::view-transition-new(slide) {
+  animation: 300ms both slideInFade;
+}
+
+.slide {
+  view-transition-name: slide;
+}

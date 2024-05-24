@@ -1,6 +1,6 @@
 // @refresh reload
 import { MetaProvider, Title } from "@solidjs/meta";
-import { Router } from "@solidjs/router";
+import { Router, useNavigate } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { ErrorBoundary, Suspense, createEffect } from "solid-js";
 
@@ -15,11 +15,12 @@ import NavBar from "./components/Navbar";
 import { queryClient, trpc } from "./utils/trpc";
 import TransitionSlideGlobal from "./components/TransitionSlideGlobal";
 import Footer from "./components/Footer";
+import VtApi from "./components/VtApi";
 
 export default function App() {
-	// createEffect(() => {
-	// 	history.scrollRestoration = "manual";
-	// });
+	createEffect(() => {
+		history.scrollRestoration = "manual";
+	});
 
 	if (import.meta.env.PROD) {
 		//NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
@@ -80,7 +81,7 @@ export default function App() {
 										<NavBar />
 
 										{/* <TransitionSlideGlobal> */}
-										{props.children}
+										<VtApi>{props.children}</VtApi>
 										{/* </TransitionSlideGlobal> */}
 										<Footer></Footer>
 									</Suspense>

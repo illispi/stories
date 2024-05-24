@@ -1,11 +1,16 @@
 ## TODO
 
-- Check that scroll restoration works
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Show pending status on other and articles
 - Check that valibot still works v.0.3
 - Figure out how to exclude some routes and components on prod
+- index.md
+- editing for articles and their
+- Protected route redirect
+- Only stats page really needs scroll restoration so you could use hash tags
+- Add width to imgs CLS
+- Poll and compare results flashes
 
 ## Notes
 
