@@ -10,7 +10,7 @@
 - Protected route redirect
 - Only stats page really needs scroll restoration so you could use hash tags
 - Add width to imgs CLS
-- Poll and compare results flashes
+- Poll and compare results flashes, same with refresh nav to articles
 
 ## Notes
 

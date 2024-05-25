@@ -13,6 +13,7 @@ import clsx from "clsx";
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
 import BellNotification from "./BellNotification";
+import "../app.css";
 
 const MenuItem: Component<{ route: string; content: string }> = (props) => {
 	return (
@@ -60,7 +61,7 @@ const Hamburger: Component<{
 	});
 
 	return (
-		<>
+		<div>
 			<div class="relative flex h-12 w-12 items-center justify-center">
 				<button
 					type="button"
@@ -68,7 +69,11 @@ const Hamburger: Component<{
 					onClick={() => {
 						if (searchParams.nav === "true") {
 							setSearchParams({ nav: null });
+							const el = document.querySelector("body");
+							setTimeout(() => el.classList.add("slide"), 200);
 						} else {
+							const el = document.querySelector("body");
+							el.classList.remove("slide");
 							setSearchParams({ nav: true });
 						}
 					}}
@@ -112,7 +117,7 @@ const Hamburger: Component<{
 			</div>
 
 			<div
-				class="fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				class="headerSlide fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
 					"opacity-0 invisible": !searchParams.nav,
 					"visible, opacity-40": searchParams.nav === "true",
@@ -123,7 +128,7 @@ const Hamburger: Component<{
 			/>
 			<div
 				class={clsx(
-					"fixed top-14 right-0 z-30 flex items-center justify-start gap-6 p-8",
+					"headerTrans fixed top-14 right-0 z-30 flex items-center justify-start gap-6 p-8",
 					searchParams.nav === "true"
 						? "translate-x-0 opacity-100 ease-out"
 						: "translate-x-full opacity-0 ease-in",
@@ -179,7 +184,7 @@ const Hamburger: Component<{
 					</div>
 				</button>
 			</div>
-		</>
+		</div>
 	);
 };
 
@@ -189,30 +194,28 @@ const NavBar: Component = () => {
 	const authStatusQ = trpc.authStatus.createQuery();
 
 	return (
-		<>
-			<div class="sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
-				<A
-					class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
-					href={routeGen("/")}
+		<div class="header sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
+			<A
+				class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
+				href={routeGen("/")}
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="32"
+					height="32"
+					viewBox="0 0 24 24"
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="32"
-						height="32"
-						viewBox="0 0 24 24"
-					>
-						<title>Home</title>
-						<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
-					</svg>
-				</A>
-				<div class="flex items-center justify-end gap-4">
-					<Show when={authStatusQ.data?.user}>
-						<BellNotification />
-					</Show>
-					<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-				</div>
+					<title>Home</title>
+					<path fill="currentColor" d="M4 21V9l8-6l8 6v12h-6v-7h-4v7H4Z" />
+				</svg>
+			</A>
+			<div class="flex items-center justify-end gap-4">
+				<Show when={authStatusQ.data?.user}>
+					<BellNotification />
+				</Show>
+				<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 			</div>
-		</>
+		</div>
 	);
 };
 

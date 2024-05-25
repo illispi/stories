@@ -58,13 +58,44 @@ body {
 }
 
 ::view-transition-old(slide) {
-  animation: 300ms both slideOutFade;
+  animation: 300ms ease-in both slideOutFade;
 }
 
 ::view-transition-new(slide) {
-  animation: 300ms both slideInFade;
+  animation: 300ms ease-out both slideInFade;
+  animation-delay: 300ms;
 }
 
 .slide {
   view-transition-name: slide;
+}
+
+::view-transition-old(header),
+::view-transition-new(header) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.header {
+  view-transition-name: header;
+}
+
+::view-transition-old(headerSlide),
+::view-transition-new(headerSlide) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.headerSLide {
+  view-transition-name: headerSlide;
+}
+
+::view-transition-old(headerTrans),
+::view-transition-new(headerTrans) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.headerTrans {
+  view-transition-name: headerTrans;
 }

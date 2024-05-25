@@ -16,12 +16,14 @@ const VtApi: ParentComponent = (props) => {
 
 	useBeforeLeave((e) => {
 		// Stop the inmediate navigation and DOM change
-		e.preventDefault();
+		if (!e.defaultPrevented) {
+			e.preventDefault();
 
-		// Perform the action that triggers a DOM change synchronously
-		transition(() => {
-			e.retry(true);
-		});
+			// Perform the action that triggers a DOM change synchronously
+			transition(() => {
+				e.retry(true);
+			});
+		}
 	});
 
 	return <>{props.children}</>;
