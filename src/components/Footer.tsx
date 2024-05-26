@@ -21,21 +21,18 @@ const Footer: Component<{}> = (props) => {
 					<a class="text-white text-xl" href="https://x.com/delvis1640088">
 						Twitter
 					</a>
-
+				</div>
+				<div class="flex flex-col items-center justify-around gap-4">
+					<h5 class="m-4 border-white border-b text-3xl text-white">
+						Jump to:
+					</h5>
 					<A
 						class="rounded-xl border p-2 text-white text-xl"
 						href="/privacyNotice"
 					>
 						Privacy notice
 					</A>
-				</div>
-				<div class="flex flex-col items-center justify-around gap-4">
-					<h5 class="m-4 border-white border-b text-3xl text-white">
-						Jump to:
-					</h5>
-					<A class="text-white text-xl" href={route("/")}>
-						Home
-					</A>
+
 					<A class="text-white text-xl" href={route("/pollResults")}>
 						Poll results
 					</A>

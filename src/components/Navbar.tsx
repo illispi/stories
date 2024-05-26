@@ -69,11 +69,7 @@ const Hamburger: Component<{
 					onClick={() => {
 						if (searchParams.nav === "true") {
 							setSearchParams({ nav: null });
-							const el = document.querySelector("body");
-							setTimeout(() => el.classList.add("slide"), 200);
 						} else {
-							const el = document.querySelector("body");
-							el.classList.remove("slide");
 							setSearchParams({ nav: true });
 						}
 					}}
