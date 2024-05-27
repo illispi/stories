@@ -1,28 +1,33 @@
-import { useBeforeLeave, useIsRouting, useNavigate } from "@solidjs/router";
-import { Component, ParentComponent, createEffect } from "solid-js";
+import { useBeforeLeave, type RouteSectionProps } from "@solidjs/router";
+import type { ParentComponent } from "solid-js";
+import "../app.css";
 
 const VtApi: ParentComponent = (props) => {
-	const transition = (fnStartingTheSynchronousTransition) => {
-		// In case the API is not yet supported
-		if (!document.startViewTransition) {
-			return fnStartingTheSynchronousTransition();
-		}
+	let isTransitionNavigate = false;
 
-		// Transition the changes in the DOM
-		const transition = document.startViewTransition(
-			fnStartingTheSynchronousTransition,
-		);
-	};
+	useBeforeLeave((event) => {
+		if (document.startViewTransition) {
+			// if this is not already the second navigation,
+			// which happens after the view-transition was initialized from inside this component
+			if (!isTransitionNavigate) {
+				const isBackNavigation =
+					Number.isInteger(event.to) && (event.to as number) < 0;
 
-	useBeforeLeave((e) => {
-		// Stop the inmediate navigation and DOM change
-		if (!e.defaultPrevented) {
-			e.preventDefault();
+				event.preventDefault();
+				// console.log(isBackNavigation, event.to);
 
-			// Perform the action that triggers a DOM change synchronously
-			transition(() => {
-				e.retry(true);
-			});
+				isTransitionNavigate = true;
+
+				document.documentElement.classList.add("slide");
+				const transition = document.startViewTransition(() => {
+					event.retry();
+				});
+
+				transition.finished.finally(() => {
+					isTransitionNavigate = false;
+					document.documentElement.classList.remove("slide");
+				});
+			}
 		}
 	});
 

@@ -23,27 +23,12 @@ const Footer: Component<{}> = (props) => {
 					</a>
 				</div>
 				<div class="flex flex-col items-center justify-around gap-4">
-					<h5 class="m-4 border-white border-b text-3xl text-white">
-						Jump to:
-					</h5>
+					<h5 class="m-4 border-white border-b text-3xl text-white">Info:</h5>
 					<A
 						class="rounded-xl border p-2 text-white text-xl"
 						href="/privacyNotice"
 					>
 						Privacy notice
-					</A>
-
-					<A class="text-white text-xl" href={route("/pollResults")}>
-						Poll results
-					</A>
-					<A class="text-white text-xl" href={route("/articles")}>
-						Articles
-					</A>
-					<A class="text-white text-xl" href={route("/compare")}>
-						Compare
-					</A>
-					<A class="text-white text-xl" href={route("/questionares")}>
-						Poll
 					</A>
 				</div>
 			</div>

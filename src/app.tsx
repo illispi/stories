@@ -18,9 +18,9 @@ import Footer from "./components/Footer";
 import VtApi from "./components/VtApi";
 
 export default function App() {
-	// createEffect(() => {
-	// 	history.scrollRestoration = "manual";
-	// });
+	createEffect(() => {
+		history.scrollRestoration = "manual";
+	});
 
 	if (import.meta.env.PROD) {
 		//NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
