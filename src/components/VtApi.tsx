@@ -19,13 +19,13 @@ const VtApi: ParentComponent = (props) => {
 				isTransitionNavigate = true;
 
 				const check = Number.isInteger(event.to)
-					? true
+					? false
 					: event.to.toString().includes("/?nav");
 
 				if (!check) {
 					document.documentElement.classList.add("slide");
 					const transition = document.startViewTransition(() => {
-						event.retry();
+						event.retry(true);
 					});
 
 					transition.finished.finally(() => {
@@ -33,7 +33,7 @@ const VtApi: ParentComponent = (props) => {
 						document.documentElement.classList.remove("slide");
 					});
 				} else {
-					event.retry();
+					event.retry(true);
 					isTransitionNavigate = false;
 				}
 			}
