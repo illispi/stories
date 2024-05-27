@@ -3,6 +3,7 @@ import type { ParentComponent } from "solid-js";
 import "../app.css";
 
 const VtApi: ParentComponent = (props) => {
+	//NOTE should this be signal
 	let isTransitionNavigate = false;
 
 	useBeforeLeave((event) => {
@@ -10,23 +11,31 @@ const VtApi: ParentComponent = (props) => {
 			// if this is not already the second navigation,
 			// which happens after the view-transition was initialized from inside this component
 			if (!isTransitionNavigate) {
-				const isBackNavigation =
-					Number.isInteger(event.to) && (event.to as number) < 0;
+				// const isBackNavigation =
+				// 	Number.isInteger(event.to) && (event.to as number) < 0;
 
 				event.preventDefault();
-				// console.log(isBackNavigation, event.to);
 
 				isTransitionNavigate = true;
 
-				document.documentElement.classList.add("slide");
-				const transition = document.startViewTransition(() => {
-					event.retry();
-				});
+				const check = Number.isInteger(event.to)
+					? true
+					: event.to.toString().includes("/?nav");
 
-				transition.finished.finally(() => {
+				if (!check) {
+					document.documentElement.classList.add("slide");
+					const transition = document.startViewTransition(() => {
+						event.retry();
+					});
+
+					transition.finished.finally(() => {
+						isTransitionNavigate = false;
+						document.documentElement.classList.remove("slide");
+					});
+				} else {
+					event.retry();
 					isTransitionNavigate = false;
-					document.documentElement.classList.remove("slide");
-				});
+				}
 			}
 		}
 	});
