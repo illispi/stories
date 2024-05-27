@@ -1,4 +1,4 @@
-import type { Component, Setter } from "solid-js";
+import { createEffect, createSignal, type Component, type Setter } from "solid-js";
 import CustomButton from "./CustomButton";
 import { twMerge } from "tailwind-merge";
 
@@ -12,12 +12,23 @@ const PaginationNav: Component<{
 	setPage: Setter<number>;
 	perPageNum: number;
 }> = (props) => {
-	const pageMax =
+	const [pageMax, setPageMax] = createSignal(
 		props.arrLength === 0
 			? 1
 			: props.arrLength % props.perPageNum === 0
 				? Math.floor(props.arrLength / props.perPageNum)
-				: Math.floor(props.arrLength / props.perPageNum) + 1;
+				: Math.floor(props.arrLength / props.perPageNum) + 1,
+	);
+
+	createEffect(() => {
+		setPageMax(
+			props.arrLength === 0
+				? 1
+				: props.arrLength % props.perPageNum === 0
+					? Math.floor(props.arrLength / props.perPageNum)
+					: Math.floor(props.arrLength / props.perPageNum) + 1,
+		);
+	});
 	return (
 		<>
 			<CustomButton
@@ -37,7 +48,9 @@ const PaginationNav: Component<{
 			>
 				Back
 			</CustomButton>
-			<h5 class="font-bold text-lg">{`Page: ${props.page + 1}/${pageMax}`}</h5>
+			<h5 class="font-bold text-lg">{`Page: ${
+				props.page + 1
+			}/${pageMax()}`}</h5>
 			<CustomButton
 				class={twMerge(
 					"visible opacity-100 transition-all duration-300",

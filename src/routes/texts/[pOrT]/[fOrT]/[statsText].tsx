@@ -31,8 +31,7 @@ const StatsText = () => {
 		"Female" | "Other" | "Male" | null
 	>(null);
 
-	const [searchParams, setSearchParams] = useSearchParams();
-	const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1);
+	const [page, setPage] = createSignal(0);
 
 	const [dir, setDir] = createSignal(1);
 
@@ -58,12 +57,16 @@ const StatsText = () => {
 					setDiagFilter(null);
 					setGenderFilter(null);
 					setPage(0);
-					setSearchParams({ page: page() + 1 });
 					window.scrollTo({ top: 0, behavior: "smooth" });
 				}}
 			>
 				Clear Filters
 			</CustomButton>
+			<Show when={diagFilter() || genderFilter()}>
+				<p class="my-6 font-semibold text-lg">{`Current filters: ${
+					diagFilter() ?? ""
+				} ${genderFilter() ?? ""}`}</p>
+			</Show>
 			<Transition
 				onEnter={(el, done) => {
 					const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -107,6 +110,7 @@ const StatsText = () => {
 										stroke="currentColor"
 										class="h-8 w-8"
 									>
+										<title>Something</title>
 										<path
 											stroke-linecap="round"
 											stroke-linejoin="round"
@@ -168,7 +172,6 @@ const StatsText = () => {
 									setPage(0);
 									setDiagFilter(diagnosis());
 									setGenderFilter(gender());
-									setSearchParams({ page: page() + 1 });
 									window.scrollTo({ top: 0, behavior: "smooth" });
 									setFilter(false);
 									document.body.style.overflow = "auto";
@@ -205,11 +208,9 @@ const StatsText = () => {
 											perPageNum={25}
 											setPage={setPage}
 											backOnClick={() => {
-												setSearchParams({ page: page() + 1 });
 												window.scrollTo({ top: 0, behavior: "smooth" });
 											}}
 											nextOnClick={() => {
-												setSearchParams({ page: page() + 1 });
 												window.scrollTo({ top: 0, behavior: "smooth" });
 											}}
 											dirSetter={setDir}
@@ -251,11 +252,9 @@ const StatsText = () => {
 											perPageNum={25}
 											setPage={setPage}
 											backOnClick={() => {
-												setSearchParams({ page: page() + 1 });
 												window.scrollTo({ top: 0, behavior: "smooth" });
 											}}
 											nextOnClick={() => {
-												setSearchParams({ page: page() + 1 });
 												window.scrollTo({ top: 0, behavior: "smooth" });
 											}}
 											dirSetter={setDir}
