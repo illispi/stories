@@ -1,13 +1,15 @@
 import { ParentComponent, Setter, Show } from "solid-js";
 import { Transition } from "solid-transition-group";
 import CustomButton from "./CustomButton";
+import clsx from "clsx";
+import { Portal } from "solid-js/web";
 
 export const ModalOptions: ParentComponent<{
 	show: boolean;
 	setShow: Setter<boolean>;
 }> = (props) => {
 	return (
-		<>
+		<Portal>
 			{/* <Transition
         onEnter={(el, done) => {
           const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -29,21 +31,20 @@ export const ModalOptions: ParentComponent<{
 				<div
 					onClick={() => {
 						props.setShow(false);
-						document.body.style.overflow = "auto";
 					}}
-					class="fixed left-0 top-0 z-40 flex h-screen w-screen bg-black/30 transition-all duration-500"
-					classList={{
-						["backdrop-blur-sm visible opacity-100"]: props.show,
-						["invisible opacity-0"]: !props.show,
-					}}
+					class={clsx(
+						"fixed top-0 left-0 z-50 flex h-screen w-screen bg-black/30 transition-all duration-500",
+						props.show
+							? "visible opacity-100 backdrop-blur-sm"
+							: "invisible opacity-0",
+					)}
 				/>
 
 				<div
-					classList={{
-						["visible opacity-100"]: props.show,
-						["invisible opacity-0"]: !props.show,
-					}}
-					class="fixed left-1/2 top-1/2 z-40 flex w-full -translate-x-1/2 max-w-xl -translate-y-1/2  flex-col  items-center justify-center transition-all duration-500"
+					class={clsx(
+						"-translate-x-1/2 -translate-y-1/2 fixed top-1/2 left-1/2 z-50 flex w-full max-w-xl flex-col items-center justify-center transition-all duration-500",
+						props.show ? "visible opacity-100" : "invisible opacity-0",
+					)}
 				>
 					{/* <div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
             <CustomButton
@@ -74,6 +75,6 @@ export const ModalOptions: ParentComponent<{
 			</div>
 			{/* </Show> */}
 			{/* </Transition> */}
-		</>
+		</Portal>
 	);
 };
