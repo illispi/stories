@@ -9,8 +9,7 @@
 - editing for articles and their
 - Protected route redirect
 - Only stats page really needs scroll restoration so you could use hash tags
-- Add width to imgs CLS
-- Figure out why bell and login status sometimes needs refresh
+- Figure out why bell and login status sometimes needs refresh, doesnt seem to happen on build version
 
 ## Notes
 

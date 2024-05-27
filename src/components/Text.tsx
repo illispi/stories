@@ -1,4 +1,4 @@
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import { route } from "routes-gen";
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
@@ -13,12 +13,16 @@ export const TextComponent: Component<{
 	pOrT: string;
 	fOrT: string;
 }> = (props) => {
+	const location = useLocation();
 	return (
 		<>
 			<Show
 				when={props.data?.[props.stat].length > 0 && props.data?.[props.stat]}
 			>
-				<div class="flex flex-col items-center justify-center">
+				<div
+					id={props.header.split(" ").join("")}
+					class="flex flex-col items-center justify-center"
+				>
 					<h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
 					<For each={props.data?.[props.stat]}>
 						{(stat, i) => (
@@ -30,6 +34,13 @@ export const TextComponent: Component<{
 					</For>
 
 					<A
+						onclick={() => {
+							history.replaceState(
+								null,
+								null,
+								location.pathname + "#" + props.header.split(" ").join(""),
+							);
+						}}
 						href={route("/texts/:pOrT/:fOrT/:statsText", {
 							pOrT: props.pOrT,
 							statsText: props.stat,

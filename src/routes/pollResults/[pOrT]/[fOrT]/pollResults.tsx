@@ -28,11 +28,7 @@ const CompareButton: Component = () => {
 					fOrT: params.fOrT,
 				})}
 			>
-				<CustomButton
-					class="m-2 rounded-full bg-blue-500 p-5
-      font-semibold text-white transition-all  hover:scale-110
-    hover:bg-blue-600 active:scale-110 active:bg-blue-600"
-				>
+				<CustomButton class="m-2 rounded-full bg-blue-500 p-5 font-semibold text-white transition-all active:scale-110 hover:scale-110 active:bg-blue-600 hover:bg-blue-600">
 					Compare
 				</CustomButton>
 			</A>
@@ -111,7 +107,6 @@ const AllStatsPage: ParentComponent = () => {
 									<div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
 										<h2 class="text-center text-2xl font-bold lg:text-3xl">
 											{`${allStatsData.data?.total ?? 0}/5`}
-											{console.log("feasfs")}
 										</h2>
 										<p class="text-center text-lg">
 											Poll needs to be done by at least 5 people
@@ -151,7 +146,6 @@ const AllStatsPage: ParentComponent = () => {
 								<div class="flex flex-col items-center justify-center">
 									<div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
 										<CompareButton />
-										{console.log("las")}
 										<For each={compOrder}>
 											{(comp) => (
 												<CompSelector
