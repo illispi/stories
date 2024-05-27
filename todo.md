@@ -10,7 +10,6 @@
 - Protected route redirect
 - Only stats page really needs scroll restoration so you could use hash tags
 - Add width to imgs CLS
-- Compare main page => back fails
 
 ## Notes
 

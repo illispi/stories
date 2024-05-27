@@ -40,6 +40,7 @@ const Home: Component = () => {
 						<picture>
 							<source srcset={first} />
 							<img
+								width={300}
 								class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
 								src={firstOg}
 								alt="poll"
@@ -49,6 +50,7 @@ const Home: Component = () => {
 						<picture>
 							<source srcset={second} />
 							<img
+								width={300}
 								class="max-h-96 rounded-3xl border border-fuchsia-400 shadow-fuchsia-400 shadow-lg"
 								src={secondOg}
 								alt="poll"
@@ -62,6 +64,7 @@ const Home: Component = () => {
 								src={thirdOg}
 								alt="poll"
 								sizes="1006px"
+								width={1006}
 							/>
 						</picture>
 					</div>
