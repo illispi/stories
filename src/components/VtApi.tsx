@@ -25,7 +25,7 @@ const VtApi: ParentComponent = (props) => {
 				if (!check) {
 					document.documentElement.classList.add("slide");
 					const transition = document.startViewTransition(() => {
-						event.retry(true);
+						event.retry();
 					});
 
 					transition.finished.finally(() => {
@@ -33,7 +33,7 @@ const VtApi: ParentComponent = (props) => {
 						document.documentElement.classList.remove("slide");
 					});
 				} else {
-					event.retry(true);
+					event.retry();
 					isTransitionNavigate = false;
 				}
 			}
