@@ -33,7 +33,6 @@ const VtApi: ParentComponent = (props) => {
 						document.documentElement.classList.remove("slide");
 					});
 				} else {
-					event.retry();
 					isTransitionNavigate = false;
 				}
 			}
