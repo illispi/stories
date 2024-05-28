@@ -23,16 +23,15 @@ const VtApi: ParentComponent = (props) => {
 					: event.to.toString().includes("/?nav");
 
 				if (!check) {
-					document.documentElement.classList.add("slide");
 					const transition = document.startViewTransition(() => {
 						event.retry();
 					});
 
 					transition.finished.finally(() => {
 						isTransitionNavigate = false;
-						document.documentElement.classList.remove("slide");
 					});
 				} else {
+					event.retry();
 					isTransitionNavigate = false;
 				}
 			}
