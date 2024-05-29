@@ -61,7 +61,7 @@ const Hamburger: Component<{
 	});
 
 	return (
-		<div>
+		<div class="headerSlide">
 			<div class="relative flex h-12 w-12 items-center justify-center">
 				<button
 					type="button"
@@ -113,7 +113,7 @@ const Hamburger: Component<{
 			</div>
 
 			<div
-				class="headerSlide fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				class=" fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
 					"opacity-0 invisible": !searchParams.nav,
 					"visible, opacity-40": searchParams.nav === "true",

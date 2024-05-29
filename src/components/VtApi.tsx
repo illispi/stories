@@ -20,7 +20,7 @@ const VtApi: ParentComponent = (props) => {
 
 				const check = Number.isInteger(event.to)
 					? false
-					: event.to.toString().includes("/?nav");
+					: event.to.toString().includes("nav=") || event.from.query.nav;
 
 				if (!check) {
 					const transition = document.startViewTransition(() => {
