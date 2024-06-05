@@ -3,7 +3,7 @@
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Show pending status on other and articles
-- Check that valibot still works v.0.31.x
+- Check that valibot still works v.0.31.x, if you update to this
 - Figure out how to exclude some routes and components on prod
 - index.md
 - editing for articles and their
@@ -13,7 +13,6 @@
 - Use vt api on submit for animations
 - Hash user and openid without salt
 - Test if current route includes to route then dont animate
-- Text pagination should be 1 to max and not 1 to 25 on each page
 
 ## Notes
 
