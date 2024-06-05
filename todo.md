@@ -3,7 +3,7 @@
 - Add cloudflare post request rate limiter
 - How to make better error page
 - Show pending status on other and articles
-- Check that valibot still works v.0.3
+- Check that valibot still works v.0.31.x
 - Figure out how to exclude some routes and components on prod
 - index.md
 - editing for articles and their

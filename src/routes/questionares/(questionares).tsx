@@ -26,7 +26,7 @@ const Questionares: Component = () => {
 					<InfoBox
 						header="Poll for relatives or someone familiar with people with schizophrenia"
 						link="Relative poll"
-						text="Answer questions about schizophrenics relatives perspective. Estimated completion time is 7 minutes"
+						text="Answer questions from schizophrenics relatives perspective. Estimated completion time is 7 minutes"
 						route={route("/questionares/:personalQuestions", {
 							personalQuestions: "theirQuestions",
 						})}
