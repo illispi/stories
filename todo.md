@@ -10,6 +10,10 @@
 - Protected route redirect
 - Only stats page really needs scroll restoration so you could use save scroll pos, see router.ts astro transitions
 - Figure out why bell and login status sometimes needs refresh, doesnt seem to happen on build version
+- Use vt api on submit for animations
+- Hash user and openid without salt
+- Test if current route includes to route then dont animate
+- Text pagination should be 1 to max and not 1 to 25 on each page
 
 ## Notes
 
