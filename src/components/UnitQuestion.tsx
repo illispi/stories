@@ -353,9 +353,10 @@ export const UnitQuestion: ParentComponent<{
 			<Match when={questionType === "selection"}>
 				<Box question={question}>
 					<div
-						class={`flex flex-col items-center justify-end${
-							questionDB === "current_med" ? "mt-20" : ""
-						}`}
+						class={clsx(
+							"flex flex-col items-center justify-end",
+							questionDB === "current_med" ? "mt-20" : "",
+						)}
 					>
 						<For each={selections} fallback={<div>No selection found</div>}>
 							{(v) => (
