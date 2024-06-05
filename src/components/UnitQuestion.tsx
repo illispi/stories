@@ -145,7 +145,7 @@ export const UnitQuestion: ParentComponent<{
 
 		sendStats.mutate({
 			...questionsLs,
-			systemMetric: JSON.parse(localStorage.getItem("system") ?? '"true"'),
+			systemMetric: JSON.parse(localStorage.getItem("system") ?? true),
 		});
 	};
 
@@ -353,9 +353,10 @@ export const UnitQuestion: ParentComponent<{
 			<Match when={questionType === "selection"}>
 				<Box question={question}>
 					<div
-						class={`flex flex-col items-center justify-end${
-							questionDB === "current_med" ? "mt-20" : ""
-						}`}
+						class={clsx(
+							"flex flex-col items-center justify-end",
+							questionDB === "current_med" ? "mt-20" : "",
+						)}
 					>
 						<For each={selections} fallback={<div>No selection found</div>}>
 							{(v) => (
@@ -618,7 +619,7 @@ export const UnitQuestion: ParentComponent<{
 			<Match when={questionType === "submit"}>
 				<Box question={question}>
 					<Show
-						when={authQuery.data}
+						when={authQuery.data?.user}
 						fallback={
 							<div class="flex w-11/12 flex-col items-center justify-center gap-6">
 								<h3 class="text-center font-semibold text-lg">

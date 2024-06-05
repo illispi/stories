@@ -90,13 +90,13 @@ const StatsText = () => {
 								setFilter(false);
 								document.body.style.overflow = "auto";
 							}}
-							class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
+							class="fixed top-0 left-0 flex h-screen w-screen items-center justify-center bg-black opacity-40"
 						/>
 
-						<div class="absolute flex -translate-x-1/2 flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-5 pt-8 opacity-100">
-							<div class="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2">
+						<div class="-translate-x-1/2 absolute flex flex-col items-center justify-center rounded-3xl border-2 bg-blue-50 p-5 pt-8 opacity-100">
+							<div class="-translate-y-1/2 absolute top-0 right-0 translate-x-1/2">
 								<CustomButton
-									class="bg-red-600 p-2 text-center hover:bg-red-900 active:bg-red-900"
+									class="bg-red-600 p-2 text-center active:bg-red-900 hover:bg-red-900"
 									onClick={() => {
 										setFilter(false);
 										document.body.style.overflow = "auto";
@@ -176,7 +176,7 @@ const StatsText = () => {
 									setFilter(false);
 									document.body.style.overflow = "auto";
 								}}
-								class={"bg-green-500 hover:bg-green-600 active:bg-green-600"}
+								class={"bg-green-500 active:bg-green-600 hover:bg-green-600"}
 							>
 								Filter
 							</CustomButton>
@@ -230,7 +230,9 @@ const StatsText = () => {
 											{(stat, i) =>
 												stat ? (
 													<div class="flex w-full max-w-xs flex-col items-center justify-center md:max-w-prose ">
-														<h5 class="m-2 my-8 font-bold">{i() + 1}.</h5>
+														<h5 class="m-2 my-8 font-bold">
+															{i() + 1 + page() * 25}.
+														</h5>
 														<p class="m-8 w-full">{stat?.[params.statsText]}</p>
 														<h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
 													</div>
