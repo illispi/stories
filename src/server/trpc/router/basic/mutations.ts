@@ -12,6 +12,7 @@ export const postPersonalStats = userProcedure
 		const existsAlready = await ctx.db
 			.selectFrom("Personal_questions")
 			.selectAll()
+			.where("user", "=", ctx.user.id)
 			.executeTakeFirst();
 
 		if (existsAlready) {

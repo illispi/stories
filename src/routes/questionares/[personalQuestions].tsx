@@ -1,32 +1,29 @@
-import { createEffect, createSignal, Show, Suspense } from "solid-js";
+import {
+	A,
+	cache,
+	createAsync,
+	useParams,
+	type RouteDefinition,
+} from "@solidjs/router";
+import { route as routeGen } from "routes-gen";
 import type { ParentComponent, Setter } from "solid-js";
+import { createEffect, createSignal, Show, Suspense } from "solid-js";
+import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
+import { ModalOptions } from "~/components/ModalOptions";
+import TransitionFade from "~/components/TransitionFade";
+import { UnitQuestion } from "~/components/UnitQuestion";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
-import { UnitQuestion } from "~/components/UnitQuestion";
-import { Transition } from "solid-transition-group";
-import { ModalOptions } from "~/components/ModalOptions";
-import TransitionFade from "~/components/TransitionFade";
-import { route as routeGen } from "routes-gen";
-import { trpc } from "~/utils/trpc";
-import {
-	A,
-	cache,
-	type RouteDefinition,
-	useParams,
-	createAsync,
-} from "@solidjs/router";
 import { db } from "~/server/db";
-import { validateSession } from "~/server/trpc/context";
 import { userLoader } from "~/server/loader/userLoader";
 
 const fetchUser = cache(async () => {
 	"use server";
 
-
-	const user = await userLoader()
+	const user = await userLoader();
 
 	if (user) {
 		const unSafe = await db
@@ -211,7 +208,6 @@ const PersonalQuestions: ParentComponent = () => {
 	return (
 		<div class="flex h-screen w-full flex-col items-center justify-start">
 			<Suspense
-				// when={!session.loading}
 				fallback={
 					<div class="flex h-screen w-full flex-col items-center justify-center">
 						<div class="animate-ping">
@@ -225,6 +221,7 @@ const PersonalQuestions: ParentComponent = () => {
 									fill="currentColor"
 									d="m11 12.2l-.9-.9q-.275-.275-.7-.275t-.7.275q-.275.275-.275.7t.275.7l2.6 2.6q.3.3.7.3t.7-.3l2.6-2.6q.275-.275.275-.7t-.275-.7q-.275-.275-.7-.275t-.7.275l-.9.9V9q0-.425-.288-.713T12 8q-.425 0-.713.288T11 9v3.2Zm1 9.8q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22Z"
 								/>
+								<title>ping animation</title>
 							</svg>
 						</div>
 					</div>
@@ -304,13 +301,13 @@ const PersonalQuestions: ParentComponent = () => {
 						}
 						fallback={
 							<div class="flex h-screen w-full flex-col items-center justify-center">
-								<div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:p-16">
+								<div class="flex w-11/12 max-w-2xl flex-col items-center justify-center gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 									<h2 class="m-8 text-lg">
 										You have already submitted personal poll!
 									</h2>
 									<A
 										href={routeGen("/user/data")}
-										class="rounded-full border border-fuchsia-600 bg-white p-4 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+										class="rounded-full border border-fuchsia-600 bg-white p-4 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl "
 									>
 										See status of it
 									</A>
