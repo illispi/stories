@@ -5,6 +5,9 @@ dist
 .netlify
 netlify
 
+# Seems to fail in GH actions
+bun.lockb
+
 # dependencies
 /node_modules
 

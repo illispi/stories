@@ -8,7 +8,7 @@
 - index.md
 - editing for articles and their
 - Protected route redirect
-- Only stats page really needs scroll restoration so you could use hash tags
+- Only stats page really needs scroll restoration so you could use save scroll pos, see router.ts astro transitions
 - Figure out why bell and login status sometimes needs refresh, doesnt seem to happen on build version
 
 ## Notes
