@@ -2,17 +2,20 @@
 
 - Add cloudflare post request rate limiter
 - How to make better error page
-- Show pending status on other and articles
 - Check that valibot still works v.0.31.x, if you update to this
 - Figure out how to exclude some routes and components on prod
 - index.md
-- editing for articles and their
 - Protected route redirect
 - Only stats page really needs scroll restoration so you could use save scroll pos, see router.ts astro transitions
 - Figure out why bell and login status sometimes needs refresh, doesnt seem to happen on build version
 - Use vt api on submit for animations
 - Hash user and openid without salt
 - Test if current route includes to route then dont animate
+
+## Current todo:
+
+- editing for articles and their
+- Show pending status on other and articles
 
 ## Notes
 
