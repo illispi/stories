@@ -11,11 +11,14 @@
 - Use vt api on submit for animations
 - Hash user and openid without salt
 - Test if current route includes to route then dont animate
+- Add crossfade on menu -> navigation
+- Cast to lower case on server during registration
 
 ## Current todo:
 
 - editing for articles and their
 - Show pending status on other and articles
+- System metric is missing in editPersonal
 
 ## Notes
 
