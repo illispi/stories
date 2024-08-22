@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_DISCORD_CLIENT_ID: 1122801938703065108
-      VITE_AUTH_URL: https://stories.delvis.org
-      VITE_SITE: https://stories.delvis.org
+      VITE_AUTH_URL: https://poll.delvis.org
+      VITE_SITE: https://poll.delvis.org
 
     steps:
       # Checkout to the repository
