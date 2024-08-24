@@ -25,7 +25,7 @@ export default function App() {
 	if (import.meta.env.PROD) {
 		//NOTE update sentry sourcemaps https://docs.sentry.io/platforms/javascript/guides/solid/
 		Sentry.init({
-			dsn: "https://09e78b39946f40fca743b5dfee2f9871@glitchtip.delvis.org/1",
+			dsn: "https://3a32bedf009e401cbf2249d2b82e97bb@glitchtip.delvis.org/1",
 			// integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
 			// Set tracesSampleRate to 1.0 to capture 100%
@@ -46,7 +46,7 @@ export default function App() {
 	if (!isServer && import.meta.env.PROD) {
 		createScriptLoader({
 			src: "https://umami.delvis.org/script.js",
-			"data-website-id": "cbdde5c6-7ae6-4d53-9f16-cf558c6110bd",
+			"data-website-id": "77657924-9c0f-47e6-9bd1-a282a883c2c9",
 			async: true,
 		});
 	}
