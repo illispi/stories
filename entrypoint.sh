@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ls && npm run migrate:latest && node ./output/server/index.mjs
+ls && npm run migrate:latest && npm run build && npm run start

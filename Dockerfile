@@ -7,9 +7,7 @@ COPY . .
 
 RUN npm install --force
 
-RUN npm run build
-
-COPY . .
+# RUN npm run build
 
 RUN chmod +x ./entrypoint.sh
 
