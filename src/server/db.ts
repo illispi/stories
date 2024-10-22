@@ -6,10 +6,10 @@ const { Pool } = pkg;
 //import { Pool } from "pg";
 
 export const pool = new Pool({
-	host: env.PSQL_HOST,
-	database: env.PSQL_DATABASE,
-	password: env.PSQL_PASSWORD,
-	user: env.PSQL_USERNAME,
+	host: process.env.PSQL_HOST,
+	database: process.env.PSQL_DATABASE,
+	password: process.env.PSQL_PASSWORD,
+	user: process.env.PSQL_USERNAME,
 	port: 5432,
 });
 
