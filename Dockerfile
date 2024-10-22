@@ -9,6 +9,8 @@ RUN npm install --force
 
 RUN npm run build
 
+COPY . .
+
 RUN chmod +x ./entrypoint.sh
 
 ENV NODE_ENV=production
