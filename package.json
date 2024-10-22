@@ -9,15 +9,16 @@
 		"dev-node": "vinxi dev --host",
 		"build-node": "vinxi build",
 		"start-node": "vinxi start",
-		"migrate:latest": "bun ./src/utils/migrate.ts",
-		"migrate:down": "bun ./src/utils/migrate.ts down",
-		"new:migration": "bun ./src/utils/migrationFilename.ts",
-		"routes": "bun routes-gen -d @routes-gen/solid-start",
-		"sql-types": "bun kysely-codegen --dialect postgres"
+		"migrate:latest": "tsx ./src/utils/migrate.ts",
+		"migrate:down": "tsx ./src/utils/migrate.ts down",
+		"new:migration": "tsx ./src/utils/migrationFilename.ts",
+		"routes": "tsx routes-gen -d @routes-gen/solid-start",
+		"sql-types": "tsx kysely-codegen --dialect postgres"
 	},
 	"type": "module",
 	"devDependencies": {
 		"@faker-js/faker": "^9.0.3",
+		"@routes-gen/solid-start": "^0.1.1",
 		"@types/node": "22.7.3",
 		"@types/pg": "^8.11.10",
 		"autoprefixer": "^10.4.20",
@@ -26,13 +27,13 @@
 		"kysely-codegen": "^0.16.8",
 		"postcss": "^8.4.47",
 		"rollup-plugin-visualizer": "^5.12.0",
+		"routes-gen": "^0.6.1",
 		"solid-devtools": "^0.30.1",
 		"tailwindcss": "^3.4.13",
+		"tsx": "^4.19.1",
 		"typescript": "^5.6.2",
 		"vite": "^5.4.8",
-		"vite-imagetools": "^7.0.4",
-		"routes-gen": "^0.6.1",
-		"@routes-gen/solid-start": "^0.1.1"
+		"vite-imagetools": "^7.0.4"
 	},
 	"dependencies": {
 		"@lucia-auth/adapter-postgresql": "^3.1.2",
