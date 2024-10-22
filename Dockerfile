@@ -1,13 +1,13 @@
-FROM oven/bun:1 AS build
+FROM node:22-alpine AS base
 
 
 WORKDIR /app
 
 COPY . .
 
-RUN bun install
+RUN npm ci --force
 
-RUN bun run build
+RUN npm run build
 
 RUN chmod +x ./entrypoint.sh
 
