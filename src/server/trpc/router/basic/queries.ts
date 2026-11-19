@@ -153,19 +153,31 @@ export const allStats = publicProcedure
 
 			const responsesTotal: number = stats.length; //TODO use postgres count here
 
-			// NOTE: kept as before: for "schizoaffective" this reads schizophrenia rows and vice versa,
-			// and real data is not filtered by `accepted`. Check if that is intended.
-			const ageOfOnset = (gender: "male" | "female" | "other") =>
-				ctx.db
-					.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
+			// Age of onset per gender, for the selected diagnosis (no diagnosis filter for
+			// "all"/gender views). Real data only counts accepted submissions; fake tables
+			// have no `accepted` column.
+			const diagnosisFilter =
+				payload.value === "schizophrenia" || payload.value === "schizoaffective"
+					? payload.value
+					: null;
+
+			const ageOfOnset = (gender: "male" | "female" | "other") => {
+				if (payload.fake === "fake") {
+					let q = ctx.db
+						.selectFrom(`${payload.pOrT}_fake`)
+						.select(["age_of_onset"])
+						.where("gender", "=", gender);
+					if (diagnosisFilter) q = q.where("diagnosis", "=", diagnosisFilter);
+					return q.execute();
+				}
+				let q = ctx.db
+					.selectFrom(payload.pOrT)
 					.select(["age_of_onset"])
 					.where("gender", "=", gender)
-					.where(
-						"diagnosis",
-						"=",
-						payload.value === "schizoaffective" ? "schizophrenia" : "schizoaffective",
-					)
-					.execute();
+					.where("accepted", "=", true);
+				if (diagnosisFilter) q = q.where("diagnosis", "=", diagnosisFilter);
+				return q.execute();
+			};
 
 			const maleAge = await ageOfOnset("male");
 			const femaleAge = await ageOfOnset("female");
