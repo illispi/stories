@@ -22,7 +22,11 @@ export default defineConfig({
 			DISCORD_CLIENT_ID: envField.string({ context: "server", access: "secret" }),
 			DISCORD_CLIENT_SECRET: envField.string({ context: "server", access: "secret" }),
 			PUBLIC_SITE: envField.string({ context: "client", access: "public", default: "https://poll.delvis.org" }),
-			PUBLIC_UMAMI_ID: envField.string({ context: "client", access: "public", optional: true }),
+			PUBLIC_UMAMI_ID: envField.string({
+				context: "client",
+				access: "public",
+				default: "77657924-9c0f-47e6-9bd1-a282a883c2c9",
+			}),
 			PUBLIC_SENTRY_DSN: envField.string({
 				context: "client",
 				access: "public",

@@ -1,3 +1,23 @@
+# pnpm 11 reads its settings from this file (not from package.json).
+
+# Packages allowed to run install scripts
 allowBuilds:
-  esbuild: set this to true or false
-  sharp: set this to true or false
+  esbuild: true
+  sharp: true
+
+# Security floors from the Nov 2026 audit. Remove an entry once `pnpm why <pkg>`
+# shows upstream already depends on a fixed version.
+overrides:
+  "seroval": "^1.6.8"
+  "brace-expansion@1": "^1.1.21"
+  "brace-expansion@2": "^2.1.7"
+  "minimatch@3": "^3.1.4"
+  "minimatch@5": "^5.1.8"
+  "nanoid@3": "^3.3.18"
+  "picomatch@2": "^2.3.2"
+  "picomatch@4": "^4.0.4"
+  "js-yaml@4": "^4.3.2"
+  "browserslist": "^4.28.7"
+  "cross-spawn@7": "^7.0.5"
+  "source-map-js": "^1.2.2"
+  "git-diff": "^2.0.7"

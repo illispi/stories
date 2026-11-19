@@ -1,3 +1,6 @@
 #!/bin/sh
+set -e
 
-ls && npm run migrate:latest && npm run build && npm run start
+# Apply pending database migrations, then start the Astro server
+node ./src/utils/migrate.ts
+exec node ./dist/server/entry.mjs

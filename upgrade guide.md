@@ -12,6 +12,35 @@ This guide covers four things that are done together:
 
 ---
 
+## Status (2026-11-20): migration done on branch `astro-migration`
+
+Stages 1 to 3 are implemented and were tested in the browser against a local database.
+Where the implementation differs from the plan below, the implementation wins:
+
+| Topic | Plan below | What was actually done |
+|---|---|---|
+| Runtime | Node 22.12+ / 24 | **Node 26** (LTS since Oct 2026), `engines: >=26`, Docker `node:26-alpine` |
+| Package manager | pnpm, overrides in `package.json` | **pnpm 11**: overrides and `allowBuilds` live in `pnpm-workspace.yaml` (pnpm 11 ignores the `pnpm` field in `package.json`) |
+| Migrations | `tsx` | Node's built-in TypeScript type stripping (`node src/utils/migrate.ts`); `tsx` removed |
+| Validation | Drop zod, valibot only | **zod 4** kept for poll schemas and tRPC inputs; valibot 1 for the client forms |
+| Forms | — | `@modular-forms/solid` 0.25.1 (0.24.1 was built against a valibot beta) |
+| tRPC client | Rewrite call sites | Small shim (`src/utils/trpc.ts`) keeps the old `createQuery`/`createMutation`/`useContext` API |
+| Router APIs | Rewrite components | Small shims (`src/utils/router.tsx`, `src/utils/routes.ts`) |
+| Auth | GitHub/Reddit + Discord | **Discord only**, `identify` scope, synthetic emails, no IP / user agent / OAuth tokens stored, no cookie cache |
+| Rate limiting | Better Auth | **Cloudflare WAF**; Better Auth rate limiting off (§4.7) |
+| Sentry | `@sentry/astro` | `@sentry/browser` initialised in the layout (same GlitchTip DSN) |
+| Tailwind | Tailwind 4 | **Still Tailwind 3** (optional follow-up) |
+| Timestamps | — | New migration converts poll/article `created_at`/`updated_at` to `timestamptz` |
+
+Bugs found and fixed along the way (pre-existing): `markRead` marked every user's notifications
+as read; `editTheir` updated all of a user's rows; editing personal poll data never worked;
+`textPagination` let the client select any column (e.g. `user`); admin article list crashed when
+empty and its count was always 1; age-of-onset stats used the wrong diagnosis and unaccepted rows.
+
+Still open: Dependabot/Renovate, Tailwind 4, and Cloudflare (Tunnel/firewall + WAF rules) on the server.
+
+---
+
 ## 0. TL;DR checklist
 
 - [ ] Create branch `astro-migration`

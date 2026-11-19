@@ -1,33 +1,22 @@
-node_modules/*
-npm-debug.log
-.git
-
-
+# Dependencies and build output are produced inside the image
+node_modules
 dist
-.solid
-.output
-.vercel
-.netlify
-netlify
-.vinxi
+.astro
 
-# Environment
+# Secrets and local files
 .env
-.env*.local
+.env.*
+!.env.example
+audit.json
+check.txt
+*.log
 
-# dependencies
-/node_modules
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-*.launch
-.settings/
-
-# Temp
-gitignore
-
-# System Files
-.DS_Store
-Thumbs.db
+# Not needed in the image
+.git
+.github
+.vscode
+legacy
+markdowns
+upgrade guide.md
+README.MD
+todo.md
