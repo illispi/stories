@@ -25,16 +25,17 @@ const Box: ParentComponent = (props) => {
 	);
 };
 
-/** Optional free-text answer: blank -> null (answer removed), otherwise 4-600 characters. */
-const optionalText = v.pipe(
-	v.optional(v.nullable(v.string())),
-	v.transform((text) => (text?.trim() ? text.trim() : null)),
-	v.nullable(
-		v.pipe(
-			v.string(),
-			v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
-			v.minLength(4, 'Your text is too short, even "okay" is enough'),
-		),
+/**
+ * A free-text answer. Only answers the user already gave are editable, and they can't be
+ * blanked: the server's poll schema requires them (some always, some depending on earlier
+ * answers). Unanswered questions aren't rendered, so their input stays undefined.
+ */
+const optionalText = v.optional(
+	v.pipe(
+		v.string(),
+		v.trim(),
+		v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
+		v.minLength(4, 'Your text is too short, even "okay" is enough'),
 	),
 );
 
@@ -117,6 +118,7 @@ const Page = () => {
 
 	const editPersonalMut = trpc.editPersonal.createMutation(() => ({
 		onSuccess: () => {
+			setPersonalEdit(false);
 			utils.invalidate();
 		},
 	}));
@@ -146,13 +148,16 @@ const Page = () => {
 	});
 
 	const handleEditPersonal: SubmitHandler<typeof PersonalFormSchema> = (values) => {
+		// Only send fields that were edited; undefined would drop the saved answer
+		const edited = Object.fromEntries(
+			Object.entries(values).filter(([, value]) => value !== undefined),
+		);
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
-			...values,
+			...edited,
 			systemMetric: true,
 		} as Parameters<typeof editPersonalMut.mutate>[0]);
-		setPersonalEdit(false);
 	};
 
 	return (
@@ -215,6 +220,7 @@ const Page = () => {
 								>
 									<CustomButton
 										onClick={() => {
+											editPersonalMut.reset();
 											setPersonalEdit(true);
 										}}
 									>
@@ -266,6 +272,11 @@ const Page = () => {
 													</Show>
 												)}
 											</For>
+											<Show when={editPersonalMut.isError}>
+												<p class="text-red-600">
+													Couldn't save your changes. Check your answers and try again.
+												</p>
+											</Show>
 											<CustomButton
 												disabled={editPersonalMut.isPending}
 												type="submit"
