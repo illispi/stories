@@ -1,11 +1,10 @@
 import { type Component } from "solid-js";
-import type { MainReturn } from "~/types/types";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
+import type { StatsData } from "~/types/types";
 
 export const Item: Component<{
 	name: string;
-	stat: keyof PersonalQuestions;
-	data: MainReturn | undefined;
+	stat: string;
+	data: StatsData | undefined;
 }> = (props) => {
 	return (
 		<div

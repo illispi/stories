@@ -132,7 +132,7 @@ export default BellNotification;
 
 const Notification: Component<{
 	seen: boolean;
-	time: Date;
+	time: Date | string; // dates arrive as ISO strings over tRPC (no transformer)
 	status: boolean | null;
 	name: string;
 }> = (props) => {

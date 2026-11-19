@@ -182,7 +182,7 @@ const Page = () => {
 												{(keys) => (
 													<>
 														<h4 class="w-full font-bold text-lg">{keys}</h4>
-														<p class="w-full">{article[keys]}</p>
+														<p class="w-full">{String((article as Record<string, unknown>)[keys] ?? "")}</p>
 													</>
 												)}
 											</For>
@@ -302,7 +302,7 @@ const Page = () => {
 										{(keys) => (
 											<>
 												<h4 class="w-full font-bold text-lg">{keys}</h4>
-												<p class="w-full">{entry[keys]}</p>
+												<p class="w-full">{String((entry as Record<string, unknown>)[keys] ?? "")}</p>
 											</>
 										)}
 									</For>
@@ -318,18 +318,18 @@ const Page = () => {
 							Back
 						</CustomButton>
 						<h5 class="font-bold text-lg">{`Page: ${page() + 1}/${
-							Math.floor(submissions.data?.total / 25) + 1
+							Math.floor((submissions.data?.total ?? 0) / 25) + 1
 						}`}</h5>
 
 						<CustomButton
 							class={
-								submissions.data?.total / ((page() + 1) * 25) <= 1
+								(submissions.data?.total ?? 0) / ((page() + 1) * 25) <= 1
 									? "invisible"
 									: ""
 							}
 							onClick={() =>
 								setPage((prev) =>
-									submissions.data?.total / ((prev + 1) * 25) <= 1
+									(submissions.data?.total ?? 0) / ((prev + 1) * 25) <= 1
 										? prev
 										: prev + 1,
 								)

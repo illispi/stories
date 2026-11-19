@@ -11,7 +11,7 @@ interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
 	height?: string;
 }
 
-const BarChartCustomtest = (props) => {
+const BarChartCustomtest = (_props: { options?: Adds }) => {
 	let bar: BarChart;
 	const id = 1;
 
@@ -42,7 +42,6 @@ const BarChartCustomtest = (props) => {
 	return (
 		<Suspense>
 			<div>
-				{console.log("before")}
 				<div class="flex w-full flex-col items-center justify-center h-64">
 					<div class={`h-64 w-full lg:w-11/12`} id={`chartBar1`} />
 				</div>

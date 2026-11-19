@@ -1,13 +1,12 @@
 import { type Component, Show } from "solid-js";
-import { type PersonalQuestions } from "~/types/zodFromTypes";
-import { type MainReturn } from "~/types/types";
+import type { StatsData } from "~/types/types";
 import { selector } from "~/utils/functions";
 import PieChartCustom from "./PieChartCustom";
 
 export const DoughnutComponent: Component<{
-  data: MainReturn | undefined;
+  data: StatsData | undefined;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: string;
   function:
     | "dataSelection"
     | "dataOnset"

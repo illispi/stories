@@ -2,6 +2,10 @@ import type { AxisOptions, BarChartOptions } from "chartist";
 import type { PersonalQuestions, TheirQuestions } from "./zodFromTypes";
 
 export type ChartType = "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
+/** Stats returned by allStats, indexed dynamically by question key in the chart components. */
+// biome-ignore lint/suspicious/noExplicitAny: shape depends on the question type
+export type StatsData = Record<string, any>;
+
 export type StatKey = keyof PersonalQuestions | keyof TheirQuestions | keyof MainReturn;
 
 export interface ChartistData {

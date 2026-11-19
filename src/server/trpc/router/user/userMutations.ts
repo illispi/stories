@@ -1,5 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
+
+/** `systemMetric` is a form-only field, not a DB column. */
+const withoutSystemMetric = <T extends { systemMetric?: boolean }>({ systemMetric: _systemMetric, ...rest }: T) => rest;
 import { z } from "zod";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 
@@ -78,7 +81,7 @@ export const editPersonal = userProcedure
 	.mutation(async ({ ctx, input }) => {
 		const updated = await ctx.db
 			.updateTable("Personal_questions")
-			.set({ ...input, updated_at: new Date(), accepted: null })
+			.set({ ...withoutSystemMetric(input), updated_at: new Date(), accepted: null })
 			.where("user", "=", ctx.user.id)
 			.executeTakeFirst();
 

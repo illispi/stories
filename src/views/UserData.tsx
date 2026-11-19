@@ -202,13 +202,11 @@ const Page = () => {
 
 	createEffect(() => {
 		if (personalDataQuery.data) {
-			const arrKeys = Object.keys(headers);
-			const initial = Object.fromEntries(
-				arrKeys
-					.filter((e) => personalDataQuery.data?.[e])
-					.map((k) => [k, personalDataQuery.data?.[k]]),
-			);
-			arrKeys.forEach((e) => setValue(personalForm, e, initial?.[e]));
+			const data = personalDataQuery.data as Record<string, unknown>;
+			const arrKeys = Object.keys(headers) as (keyof PersonalForm)[];
+			for (const key of arrKeys) {
+				setValue(personalForm, key, (data[key] as string | null | undefined) || undefined);
+			}
 		}
 	});
 
@@ -216,7 +214,12 @@ const Page = () => {
 		values,
 		event,
 	) => {
-		editPersonalMut.mutate({ ...personalDataQuery.data, ...values });
+		// systemMetric is a form-only field: stored weights are already in kg
+		editPersonalMut.mutate({
+			...personalDataQuery.data,
+			...values,
+			systemMetric: true,
+		} as Parameters<typeof editPersonalMut.mutate>[0]);
 		setPersonalEdit(false);
 	};
 
@@ -315,7 +318,7 @@ const Page = () => {
 														<h2 class="font-bold text-2xl lg:text-3xl">
 															{headers[el]}
 														</h2>
-														<Field name={el}>
+														<Field name={el as keyof PersonalForm}>
 															{(field, props) => (
 																<>
 																	<textarea
@@ -325,7 +328,7 @@ const Page = () => {
 																		rows={8}
 																		required
 																		autocomplete="off"
-																		value={field.value}
+																		value={field.value ?? ""}
 																	/>
 																	{field.error && <div>{field.error}</div>}
 																</>
@@ -337,7 +340,7 @@ const Page = () => {
 											<CustomButton
 												disabled={editPersonalMut.isPending}
 												onClick={() => {
-													Object.keys(headers).forEach((e) => {
+													(Object.keys(headers) as (keyof PersonalForm)[]).forEach((e) => {
 														setValue(
 															personalForm,
 															e,

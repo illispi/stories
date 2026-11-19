@@ -6,13 +6,14 @@ import { Show, createEffect, createUniqueId, onCleanup } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import "../styles/index.css";
 
-interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
+export interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
   height?: string;
 }
 
 const BarChartCustom: Component<{
-  data: ChartistData | undefined;
+  data: ChartistData | null | undefined;
   options?: Adds;
+  ref?: Element;
   shown?: Element[];
   removeShown?: (el: Element) => void;
 }> = (props) => {
@@ -22,7 +23,7 @@ const BarChartCustom: Component<{
 
   createEffect(() => {
     if (props.shown?.includes(ref) && !bar && props.data) {
-      props.removeShown(ref);
+      props.removeShown?.(ref);
       bar = new BarChart(
         `#chartBar${id}`,
         {
@@ -59,9 +60,9 @@ const BarChartCustom: Component<{
             ref={mergeRefs(props.ref, (el) => (ref = el))}
             class={`h-64 w-full lg:w-11/12 ${!props.data ? "hidden" : ""}`}
             classList={{
-              "h-[350px]": props.data?.labels?.length > 2,
-              "h-[450px]": props.data?.labels?.length > 3,
-              "h-[550px]": props.data?.labels?.length > 4,
+              "h-[350px]": (props.data?.labels?.length ?? 0) > 2,
+              "h-[450px]": (props.data?.labels?.length ?? 0) > 3,
+              "h-[550px]": (props.data?.labels?.length ?? 0) > 4,
             }}
             id={`chartBar${id}`}
           />

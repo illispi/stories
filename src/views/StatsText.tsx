@@ -234,7 +234,7 @@ const StatsText = () => {
 														<h5 class="m-2 my-8 font-bold">
 															{i() + 1 + page() * 25}.
 														</h5>
-														<p class="m-8 w-full">{stat?.[params.statsText]}</p>
+														<p class="m-8 w-full">{String((stat as Record<string, unknown>)[params.statsText] ?? "")}</p>
 														<h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
 													</div>
 												) : null

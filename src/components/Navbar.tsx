@@ -9,11 +9,11 @@ import { trpc } from "~/utils/trpc";
 import BellNotification from "./BellNotification";
 import "../app.css";
 
-const MenuItem: Component<{ route: string; content: string }> = (props) => {
+const MenuItem: Component<{ route: string; content: string; class?: string }> = (props) => {
 	return (
 		<>
 			<A
-				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class}`}
+				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class ? ` ${props.class}` : ""}`}
 				href={props.route}
 			>
 				{props.content}
@@ -41,7 +41,7 @@ const Hamburger: Component<{
 		});
 		if (window.performance.getEntriesByType && !reloaded()) {
 			if (
-				window.performance.getEntriesByType("navigation")[0].type === "reload"
+				(window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type === "reload"
 			) {
 				setReloaded(true);
 				if (searchParams.nav === "true") {

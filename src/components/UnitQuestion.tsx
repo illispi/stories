@@ -3,7 +3,9 @@ import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
-import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
+/** Poll answers in localStorage, keyed by question (personal or relative poll). */
+// biome-ignore lint/suspicious/noExplicitAny: values depend on the question type
+type Answers = Record<string, any>;
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
@@ -67,7 +69,7 @@ export const UnitQuestion: ParentComponent<{
 	const { question, questionDB, questionType, selections, multiSelect, skip } =
 		props.content;
 
-	const questionsLs: PersonalQuestions | TheirQuestions = JSON.parse(
+	const questionsLs: Answers = JSON.parse(
 		localStorage.getItem(props.LsName) ?? "{}",
 	);
 
@@ -80,13 +82,13 @@ export const UnitQuestion: ParentComponent<{
 				(acc, curr) => (
 					curr in questionsLs && (acc[curr] = questionsLs[curr] as boolean), acc
 				),
-				{} as Record<keyof PersonalQuestions, boolean>,
+				{} as Record<string, boolean>,
 			);
 
 		if (Object.keys(selectionsObj ? selectionsObj : {}).length === 0) {
 			const allFalse = multiSelect?.reduce(
 				(acc, curr) => ((acc[curr[0]] = false), acc),
-				{} as Record<keyof PersonalQuestions, boolean>,
+				{} as Record<string, boolean>,
 			);
 
 			return allFalse;
@@ -96,10 +98,10 @@ export const UnitQuestion: ParentComponent<{
 
 	//NOTE removed lazy inits in solid see old react code
 
-	const [number, setNumber] = createSignal(valueOfLS as string);
+	const [number, setNumber] = createSignal<string | null>(valueOfLS as string);
 	const [text, setText] = createSignal(valueOfLS as string);
 	const [error, setError] = createSignal<string | null>(null);
-	const [multiSelections, setMultiSelections] = createSignal(multiSelInit());
+	const [multiSelections, setMultiSelections] = createSignal<Record<string, boolean>>(multiSelInit() ?? {});
 	const [yesOrNO, setYesOrNO] = createSignal(valueOfLS as boolean);
 	const [selection, setSelection] = createSignal(valueOfLS as string);
 	const [metric, setMetric] = createSignal<boolean>(
@@ -107,13 +109,13 @@ export const UnitQuestion: ParentComponent<{
 	);
 
 	const submitResults = () => {
-		(Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(
+		(Object.keys(questionsLs) as Array<string>).forEach(
 			(e) => {
 				if (
 					questions.find((el) => el.questionDB === e)?.questionType ===
 					"integer"
 				) {
-					(questionsLs as unknown as Record<keyof PersonalQuestions, number>)[ //TODO this as unknown has to have something better
+					(questionsLs as unknown as Record<string, number>)[ //TODO this as unknown has to have something better
 						e
 					] = Number(questionsLs[e]); //NOTE is this as number really good practice?
 				}
@@ -136,18 +138,18 @@ export const UnitQuestion: ParentComponent<{
 
 		sendStats.mutate({
 			...questionsLs,
-			systemMetric: JSON.parse(localStorage.getItem("system") ?? true),
+			systemMetric: JSON.parse(localStorage.getItem("system") ?? "true"),
 		});
 	};
 
 	const handleMultiSubmit = (
-		values: Record<keyof PersonalQuestions, boolean>,
+		values: Record<string, boolean>,
 	) => {
 		if (!values) {
 			return undefined; //TODO might need something better, this a null check
 		}
 		if (
-			(Object.keys(values) as Array<keyof PersonalQuestions>).filter(
+			(Object.keys(values) as Array<string>).filter(
 				(e) => values[e] === false,
 			).length === multiSelect?.map((e) => e[0]).length
 		) {
@@ -173,7 +175,7 @@ export const UnitQuestion: ParentComponent<{
 
 	const handleSubmit = (
 		value: {
-			[Property in keyof PersonalQuestions]?: boolean | number | string;
+			[property: string]: boolean | number | string | undefined;
 		},
 		skipAmount?: number,
 	) => {
@@ -199,7 +201,7 @@ export const UnitQuestion: ParentComponent<{
 			const LsExistsJunctions = localStorage.getItem(
 				`junctions_${props.LsName}`,
 			);
-			let junctions: Record<keyof PersonalQuestions, number> = LsExistsJunctions
+			let junctions: Record<string, number> = LsExistsJunctions
 				? JSON.parse(LsExistsJunctions)
 				: null;
 
@@ -274,10 +276,7 @@ export const UnitQuestion: ParentComponent<{
 	};
 
 	const handleNumber = (
-		e: Event & { submitter: HTMLElement } & {
-			currentTarget: HTMLFormElement;
-			target: Element;
-		},
+		e: SubmitEvent & { currentTarget: HTMLFormElement },
 	) => {
 		e.preventDefault();
 
@@ -318,10 +317,7 @@ export const UnitQuestion: ParentComponent<{
 	};
 
 	const handleText = (
-		e: Event & { submitter: HTMLElement } & {
-			currentTarget: HTMLFormElement;
-			target: Element;
-		},
+		e: SubmitEvent & { currentTarget: HTMLFormElement },
 	) => {
 		e.preventDefault();
 

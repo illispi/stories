@@ -1,14 +1,14 @@
 import type { Component } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
-import type { MainReturn } from "~/types/types";
+import type { ChartistData, StatsData } from "~/types/types";
 import PieChartCustom from "./PieChartCustom";
 
 export const YesOrNoComponent: Component<{
-	stat: keyof MainReturn;
+	stat: string;
 	header: string;
-	data: MainReturn | undefined;
+	data: StatsData | undefined;
 }> = (props) => {
-	const [qDAata, setQDAata] = createSignal(null);
+	const [qDAata, setQDAata] = createSignal<ChartistData | null>(null);
 
 	createEffect(() => {
 		if (props.data?.[props.stat]) {

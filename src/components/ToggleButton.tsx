@@ -7,7 +7,7 @@ interface Props extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
 const ToggleButton: Component<Props> = (props) => {
   return (
     <CustomButton
-      onClick={(e) => props.onClick(e)}
+      onClick={(e) => (props.onClick as ((e: MouseEvent) => void) | undefined)?.(e)}
       class={
         props.toggled
           ? `bg-blue-800 hover:bg-blue-900 active:bg-blue-900 focus:bg-blue-900`

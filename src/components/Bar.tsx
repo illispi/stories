@@ -1,15 +1,13 @@
-import type { AxisOptions, BarChartOptions } from "chartist";
 import { type Component, Show } from "solid-js";
-import type { MainReturn } from "~/types/types";
-import { type PersonalQuestions } from "~/types/zodFromTypes";
+import type { StatsData } from "~/types/types";
 import { selector } from "~/utils/functions";
-import BarChartCustom from "./BarChartCustom";
+import BarChartCustom, { type Adds } from "./BarChartCustom";
 
 export const BarComponent: Component<{
-  options?: BarChartOptions<AxisOptions, AxisOptions>;
-  data: MainReturn | undefined;
+  options?: Adds;
+  data: StatsData | undefined;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: string;
   function:
     | "dataSelection"
     | "dataOnset"

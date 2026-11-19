@@ -20,15 +20,26 @@ import { authClient } from "./auth-client";
 type Inputs = inferRouterInputs<IAppRouter>;
 type Outputs = inferRouterOutputs<IAppRouter>;
 type Err = TRPCClientErrorLike<IAppRouter>;
-// Extra solid-query options (placeholderData, enabled, onSuccess, …), loosely typed on purpose
-type Extra = Record<string, any>;
+// Extra solid-query options. The common ones are typed; anything else passes through.
+type QueryExtra<K extends keyof Outputs> = {
+	placeholderData?: Outputs[K] | null | ((prev: Outputs[K] | undefined) => Outputs[K] | undefined);
+	enabled?: boolean;
+	[option: string]: unknown;
+};
+type MutationExtra<K extends keyof Outputs> = {
+	onSuccess?: (data: Outputs[K], variables: Inputs[K]) => unknown;
+	onError?: (error: Err, variables: Inputs[K]) => unknown;
+	onSettled?: () => unknown;
+	[option: string]: unknown;
+};
+type Extra = Record<string, unknown>;
 
 type ProcedureShim<K extends keyof Outputs> = {
 	createQuery(
 		input?: () => Inputs[K] | undefined,
-		options?: () => Extra,
+		options?: () => QueryExtra<K>,
 	): CreateQueryResult<Outputs[K], Err>;
-	createMutation(options?: () => Extra): CreateMutationResult<Outputs[K], Err, Inputs[K]>;
+	createMutation(options?: () => MutationExtra<K>): CreateMutationResult<Outputs[K], Err, Inputs[K]>;
 };
 
 type Invalidator = { invalidate(): Promise<void> };

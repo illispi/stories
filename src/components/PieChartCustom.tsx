@@ -7,7 +7,7 @@ import type { ChartistData } from "../types/types";
 //BUG currently everytime trigger changes your run cEff on all components
 
 const PieChartCustom: Component<{
-  data: ChartistData | null;
+  data: ChartistData | null | undefined;
   labels?: boolean;
   shown?: Element[];
   yesOrNo?: boolean;
@@ -27,11 +27,11 @@ const PieChartCustom: Component<{
 
   createEffect(() => {
     if (!pie && props.shown?.includes(ref) && props.data) {
-      props.removeShown(ref);
+      props.removeShown?.(ref);
       pie = new PieChart(
         `#chartPie${id}`,
         {
-          series: props.data?.series,
+          series: props.data?.series as number[],
           labels: props.data?.labels,
         },
         {
@@ -83,7 +83,7 @@ const PieChartCustom: Component<{
         </div>
         <Show when={props.labels} fallback={null}>
           <div>
-            <For each={props.data.labels} fallback={<div>Error</div>}>
+            <For each={props.data?.labels} fallback={<div>Error</div>}>
               {(label, index) => (
                 <div class="flex items-center justify-start">
                   <div class={`${colors[index()]} mx-2 h-6 w-6`} />
