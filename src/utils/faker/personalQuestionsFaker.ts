@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { PersonalQuestions } from "~/types/zodFromTypes";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 export const createFakeDataPersonal = () => {
 	const hospitalized_on_first = faker.helpers.arrayElement([true, false]);

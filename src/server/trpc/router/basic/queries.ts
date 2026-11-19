@@ -2,7 +2,6 @@ import { z } from "zod";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
 import { publicProcedure } from "../../utils";
 
 // Only free-text answers may be paged through textPagination. Anything else
@@ -31,7 +30,7 @@ export const allStats = publicProcedure
 	)
 	.query(async ({ input: payload, ctx }) => {
 		{
-			let stats;
+			let stats: Record<string, any>[] = [];
 
 			const questions =
 				payload.pOrT === "Personal_questions"
@@ -154,44 +153,30 @@ export const allStats = publicProcedure
 
 			const responsesTotal: number = stats.length; //TODO use postgres count here
 
-			let maleAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "male");
+			// NOTE: kept as before: for "schizoaffective" this reads schizophrenia rows and vice versa,
+			// and real data is not filtered by `accepted`. Check if that is intended.
+			const ageOfOnset = (gender: "male" | "female" | "other") =>
+				ctx.db
+					.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
+					.select(["age_of_onset"])
+					.where("gender", "=", gender)
+					.where(
+						"diagnosis",
+						"=",
+						payload.value === "schizoaffective" ? "schizophrenia" : "schizoaffective",
+					)
+					.execute();
 
-			maleAge =
-				payload.value === "schizoaffective"
-					? await maleAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await maleAge.where("diagnosis", "=", "schizoaffective").execute();
-
-			let femaleAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "female");
-
-			femaleAge =
-				payload.value === "schizoaffective"
-					? await femaleAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await femaleAge
-							.where("diagnosis", "=", "schizoaffective")
-							.execute();
-
-			let otherAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "other");
-
-			otherAge =
-				payload.value === "schizoaffective"
-					? await otherAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await otherAge.where("diagnosis", "=", "schizoaffective").execute();
+			const maleAge = await ageOfOnset("male");
+			const femaleAge = await ageOfOnset("female");
+			const otherAge = await ageOfOnset("other");
 
 			const filterSensitive = stats.map((e: (typeof stats)[0]) => {
 				const { user, created_at, id, ...filtered } = e;
 				return filtered;
 			});
 
-			const automatic: MainReturn = {} as any;
+			const automatic: Record<string, any> = {};
 
 			questions.forEach((e) => {
 				if (e.questionType === "yesOrNo") {
@@ -286,7 +271,7 @@ export const allStats = publicProcedure
 						automatic.current_age = resBrackets;
 					}
 				} else if (e.questionType === "selection") {
-					const selections = {};
+					const selections: Record<string, number> = {};
 					e.selections?.forEach((i) => {
 						selections[i] = filterSensitive.filter(
 							(d) => d[e.questionDB] === i,
@@ -294,7 +279,7 @@ export const allStats = publicProcedure
 					});
 					automatic[e.questionDB] = selections;
 				} else if (e.questionType === "unknown") {
-					const selections = {};
+					const selections: Record<string, number> = {};
 					["yes", "no", "unknown"].forEach((i) => {
 						selections[i] = filterSensitive.filter(
 							(d) => d[e.questionDB] === i,
@@ -366,8 +351,8 @@ export const allStats = publicProcedure
       });
       automatic[e.questionDB] = selections; */
 
-			const lengthPsyFunc = (split) => {
-				const object = {};
+			const lengthPsyFunc = (split: { length_of_psychosis: string }[]) => {
+				const object: Record<string, number> = {};
 
 				const lengthSelections = questions
 					.find((q) => q.questionDB === "length_of_psychosis")
@@ -387,7 +372,7 @@ export const allStats = publicProcedure
 
 			automatic.total = responsesTotal;
 
-			return automatic;
+			return automatic as MainReturn;
 		}
 	});
 
@@ -403,15 +388,16 @@ export const textPagination = publicProcedure
 		}),
 	)
 	.query(async ({ input, ctx }) => {
-		const payload = { ...input, stat: input.stat as keyof PersonalQuestions };
+		const payload = input;
+		const { ref } = ctx.db.dynamic;
 		let statsQuery = ctx.db
 			.selectFrom(
 				payload.fake === "fake"
 					? `${payload.personalOrTheir}_fake`
 					: payload.personalOrTheir,
 			)
-			.select((eb) => [payload.stat, "gender", "diagnosis"])
-			.where(payload.stat, "is not", null);
+			.select([ref(payload.stat), "gender", "diagnosis"])
+			.where(ref(payload.stat), "is not", null);
 
 		if (payload.fake === "real") {
 			statsQuery = statsQuery.where("accepted", "=", true);
@@ -452,7 +438,7 @@ export const textPagination = publicProcedure
 					? `${payload.personalOrTheir}_fake`
 					: payload.personalOrTheir,
 			)
-			.select((eb) => eb.fn.count<number>(payload.stat).as("count"));
+			.select((eb) => eb.fn.count<number>(ref(payload.stat)).as("count"));
 
 		if (payload.fake === "real") {
 			lengthQuery = lengthQuery.where("accepted", "=", true);

@@ -51,11 +51,10 @@ export const listSubmissions = adminProcedure
     //BUG this might return undefined, should be returnin null in that case
 
 
-    const { countAll } = ctx.db.fn;
 
     const { count } = (await ctx.db
       .selectFrom(input.pOrT)
-      .select(countAll().as("count"))
+      .select(ctx.db.fn.countAll().as("count"))
       .where("accepted", "is", input.accepted)
       .executeTakeFirst()) ?? { count: 0 };
 

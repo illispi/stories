@@ -32,7 +32,7 @@ export const auth = betterAuth({
 				email: syntheticEmail("discord", profile.id),
 				emailVerified: false,
 				name: "",
-				image: null,
+				image: undefined, // overrides the Discord avatar URL
 			}),
 		},
 	},
@@ -128,3 +128,5 @@ export const auth = betterAuth({
 });
 
 export type AuthSession = typeof auth.$Infer.Session;
+// `role` comes from user.additionalFields; spelled out so it is typed even if inference changes.
+export type AuthUser = AuthSession["user"] & { role?: string | null };

@@ -1,4 +1,6 @@
-import { AgeOfOnsetByGender, Gender, MainReturn } from "~/types/types";
+import type { AgeOfOnsetByGender, Gender, MainReturn } from "~/types/types";
+
+type Counts = Record<string, number>;
 
 export const weightBrackets = (data: MainReturn["weight_amount"]) => {
   if (!data) {
@@ -51,7 +53,7 @@ export const dataGender = (data: MainReturn["gender"]) => {
   };
 };
 
-export const dataAgeOfRes = (data) => {
+export const dataAgeOfRes = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
@@ -70,7 +72,7 @@ export const dataAgeOfRes = (data) => {
     series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
   };
 };
-export const dataMultiSelect = (data) => {
+export const dataMultiSelect = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
@@ -86,7 +88,7 @@ export const dataMultiSelect = (data) => {
     (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
   );
 
-  const seriesMultiSelect = [];
+  const seriesMultiSelect: number[] = [];
   for (let i = 0; i < keys.length; i++) {
     seriesMultiSelect.push(data[keys[i]]);
   }
@@ -97,7 +99,7 @@ export const dataMultiSelect = (data) => {
   };
 };
 
-export const dataSelection = (data) => {
+export const dataSelection = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
@@ -146,24 +148,24 @@ export const selector = (
     | "dataAgeOfRes"
     | "dataMultiSelect"
     | "weightBrackets",
-  rawData: Gender | AgeOfOnsetByGender
+  rawData: unknown
 ) => {
   switch (selection) {
     case "dataAgeOfRes":
-      return dataAgeOfRes(rawData);
+      return dataAgeOfRes(rawData as Counts);
 
     case "dataGender":
-      return dataGender(rawData);
+      return dataGender(rawData as Gender);
 
     case "dataMultiSelect":
-      return dataMultiSelect(rawData);
+      return dataMultiSelect(rawData as Counts);
 
     case "dataOnset":
-      return dataOnset(rawData);
+      return dataOnset(rawData as AgeOfOnsetByGender);
     case "dataSelection":
-      return dataSelection(rawData);
+      return dataSelection(rawData as Counts);
     case "weightBrackets":
-      return weightBrackets(rawData);
+      return weightBrackets(rawData as Counts);
 
     default:
       break;

@@ -1,5 +1,8 @@
 import type { AxisOptions, BarChartOptions } from "chartist";
-import type { PersonalQuestions } from "./zodFromTypes";
+import type { PersonalQuestions, TheirQuestions } from "./zodFromTypes";
+
+export type ChartType = "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
+export type StatKey = keyof PersonalQuestions | keyof TheirQuestions | keyof MainReturn;
 
 export interface ChartistData {
   labels: string[];
@@ -7,19 +10,19 @@ export interface ChartistData {
 }
 
 export interface YesOrNo {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
-  stat: keyof MainReturn;
+  type: ChartType;
+  stat: StatKey;
   header: string;
 }
 export interface Unknown {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
-  stat: keyof MainReturn;
+  type: ChartType;
+  stat: StatKey;
   header: string;
 }
 export interface Doughnut {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
   function:
     | "dataSelection"
     | "dataOnset"
@@ -28,10 +31,10 @@ export interface Doughnut {
     | "dataMultiSelect";
 }
 export interface Bar {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   options?: BarChartOptions<AxisOptions, AxisOptions>;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
   function:
     | "dataSelection"
     | "dataOnset"
@@ -41,13 +44,13 @@ export interface Bar {
     | "weightBrackets";
 }
 export interface Text {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   header?: string;
 }
 export interface Stat {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   name: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
 }
 
 export interface MainReturn {

@@ -2,7 +2,7 @@
 
 declare namespace App {
 	interface Locals {
-		user: import("./server/auth/auth").AuthSession["user"] | null;
+		user: import("./server/auth/auth").AuthUser | null;
 		session: import("./server/auth/auth").AuthSession["session"] | null;
 	}
 }

@@ -8,6 +8,14 @@ import {
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 import { faker } from "@faker-js/faker";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
+
+/** `systemMetric` is a form-only field, not a DB column. */
+const withoutSystemMetric = <T extends object>(data: T) => {
+	if (!("systemMetric" in data)) return data;
+	const { systemMetric: _systemMetric, ...rest } = data as T & Pick<PersonalQuestions, "systemMetric">;
+	return rest as unknown as T;
+};
 
 export const acceptArticle = adminProcedure
 	.input(
@@ -134,12 +142,7 @@ export const fakeForFake = adminProcedure
 					? personalQuestionsSchema.parse(fakeData)
 					: theirQuestionsSchema.parse(fakeData);
 
-				let fakeDataPruned = fakeData;
-
-				if (input.pOrT === "Personal_questions_fake") {
-					const { systemMetric, ...rest } = fakeData;
-					fakeDataPruned = rest;
-				}
+				const fakeDataPruned = withoutSystemMetric(fakeData);
 
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
@@ -178,12 +181,7 @@ export const fakeForDev = devAdminProcedure
 				? personalQuestionsSchema.parse(fakeData)
 				: theirQuestionsSchema.parse(fakeData);
 
-			let fakeDataPruned = fakeData;
-
-			if (input.pOrT === "Personal_questions") {
-				const { systemMetric, ...rest } = fakeData;
-				fakeDataPruned = rest;
-			}
+			const fakeDataPruned = withoutSystemMetric(fakeData);
 
 			const fakeInsert = await ctx.db
 				.insertInto(input.pOrT)
@@ -232,7 +230,7 @@ export const fakeForDevBulk = devAdminProcedure
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
 					.values({
-						...fakeData,
+						...withoutSystemMetric(fakeData),
 						user: ctx.user.id,
 						accepted: true,
 					})

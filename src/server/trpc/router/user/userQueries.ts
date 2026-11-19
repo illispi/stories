@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {

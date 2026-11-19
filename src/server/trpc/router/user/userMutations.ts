@@ -102,6 +102,7 @@ export const editTheir = userProcedure
 			.updateTable("Their_questions")
 			.set({ ...input.data, updated_at: new Date(), accepted: null })
 			.where("user", "=", ctx.user.id)
+			.where("id", "=", input.id)
 			.executeTakeFirst();
 
 		if (!updated) {
@@ -120,6 +121,7 @@ export const markRead = userProcedure.mutation(async ({ ctx }) => {
 		.set({
 			seen: true,
 		})
+		.where("user", "=", ctx.user.id)
 		.executeTakeFirst();
 
 	const markReadTheir = await ctx.db
@@ -127,6 +129,7 @@ export const markRead = userProcedure.mutation(async ({ ctx }) => {
 		.set({
 			seen: true,
 		})
+		.where("user", "=", ctx.user.id)
 		.execute();
 
 	const markReadArticles = await ctx.db
@@ -134,9 +137,10 @@ export const markRead = userProcedure.mutation(async ({ ctx }) => {
 		.set({
 			seen: true,
 		})
+		.where("user", "=", ctx.user.id)
 		.execute();
 
-	if (markReadPersonal && markReadArticles && markReadArticles) {
+	if (markReadPersonal && markReadTheir && markReadArticles) {
 		return true;
 	}
 	throw new TRPCError({
