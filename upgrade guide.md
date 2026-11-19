@@ -37,7 +37,9 @@ as read; `editTheir` updated all of a user's rows; editing personal poll data ne
 `textPagination` let the client select any column (e.g. `user`); admin article list crashed when
 empty and its count was always 1; age-of-onset stats used the wrong diagnosis and unaccepted rows.
 
-Still open: Dependabot/Renovate, Tailwind 4, and Cloudflare (Tunnel/firewall + WAF rules) on the server.
+Dependabot is configured in `.github/dependabot.yml` (npm weekly, Node base image weekly, GitHub Actions monthly).
+
+Still open: Tailwind 4, and Cloudflare (Tunnel/firewall + WAF rules) on the server.
 
 ---
 
