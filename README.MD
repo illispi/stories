@@ -65,9 +65,17 @@ src/
 
 ## Deployment
 
-Pushing to `main` runs `.github/workflows/deploy.yml`: audit, type-check and build, then
-builds and pushes the Docker image `illispi/stories:latest`. The container runs pending
-migrations on start, then serves on port 3000.
+Pull requests and pushes to `main` only run the checks in `.github/workflows/deploy.yml`
+(audit, type-check, build). A release is made by pushing a version tag:
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+That runs the checks again, then builds and pushes `illispi/stories:1.0.0`, `:1.0` and
+`:latest` to Docker Hub. The container runs pending migrations on start, then serves on
+port 3000.
 
 Runtime environment variables (set on the server, never in the image):
 `PSQL_HOST`, `PSQL_PORT`, `PSQL_DATABASE`, `PSQL_USERNAME`, `PSQL_PASSWORD`,
