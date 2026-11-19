@@ -1,31 +1,31 @@
-import { type SubmitHandler, createForm, valiForm } from "@modular-forms/solid";
+import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
 import { type Component, type Setter, Show } from "solid-js";
-import { type InferInput, maxLength, minLength, object, string, pipe } from "valibot";
+import * as v from "valibot";
 import { trpc } from "~/utils/trpc";
 import CustomButton from "./CustomButton";
 
-const ArticleSchema = object({
-	link: pipe(string(),
-		minLength(5, "Please enter your link to article."),
-		maxLength(1000, "Your link is too long"),
+const ArticleSchema = v.object({
+	link: v.pipe(
+		v.string(),
+		v.trim(),
+		v.minLength(5, "Please enter your link to article."),
+		v.maxLength(1000, "Your link is too long"),
 	),
-	description: pipe(string(),
-		minLength(10, "Article description must be at least 10 characters long."),
-		maxLength(500, "Max length of article description is 500 characters."),
+	description: v.pipe(
+		v.string(),
+		v.trim(),
+		v.minLength(10, "Article description must be at least 10 characters long."),
+		v.maxLength(500, "Max length of article description is 500 characters."),
 	),
 });
-
-type ArticleForm = InferInput<typeof ArticleSchema>;
 
 const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 	const utils = trpc.useContext();
 	const articleMut = trpc.postArticle.createMutation(() => ({
 		onSuccess: () => utils.invalidate(),
 	}));
-	const [articleForm, { Form, Field }] = createForm<ArticleForm>({
-		validate: valiForm(ArticleSchema),
-	});
-	const handleSubmit: SubmitHandler<ArticleForm> = async (values, event) => {
+	const articleForm = createForm({ schema: ArticleSchema });
+	const handleSubmit: SubmitHandler<typeof ArticleSchema> = (values) => {
 		articleMut.mutate(values);
 	};
 
@@ -41,6 +41,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 						<CustomButton
 							onClick={() => {
 								articleMut.reset();
+								reset(articleForm);
 							}}
 						>
 							Submit another one
@@ -48,43 +49,45 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 					</div>
 				}
 			>
-				<Form onSubmit={handleSubmit}>
+				<Form of={articleForm} onSubmit={handleSubmit}>
 					<div class="m-4 flex flex-col items-center justify-center gap-4">
 						<h3 class="text-lg underline underline-offset-4">
 							Link to article:
 						</h3>
-						<Field name="link">
-							{(field, props) => (
+						<Field of={articleForm} path={["link"]}>
+							{(field) => (
 								<>
 									<textarea
 										class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-										{...props}
+										{...field.props}
+										value={field.input ?? ""}
 										cols={60}
 										rows={3}
 										required
 										autocomplete="off"
 										placeholder="link"
 									/>
-									{field.error && <div>{field.error}</div>}
+									{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
 								</>
 							)}
 						</Field>
 						<h3 class="text-lg underline underline-offset-4">
 							Short description of article:
 						</h3>
-						<Field name="description">
-							{(field, props) => (
+						<Field of={articleForm} path={["description"]}>
+							{(field) => (
 								<>
 									<textarea
 										class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-										{...props}
+										{...field.props}
+										value={field.input ?? ""}
 										cols={60}
 										rows={9}
 										required
 										autocomplete="off"
 										placeholder="description"
 									/>
-									{field.error && <div>{field.error}</div>}
+									{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
 								</>
 							)}
 						</Field>

@@ -1,19 +1,19 @@
-import { type SubmitHandler, createForm, reset, valiForm } from "@modular-forms/solid";
+import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
 import { ErrorBoundary, For, Show, Suspense, createEffect, createSignal } from "solid-js";
-import { type InferInput, maxLength, minLength, object, string, pipe } from "valibot";
+import * as v from "valibot";
 import CustomButton from "~/components/CustomButton";
 import { withProviders } from "~/islands/withProviders";
 
 import { trpc } from "~/utils/trpc";
 
-const declineSchema = object({
-	decline_reason: pipe(string(),
-		maxLength(600, "Your text is too long! (Max. 600 characters)"),
-		minLength(10, "Your text is too short, 10 chars"),
+const declineSchema = v.object({
+	decline_reason: v.pipe(
+		v.string(),
+		v.trim(),
+		v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
+		v.minLength(10, "Your text is too short, 10 chars"),
 	),
 });
-
-type DeclineForm = InferInput<typeof declineSchema>;
 
 const Page = () => {
 	const [accepted, setAccepted] = createSignal<null | boolean>(null);
@@ -52,9 +52,7 @@ const Page = () => {
 		onSuccess: () => utils.listArticles.invalidate(),
 	}));
 
-	const [declineForm, { Form, Field }] = createForm<DeclineForm>({
-		validate: valiForm(declineSchema),
-	});
+	const declineForm = createForm({ schema: declineSchema });
 	createEffect(() => {
 		if (declineMut.isSuccess || declineArticleMut.isSuccess) {
 			setShowModal(false);
@@ -65,7 +63,7 @@ const Page = () => {
 		}
 	});
 
-	const handleDecline: SubmitHandler<DeclineForm> = async (values, event) => {
+	const handleDecline: SubmitHandler<typeof declineSchema> = (values) => {
 		if (tab() === "poll") {
 			declineMut.mutate({
 				id: entryEdit(),
@@ -87,20 +85,21 @@ const Page = () => {
 					<dialog open>
 						<div class="fixed top-0 left-0 z-40 h-screen w-screen bg-black opacity-50" />
 						<div class="fixed top-1/2 left-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
-							<Form onSubmit={handleDecline}>
-								<Field name="decline_reason">
-									{(field, props) => (
+							<Form of={declineForm} onSubmit={handleDecline}>
+								<Field of={declineForm} path={["decline_reason"]}>
+									{(field) => (
 										<>
 											<textarea
 												class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-												{...props}
+												{...field.props}
+												value={field.input ?? ""}
 												cols={20}
 												rows={3}
 												required
 												autocomplete="off"
 												placeholder="Decline reason"
 											/>
-											{field.error && <div>{field.error}</div>}
+											{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
 										</>
 									)}
 								</Field>

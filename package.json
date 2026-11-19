@@ -26,7 +26,7 @@
 		"@astrojs/node": "^11.0.0",
 		"@astrojs/solid-js": "^7.0.0",
 		"@faker-js/faker": "^10.5.0",
-		"@modular-forms/solid": "^0.25.1",
+		"@formisch/solid": "^1.0.0",
 		"@sentry/browser": "^8.35.0",
 		"@solid-primitives/refs": "^1.0.8",
 		"@solid-primitives/transition-group": "^1.0.5",

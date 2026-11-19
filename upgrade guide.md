@@ -23,7 +23,7 @@ Where the implementation differs from the plan below, the implementation wins:
 | Package manager | pnpm, overrides in `package.json` | **pnpm 11**: overrides and `allowBuilds` live in `pnpm-workspace.yaml` (pnpm 11 ignores the `pnpm` field in `package.json`) |
 | Migrations | `tsx` | Node's built-in TypeScript type stripping (`node src/utils/migrate.ts`); `tsx` removed |
 | Validation | Drop zod, valibot only | **zod 4** kept for poll schemas and tRPC inputs; valibot 1 for the client forms |
-| Forms | — | `@modular-forms/solid` 0.25.1 (0.24.1 was built against a valibot beta) |
+| Forms | — | **Formisch** (`@formisch/solid`), the successor of Modular Forms (which is in maintenance mode); schemas in valibot 1 |
 | tRPC client | Rewrite call sites | Small shim (`src/utils/trpc.ts`) keeps the old `createQuery`/`createMutation`/`useContext` API |
 | Router APIs | Rewrite components | Small shims (`src/utils/router.tsx`, `src/utils/routes.ts`) |
 | Auth | GitHub/Reddit + Discord | **Discord only**, `identify` scope, synthetic emails, no IP / user agent / OAuth tokens stored, no cookie cache |

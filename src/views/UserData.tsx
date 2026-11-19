@@ -1,4 +1,4 @@
-import { type SubmitHandler, createForm, getValue, reset, setValue, valiForm } from "@modular-forms/solid";
+import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
 import { A, Navigate } from "~/utils/router";
 import {
 	createMutation,
@@ -8,7 +8,7 @@ import {
 import { route as routeGen } from "~/utils/routes";
 import type { ParentComponent } from "solid-js";
 import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
-import { type InferInput, maxLength, minLength, nullable, object, optional, string, pipe } from "valibot";
+import * as v from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -25,100 +25,33 @@ const Box: ParentComponent = (props) => {
 	);
 };
 
-const PersonalFormSchema = object({
-	describe_hospital: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
+/** Optional free-text answer: blank -> null (answer removed), otherwise 4-600 characters. */
+const optionalText = v.pipe(
+	v.optional(v.nullable(v.string())),
+	v.transform((text) => (text?.trim() ? text.trim() : null)),
+	v.nullable(
+		v.pipe(
+			v.string(),
+			v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
+			v.minLength(4, 'Your text is too short, even "okay" is enough'),
 		),
-		null,
 	),
-	what_kind_of_care_after: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	personality_before: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	personality_after: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	other_help: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	goals_after: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	responded_to_telling: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	life_satisfaction_description: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	what_others_should_know: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
-	not_have_schizophrenia_description: optional(
-		nullable(
-			pipe(string(),
-				maxLength(600, "Your text is too long! (Max. 600 characters)"),
-				minLength(4, 'Your text is too short, even "okay" is enough'),
-			),
-		),
-		null,
-	),
+);
+
+const PersonalFormSchema = v.object({
+	describe_hospital: optionalText,
+	what_kind_of_care_after: optionalText,
+	personality_before: optionalText,
+	personality_after: optionalText,
+	other_help: optionalText,
+	goals_after: optionalText,
+	responded_to_telling: optionalText,
+	life_satisfaction_description: optionalText,
+	what_others_should_know: optionalText,
+	not_have_schizophrenia_description: optionalText,
 });
 
-type PersonalForm = InferInput<typeof PersonalFormSchema>;
+type PersonalFormKey = keyof v.InferInput<typeof PersonalFormSchema>;
 
 interface theirEdit {
 	data: any;
@@ -196,24 +129,23 @@ const Page = () => {
 
 	//TODO editArticle mut
 
-	const [personalForm, { Form, Field }] = createForm<PersonalForm>({
-		validate: valiForm(PersonalFormSchema),
-	});
+	const personalForm = createForm({ schema: PersonalFormSchema });
 
+	// Load the saved answers as the form's starting values
 	createEffect(() => {
 		if (personalDataQuery.data) {
 			const data = personalDataQuery.data as Record<string, unknown>;
-			const arrKeys = Object.keys(headers) as (keyof PersonalForm)[];
-			for (const key of arrKeys) {
-				setValue(personalForm, key, (data[key] as string | null | undefined) || undefined);
-			}
+			const initialInput = Object.fromEntries(
+				(Object.keys(headers) as PersonalFormKey[]).map((key) => [
+					key,
+					(data[key] as string | null | undefined) ?? undefined,
+				]),
+			);
+			reset(personalForm, { initialInput });
 		}
 	});
 
-	const handleEditPersonal: SubmitHandler<PersonalForm> = async (
-		values,
-		event,
-	) => {
+	const handleEditPersonal: SubmitHandler<typeof PersonalFormSchema> = (values) => {
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
@@ -303,53 +235,39 @@ const Page = () => {
 								<Show
 									when={!personalEdit()}
 									fallback={
-										<Form onSubmit={handleEditPersonal}>
+										<Form of={personalForm} onSubmit={handleEditPersonal}>
 											<For
 												each={
 													Object.keys(headers) as Array<keyof typeof headers>
 												}
 											>
 												{(el) => (
-													<div
-														classList={{
-															hidden: !personalDataQuery.data?.[el],
-														}}
-													>
+													<Show when={personalDataQuery.data?.[el]}>
 														<h2 class="font-bold text-2xl lg:text-3xl">
 															{headers[el]}
 														</h2>
-														<Field name={el as keyof PersonalForm}>
-															{(field, props) => (
+														<Field of={personalForm} path={[el]}>
+															{(field) => (
 																<>
 																	<textarea
 																		class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-																		{...props}
+																		{...field.props}
+																		value={field.input ?? ""}
 																		cols={20}
 																		rows={8}
-																		required
 																		autocomplete="off"
-																		value={field.value ?? ""}
 																	/>
-																	{field.error && <div>{field.error}</div>}
+																	{field.errors && (
+																		<div class="text-red-600">{field.errors[0]}</div>
+																	)}
 																</>
 															)}
 														</Field>
-													</div>
+													</Show>
 												)}
 											</For>
 											<CustomButton
 												disabled={editPersonalMut.isPending}
-												onClick={() => {
-													(Object.keys(headers) as (keyof PersonalForm)[]).forEach((e) => {
-														setValue(
-															personalForm,
-															e,
-															getValue(personalForm, e)?.length
-																? getValue(personalForm, e)
-																: null,
-														);
-													});
-												}}
 												type="submit"
 											>
 												Submit Edit
