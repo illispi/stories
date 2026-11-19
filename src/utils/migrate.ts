@@ -1,12 +1,26 @@
 // Runs outside Astro (via tsx), so it reads .env with dotenv instead of astro:env.
 import { promises as fs } from "node:fs";
 import * as path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import "dotenv/config";
-import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from "kysely";
+import { Kysely, type Migration, type MigrationProvider, Migrator, PostgresDialect } from "kysely";
 import pg from "pg";
 
 const migrationFolder = fileURLToPath(new URL("../migrations", import.meta.url));
+
+// Kysely's FileMigrationProvider imports plain paths, which Node's ESM loader rejects on
+// Windows ("Received protocol 'c:'"). Import via file:// URLs instead.
+const fileUrlMigrationProvider: MigrationProvider = {
+	async getMigrations() {
+		const migrations: Record<string, Migration> = {};
+		for (const file of (await fs.readdir(migrationFolder)).sort()) {
+			if (!/\.(ts|js|mjs)$/.test(file) || file.endsWith(".d.ts")) continue;
+			const mod = await import(pathToFileURL(path.join(migrationFolder, file)).href);
+			migrations[file.replace(/\.(ts|js|mjs)$/, "")] = mod;
+		}
+		return migrations;
+	},
+};
 
 async function migrate(args: string[]) {
 	const db = new Kysely<unknown>({
@@ -24,7 +38,7 @@ async function migrate(args: string[]) {
 
 	const migrator = new Migrator({
 		db,
-		provider: new FileMigrationProvider({ fs, path, migrationFolder }),
+		provider: fileUrlMigrationProvider,
 	});
 
 	// `down` rolls back one migration per run
