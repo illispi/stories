@@ -1,13 +1,7 @@
 {
 	"extends": "astro/tsconfigs/strict",
 	"include": [".astro/types.d.ts", "**/*"],
-	"exclude": [
-		"dist",
-		"node_modules",
-		"src/_legacy_routes",
-		"src/components",
-		"src/app.tsx"
-	],
+	"exclude": ["dist", "node_modules", "legacy"],
 	"compilerOptions": {
 		"jsx": "preserve",
 		"jsxImportSource": "solid-js",
