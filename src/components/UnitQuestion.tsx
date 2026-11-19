@@ -136,10 +136,15 @@ export const UnitQuestion: ParentComponent<{
 			.filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
 			.forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-		sendStats.mutate({
-			...questionsLs,
-			systemMetric: JSON.parse(localStorage.getItem("system") ?? "true"),
-		});
+		// Answers come from localStorage; the server validates them with the poll schema.
+		if (props.LsName === "personalQuestions") {
+			personalMut.mutate({
+				...questionsLs,
+				systemMetric: JSON.parse(localStorage.getItem("system") ?? "true"),
+			} as Parameters<typeof personalMut.mutate>[0]);
+		} else {
+			theirMut.mutate(questionsLs as Parameters<typeof theirMut.mutate>[0]);
+		}
 	};
 
 	const handleMultiSubmit = (
@@ -422,7 +427,7 @@ export const UnitQuestion: ParentComponent<{
 								}`}
 								id="int"
 								type="number"
-								value={number()}
+								value={number() ?? ""}
 								onInput={(e) => {
 									setNumber(e.target.value);
 									setError(null);
@@ -472,7 +477,7 @@ export const UnitQuestion: ParentComponent<{
                 autocomplete="off"
                 id="int"
                 type="number"
-                value={number()}
+                value={number() ?? ""}
                 onInput={(e) => {
                   e.currentTarget.value.match("^[0-9]*$")
                     ? setNumber(e.currentTarget.value)
@@ -486,7 +491,7 @@ export const UnitQuestion: ParentComponent<{
 								autocomplete="off"
 								id="int"
 								type="number"
-								value={number()}
+								value={number() ?? ""}
 								onInput={(e) => {
 									setNumber(e.target.value);
 									setError(null);
