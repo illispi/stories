@@ -21,3 +21,13 @@ overrides:
   "cross-spawn@7": "^7.0.5"
   "source-map-js": "^1.2.2"
   "git-diff": "^2.0.7"
+  # Added after the 2026-11-20 audit (old versions kept by the lockfile)
+  "defu": "^6.1.5"
+  "immutable@4": "^4.3.9"
+  "@babel/helpers": "^7.26.10"
+  "@babel/core": "^7.29.6"
+  "minimatch@9": "^9.0.7"
+  "yaml@2": "^2.8.3"
+  "postcss-selector-parser@6": "^6.1.5"
+  "diff@3": "^3.5.1"
+  "diff@4": "^4.0.4"
