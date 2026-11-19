@@ -37,16 +37,21 @@ export const listSubmissions = adminProcedure
         "what_others_should_know",
       ]);
 
-    const pOrTQuery =
-      input.pOrT === "Personal_questions" ? personalQuery : theirQuery;
-
     //TODO Use try and catch here and then return error with serverError
 
-    const poll = await pOrTQuery
-      .where("accepted", "is", input.accepted)
-      .offset(input.page * 25)
-      .limit(25)
-      .execute();
+    // Filter each builder on its own: a union of the two builder types isn't callable.
+    const poll =
+      input.pOrT === "Personal_questions"
+        ? await personalQuery
+            .where("accepted", "is", input.accepted)
+            .offset(input.page * 25)
+            .limit(25)
+            .execute()
+        : await theirQuery
+            .where("accepted", "is", input.accepted)
+            .offset(input.page * 25)
+            .limit(25)
+            .execute();
 
     //BUG this might return undefined, should be returnin null in that case
 
