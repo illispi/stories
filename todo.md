@@ -44,4 +44,6 @@ Dependabot for deps and nodejs runtime
 
 Dont build on every commit push, but on select
 
-better auth oauth login and sign up only
+formisch over modular forms
+
+on back nav, transition to other direction, compared normal page nav
