@@ -40,10 +40,15 @@ Returning immediately allows malicious actors to figure out valid usernames from
 
 ## NEW TODOS:
 
-Dependabot for deps and nodejs runtime
-
-Dont build on every commit push, but on select
-
-formisch over modular forms
 
 on back nav, transition to other direction, compared normal page nav
+
+Suggest other charting library
+
+Make stats page slightly wider on desktop
+
+admin remove account, based on text field search, if user cant access discord
+
+Privacy notice, it says it uses discord email but make sure it's not saved 
+
+editing for articles and their  
