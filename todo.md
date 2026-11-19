@@ -36,17 +36,12 @@ Returning immediately allows malicious actors to figure out valid usernames from
  If usernames are public, you may outright tell the user that the username is invalid.
 ```
 
-Maybe this where you have null placeholder bellnotification:
 
-```js
-const articlesData = trpc.articlesPagination.createQuery(
-  () => ({
-    page: page(),
-  }),
-  () => ({ placeholderData: (prev) => prev })
-);
-```
 
-### If you have hydration mismatch just add <Suspense>
+## NEW TODOS:
 
-- Sometimes even reboot helps for that mismatch
+Dependabot for deps and nodejs runtime
+
+Dont build on every commit push, but on select
+
+better auth oauth login and sign up only

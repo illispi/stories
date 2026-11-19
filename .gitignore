@@ -4,6 +4,7 @@ dist
 .vercel
 .netlify
 netlify
+audit.json
 
 # Seems to fail in GH actions
 bun.lockb
@@ -99,3 +100,5 @@ gitignore
 # System Files
 .DS_Store
 Thumbs.db
+# template without secrets
+!.env.example
