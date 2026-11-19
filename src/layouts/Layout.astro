@@ -1,0 +1,35 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { PUBLIC_UMAMI_ID } from "astro:env/client";
+import "~/app.css";
+
+interface Props {
+	title?: string;
+}
+const { title = "Schizophrenia poll" } = Astro.props;
+---
+
+<html lang="en" class="slide">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{title}</title>
+		<ClientRouter />
+		{
+			import.meta.env.PROD && PUBLIC_UMAMI_ID && (
+				<script
+					is:inline
+					async
+					src="https://umami.delvis.org/script.js"
+					data-website-id={PUBLIC_UMAMI_ID}
+				/>
+			)
+		}
+	</head>
+	<body class="min-h-screen lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
+		<!-- Stage 2: <NavBar client:only="solid-js" user={...} transition:persist /> -->
+		<slot />
+		<!-- Stage 2: <Footer /> -->
+	</body>
+</html>

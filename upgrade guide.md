@@ -90,7 +90,7 @@ Nothing in our own code uses these packages; once `@solidjs/start`, `vinxi`, `@s
 | `@trpc/server` | 10.45.2 | 1 | high (prototype pollution) | 10.45.3, but we go to **tRPC 11 latest** | §3.2 |
 | `solid-js` | 1.9.2 | 1 | high (XSS: HTML not escaped in JSX fragments) | **≥ 1.9.4** (take latest 1.9.x) | |
 | `valibot` | 0.42.1 (+1.0.0-beta.0 via `@typeschema`) | 2 | high (ReDoS) | **≥ 1.4.2** | Drop `@typeschema/valibot` |
-| `zod` | 3.23.8 | 1 | high (memory exhaustion) | ≥ 4.6.6, or **remove** | Only used by `@t3-oss/env-core` (commented out) and `zodFromTypes.ts` |
+| `zod` | 3.23.8 | 1 | high (memory exhaustion) | **≥ 4.6.6** | Kept: the poll schemas (`server/schemas/*`) and all tRPC inputs use zod; their API is zod-4 compatible |
 | `postcss` | 8.4.47 | 4 | high (file read, path traversal via source maps) | ≥ 8.5.23 | |
 | `@faker-js/faker` (dev) | 9.0.3 | 1 | high (code execution in `helpers.fake`) | ≥ 10.5.0 | |
 | `sharp` (via `vite-imagetools`) | 0.33.5 | 3 | high (libvips/libheif/librsvg) | ≥ 0.35.5 | Remove `vite-imagetools`; Astro pulls its own `sharp`, check it resolves ≥ 0.35.5 |
@@ -241,8 +241,7 @@ Packages that go away completely: `lucia`, `@lucia-auth/adapter-postgresql`, `@l
    "migrate:latest": "tsx ./src/utils/migrate.ts",
    "migrate:down": "tsx ./src/utils/migrate.ts down",
    "new:migration": "tsx ./src/utils/migrationFilename.ts",
-   "sql-types": "kysely-codegen --dialect postgres --out-file ./src/types/db.ts",
-   "auth:schema": "npx @better-auth/cli@latest generate --config ./src/server/auth/auth.ts --output ./auth-schema.sql"
+   "sql-types": "kysely-codegen --dialect postgres --out-file ./src/types/db.ts"
    ```
 
 6. Park the old routes: `git mv src/routes src/_legacy_routes` (delete at the end).
@@ -373,8 +372,8 @@ Better Auth gets told about the name via `user.modelName` (§4.3).
 Workflow:
 
 1. Write `src/server/auth/auth.ts` (§4.3).
-2. `pnpm auth:schema` → `auth-schema.sql`. The CLI emits exactly the tables and columns your config expects (including the `auth_user` name, the snake_case field mapping and the `role` field).
-3. Translate that into the Kysely migration so migrations stay the single source of truth. It will look roughly like this; **the generated SQL wins wherever the two differ**:
+2. Write the Kysely migration by hand (below). The Better Auth CLI (`npx @better-auth/cli generate`) can't load `auth.ts` because it imports `astro:env`, so there is no generator step. If Better Auth reports a missing column at runtime, the error names it.
+3. The migration (implemented in `src/migrations/2023_03_14_06_11_46_auth.ts`):
 
 ```ts
 import type { Kysely } from "kysely";
@@ -490,7 +489,7 @@ export const auth = betterAuth({
   account: {
     // Synthetic emails must never be used to auto-link accounts across providers.
     accountLinking: { enabled: false },
-    encryptOAuthTokens: true, // we never call provider APIs; tokens are stored encrypted (or wipe them in a hook)
+    encryptOAuthTokens: true, // belt and braces: the account hooks below null the tokens anyway
   },
 
   session: {

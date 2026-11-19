@@ -3,14 +3,15 @@ import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
-import { wrap } from "@typeschema/valibot";
-import { Argon2id } from "oslo/password";
-import { TRPCError } from "@trpc/server";
-import { lucia } from "~/lib/auth/lucia";
-import { db } from "~/server/db";
-import { maxLength, minLength, object, string } from "valibot";
-import { generateId } from "lucia";
 import { publicProcedure } from "../../utils";
+
+// Only free-text answers may be paged through textPagination. Anything else
+// (e.g. the `user` column) must never be selectable by name from the client.
+const textStats = new Set<string>(
+	[...personalQuestions, ...theirQuestions]
+		.filter((q) => q.questionType === "text")
+		.map((q) => q.questionDB as string),
+);
 //TODO remember to only update this every once in a while in production
 
 export const allStats = publicProcedure
@@ -394,14 +395,15 @@ export const textPagination = publicProcedure
 	.input(
 		z.object({
 			page: z.number(),
-			stat: z.string() as keyof PersonalQuestions,
+			stat: z.string().refine((s) => textStats.has(s), "Unknown text question"),
 			gender: z.enum(["Female", "Other", "Male"]).nullable(),
 			diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
 			personalOrTheir: z.enum(["Personal_questions", "Their_questions"]),
 			fake: z.enum(["real", "fake"]),
 		}),
 	)
-	.query(async ({ input: payload, ctx }) => {
+	.query(async ({ input, ctx }) => {
+		const payload = { ...input, stat: input.stat as keyof PersonalQuestions };
 		let statsQuery = ctx.db
 			.selectFrom(
 				payload.fake === "fake"

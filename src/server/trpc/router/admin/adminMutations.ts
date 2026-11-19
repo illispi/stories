@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { adminProcedure } from "../../utils";
+import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import {
 	personalQuestionsSchema,
@@ -161,7 +161,7 @@ export const fakeForFake = adminProcedure
 		}
 	});
 
-export const fakeForDev = adminProcedure
+export const fakeForDev = devAdminProcedure
 	.input(
 		z.object({
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
@@ -206,12 +206,12 @@ export const fakeForDev = adminProcedure
 			console.error(error);
 			throw new TRPCError({
 				code: "INTERNAL_SERVER_ERROR",
-				message: error.message,
+				message: error instanceof Error ? error.message : "Insertion failed",
 			});
 		}
 	});
 
-export const fakeForDevBulk = adminProcedure
+export const fakeForDevBulk = devAdminProcedure
 	.input(
 		z.object({
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
@@ -252,7 +252,7 @@ export const fakeForDevBulk = adminProcedure
 		}
 	});
 
-export const fakeArticlesForDev = adminProcedure.mutation(async ({ ctx }) => {
+export const fakeArticlesForDev = devAdminProcedure.mutation(async ({ ctx }) => {
 	const add = await ctx.db
 		.insertInto("Articles")
 		.values({
@@ -260,7 +260,7 @@ export const fakeArticlesForDev = adminProcedure.mutation(async ({ ctx }) => {
 				.paragraphs(10)
 				.substring(0, Math.floor(Math.random() * 400) + 4),
 			link: faker.internet.url(),
-			user: ctx.user?.id,
+			user: ctx.user.id,
 		})
 		.executeTakeFirst();
 

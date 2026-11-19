@@ -1,0 +1,26 @@
+---
+// Stage 1 placeholder: the real home page is ported in stage 2.
+import Layout from "~/layouts/Layout.astro";
+import SignOutButton from "~/islands/SignOutButton";
+const user = Astro.locals.user;
+---
+
+<Layout>
+	<main class="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
+		<h1 class="font-bold text-4xl">Schizophrenia poll (migration in progress)</h1>
+		{
+			user ? (
+				<>
+					<p>
+						Signed in. User ID <code>{user.id}</code>, role <code>{user.role}</code>.
+					</p>
+					<SignOutButton client:load />
+				</>
+			) : (
+				<a class="text-fuchsia-600 underline" href="/login">
+					Sign in
+				</a>
+			)
+		}
+	</main>
+</Layout>

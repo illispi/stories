@@ -10,7 +10,6 @@ import {
 	fakeForFake,
 } from "./admin/adminMutations";
 import { listArticles, listSubmissions } from "./admin/adminQueries";
-import { authStatus, logOut, signIn, signUp } from "./basic/authQandM";
 import {
 	postArticle,
 	postPersonalStats,
@@ -36,10 +35,6 @@ import {
 export const appRouter = router({
 	markRead,
 	getNotifications,
-	signIn,
-	signUp,
-	logOut,
-	authStatus,
 	allStats,
 	articlesPagination,
 	textPagination,
