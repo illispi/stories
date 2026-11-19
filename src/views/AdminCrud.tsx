@@ -200,18 +200,18 @@ const Page = () => {
 									Back
 								</CustomButton>
 								<h5 class="font-bold text-lg">{`Page: ${pageArticles() + 1}/${
-									Math.floor(articles.data[0].count / 25) + 1
+									Math.floor((articles.data?.[0]?.count ?? 0) / 25) + 1
 								}`}</h5>
 
 								<CustomButton
 									class={
-										articles.data[0].count / ((pageArticles() + 1) * 25) <= 1
+										(articles.data?.[0]?.count ?? 0) / ((pageArticles() + 1) * 25) <= 1
 											? "invisible"
 											: ""
 									}
 									onClick={() =>
 										setPageArticles((prev) =>
-											articles.data[0].count / ((prev + 1) * 25) <= 1
+											(articles.data?.[0]?.count ?? 0) / ((prev + 1) * 25) <= 1
 												? prev
 												: prev + 1,
 										)

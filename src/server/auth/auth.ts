@@ -56,7 +56,8 @@ export const auth = betterAuth({
 		},
 		expiresIn: 60 * 60 * 24 * 30, // 30 days
 		updateAge: 60 * 60 * 24, // refresh once a day
-		cookieCache: { enabled: true, maxAge: 5 * 60 },
+		// No cookie cache: role changes and deleted accounts take effect on the next request.
+		cookieCache: { enabled: false },
 	},
 
 	account: {

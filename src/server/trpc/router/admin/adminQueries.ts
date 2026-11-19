@@ -82,9 +82,9 @@ export const listArticles = adminProcedure
         "link",
         "description",
         "id",
-        eb.fn.count<number>("Articles.id").as("count"),
+        // total number of matching rows, repeated on every row (window function)
+        eb.fn.countAll<number>().over().as("count"),
       ])
-      .groupBy("Articles.id") //BUG this needs group by but shows count of 1
       .where("accepted", "is", null)
       .limit(25)
       .offset(input.page * 25)
