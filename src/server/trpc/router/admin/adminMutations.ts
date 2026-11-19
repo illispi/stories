@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
-import {
-	personalQuestionsSchema,
-	theirQuestionsSchema,
-} from "~/types/zodFromTypes";
+import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 import { faker } from "@faker-js/faker";

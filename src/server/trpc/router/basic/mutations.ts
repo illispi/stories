@@ -1,7 +1,4 @@
-import {
-	personalQuestionsSchema,
-	theirQuestionsSchema,
-} from "~/types/zodFromTypes";
+import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { userProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";

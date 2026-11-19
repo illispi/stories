@@ -15,7 +15,7 @@ import {
 	postPersonalStats,
 	postTheirStats,
 } from "./basic/mutations";
-import { allStats, articlesPagination, textPagination } from "./basic/queries";
+import { allStats, articlesPagination, authStatus, textPagination } from "./basic/queries";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -33,6 +33,7 @@ import {
 } from "./user/userQueries";
 
 export const appRouter = router({
+	authStatus,
 	markRead,
 	getNotifications,
 	allStats,

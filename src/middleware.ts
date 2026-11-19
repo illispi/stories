@@ -2,7 +2,8 @@ import { defineMiddleware } from "astro:middleware";
 import { BETTER_AUTH_URL } from "astro:env/server";
 import { auth } from "~/server/auth/auth";
 
-const USER_ONLY = ["/user", "/questionares"];
+// The poll pages are public; they ask for login before submitting.
+const USER_ONLY = ["/user"];
 const ADMIN_ONLY = ["/admin"];
 const appOrigin = new URL(BETTER_AUTH_URL).origin;
 

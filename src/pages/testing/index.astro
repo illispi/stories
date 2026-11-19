@@ -1,0 +1,9 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import TestingMain from "~/views/TestingMain";
+if (import.meta.env.PROD) return Astro.rewrite("/404");
+---
+
+<Layout>
+	<TestingMain client:only="solid-js" />
+</Layout>

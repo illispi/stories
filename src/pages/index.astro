@@ -1,26 +1,24 @@
 ---
-// Stage 1 placeholder: the real home page is ported in stage 2.
+import { getImage } from "astro:assets";
 import Layout from "~/layouts/Layout.astro";
-import SignOutButton from "~/islands/SignOutButton";
-const user = Astro.locals.user;
+import Home from "~/views/Home";
+import first from "~/assets/pictures/first.png";
+import second from "~/assets/pictures/second.png";
+import third from "~/assets/pictures/third.png";
+
+const image = async (src: ImageMetadata) => {
+	const responsive = await getImage({ src, widths: [300, 600, 1200], format: "avif" });
+	const fallback = await getImage({ src, format: "avif" });
+	return { srcset: responsive.srcSet.attribute, src: fallback.src };
+};
+
+const images = {
+	first: await image(first),
+	second: await image(second),
+	third: await image(third),
+};
 ---
 
 <Layout>
-	<main class="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
-		<h1 class="font-bold text-4xl">Schizophrenia poll (migration in progress)</h1>
-		{
-			user ? (
-				<>
-					<p>
-						Signed in. User ID <code>{user.id}</code>, role <code>{user.role}</code>.
-					</p>
-					<SignOutButton client:load />
-				</>
-			) : (
-				<a class="text-fuchsia-600 underline" href="/login">
-					Sign in
-				</a>
-			)
-		}
-	</main>
+	<Home images={images} />
 </Layout>

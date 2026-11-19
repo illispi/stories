@@ -499,3 +499,9 @@ export const articlesPagination = publicProcedure
 
 		return { articles, count };
 	});
+
+/** Used by the navbar and other islands to show login/admin state. */
+export const authStatus = publicProcedure.query(({ ctx }) => ({
+	user: Boolean(ctx.user),
+	admin: ctx.user?.role === "admin",
+}));

@@ -1,10 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
 import { z } from "zod";
-import {
-	personalQuestionsSchema,
-	theirQuestionsSchema,
-} from "~/types/zodFromTypes";
+import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 
 export const removeAccountAndData = userProcedure.mutation(async ({ ctx }) => {
 	const deletion = await ctx.db
