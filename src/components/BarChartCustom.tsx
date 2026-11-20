@@ -38,6 +38,10 @@ const BarChartCustom: Component<{
 	const option = createMemo<ChartOption | undefined>(() => {
 		const data = props.data;
 		if (!data) return undefined;
+		if (!Array.isArray(data.series)) {
+			if (import.meta.env.DEV) console.warn("BarChartCustom: data without series", JSON.stringify(data));
+			return undefined;
+		}
 		const values = flatten(data.series);
 		return {
 			aria: { enabled: true },

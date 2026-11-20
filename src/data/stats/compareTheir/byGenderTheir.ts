@@ -19,6 +19,7 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "unknown",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
+    function: "dataSelection",
   },
   {
     type: "bar",

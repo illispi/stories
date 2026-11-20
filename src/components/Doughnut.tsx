@@ -26,7 +26,7 @@ export const DoughnutComponent: Component<{
         >
           <PieChartCustom
             {...props}
-            data={selector(props.function, props.data?.[props.stat])}
+            data={selector(props.function, props.data?.[props.stat]) ?? null}
           />
         </Show>
       </div>

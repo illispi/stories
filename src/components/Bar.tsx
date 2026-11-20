@@ -27,7 +27,7 @@ export const BarComponent: Component<{
       >
         <BarChartCustom
           {...props}
-          data={selector(props.function, props.data?.[props.stat])}
+          data={selector(props.function, props.data?.[props.stat]) ?? null}
           options={props.options}
         />
       </Show>
