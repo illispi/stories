@@ -193,7 +193,7 @@ const StatsText = () => {
 			>
 				<Suspense>
 					<div class="flex w-11/12 max-w-xs flex-col items-center justify-center md:max-w-prose">
-						<h4 class="sticky top-12 w-full bg-white py-12 text-center text-xl underline underline-offset-8">{`${
+						<h4 class="sticky top-12 mt-8 w-full rounded-3xl bg-white py-12 text-center text-xl underline underline-offset-8">{`${
 							questions[
 								questions.findIndex((e) => params.statsText === e.questionDB)
 							].question
