@@ -4,6 +4,7 @@ import { route as routeGen } from "~/utils/routes";
 import type { Component, ParentComponent } from "solid-js";
 import { For, Show, createEffect, createSignal, on } from "solid-js";
 import * as v from "valibot";
+import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -170,6 +171,7 @@ const ArticleFormSchema = v.object({
 		v.trim(),
 		v.minLength(5, "Please enter your link to article."),
 		v.maxLength(1000, "Your link is too long"),
+		v.check((s) => toWebLink(s) !== null, WEB_LINK_MESSAGE),
 	),
 	description: v.pipe(
 		v.string(),
@@ -557,7 +559,8 @@ const Page = () => {
 																	<>
 																		<a
 																			class="break-all text-center text-fuchsia-600 text-lg transition-all hover:scale-105 visited:text-fuchsia-800"
-																			href={article.link}
+																			href={toWebLink(article.link) ?? undefined}
+																			rel="nofollow ugc noreferrer"
 																		>
 																			{article.link}
 																		</a>

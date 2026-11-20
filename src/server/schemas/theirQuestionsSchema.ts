@@ -32,9 +32,18 @@ export const theirQuestionsSchemaCustom = z
     apathy: z.boolean().nullable(),
     lack_of_motivation: z.boolean().nullable(),
     smoking: z.boolean().nullable(),
-    personality_before: z.string(),
+    personality_before: z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough'),
     personality_changed: z.boolean(),
-    personality_after: z.string().nullable(),
+    personality_after: z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
     prodromal_symptoms: z.boolean(),
     prodromal_anxiety: z.boolean().nullable(),
     prodromal_depression: z.boolean().nullable(),

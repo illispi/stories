@@ -4,6 +4,7 @@ import { userProcedure } from "../../utils";
 /** `systemMetric` is a form-only field, not a DB column. */
 const withoutSystemMetric = <T extends { systemMetric?: boolean }>({ systemMetric: _systemMetric, ...rest }: T) => rest;
 import { z } from "zod";
+import { articleFields } from "~/server/schemas/articleSchema";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 
 export const removeAccountAndData = userProcedure.mutation(async ({ ctx }) => {
@@ -78,21 +79,7 @@ export const removeArticle = userProcedure
 
 /** Same rules as postArticle. An edited article goes back to review. */
 export const editArticle = userProcedure
-	.input(
-		z.object({
-			id: z.number(),
-			link: z
-				.string()
-				.max(1000, { message: "Must be 1000 or fewer characters long" })
-				.min(5, { message: "Must be 5 or more characters long" })
-				.trim(),
-			description: z
-				.string()
-				.max(500, { message: "Must be 500 or fewer characters long" })
-				.min(5, { message: "Must be 5 or more characters long" })
-				.trim(),
-		}),
-	)
+	.input(z.object({ id: z.number(), ...articleFields }))
 	.mutation(async ({ ctx, input }) => {
 		const updated = await ctx.db
 			.updateTable("Articles")

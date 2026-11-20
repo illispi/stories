@@ -1,6 +1,7 @@
 import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
 import { type Component, type Setter, Show } from "solid-js";
 import * as v from "valibot";
+import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
 import { trpc } from "~/utils/trpc";
 import CustomButton from "./CustomButton";
 
@@ -10,6 +11,7 @@ const ArticleSchema = v.object({
 		v.trim(),
 		v.minLength(5, "Please enter your link to article."),
 		v.maxLength(1000, "Your link is too long"),
+		v.check((s) => toWebLink(s) !== null, WEB_LINK_MESSAGE),
 	),
 	description: v.pipe(
 		v.string(),

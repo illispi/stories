@@ -274,7 +274,7 @@ export const allStats = publicProcedure
 export const textPagination = publicProcedure
 	.input(
 		z.object({
-			page: z.number(),
+			page: z.number().int().min(0),
 			stat: z.string().refine((s) => textStats.has(s), "Unknown text question"),
 			gender: z.enum(["Female", "Other", "Male"]).nullable(),
 			diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
@@ -362,7 +362,7 @@ export const textPagination = publicProcedure
 export const articlesPagination = publicProcedure
 	.input(
 		z.object({
-			page: z.number().int(),
+			page: z.number().int().min(0),
 		}),
 	)
 	.query(async ({ input: payload, ctx }) => {

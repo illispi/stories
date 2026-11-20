@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sql } from "kysely";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import { adminProcedure } from "../../utils";
@@ -6,7 +7,7 @@ import { adminProcedure } from "../../utils";
 export const listSubmissions = adminProcedure
   .input(
     z.object({
-      page: z.number().int(),
+      page: z.number().int().min(0),
       pOrT: z.enum(["Personal_questions", "Their_questions"]),
       accepted: z.boolean().nullable(),
     })
@@ -18,6 +19,7 @@ export const listSubmissions = adminProcedure
       .selectFrom("Personal_questions")
       .select([
         "id",
+        version,
         "describe_hospital",
         "what_kind_of_care_after",
         "personality_before",
@@ -34,6 +36,7 @@ export const listSubmissions = adminProcedure
       .selectFrom("Their_questions")
       .select([
         "id",
+        version,
         "personality_before",
         "personality_after",
         "how_it_altered_life",
@@ -47,11 +50,13 @@ export const listSubmissions = adminProcedure
       input.pOrT === "Personal_questions"
         ? await personalQuery
             .where("accepted", "is", input.accepted)
+            .orderBy("id", "desc")
             .offset(input.page * 25)
             .limit(25)
             .execute()
         : await theirQuery
             .where("accepted", "is", input.accepted)
+            .orderBy("id", "desc")
             .offset(input.page * 25)
             .limit(25)
             .execute();
@@ -74,7 +79,7 @@ export const listSubmissions = adminProcedure
 export const listArticles = adminProcedure
   .input(
     z.object({
-      page: z.number().int(),
+      page: z.number().int().min(0),
       accepted: z.boolean().nullable(),
     })
   )
@@ -85,6 +90,7 @@ export const listArticles = adminProcedure
         "link",
         "description",
         "id",
+        version,
         // total number of matching rows, repeated on every row (window function)
         eb.fn.countAll<number>().over().as("count"),
       ])
@@ -97,6 +103,9 @@ export const listArticles = adminProcedure
 
     return articles;
   });
+
+/** Sent back with Accept, so an entry edited after the list loaded isn't accepted unread. */
+const version = sql<string | null>`extract(epoch from updated_at)::text`.as("version");
 
 /** Text columns people write themselves, per table, from the question lists. */
 const writtenColumns = {

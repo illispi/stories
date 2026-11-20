@@ -1,11 +1,25 @@
 import { z } from "zod";
 import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
+import { sql } from "kysely";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 import { faker } from "@faker-js/faker";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
+
+/**
+ * The entry must still be the version the admin reviewed: if its author edited it after the
+ * review list loaded, accepting would publish text nobody has read. `version` is
+ * `extract(epoch from updated_at)::text` as listSubmissions/listArticles return it.
+ */
+const sameVersion = (version: string | null) =>
+	sql<boolean>`extract(epoch from updated_at)::text is not distinct from ${version}`;
+const changedSinceLoaded = () =>
+	new TRPCError({
+		code: "CONFLICT",
+		message: "This entry was edited after the list loaded. It has been reloaded: review it again.",
+	});
 
 /** `systemMetric` is a form-only field, not a DB column. */
 const withoutSystemMetric = <T extends object>(data: T) => {
@@ -15,38 +29,25 @@ const withoutSystemMetric = <T extends object>(data: T) => {
 };
 
 export const acceptArticle = adminProcedure
-	.input(
-		z.object({
-			id: z.number(),
-		}),
-	)
+	.input(z.object({ id: z.number(), version: z.string().nullable() }))
 	.mutation(async ({ ctx, input }) => {
-		const insertion = await ctx.db
+		const updated = await ctx.db
 			.updateTable("Articles")
 			.set({
 				accepted: true,
+				decline_reason: null,
 				// A review result is news for the author: show it on their bell.
 				seen: false,
 				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
+			.where(sameVersion(input.version))
 			.executeTakeFirst();
 
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
-		}
-
+		if (!updated.numUpdatedRows) throw changedSinceLoaded();
 		return "Added succesfully";
 	});
 
-/**
- * Deletes an account and everything it submitted (poll answers, articles, sessions): the
- * tables reference auth_user with ON DELETE CASCADE. For people who can't sign in any more
- * and ask for removal. Admin accounts (including your own) can't be deleted here.
- */
 export const deleteUserAdmin = adminProcedure
 	.input(z.object({ userId: z.string().min(1) }))
 	.mutation(async ({ ctx, input }) => {
@@ -115,6 +116,7 @@ export const acceptSubmission = adminProcedure
 		z.object({
 			id: z.number(),
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
+			version: z.string().nullable(),
 		}),
 	)
 	.mutation(async ({ ctx, input }) => {
@@ -127,15 +129,10 @@ export const acceptSubmission = adminProcedure
 				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
+			.where(sameVersion(input.version))
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
-
+		if (!updated.numUpdatedRows) throw changedSinceLoaded();
 		return "Updated succesfully";
 	});
 

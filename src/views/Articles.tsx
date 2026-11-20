@@ -9,6 +9,7 @@ import LoginA from "~/components/LoginA";
 import PaginationNav from "~/components/PaginationNav";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
+import { toWebLink } from "~/utils/articleLink";
 
 const articles: Component<{ user: boolean }> = (props) => {
 	const user = () => props.user;
@@ -84,7 +85,8 @@ const articles: Component<{ user: boolean }> = (props) => {
 												<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-8 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 													<a
 														class="flex-1 text-fuchsia-600 text-lg transition-all hover:scale-110 visited:text-fuchsia-800"
-														href={twentyfiveArticles.link}
+														href={toWebLink(twentyfiveArticles.link) ?? undefined}
+														rel="nofollow ugc noreferrer"
 													>
 														{twentyfiveArticles.link}
 													</a>

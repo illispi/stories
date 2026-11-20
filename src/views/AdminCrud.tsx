@@ -29,10 +29,12 @@ const red = "bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600";
 /** "what_others_should_know" → "What others should know" */
 const label = (key: string) => key.replaceAll("_", " ").replace(/^./, (c) => c.toUpperCase());
 
+const HIDDEN_KEYS = new Set(["id", "count", "version"]);
+
 /** The written answers of an entry, skipping empty ones and the internal id/count. */
 const Fields = (props: { entry: Record<string, unknown> }) => (
 	<dl class="flex flex-col gap-3">
-		<For each={Object.keys(props.entry).filter((k) => k !== "id" && k !== "count" && props.entry[k] != null && props.entry[k] !== "")}>
+		<For each={Object.keys(props.entry).filter((k) => !HIDDEN_KEYS.has(k) && props.entry[k] != null && props.entry[k] !== "")}>
 			{(key) => (
 				<div>
 					<dt class="font-semibold text-slate-500 text-sm">{label(key)}</dt>
@@ -107,8 +109,18 @@ const Page = () => {
 		() => ({ enabled: tab() === "articles", placeholderData: (prev) => prev }),
 	);
 
-	const acceptMut = trpc.acceptSubmission.createMutation(() => ({ onSuccess: refresh }));
-	const acceptArticleMut = trpc.acceptArticle.createMutation(() => ({ onSuccess: refresh }));
+	// Accept fails if the author edited the entry after this list loaded; show why and reload.
+	const [notice, setNotice] = createSignal<string | null>(null);
+	const acceptOptions = () => ({
+		onMutate: () => setNotice(null),
+		onSuccess: refresh,
+		onError: (error: { message: string }) => {
+			setNotice(error.message);
+			refresh();
+		},
+	});
+	const acceptMut = trpc.acceptSubmission.createMutation(acceptOptions);
+	const acceptArticleMut = trpc.acceptArticle.createMutation(acceptOptions);
 	const declineMut = trpc.declineSubmission.createMutation(() => ({ onSuccess: () => doneDeclining() }));
 	const declineArticleMut = trpc.declineArticle.createMutation(() => ({ onSuccess: () => doneDeclining() }));
 	const deleteArticleMut = trpc.deleteArticleAdmin.createMutation(() => ({
@@ -138,8 +150,10 @@ const Page = () => {
 	const busy = () =>
 		acceptMut.isPending || acceptArticleMut.isPending || declineMut.isPending || declineArticleMut.isPending;
 
-	const accept = (id: number) =>
-		tab() === "poll" ? acceptMut.mutate({ id, pOrT: pOrT() }) : acceptArticleMut.mutate({ id });
+	const accept = (id: number, version: string | null) =>
+		tab() === "poll"
+			? acceptMut.mutate({ id, pOrT: pOrT(), version })
+			: acceptArticleMut.mutate({ id, version });
 
 	return (
 		<AdminShell title="Review submissions" description="New poll answers and articles stay hidden until accepted.">
@@ -197,6 +211,12 @@ const Page = () => {
 				</div>
 			</AdminCard>
 
+			<Show when={notice()}>
+				<p role="alert" class="rounded-xl bg-amber-50 p-4 font-semibold text-amber-800 ring-1 ring-amber-200">
+					{notice()}
+				</p>
+			</Show>
+
 			<Show when={entries()?.length === 0}>
 				<p class="py-10 text-center text-slate-500">Nothing here.</p>
 			</Show>
@@ -210,7 +230,7 @@ const Page = () => {
 								<span class="font-semibold text-slate-500">{`#${page() * PER_PAGE + index() + 1} · id ${id}`}</span>
 								<div class="ml-auto flex flex-wrap">
 									<Show when={status() !== "published"}>
-										<CustomButton class={green} disabled={busy()} onClick={() => accept(id)}>
+										<CustomButton class={green} disabled={busy()} onClick={() => accept(id, (entry.version as string | null) ?? null)}>
 											Accept
 										</CustomButton>
 									</Show>
