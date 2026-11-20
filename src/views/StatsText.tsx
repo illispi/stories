@@ -208,12 +208,6 @@ const StatsText = () => {
 											page={page()}
 											perPageNum={25}
 											setPage={setPage}
-											backOnClick={() => {
-												window.scrollTo({ top: 0, behavior: "smooth" });
-											}}
-											nextOnClick={() => {
-												window.scrollTo({ top: 0, behavior: "smooth" });
-											}}
 											dirSetter={setDir}
 										/>
 									</div>
