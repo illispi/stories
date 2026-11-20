@@ -26,6 +26,8 @@ export const allStats = publicProcedure
 			]),
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
 			fake: z.enum(["real", "fake"]),
+			/** Only used with a gender `value`: limit that gender to one diagnosis. */
+			diagnosis: z.enum(["all", "schizophrenia", "schizoaffective"]).default("all"),
 		}),
 	)
 	.query(async ({ input: payload, ctx }) => {
@@ -37,129 +39,36 @@ export const allStats = publicProcedure
 					? personalQuestions
 					: theirQuestions;
 
+			// A gender view can also be narrowed to one diagnosis (Compare → By Gender).
+			const gender =
+				payload.value === "male" || payload.value === "female" || payload.value === "other"
+					? payload.value
+					: null;
+			const diagnosis =
+				payload.value === "schizophrenia" || payload.value === "schizoaffective"
+					? payload.value
+					: gender && payload.diagnosis !== "all"
+						? payload.diagnosis
+						: null;
+
 			if (payload.fake === "fake") {
-				switch (payload.value) {
-					case "all":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.execute();
-
-						break;
-					case "female":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "female")
-							.execute();
-
-						break;
-					case "other":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "other")
-							.execute();
-
-						break;
-					case "male":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "male")
-							.execute();
-
-						break;
-					case "schizophrenia":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("diagnosis", "=", "schizophrenia")
-							.execute();
-
-						break;
-					case "schizoaffective":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("diagnosis", "=", "schizoaffective")
-							.execute();
-
-						break;
-
-					default:
-						break;
-				}
+				let q = ctx.db.selectFrom(`${payload.pOrT}_fake`).selectAll();
+				if (gender) q = q.where("gender", "=", gender);
+				if (diagnosis) q = q.where("diagnosis", "=", diagnosis);
+				stats = await q.execute();
 			} else {
-				switch (payload.value) {
-					case "all":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "female":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "female")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "other":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "other")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "male":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "male")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "schizophrenia":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("diagnosis", "=", "schizophrenia")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "schizoaffective":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("diagnosis", "=", "schizoaffective")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-
-					default:
-						break;
-				}
+				let q = ctx.db.selectFrom(payload.pOrT).selectAll().where("accepted", "=", true);
+				if (gender) q = q.where("gender", "=", gender);
+				if (diagnosis) q = q.where("diagnosis", "=", diagnosis);
+				stats = await q.execute();
 			}
 
 			const responsesTotal: number = stats.length; //TODO use postgres count here
 
-			// Age of onset per gender, for the selected diagnosis (no diagnosis filter for
-			// "all"/gender views). Real data only counts accepted submissions; fake tables
+			// Age of onset per gender, for the selected diagnosis (none for "all", or for a gender
+			// view without a diagnosis). Real data only counts accepted submissions; fake tables
 			// have no `accepted` column.
-			const diagnosisFilter =
-				payload.value === "schizophrenia" || payload.value === "schizoaffective"
-					? payload.value
-					: null;
+			const diagnosisFilter = diagnosis;
 
 			const ageOfOnset = (gender: "male" | "female" | "other") => {
 				if (payload.fake === "fake") {

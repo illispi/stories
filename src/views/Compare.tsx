@@ -23,10 +23,16 @@ type CompareOptions =
 	| "other"
 	| "male";
 
+type DiagnosisFilter = "all" | "schizophrenia" | "schizoaffective";
+
+const isGender = (v: CompareOptions) => v === "male" || v === "female" || v === "other";
+
 const Compared: Component<{
 	setB: Setter<CompareOptions>;
 	setA: Setter<CompareOptions>;
 	setCompOrder: Setter<(Stat | YesOrNo | Doughnut | Bar | Text)[]>;
+	diagnosis: DiagnosisFilter;
+	setDiagnosis: Setter<DiagnosisFilter>;
 }> = (props) => {
 	const [selection, setSelection] = createSignal<"diagnosis" | "gender">(
 		"diagnosis",
@@ -85,6 +91,7 @@ const Compared: Component<{
 					}
 					onClick={() => {
 						setSelection("diagnosis");
+						props.setDiagnosis("all");
 						props.setCompOrder(byDiagnosis);
 						props.setA("schizophrenia");
 						props.setB("schizoaffective");
@@ -104,6 +111,7 @@ const Compared: Component<{
 						setMale(true);
 						setFemale(true);
 						setOther(false);
+						props.setDiagnosis("all");
 						props.setCompOrder(byGender);
 						props.setA("male");
 						props.setB("female");
@@ -126,6 +134,33 @@ const Compared: Component<{
 			>
 				Change Genders
 			</CustomButton>
+			<div
+				class={`mt-2 flex flex-col items-center transition-all duration-300 ${
+					selection() !== "gender" ? "invisible opacity-0" : "visible opacity-100"
+				}`}
+			>
+				<span class="text-sm">Diagnosis</span>
+				<div class="flex flex-wrap items-center justify-center">
+					<For
+						each={
+							[
+								["all", "All"],
+								["schizophrenia", "Schizophrenia"],
+								["schizoaffective", "Schizoaffective"],
+							] as const
+						}
+					>
+						{([value, text]) => (
+							<ToggleButton
+								toggled={props.diagnosis === value}
+								onClick={() => props.setDiagnosis(value)}
+							>
+								{text}
+							</ToggleButton>
+						)}
+					</For>
+				</div>
+			</div>
 
 			<Transition
 				onEnter={(el, done) => {
@@ -223,6 +258,10 @@ const CompareStats = () => {
 
 	const [A, setA] = createSignal<CompareOptions>("schizophrenia");
 	const [B, setB] = createSignal<CompareOptions>("schizoaffective");
+	const [diagnosis, setDiagnosis] = createSignal<DiagnosisFilter>("all");
+	/** Heading for a side: "male", or "male · schizophrenia" when a gender view is narrowed. */
+	const label = (v: CompareOptions) =>
+		isGender(v) && diagnosis() !== "all" ? `${v} · ${diagnosis()}` : v;
 
 	const [compOrder, setCompOrder] = createSignal(byDiagnosis); //BUG this needs to change to byGender also
 
@@ -263,6 +302,7 @@ const CompareStats = () => {
 			value: A(),
 			pOrT: params.pOrT,
 			fake: params.fOrT,
+			diagnosis: diagnosis(),
 		}),
 		() => ({ placeholderData: (prev) => prev }),
 	);
@@ -271,6 +311,7 @@ const CompareStats = () => {
 			value: B(),
 			pOrT: params.pOrT,
 			fake: params.fOrT,
+			diagnosis: diagnosis(),
 		}),
 		() => ({ placeholderData: (prev) => prev }),
 	);
@@ -289,15 +330,24 @@ const CompareStats = () => {
 					<div class="my-32 flex w-11/12 max-w-2xl flex-col justify-between gap-16 rounded-3xl border-t-4 border-fuchsia-600 bg-white px-4 py-12 shadow-xl lg:my-64 lg:p-16">
 						<div class="flex flex-col items-center justify-center gap-2">
 							<h2 class="text-center text-2xl font-bold lg:text-3xl">
-								{`${statsA.data?.total ?? 0}/5 ${A()}`}
+								{`${statsA.data?.total ?? 0}/5 ${label(A())}`}
 							</h2>
 							<h2 class="text-center text-2xl font-bold lg:text-3xl">{`${
-								statsA.data?.total ?? 0
-							}/5 ${B()}`}</h2>
+								statsB.data?.total ?? 0
+							}/5 ${label(B())}`}</h2>
 						</div>
 						<p class="text-center text-lg">
 							Poll needs to be done by at least 5 people on both comparisons
 						</p>
+						<Show when={diagnosis() !== "all"}>
+							<button
+								type="button"
+								class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+								onClick={() => setDiagnosis("all")}
+							>
+								Compare across all diagnoses
+							</button>
+						</Show>
 						<Alink
 							class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
 							href={route("/questionares/:personalQuestions", {
@@ -323,7 +373,13 @@ const CompareStats = () => {
 			}
 		>
 			<div class="flex-1">
-				<Compared setA={setA} setB={setB} setCompOrder={setCompOrder} />
+				<Compared
+					setA={setA}
+					setB={setB}
+					setCompOrder={setCompOrder}
+					diagnosis={diagnosis()}
+					setDiagnosis={setDiagnosis}
+				/>
 				<div class="flex flex-col items-center justify-center">
 					<div class="flex w-11/12 max-w-md flex-col rounded-3xl bg-white shadow-sm shadow-slate-500 lg:max-w-5xl">
 						<div class="flex h-16 items-center justify-center rounded-t-3xl bg-blue-300 p-4">
@@ -353,12 +409,12 @@ const CompareStats = () => {
 								<div class="z-[5] flex w-full flex-col items-center justify-center lg:grid  lg:grid-cols-2 lg:items-start">
 									<div class="sticky top-12 z-10 hidden items-center justify-center lg:flex">
 										<h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-											{A()}
+											{label(A())}
 										</h3>
 									</div>
 									<div class="sticky top-12 z-10 hidden items-center justify-center  lg:flex">
 										<h3 class="m-3 w-96 rounded-full border-4 border-blue-800 bg-white p-3 text-center text-2xl">
-											{B()}
+											{label(B())}
 										</h3>
 									</div>
 									<For each={compOrder()}>
@@ -368,7 +424,7 @@ const CompareStats = () => {
 													when={comp.type !== "bar"}
 													fallback={
 														<>
-															<h5 class="text-xl lg:hidden">{A()}:</h5>
+															<h5 class="text-xl lg:hidden">{label(A())}:</h5>
 															<CompSelector
 																{...comp}
 																data={statsA.data}
@@ -381,7 +437,7 @@ const CompareStats = () => {
 																fOrT={params.fOrT}
 															/>
 
-															<h5 class="text-xl lg:hidden">{B()}:</h5>
+															<h5 class="text-xl lg:hidden">{label(B())}:</h5>
 															<CompSelector
 																{...comp}
 																data={statsB.data}
@@ -398,7 +454,7 @@ const CompareStats = () => {
 													}
 												>
 													<>
-														<h5 class="text-xl lg:hidden">{A()}:</h5>
+														<h5 class="text-xl lg:hidden">{label(A())}:</h5>
 														<CompSelector
 															{...comp}
 															data={statsA.data}
@@ -410,7 +466,7 @@ const CompareStats = () => {
 															pOrT={params.pOrT}
 															fOrT={params.fOrT}
 														/>
-														<h5 class="text-xl lg:hidden">{B()}:</h5>
+														<h5 class="text-xl lg:hidden">{label(B())}:</h5>
 														<CompSelector
 															{...comp}
 															data={statsB.data}
