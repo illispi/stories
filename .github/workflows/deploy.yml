@@ -70,7 +70,7 @@ jobs:
           # Public build-time values only; runtime secrets are set on the server
           build-args: |
             PUBLIC_SITE=https://poll.delvis.org
-            PUBLIC_UMAMI_ID=77657924-9c0f-47e6-9bd1-a282a883c2c9
+            PUBLIC_CF_ANALYTICS_TOKEN=${{ vars.PUBLIC_CF_ANALYTICS_TOKEN }}
             PUBLIC_SENTRY_DSN=${{ vars.PUBLIC_SENTRY_DSN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

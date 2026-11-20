@@ -21,7 +21,8 @@ const PrivacyNotice = () => {
 					<p class="text-lg">
 						The site is served through Cloudflare, which processes visitors' IP
 						addresses for security and rate limiting. Anonymous visit statistics
-						are collected with Umami. Errors are reported to Sentry, without IP
+						are collected with Cloudflare Web Analytics, which uses no cookies and
+						doesn't store IP addresses. Errors are reported to Sentry, without IP
 						addresses or other personal data.
 					</p>
 					<p class="text-lg">

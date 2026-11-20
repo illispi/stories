@@ -1,6 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import { PUBLIC_UMAMI_ID } from "astro:env/client";
+import { PUBLIC_CF_ANALYTICS_TOKEN } from "astro:env/client";
 import Footer from "~/components/Footer";
 import NavBar from "~/islands/NavBar";
 import "~/app.css";
@@ -19,12 +19,18 @@ const { title = "Schizophrenia poll" } = Astro.props;
 		<title>{title}</title>
 		<ClientRouter />
 		{
-			import.meta.env.PROD && PUBLIC_UMAMI_ID && (
+			/*
+			 * Cloudflare Web Analytics: no cookies, no IPs stored. Loaded once in <head>; it follows
+			 * ClientRouter's page changes itself (History API), so no per-page code is needed.
+			 * Use the "manually installed JS snippet" option in Cloudflare, not automatic
+			 * injection, or pages would get a second beacon.
+			 */
+			import.meta.env.PROD && PUBLIC_CF_ANALYTICS_TOKEN && (
 				<script
 					is:inline
-					async
-					src="https://umami.delvis.org/script.js"
-					data-website-id={PUBLIC_UMAMI_ID}
+					defer
+					src="https://static.cloudflareinsights.com/beacon.min.js"
+					data-cf-beacon={JSON.stringify({ token: PUBLIC_CF_ANALYTICS_TOKEN })}
 				/>
 			)
 		}

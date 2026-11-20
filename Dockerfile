@@ -16,10 +16,10 @@ COPY . .
 # Public values are baked into the client bundle at build time.
 # Secrets (PSQL_*, BETTER_AUTH_*, DISCORD_*) are read at runtime and never belong here.
 ARG PUBLIC_SITE=https://poll.delvis.org
-ARG PUBLIC_UMAMI_ID
+ARG PUBLIC_CF_ANALYTICS_TOKEN
 ARG PUBLIC_SENTRY_DSN
 ENV PUBLIC_SITE=$PUBLIC_SITE \
-	PUBLIC_UMAMI_ID=$PUBLIC_UMAMI_ID \
+	PUBLIC_CF_ANALYTICS_TOKEN=$PUBLIC_CF_ANALYTICS_TOKEN \
 	PUBLIC_SENTRY_DSN=$PUBLIC_SENTRY_DSN
 RUN pnpm build
 

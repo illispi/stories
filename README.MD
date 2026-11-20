@@ -57,7 +57,7 @@ src/
   views/        Page-level Solid components (mounted as islands)
   components/   Shared Solid components
   islands/      Island wrappers (providers, navbar)
-  layouts/      Base layout (navbar, footer, Umami)
+  layouts/      Base layout (navbar, footer, Cloudflare Web Analytics)
   server/       DB, Better Auth, tRPC routers, param validation
   middleware.ts Session -> Astro.locals, protected routes, CSRF check for tRPC
   migrations/   Kysely migrations (run by Node's built-in TypeScript support)
