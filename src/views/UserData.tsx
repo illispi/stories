@@ -91,6 +91,63 @@ const SaveError: Component<{ show: boolean }> = (props) => (
 	</Show>
 );
 
+/** Shows the newer questions' answers, "Not answered" when empty. */
+const ExtraAnswers: Component<{ row: Record<string, unknown> | undefined; labels: Record<ExtraKey, string> }> = (
+	props,
+) => (
+	<For each={EXTRA_KEYS}>
+		{(key) => (
+			<Answer title={props.labels[key]}>
+				<p classList={{ "italic text-slate-500": props.row?.[key] == null }}>{formatExtra(props.row?.[key])}</p>
+			</Answer>
+		)}
+	</For>
+);
+
+/** Inputs for the newer questions. `form` is the personal or other-poll form; both have these fields. */
+// biome-ignore lint/suspicious/noExplicitAny: shared by two differently typed forms
+const ExtraFields: Component<{ form: any; labels: Record<ExtraKey, string> }> = (props) => (
+	<For each={EXTRA_KEYS}>
+		{(key) => (
+			<Answer title={props.labels[key]}>
+				<Field of={props.form} path={[key]}>
+					{/* biome-ignore lint/suspicious/noExplicitAny: see above */}
+					{(field: any) => (
+						<>
+							{key === "how_it_altered_life" ? (
+								<textarea
+									class={textareaClass}
+									{...field.props}
+									value={field.input ?? ""}
+									rows={6}
+									autocomplete="off"
+									placeholder="Not answered"
+								/>
+							) : (
+								// `selected` per option: a value on <select> is applied before the
+								// options exist, so the saved answer wouldn't show
+								<select class={inputClass} {...field.props}>
+									<option value="" selected={!field.input}>
+										Not answered
+									</option>
+									<For each={CHOICES[key as ChoiceKey]}>
+										{(choice) => (
+											<option value={choice} selected={field.input === choice}>
+												{choice}
+											</option>
+										)}
+									</For>
+								</select>
+							)}
+							{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
+						</>
+					)}
+				</Field>
+			</Answer>
+		)}
+	</For>
+);
+
 /* ---------- form schemas ---------- */
 
 /**
@@ -107,6 +164,64 @@ const optionalText = v.optional(
 	),
 );
 
+/*
+ * Questions added in 2026-11. Submissions from before then have no answer to them, so
+ * here they're always shown and can be answered, changed or cleared (empty = no answer).
+ */
+const SCHOOL = ["really poorly", "bad", "average", "good", "great"] as const;
+const EXERCISE = ["no exercise", "little", "moderately", "lots of exercise"] as const;
+const EXTRA_KEYS = ["symptom_free_on_meds", "exercise", "school_performance", "how_it_altered_life"] as const;
+type ExtraKey = (typeof EXTRA_KEYS)[number];
+type ChoiceKey = Exclude<ExtraKey, "how_it_altered_life">;
+const CHOICES: Record<ChoiceKey, readonly string[]> = {
+	symptom_free_on_meds: ["yes", "no"],
+	exercise: EXERCISE,
+	school_performance: SCHOOL,
+};
+
+const extraFields = {
+	symptom_free_on_meds: v.optional(v.picklist(["", "yes", "no"])),
+	exercise: v.optional(v.picklist(["", ...EXERCISE])),
+	school_performance: v.optional(v.picklist(["", ...SCHOOL])),
+	how_it_altered_life: v.optional(
+		v.pipe(
+			v.string(),
+			v.trim(),
+			v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
+			v.check((text) => text === "" || text.length >= 4, 'Your text is too short, even "okay" is enough'),
+		),
+	),
+};
+
+/** Saved row → form input ("" when not answered). */
+const extraInput = (row: Record<string, unknown>) => ({
+	symptom_free_on_meds:
+		row.symptom_free_on_meds == null ? "" : row.symptom_free_on_meds ? "yes" : "no",
+	exercise: (row.exercise as string | null) ?? "",
+	school_performance: (row.school_performance as string | null) ?? "",
+	how_it_altered_life: (row.how_it_altered_life as string | null) ?? "",
+});
+
+/** Form values → column values (null when cleared). */
+const extraOutput = (values: Record<string, unknown>) => {
+	const out: Record<string, unknown> = {};
+	for (const key of EXTRA_KEYS) {
+		const value = values[key];
+		if (value === undefined) continue;
+		out[key] =
+			value === "" ? null : key === "symptom_free_on_meds" ? value === "yes" : value;
+	}
+	return out;
+};
+
+const withoutExtra = (values: Record<string, unknown>) =>
+	Object.fromEntries(
+		Object.entries(values).filter(([key]) => !(EXTRA_KEYS as readonly string[]).includes(key)),
+	);
+
+const formatExtra = (value: unknown) =>
+	value == null || value === "" ? "Not answered" : value === true ? "Yes" : value === false ? "No" : String(value);
+
 const PersonalFormSchema = v.object({
 	describe_hospital: optionalText,
 	what_kind_of_care_after: optionalText,
@@ -118,17 +233,17 @@ const PersonalFormSchema = v.object({
 	life_satisfaction_description: optionalText,
 	what_others_should_know: optionalText,
 	not_have_schizophrenia_description: optionalText,
-	how_it_altered_life: optionalText,
+	...extraFields,
 });
-type PersonalFormKey = keyof v.InferInput<typeof PersonalFormSchema>;
+type PersonalFormKey = Exclude<keyof v.InferInput<typeof PersonalFormSchema>, ExtraKey>;
 
 const TheirFormSchema = v.object({
 	personality_before: optionalText,
 	personality_after: optionalText,
 	what_others_should_know: optionalText,
-	how_it_altered_life: optionalText,
+	...extraFields,
 });
-type TheirFormKey = keyof v.InferInput<typeof TheirFormSchema>;
+type TheirFormKey = Exclude<keyof v.InferInput<typeof TheirFormSchema>, ExtraKey>;
 
 /** Same rules as the article submit form. */
 const ArticleFormSchema = v.object({
@@ -152,7 +267,6 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 	personality_before: "Your personality before:",
 	personality_after: "Your personality after:",
 	other_help: "Other help beyond medication:",
-	how_it_altered_life: "How the illness altered your life:",
 	goals_after: "Life goals after illness:",
 	responded_to_telling: "How people responded to you:",
 	life_satisfaction_description: "Your life satisfaction:",
@@ -163,8 +277,21 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 const theirHeaders: Record<TheirFormKey, string> = {
 	personality_before: "Their personality before:",
 	personality_after: "Their personality after:",
-	how_it_altered_life: "How the illness altered their life:",
 	what_others_should_know: "What others should know about schizophrenia:",
+};
+
+const personalExtraLabels: Record<ExtraKey, string> = {
+	symptom_free_on_meds: "Symptom free while on medication:",
+	exercise: "How much you exercise:",
+	school_performance: "How you did in school:",
+	how_it_altered_life: "How the illness altered your life:",
+};
+
+const theirExtraLabels: Record<ExtraKey, string> = {
+	symptom_free_on_meds: "Symptom free while on medication:",
+	exercise: "How much they exercise:",
+	school_performance: "How they did in school:",
+	how_it_altered_life: "How the illness altered their life:",
 };
 
 /** Only send fields that were edited; undefined would drop the saved answer. */
@@ -241,7 +368,7 @@ const Page = () => {
 					(data[key] as string | null | undefined) ?? undefined,
 				]),
 			);
-			reset(personalForm, { initialInput });
+			reset(personalForm, { initialInput: { ...initialInput, ...extraInput(data) } });
 		}
 	});
 
@@ -249,7 +376,8 @@ const Page = () => {
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
-			...editedOnly(values),
+			...editedOnly(withoutExtra(values)),
+			...extraOutput(values),
 			systemMetric: true,
 		} as Parameters<typeof editPersonalMut.mutate>[0]);
 	};
@@ -264,12 +392,15 @@ const Page = () => {
 		if (!row) return;
 		editTheirMut.reset();
 		reset(theirForm, {
-			initialInput: Object.fromEntries(
-				(Object.keys(theirHeaders) as TheirFormKey[]).map((key) => [
-					key,
-					(row[key] as string | null | undefined) ?? undefined,
-				]),
-			),
+			initialInput: {
+				...Object.fromEntries(
+					(Object.keys(theirHeaders) as TheirFormKey[]).map((key) => [
+						key,
+						(row[key] as string | null | undefined) ?? undefined,
+					]),
+				),
+				...extraInput(row),
+			},
 		});
 		setTheirEdit(true);
 	};
@@ -279,7 +410,7 @@ const Page = () => {
 		if (!row) return;
 		editTheirMut.mutate({
 			id: row.id,
-			data: { ...row, ...editedOnly(values) },
+			data: { ...row, ...editedOnly(withoutExtra(values)), ...extraOutput(values) },
 		} as Parameters<typeof editTheirMut.mutate>[0]);
 	};
 
@@ -362,6 +493,7 @@ const Page = () => {
 												</Show>
 											)}
 										</For>
+										<ExtraFields form={personalForm} labels={personalExtraLabels} />
 										<SaveError show={editPersonalMut.isError} />
 										<CustomButton disabled={editPersonalMut.isPending} type="submit">
 											Save changes
@@ -379,6 +511,10 @@ const Page = () => {
 										</Show>
 									)}
 								</For>
+								<ExtraAnswers
+									row={personalDataQuery.data as Record<string, unknown> | undefined}
+									labels={personalExtraLabels}
+								/>
 							</Show>
 						</div>
 					</CssTranstionGrow>
@@ -460,6 +596,7 @@ const Page = () => {
 																	</Show>
 																)}
 															</For>
+															<ExtraFields form={theirForm} labels={theirExtraLabels} />
 															<SaveError show={editTheirMut.isError} />
 															<CustomButton disabled={editTheirMut.isPending} type="submit">
 																Save changes
@@ -477,6 +614,10 @@ const Page = () => {
 															</Show>
 														)}
 													</For>
+													<ExtraAnswers
+														row={currentTheir() as Record<string, unknown> | undefined}
+														labels={theirExtraLabels}
+													/>
 												</Show>
 											</div>
 										</Show>
