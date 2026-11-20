@@ -4,7 +4,8 @@ import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import ToggleButton from "~/components/ToggleButton";
-import { questions } from "~/data/personalQuestionsArr";
+import { questions as personalQuestions } from "~/data/personalQuestionsArr";
+import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
@@ -16,6 +17,17 @@ const StatsText = () => {
 		pOrT: "Personal_questions" | "Their_questions";
 		fOrT: "fake" | "real";
 	}>();
+	// The question as the respondent saw it, from the poll this page is about
+	// ("your …" for the personal poll, "their …" for the other poll).
+	const questionText = () =>
+		(
+			(params.pOrT === "Their_questions" ? theirQuestions : personalQuestions) as {
+				questionDB: string;
+				question: string;
+			}[]
+		).find(
+			(q) => q.questionDB === params.statsText,
+		)?.question ?? "";
 	const [filter, setFilter] = createSignal(false);
 	const [gender, setGender] = createSignal<"Female" | "Other" | "Male" | null>(
 		null,
@@ -193,11 +205,7 @@ const StatsText = () => {
 			>
 				<Suspense>
 					<div class="flex w-11/12 max-w-xs flex-col items-center justify-center md:max-w-prose">
-						<h4 class="sticky top-12 mt-8 w-full rounded-3xl bg-white py-12 text-center text-xl underline underline-offset-8">{`${
-							questions[
-								questions.findIndex((e) => params.statsText === e.questionDB)
-							].question
-						}`}</h4>
+						<h4 class="sticky top-12 mt-8 w-full rounded-3xl bg-white py-12 text-center text-xl underline underline-offset-8">{questionText()}</h4>
 
 						<Show when={texts.data?.count}>
 							{(count) => (
