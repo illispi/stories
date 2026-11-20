@@ -109,6 +109,9 @@ export const auth = betterAuth({
 						idToken: null,
 						accessTokenExpiresAt: null,
 						refreshTokenExpiresAt: null,
+						// Granted Discord scopes aren't needed either (and can list ones granted to
+						// an earlier version of the app, like "email")
+						scope: null,
 					},
 				}),
 			},
@@ -121,6 +124,9 @@ export const auth = betterAuth({
 						idToken: null,
 						accessTokenExpiresAt: null,
 						refreshTokenExpiresAt: null,
+						// Granted Discord scopes aren't needed either (and can list ones granted to
+						// an earlier version of the app, like "email")
+						scope: null,
 					},
 				}),
 			},

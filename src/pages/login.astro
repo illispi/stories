@@ -17,10 +17,16 @@ const failed = Astro.url.searchParams.has("error");
 			class="mb-16 flex w-11/12 max-w-2xl flex-col justify-start gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16"
 		>
 			<p class="text-lg">
-				Sign in with your Discord account. This site only stores your Discord account ID, not
-				your email, username or avatar. You can delete your account and all your data at any
-				time.
+				Sign in with your Discord account. This site only saves your Discord account ID, so it
+				can recognise you next time. Your email isn't even requested, and your username and
+				avatar are never saved.
 			</p>
+			<p class="rounded-2xl bg-blue-50 p-4 text-slate-700">
+				Discord's permission screen will say this site can see your username and avatar. That's
+				part of the most basic permission Discord offers (<code>identify</code>), which is all
+				this site asks for. Those details are thrown away right after you sign in.
+			</p>
+			<p class="text-lg">You can delete your account and all your data at any time.</p>
 			{failed && <p class="text-red-600">Sign in failed or was cancelled. Please try again.</p>}
 			<LoginButton client:load redir={redir} />
 		</div>
