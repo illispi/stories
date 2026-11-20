@@ -331,10 +331,13 @@ const CompareStats = () => {
 	return (
 		<Show
 			when={
+				// `hidden`: the server refuses views where a group of 1-4 people could be worked out
 				(statsA.data?.total &&
 					statsB.data?.total &&
 					statsA.data?.total >= 5 &&
-					statsB.data?.total >= 5) ||
+					statsB.data?.total >= 5 &&
+					!statsA.data?.hidden &&
+					!statsB.data?.hidden) ||
 				params.fOrT === "fake"
 			}
 			fallback={
@@ -349,8 +352,28 @@ const CompareStats = () => {
 							}/5 ${label(B())}`}</h2>
 						</div>
 						<p class="text-center text-lg">
-							Poll needs to be done by at least 5 people on both comparisons
+							<Show
+								when={(statsA.data?.total ?? 0) >= 5 && (statsB.data?.total ?? 0) >= 5}
+								fallback="Poll needs to be done by at least 5 people on both comparisons"
+							>
+								Another group in this comparison has fewer than 5 people so far. It stays hidden until every
+								group has at least 5, because otherwise their answers could be worked out from the totals.
+							</Show>
 						</p>
+						<Show when={isGender(A())}>
+							<button
+								type="button"
+								class="rounded-full border border-fuchsia-600 bg-white p-3 text-center text-xl font-semibold text-black shadow-lg shadow-fuchsia-600 transition-all duration-200 ease-out hover:scale-110 active:scale-125 2xl:text-2xl "
+								onClick={() => {
+									setDiagnosis("all");
+									setCompOrder(params.pOrT === "Personal_questions" ? byDiagnosisPersonal : byDiagnosisTheir);
+									setA("schizophrenia");
+									setB("schizoaffective");
+								}}
+							>
+								Compare diagnoses instead
+							</button>
+						</Show>
 						<Show when={diagnosis() !== "all"}>
 							<button
 								type="button"

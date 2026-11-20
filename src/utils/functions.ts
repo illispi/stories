@@ -127,13 +127,15 @@ export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
     return null;
   }
   const onset = data;
+  // null: no answers yet, or too few to show without revealing someone's age
+  const label = (name: string, v: number | null) => `${name}, ${v === null ? "too few answers" : Math.round(v)}`;
   return {
     labels: [
-      `Male, ${Math.round(onset.maleAverage)}`,
-      `Female, ${Math.round(onset.femaleAverage)}`,
-      `Other, ${Math.round(onset.otherAverage)}`,
+      label("Male", onset.maleAverage),
+      label("Female", onset.femaleAverage),
+      label("Other", onset.otherAverage),
     ],
-    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage].map(Math.round),
+    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage].map((v) => Math.round(v ?? 0)),
   };
 };
 

@@ -109,6 +109,8 @@ export interface MainReturn {
   not_have_schizophrenia: AfterHospitalSatisfaction;
   not_have_schizophrenia_description: string[];
   total: number;
+  /** Real data with a group too small to show (src/server/privacy.ts): only `total` is set */
+  hidden?: boolean;
 }
 
 export interface AfterHospitalSatisfaction {
@@ -116,11 +118,12 @@ export interface AfterHospitalSatisfaction {
   no: number;
 }
 
+/** null: no answers, or too few to show (real data) */
 export interface AgeOfOnsetByGender {
-  maleAverage: number;
-  femaleAverage: number;
-  otherAverage: number;
-  maleMedian: number;
+  maleAverage: number | null;
+  femaleAverage: number | null;
+  otherAverage: number | null;
+  maleMedian: number | null;
 }
 
 export interface Diagnosis {

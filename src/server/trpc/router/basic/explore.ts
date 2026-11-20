@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { type Dimension, findDimension, MIN_GROUP, rowAnswered, rowMatches } from "~/data/explore";
+import { tooSmall } from "~/server/privacy";
 import { cachedStats } from "~/server/statsCache";
 import { publicProcedure } from "../../utils";
 
@@ -20,9 +21,14 @@ const tally = (dim: Dimension, rows: Row[]) => {
  * Cross-filter explorer: how did people who gave one answer (`filter` = `answer`) answer
  * another question (`target`), next to everyone. Real data only counts accepted answers.
  *
- * Privacy (real data): if any answer group of the filter question has 1 to MIN_GROUP-1 people
- * who answered the target, no group is shown for this pair. Hiding only the small group isn't
- * enough: its answers could be worked out as "everyone" minus the other groups.
+ * Privacy (real data, see src/server/privacy.ts): among people who answered the target, these
+ * groups must each have 0 or at least MIN_GROUP people, or nothing is shown for this pair:
+ * - each answer's group ("Yes"), and everyone else ("not Yes": covers multi-choice filters,
+ *   where the groups overlap)
+ * - people who weren't asked the filter question (skipped), who are in "everyone" but in no
+ *   answer group
+ * Otherwise a small group's answers could be worked out as "everyone" minus the other groups.
+ * A hidden result gives no counts, since even "2 people answered" can reveal something.
  */
 export const crossFilter = publicProcedure
 	.input(
@@ -61,25 +67,27 @@ export const crossFilter = publicProcedure
 							.execute()
 			) as Row[];
 
-			const answeredIn = (value: string) =>
-				rows.filter((r) => rowMatches(filter, r, value) && rowAnswered(target, r)).length;
 			const groupTally = tally(target, rows.filter((r) => rowMatches(filter, r, input.answer)));
-			const ownTooSmall = groupTally.answered < MIN_GROUP;
-			const otherTooSmall = filter.options.some((o) => {
-				if (o.value === input.answer) return false;
-				const n = answeredIn(o.value);
-				return n > 0 && n < MIN_GROUP;
-			});
-			const hidden = input.fake === "real" && (ownTooSmall || otherTooSmall);
 
-			return {
-				group: hidden ? null : groupTally,
-				/** Why `group` is null: this group, or another answer's group, is still too small */
-				hiddenReason: !hidden ? null : ownTooSmall ? ("group" as const) : ("other" as const),
-				/** Answers in the chosen group so far */
-				groupAnswered: groupTally.answered,
-				everyone: tally(target, rows),
-				minGroup: MIN_GROUP,
-			};
+			if (input.fake === "real") {
+				const answeredTarget = rows.filter((r) => rowAnswered(target, r));
+				const size = (pred: (r: Row) => boolean) => answeredTarget.filter(pred).length;
+				const ownTooSmall = tooSmall(groupTally.answered) || groupTally.answered === 0;
+				const otherTooSmall =
+					tooSmall(size((r) => !rowAnswered(filter, r))) ||
+					filter.options.some(
+						(o) => tooSmall(size((r) => rowMatches(filter, r, o.value))) || tooSmall(size((r) => !rowMatches(filter, r, o.value))),
+					);
+				if (ownTooSmall || otherTooSmall) {
+					return {
+						group: null,
+						hiddenReason: ownTooSmall ? ("group" as const) : ("other" as const),
+						everyone: tally(target, rows),
+						minGroup: MIN_GROUP,
+					};
+				}
+			}
+
+			return { group: groupTally, hiddenReason: null, everyone: tally(target, rows), minGroup: MIN_GROUP };
 		});
 	});

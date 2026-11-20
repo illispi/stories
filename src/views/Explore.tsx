@@ -208,19 +208,15 @@ const Explore = () => {
 										when={data().hiddenReason === "group"}
 										fallback={
 											<p>
-												Another answer to <em>{filter().question}</em> has fewer than {data().minGroup} people so far.
-												This comparison stays hidden until it has more, because otherwise their answers could be worked
-												out from the totals.
+												Some answers to <em>{filter().question}</em> have fewer than {data().minGroup} people so far.
+												This comparison stays hidden until they have more, because otherwise those people's answers
+												could be worked out from the totals.
 											</p>
 										}
 									>
-										<p class="font-semibold text-2xl">
-											{data().groupAnswered}/{data().minGroup}
-										</p>
 										<p>
-											Only {data().groupAnswered} {data().groupAnswered === 1 ? "person" : "people"} in this group{" "}
-											{data().groupAnswered === 1 ? "has" : "have"} answered so far. Results show once at least{" "}
-											{data().minGroup} have, so nobody can be recognised from them.
+											Fewer than {data().minGroup} people in this group have answered so far. Results show once at
+											least {data().minGroup} have, so nobody can be recognised from them.
 										</p>
 									</Show>
 									<A

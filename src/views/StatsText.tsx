@@ -75,6 +75,12 @@ const StatsText = () => {
 			>
 				Clear Filters
 			</CustomButton>
+			<Show when={texts.data?.filtersAvailable === false}>
+				<p class="mx-4 my-6 max-w-prose rounded-2xl bg-slate-50 p-4 text-center text-slate-700 ring-1 ring-slate-200">
+					Filtering and the gender and diagnosis labels are off until every gender and diagnosis group has at
+					least 5 answers. Before that, the answers of a small group could be picked out and linked together.
+				</p>
+			</Show>
 			<Show when={diagFilter() || genderFilter()}>
 				<p class="my-6 font-semibold text-lg">{`Current filters: ${
 					diagFilter() ?? ""
@@ -237,7 +243,9 @@ const StatsText = () => {
 															{i() + 1 + page() * 25}.
 														</h5>
 														<p class="m-8 w-full">{String((stat as Record<string, unknown>)[params.statsText] ?? "")}</p>
-														<h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
+														<Show when={stat.diagnosis && stat.gender}>
+															<h3 class="text-sm italic">{`Diagnosis: ${stat.diagnosis}, Gender: ${stat.gender}`}</h3>
+														</Show>
 													</div>
 												) : null
 											}

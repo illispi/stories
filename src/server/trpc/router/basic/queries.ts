@@ -7,6 +7,7 @@ import type { MainReturn } from "~/types/types";
 import { publicProcedure } from "../../utils";
 import { countAgeBrackets } from "~/utils/ageBrackets";
 import { cachedStats } from "~/server/statsCache";
+import { aggregateViewAllowed, allCellsSafe, matching, respondentCells, tooSmall } from "~/server/privacy";
 import type { Context } from "../../context";
 
 // Only free-text answers may be paged through textPagination. Anything else
@@ -57,6 +58,14 @@ const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Cont
 					: gender && payload.diagnosis !== "all"
 						? payload.diagnosis
 						: null;
+
+			// Real data: refuse views that would show (or let someone work out) a group of 1-4 people
+			if (payload.fake === "real") {
+				const cells = await respondentCells(ctx.db, payload.pOrT);
+				if (!aggregateViewAllowed(cells, gender, diagnosis)) {
+					return { total: matching(cells, gender, diagnosis), hidden: true } as unknown as MainReturn;
+				}
+			}
 
 			if (payload.fake === "fake") {
 				let q = ctx.db.selectFrom(`${payload.pOrT}_fake`).selectAll();
@@ -150,12 +159,14 @@ const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Cont
 						automatic.weight_amount = resBrackets;
 					} else if (e.questionDB === "age_of_onset") {
 						// Whole years; 0 when nobody of that gender answered (instead of NaN)
+						// null = no answers, or (real data) too few to show without revealing someone's age
+						const hide = (obj: typeof maleAge) => !obj.length || (payload.fake === "real" && tooSmall(obj.length));
 						const average = (obj: typeof maleAge) =>
-							obj.length ? Math.round(obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length) : 0;
+							hide(obj) ? null : Math.round(obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length);
 						const median = (obj: typeof maleAge) => {
-							const arr = obj.map((i) => i.age_of_onset);
-							const sorted = arr.sort((a, b) => a - b);
-							return sorted[Math.floor(arr.length / 2)];
+							if (hide(obj)) return null;
+							const sorted = obj.map((i) => i.age_of_onset).sort((a, b) => a - b);
+							return sorted[Math.floor(sorted.length / 2)];
 						};
 
 						const ageOfOnsetByGender = {
@@ -230,6 +241,15 @@ export const textPagination = publicProcedure
 	.query(async ({ input, ctx }) => {
 		const payload = input;
 		const { ref } = ctx.db.dynamic;
+
+		// Real data: each answer is labelled with gender and diagnosis, and the list can be
+		// filtered by them. While any gender × diagnosis group has 1-4 people, both are off:
+		// otherwise that group's answers could be picked out (e.g. "male" list ∩ "schizoaffective"
+		// list) and linked across questions.
+		const labelsAndFilters = payload.fake === "fake" || allCellsSafe(await respondentCells(ctx.db, payload.personalOrTheir));
+		if (!labelsAndFilters && (payload.gender || payload.diagnosis)) {
+			return { stats: [], count: 0, filtersAvailable: false };
+		}
 		let statsQuery = ctx.db
 			.selectFrom(
 				payload.fake === "fake"
@@ -303,7 +323,11 @@ export const textPagination = publicProcedure
 		}
 		const count = await lengthQuery.executeTakeFirst();
 
-		return { stats, ...count };
+		return {
+			stats: labelsAndFilters ? stats : stats.map((row) => ({ ...row, gender: null, diagnosis: null })),
+			...count,
+			filtersAvailable: labelsAndFilters,
+		};
 	});
 
 export const articlesPagination = publicProcedure
