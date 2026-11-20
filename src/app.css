@@ -122,10 +122,26 @@ html[data-astro-transition="back"]::view-transition-new(slide) {
   view-transition-name: headerSlide;
 }
 
+/*
+ * Open menu during a page change: the link click navigates straight away, and the new URL
+ * (no ?nav) closes the menu. The panel and grey overlay are their own groups, so only
+ * their live "new" view is drawn: the CSS fade/slide-out runs while the page slides,
+ * instead of being frozen into the outgoing page snapshot.
+ */
 ::view-transition-old(headerTrans),
-::view-transition-new(headerTrans) {
+::view-transition-old(menuOverlay) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(headerTrans),
+::view-transition-new(menuOverlay) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+.menuOverlay {
+  view-transition-name: menuOverlay;
 }
 
 .headerTrans {

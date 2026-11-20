@@ -1,5 +1,5 @@
 import { Title } from "~/utils/router";
-import { A, useNavigate, useSearchParams } from "~/utils/router";
+import { A, useSearchParams } from "~/utils/router";
 import { route as routeGen } from "~/utils/routes";
 import type { Accessor, Component, Setter } from "solid-js";
 import { ErrorBoundary, Show, Suspense, createEffect, createSignal } from "solid-js";
@@ -9,22 +9,16 @@ import { trpc } from "~/utils/trpc";
 import BellNotification from "./BellNotification";
 import "../app.css";
 
-/** Matches the overlay's and panel's duration-300. */
-const MENU_FADE_MS = 300;
-
 const MenuItem: Component<{
 	route: string;
 	content: string;
 	class?: string;
-	onNavigate?: (e: MouseEvent, href: string) => void;
 }> = (props) => {
 	return (
 		<>
 			<A
 				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class ? ` ${props.class}` : ""}`}
 				href={props.route}
-				// Native listener on the link, so it runs before ClientRouter's document click handler.
-				on:click={(e) => props.onNavigate?.(e, props.route)}
 			>
 				{props.content}
 			</A>
@@ -40,18 +34,6 @@ const Hamburger: Component<{
 }> = (props) => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const authQuery = trpc.authStatus.createQuery();
-	const navigate = useNavigate();
-
-	// With the menu open, fade the menu and grey overlay out first, then start the page
-	// transition, so the overlay isn't captured in the outgoing page snapshot.
-	const closeThenNavigate = (e: MouseEvent, href: string) => {
-		if (searchParams.nav !== "true") return;
-		if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-		e.preventDefault();
-		setSearchParams({ nav: null });
-		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-		setTimeout(() => navigate(href), reduced ? 0 : MENU_FADE_MS);
-	};
 
 	const [reloaded, setReloaded] = createSignal(false);
 
@@ -129,7 +111,8 @@ const Hamburger: Component<{
 			</div>
 
 			<div
-				class=" fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				// menuOverlay: own view-transition group, so it fades while the page slides (app.css)
+				class="menuOverlay fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
 					"opacity-0 invisible": !searchParams.nav,
 					"visible opacity-40": searchParams.nav === "true",
@@ -156,19 +139,19 @@ const Hamburger: Component<{
 						}}
 					>
 						<Show when={authQuery.data?.user}>
-							<MenuItem onNavigate={closeThenNavigate} route={routeGen("/user/data")} content="Your data" />
+							<MenuItem route={routeGen("/user/data")} content="Your data" />
 						</Show>
 					</ErrorBoundary>
 				</Suspense>
 				<div class="w-full border-black border-b-2" />
-				<MenuItem onNavigate={closeThenNavigate} route={routeGen("/pollResults/")} content="results" />
-				<MenuItem onNavigate={closeThenNavigate} route={routeGen("/questionares/")} content="poll" />
-				<MenuItem onNavigate={closeThenNavigate} route={routeGen("/articles/")} content="Articles" />
+				<MenuItem route={routeGen("/pollResults/")} content="results" />
+				<MenuItem route={routeGen("/questionares/")} content="poll" />
+				<MenuItem route={routeGen("/articles/")} content="Articles" />
 				<Show when={import.meta.env.DEV}>
-					<MenuItem onNavigate={closeThenNavigate} route={"/testing/"} content="Testing" />
+					<MenuItem route={"/testing/"} content="Testing" />
 				</Show>
 				<Show when={authQuery.data?.admin}>
-					<MenuItem onNavigate={closeThenNavigate} route={"/admin/"} content="admin" />
+					<MenuItem route={"/admin/"} content="admin" />
 				</Show>
 				<button
 					type="button"
