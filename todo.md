@@ -42,7 +42,7 @@ Returning immediately allows malicious actors to figure out valid usernames from
 
 
 
-admin remove account and all data, based on text field search, if user cant access discord
+admin remove some users account and all data, based on text field search, if user cant access discord, like user sends snippet of some text field question and i can search for that and then delete that users account and all data
 
 Privacy notice on initital sign up, it says it uses discord email but make sure it's not saved 
 
