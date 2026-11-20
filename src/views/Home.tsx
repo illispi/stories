@@ -29,7 +29,7 @@ const Home: Component<{ images: { first: HomeImage; second: HomeImage; third: Ho
 								class="m-8 flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-400 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 								href={route("/articles/")}
 							>
-								Share article
+								Read & share articles
 							</A>
 						</div>
 					</div>
@@ -76,7 +76,7 @@ const Home: Component<{ images: { first: HomeImage; second: HomeImage; third: Ho
 							class="flex-1 rounded-full border border-fuchsia-400 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-400 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
 							href={route("/articles/")}
 						>
-							Share article
+							Read & share articles
 						</A>
 					</div>
 				</div>
@@ -91,11 +91,11 @@ const Home: Component<{ images: { first: HomeImage; second: HomeImage; third: Ho
 						route={route("/questionares/")}
 					/>
 					<InfoBox
-						header="Share articles or interviews about schizophrenia"
+						header="Read and share articles or interviews about schizophrenia"
 						text="From Google it can be bit hard to find articles or experiences of
-        people with schizophrenia. Here you can share articles that are
-        relevant to schizophrenia."
-						link="Share article"
+        people with schizophrenia. Here you can read articles others have found, no
+        account needed, and share ones you think are relevant."
+						link="Read & share articles"
 						route={route("/articles/")}
 					/>
 					<InfoBox
