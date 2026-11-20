@@ -1,4 +1,4 @@
-import { type Component, For, Match, Show, Switch, createSignal } from "solid-js";
+import { type Component, For, Match, Show, Switch, createSignal, onCleanup, onMount } from "solid-js";
 import { trpc } from "~/utils/trpc";
 import { ModalOptions } from "./ModalOptions";
 import CustomButton from "./CustomButton";
@@ -12,6 +12,13 @@ const BellNotification = () => {
 		() => ({ placeholderData: null }),
 	);
 	const utils = trpc.useContext();
+
+	// The navbar island persists across page navigations, so check for news on each one.
+	onMount(() => {
+		const refresh = () => notificationsQuery.refetch();
+		document.addEventListener("astro:after-swap", refresh);
+		onCleanup(() => document.removeEventListener("astro:after-swap", refresh));
+	});
 
 	const markReadMut = trpc.markRead.createMutation(() => ({
 		onSuccess: () => utils.invalidate(),
@@ -69,7 +76,7 @@ const BellNotification = () => {
 				</Show>
 			</div>
 
-			<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
+			<ModalOptions inline setShow={setShowNotifications} show={showNotifications()}>
 				<div class="flex max-h-[600px] w-11/12 max-w-xl flex-col justify-start gap-6 overflow-y-auto rounded-3xl border-fuchsia-600 border-t-4 bg-white p-8 shadow-xl">
 					<h2 class="mb-8 text-center font-bold text-2xl lg:text-3xl">
 						Notifications
@@ -111,6 +118,7 @@ const BellNotification = () => {
 							notificationsQuery.data?.personal ||
 							notificationsQuery.data?.their
 						}
+						fallback={<p class="text-center text-slate-600">No new notifications.</p>}
 					>
 						<CustomButton
 							disabled={markReadMut.isPending}

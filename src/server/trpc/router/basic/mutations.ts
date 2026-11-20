@@ -33,6 +33,8 @@ export const postPersonalStats = userProcedure
 
 				user: ctx.user.id,
 				accepted: null,
+				// Your own submission isn't news; the bell lights up once it's reviewed.
+				seen: true,
 			})
 			.executeTakeFirst();
 
@@ -55,6 +57,8 @@ export const postTheirStats = userProcedure
 				...input,
 				user: ctx.user.id,
 				accepted: null,
+				// Your own submission isn't news; the bell lights up once it's reviewed.
+				seen: true,
 			})
 			.executeTakeFirst();
 
@@ -86,7 +90,7 @@ export const postArticle = userProcedure
 	.mutation(async ({ input, ctx }) => {
 		const insertion = await ctx.db
 			.insertInto("Articles")
-			.values({ ...input, user: ctx.user.id, accepted: null })
+			.values({ ...input, user: ctx.user.id, accepted: null, seen: true })
 			.executeTakeFirst();
 		if (!insertion) {
 			throw new TRPCError({

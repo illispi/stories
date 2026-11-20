@@ -60,6 +60,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.executeTakeFirst();
 
 	const statusPersonal =
@@ -76,6 +78,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.execute();
 
 	const statusTheir = their.length
@@ -91,6 +95,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.execute();
 
 	const statusArticles = articles.length

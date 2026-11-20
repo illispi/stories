@@ -25,6 +25,9 @@ export const acceptArticle = adminProcedure
 			.updateTable("Articles")
 			.set({
 				accepted: true,
+				// A review result is news for the author: show it on their bell.
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();
@@ -52,6 +55,8 @@ export const declineArticle = adminProcedure
 			.set({
 				accepted: false,
 				decline_reason: input.decline_reason,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();
@@ -79,6 +84,8 @@ export const acceptSubmission = adminProcedure
 			.set({
 				accepted: true,
 				decline_reason: null,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();
@@ -107,6 +114,8 @@ export const declineSubmission = adminProcedure
 			.set({
 				accepted: false,
 				decline_reason: input.decline_reason,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();

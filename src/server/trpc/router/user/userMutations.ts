@@ -81,7 +81,7 @@ export const editPersonal = userProcedure
 	.mutation(async ({ ctx, input }) => {
 		const updated = await ctx.db
 			.updateTable("Personal_questions")
-			.set({ ...withoutSystemMetric(input), updated_at: new Date(), accepted: null })
+			.set({ ...withoutSystemMetric(input), updated_at: new Date(), accepted: null, seen: true })
 			.where("user", "=", ctx.user.id)
 			.executeTakeFirst();
 
@@ -100,7 +100,7 @@ export const editTheir = userProcedure
 	.mutation(async ({ ctx, input }) => {
 		const updated = await ctx.db
 			.updateTable("Their_questions")
-			.set({ ...input.data, updated_at: new Date(), accepted: null })
+			.set({ ...input.data, updated_at: new Date(), accepted: null, seen: true })
 			.where("user", "=", ctx.user.id)
 			.where("id", "=", input.id)
 			.executeTakeFirst();
