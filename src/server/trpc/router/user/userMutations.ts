@@ -73,6 +73,7 @@ export const editArticle = userProcedure
 			.set({
 				link: input.link,
 				description: input.description,
+				tags: input.tags,
 				updated_at: new Date(),
 				accepted: null,
 				decline_reason: null,

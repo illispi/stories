@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { sql } from "kysely";
+import { ARTICLE_TAG_KEYS } from "~/data/articleTags";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
@@ -308,13 +310,17 @@ export const articlesPagination = publicProcedure
 	.input(
 		z.object({
 			page: z.number().int().min(0),
+			/** Only articles with this topic */
+			tag: z.enum(ARTICLE_TAG_KEYS).nullable().default(null),
 		}),
 	)
 	.query(async ({ input: payload, ctx }) => {
+		const hasTag = sql<boolean>`tags @> ARRAY[${payload.tag}]::text[]`;
 		const articles = await ctx.db
 			.selectFrom("Articles")
-			.select(["link", "description"])
+			.select(["id", "link", "description", "tags"])
 			.where("accepted", "=", true)
+			.$if(payload.tag !== null, (qb) => qb.where(hasTag))
 			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
 			.orderBy("created_at", "desc")
 			.orderBy("id", "desc")
@@ -326,6 +332,7 @@ export const articlesPagination = publicProcedure
 			.selectFrom("Articles")
 			.select((eb) => [eb.fn.countAll("Articles").as("count")])
 			.where("accepted", "=", true)
+			.$if(payload.tag !== null, (qb) => qb.where(hasTag))
 			.executeTakeFirst();
 
 		return { articles, count };

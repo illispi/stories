@@ -19,6 +19,7 @@ import {
 	postTheirStats,
 } from "./basic/mutations";
 import { allStats, articlesPagination, authStatus, textPagination } from "./basic/queries";
+import { crossFilter } from "./basic/explore";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -41,6 +42,7 @@ export const appRouter = router({
 	markRead,
 	getNotifications,
 	allStats,
+	crossFilter,
 	articlesPagination,
 	textPagination,
 	postPersonalStats,

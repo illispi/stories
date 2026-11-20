@@ -9,6 +9,8 @@ export type RouteParams = {
 	"/articles/": Record<string, never>;
 	"/compare/": Record<string, never>;
 	"/compare/:pOrT/:fOrT/compare": { pOrT: string; fOrT: string };
+	"/explore/": Record<string, never>;
+	"/explore/:pOrT/:fOrT": { pOrT: string; fOrT: string };
 	"/login/": Record<string, never>;
 	"/pollResults/": Record<string, never>;
 	"/pollResults/:pOrT/:fOrT/pollResults": { pOrT: string; fOrT: string };

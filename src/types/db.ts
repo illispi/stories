@@ -35,6 +35,7 @@ export interface Articles {
   id: Generated<number>;
   link: string;
   seen: Generated<boolean>;
+  tags: Generated<string[]>;
   updated_at: Generated<Timestamp>;
   user: string;
 }

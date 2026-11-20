@@ -1,5 +1,7 @@
 import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
-import { type Component, type Setter, Show } from "solid-js";
+import { type Component, type Setter, Show, createSignal } from "solid-js";
+import { TagPicker, tagError } from "~/components/ArticleTags";
+import type { ArticleTag } from "~/data/articleTags";
 import * as v from "valibot";
 import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
 import { trpc } from "~/utils/trpc";
@@ -27,8 +29,14 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 		onSuccess: () => utils.invalidate(),
 	}));
 	const articleForm = createForm({ schema: ArticleSchema });
+	// Topics live outside the form: a set of toggle chips, checked on submit
+	const [tags, setTags] = createSignal<ArticleTag[]>([]);
+	const [tagsError, setTagsError] = createSignal<string | null>(null);
 	const handleSubmit: SubmitHandler<typeof ArticleSchema> = (values) => {
-		articleMut.mutate(values);
+		const error = tagError(tags());
+		setTagsError(error);
+		if (error) return;
+		articleMut.mutate({ ...values, tags: tags() });
 	};
 
 	return (
@@ -44,6 +52,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 							onClick={() => {
 								articleMut.reset();
 								reset(articleForm);
+								setTags([]);
 							}}
 						>
 							Submit another one
@@ -93,6 +102,14 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 								</>
 							)}
 						</Field>
+						<TagPicker
+							value={tags()}
+							onChange={(next) => {
+								setTags(next);
+								if (tagsError()) setTagsError(tagError(next));
+							}}
+							error={tagsError()}
+						/>
 						<CustomButton disabled={articleMut.isPending} type="submit">
 							Submit
 						</CustomButton>

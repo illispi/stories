@@ -3,19 +3,20 @@ import { BarChart, PieChart } from "echarts/charts";
 import type {
 	AriaComponentOption,
 	GridComponentOption,
+	LegendComponentOption,
 	TooltipComponentOption,
 } from "echarts/components";
-import { AriaComponent, GridComponent, TooltipComponent } from "echarts/components";
+import { AriaComponent, GridComponent, LegendComponent, TooltipComponent } from "echarts/components";
 import type { ComposeOption, ECharts } from "echarts/core";
 import { init, use } from "echarts/core";
 import { SVGRenderer } from "echarts/renderers";
 import { type Accessor, createEffect, createSignal, onCleanup } from "solid-js";
 
 // Register only what the site uses, so the bundle stays small (tree-shaking).
-use([BarChart, PieChart, GridComponent, TooltipComponent, AriaComponent, SVGRenderer]);
+use([BarChart, PieChart, GridComponent, LegendComponent, TooltipComponent, AriaComponent, SVGRenderer]);
 
 export type ChartOption = ComposeOption<
-	BarSeriesOption | PieSeriesOption | GridComponentOption | TooltipComponentOption | AriaComponentOption
+	BarSeriesOption | PieSeriesOption | GridComponentOption | LegendComponentOption | TooltipComponentOption | AriaComponentOption
 >;
 
 /** The palette the Chartist charts used (series a, b, c, ...), so the colours stay the same. */

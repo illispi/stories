@@ -146,6 +146,7 @@ const Hamburger: Component<{
 				</Suspense>
 				<div class="w-full border-black border-b-2" />
 				<MenuItem route={routeGen("/pollResults/")} content="results" />
+				<MenuItem route={routeGen("/explore/")} content="explore" />
 				<MenuItem route={routeGen("/questionares/")} content="poll" />
 				<MenuItem route={routeGen("/articles/")} content="Articles" />
 				<Show when={import.meta.env.DEV}>

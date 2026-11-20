@@ -6,6 +6,7 @@ import CustomButton from "~/components/CustomButton";
 import Segmented from "~/components/Segmented";
 import { withProviders } from "~/islands/withProviders";
 import { trpc } from "~/utils/trpc";
+import { tagLabel } from "~/data/articleTags";
 
 const declineSchema = v.object({
 	decline_reason: v.pipe(
@@ -31,6 +32,10 @@ const label = (key: string) => key.replaceAll("_", " ").replace(/^./, (c) => c.t
 
 const HIDDEN_KEYS = new Set(["id", "count", "version"]);
 
+/** Article topics are stored as keys; show their names. */
+const display = (value: unknown) =>
+	Array.isArray(value) ? (value.length ? value.map((v) => tagLabel(String(v))).join(", ") : "None") : String(value);
+
 /** The written answers of an entry, skipping empty ones and the internal id/count. */
 const Fields = (props: { entry: Record<string, unknown> }) => (
 	<dl class="flex flex-col gap-3">
@@ -38,7 +43,7 @@ const Fields = (props: { entry: Record<string, unknown> }) => (
 			{(key) => (
 				<div>
 					<dt class="font-semibold text-slate-500 text-sm">{label(key)}</dt>
-					<dd class="whitespace-pre-line break-words">{String(props.entry[key])}</dd>
+					<dd class="whitespace-pre-line break-words">{display(props.entry[key])}</dd>
 				</div>
 			)}
 		</For>

@@ -1,0 +1,12 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import { isFOrT, isPOrT } from "~/server/params";
+import Explore from "~/views/Explore";
+
+const { pOrT, fOrT } = Astro.params;
+if (!isPOrT(pOrT) || !isFOrT(fOrT)) return Astro.rewrite("/404");
+---
+
+<Layout title="Explore answers · Schizophrenia poll">
+	<Explore client:only="solid-js" params={{ pOrT, fOrT }} />
+</Layout>

@@ -89,6 +89,7 @@ export const listArticles = adminProcedure
       .select((eb) => [
         "link",
         "description",
+        "tags",
         "id",
         version,
         // total number of matching rows, repeated on every row (window function)

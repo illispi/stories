@@ -5,6 +5,8 @@ import type { Component, ParentComponent } from "solid-js";
 import { For, Show, createEffect, createSignal, on } from "solid-js";
 import * as v from "valibot";
 import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
+import { TagChips, TagPicker, tagError } from "~/components/ArticleTags";
+import { type ArticleTag, isArticleTag } from "~/data/articleTags";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
@@ -306,16 +308,24 @@ const Page = () => {
 
 	const articleForm = createForm({ schema: ArticleFormSchema });
 
-	const startArticleEdit = (article: { id: number; link: string; description: string }) => {
+	const [articleTags, setArticleTags] = createSignal<ArticleTag[]>([]);
+	const [articleTagsError, setArticleTagsError] = createSignal<string | null>(null);
+
+	const startArticleEdit = (article: { id: number; link: string; description: string; tags?: string[] }) => {
 		editArticleMut.reset();
 		reset(articleForm, { initialInput: { link: article.link, description: article.description } });
+		setArticleTags((article.tags ?? []).filter(isArticleTag));
+		setArticleTagsError(null);
 		setEditingArticle(article.id);
 	};
 
 	const handleEditArticle: SubmitHandler<typeof ArticleFormSchema> = (values) => {
 		const id = editingArticle();
 		if (id === null) return;
-		editArticleMut.mutate({ id, ...values });
+		const error = tagError(articleTags());
+		setArticleTagsError(error);
+		if (error) return;
+		editArticleMut.mutate({ id, ...values, tags: articleTags() });
 	};
 
 	return (
@@ -565,6 +575,7 @@ const Page = () => {
 																			{article.link}
 																		</a>
 																		<p class="w-full text-base">{article.description}</p>
+																		<TagChips tags={article.tags} />
 																	</>
 																}
 															>
@@ -600,6 +611,14 @@ const Page = () => {
 																			</label>
 																		)}
 																	</Field>
+																	<TagPicker
+																		value={articleTags()}
+																		onChange={(next) => {
+																			setArticleTags(next);
+																			if (articleTagsError()) setArticleTagsError(tagError(next));
+																		}}
+																		error={articleTagsError()}
+																	/>
 																	<SaveError show={editArticleMut.isError} />
 																	<CustomButton disabled={editArticleMut.isPending} type="submit">
 																		Save changes

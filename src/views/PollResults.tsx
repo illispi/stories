@@ -28,6 +28,19 @@ const CompareButton: Component = () => {
 			</A>
 			<div class="m-2" />
 			<p>Allows to compare statistics between genders and diagnosis</p>
+			<div class="m-4" />
+			<A
+				href={route("/explore/:pOrT/:fOrT", {
+					pOrT: params.pOrT,
+					fOrT: params.fOrT,
+				})}
+			>
+				<CustomButton class="m-2 rounded-full bg-fuchsia-600 p-5 font-semibold text-white transition-all active:scale-110 hover:scale-110 active:bg-fuchsia-700 hover:bg-fuchsia-700">
+					Explore
+				</CustomButton>
+			</A>
+			<div class="m-2" />
+			<p>See how people with one answer answered other questions</p>
 		</div>
 	);
 };

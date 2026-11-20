@@ -10,19 +10,29 @@ import PaginationNav from "~/components/PaginationNav";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
 import { toWebLink } from "~/utils/articleLink";
+import { TagChips } from "~/components/ArticleTags";
+import { ARTICLE_TAGS, type ArticleTag, isArticleTag, tagLabel } from "~/data/articleTags";
 
 const articles: Component<{ user: boolean }> = (props) => {
 	const user = () => props.user;
 
 	const [searchParams, setSearchParams] = useSearchParams();
-	const [page, setPage] = createSignal(Number(searchParams.page ?? 1) - 1);
+	const [page, setPage] = createSignal(Math.max(0, Number(searchParams.page ?? 1) - 1 || 0));
+	const [tag, setTag] = createSignal<ArticleTag | null>(isArticleTag(searchParams.tag) ? searchParams.tag : null);
 	const [submitVis, setSubmitVis] = createSignal(false);
 	const articlesData = trpc.articlesPagination.createQuery(
 		() => ({
 			page: page(),
+			tag: tag(),
 		}),
 		() => ({ placeholderData: (prev) => prev }),
 	);
+
+	const chooseTag = (next: ArticleTag | null) => {
+		setTag(next);
+		setPage(0);
+		setSearchParams({ tag: next, page: null });
+	};
 
 	const [dir, setDir] = createSignal(1);
 
@@ -53,7 +63,25 @@ const articles: Component<{ user: boolean }> = (props) => {
 						</CssTranstionGrow>
 					</div>
 					<h2 class="mt-8 font-bold text-4xl">Articles:</h2>
-					<Show when={articlesData.data?.count}>
+					<nav aria-label="Filter articles by topic" class="flex w-11/12 max-w-3xl flex-wrap justify-center gap-2">
+						<For each={[[null, "All topics"] as const, ...ARTICLE_TAGS]}>
+							{([key, label]) => (
+								<button
+									type="button"
+									aria-pressed={tag() === key}
+									class="rounded-full px-4 py-1.5 font-semibold text-sm ring-1 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500"
+									classList={{
+										"bg-fuchsia-600 text-white ring-fuchsia-600": tag() === key,
+										"bg-white text-slate-700 ring-slate-300 hover:bg-fuchsia-50": tag() !== key,
+									}}
+									onClick={() => chooseTag(key)}
+								>
+									{label}
+								</button>
+							)}
+						</For>
+					</nav>
+					<Show when={Number(articlesData.data?.count?.count ?? 0) > 0 && articlesData.data?.count}>
 						{(data) => (
 							<div class="flex w-full max-w-md items-center justify-around">
 								<PaginationNav
@@ -71,10 +99,12 @@ const articles: Component<{ user: boolean }> = (props) => {
 					</Show>
 				</Suspense>
 
-				<Show
-					when={articlesData.data}
-					fallback={<h2>No articles found yet!</h2>}
-				>
+				<Show when={articlesData.data && Number(articlesData.data.count?.count ?? 0) === 0}>
+					<p class="text-center text-lg text-slate-600">
+						{tag() ? `No articles about "${tagLabel(tag() as string)}" yet.` : "No articles found yet!"}
+					</p>
+				</Show>
+				<Show when={articlesData.data}>
 					{(articles) => (
 						<TransitionSlide dir={dir()}>
 							<Show when={page() === 0 ? true : page()} keyed>
@@ -93,6 +123,7 @@ const articles: Component<{ user: boolean }> = (props) => {
 													<p class="flex-1 text-base">
 														{twentyfiveArticles.description}
 													</p>
+													<TagChips tags={twentyfiveArticles.tags} />
 												</div>
 											</div>
 										)}
@@ -103,7 +134,7 @@ const articles: Component<{ user: boolean }> = (props) => {
 					)}
 				</Show>
 				<Suspense>
-					<Show when={articlesData.data?.count}>
+					<Show when={Number(articlesData.data?.count?.count ?? 0) > 0 && articlesData.data?.count}>
 						{(data) => (
 							<div class="flex w-full max-w-md items-center justify-around">
 								<PaginationNav
