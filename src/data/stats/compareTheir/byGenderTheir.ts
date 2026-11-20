@@ -180,7 +180,7 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   {
     type: "bar",
     stat: "school_performance",
-    header: "How they did in school",
+    header: "School performance",
     function: "dataSelection",
     options: { reverseData: true },
   },
