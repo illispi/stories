@@ -11,8 +11,54 @@ import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
 import { toWebLink } from "~/utils/articleLink";
 import { TagChips } from "~/components/ArticleTags";
-import { Toaster } from "~/components/Toast";
+import { Toaster, showToast } from "~/components/Toast";
+import Segmented from "~/components/Segmented";
+import { A } from "~/utils/router";
 import { ARTICLE_TAGS, type ArticleTag, isArticleTag, tagLabel } from "~/data/articleTags";
+
+type Sort = "newest" | "helpful";
+
+/** "Helpful" vote toggle with its count. Signed-out users are sent to sign in. */
+const HelpfulButton: Component<{
+	article: { id: number; helpful: number | string | null; voted: boolean; mine: boolean };
+	signedIn: boolean;
+}> = (props) => {
+	const utils = trpc.useContext();
+	const vote = trpc.toggleHelpful.createMutation(() => ({
+		onSuccess: () => utils.articlesPagination.invalidate(),
+		onError: (e) => showToast(e.message, "error"),
+	}));
+	const count = () => Number(props.article.helpful ?? 0);
+	const label = () => `Helpful${count() ? ` · ${count()}` : ""}`;
+	const pill =
+		"inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-semibold text-sm ring-1 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500";
+	return (
+		<Show
+			when={props.signedIn}
+			fallback={
+				<A href="/login?redir=%2Farticles" class={`${pill} bg-white text-slate-700 ring-slate-300 hover:bg-fuchsia-50`}>
+					<span aria-hidden="true">👍</span> {label()}
+				</A>
+			}
+		>
+			<button
+				type="button"
+				aria-pressed={props.article.voted}
+				disabled={props.article.mine || vote.isPending}
+				title={props.article.mine ? "Your own article" : undefined}
+				class={pill}
+				classList={{
+					"bg-fuchsia-600 text-white ring-fuchsia-600": props.article.voted,
+					"bg-white text-slate-700 ring-slate-300 hover:bg-fuchsia-50": !props.article.voted,
+					"opacity-60": props.article.mine,
+				}}
+				onClick={() => vote.mutate({ articleId: props.article.id })}
+			>
+				<span aria-hidden="true">👍</span> {label()}
+			</button>
+		</Show>
+	);
+};
 
 const articles: Component<{ user: boolean }> = (props) => {
 	const user = () => props.user;
@@ -20,14 +66,22 @@ const articles: Component<{ user: boolean }> = (props) => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [page, setPage] = createSignal(Math.max(0, Number(searchParams.page ?? 1) - 1 || 0));
 	const [tag, setTag] = createSignal<ArticleTag | null>(isArticleTag(searchParams.tag) ? searchParams.tag : null);
+	const [sort, setSort] = createSignal<Sort>(searchParams.sort === "helpful" ? "helpful" : "newest");
 	const [submitVis, setSubmitVis] = createSignal(false);
 	const articlesData = trpc.articlesPagination.createQuery(
 		() => ({
 			page: page(),
 			tag: tag(),
+			sort: sort(),
 		}),
 		() => ({ placeholderData: (prev) => prev }),
 	);
+
+	const chooseSort = (next: Sort) => {
+		setSort(next);
+		setPage(0);
+		setSearchParams({ sort: next === "newest" ? null : next, page: null });
+	};
 
 	const chooseTag = (next: ArticleTag | null) => {
 		setTag(next);
@@ -85,6 +139,15 @@ const articles: Component<{ user: boolean }> = (props) => {
 							)}
 						</For>
 					</nav>
+					<Segmented
+						label="Sort articles"
+						options={[
+							["newest", "Newest"],
+							["helpful", "Most helpful"],
+						]}
+						value={sort()}
+						onChange={chooseSort}
+					/>
 					<Show when={Number(articlesData.data?.count?.count ?? 0) > 0 && articlesData.data?.count}>
 						{(data) => (
 							<div class="flex w-full max-w-md items-center justify-around">
@@ -128,6 +191,7 @@ const articles: Component<{ user: boolean }> = (props) => {
 														{twentyfiveArticles.description}
 													</p>
 													<TagChips tags={twentyfiveArticles.tags} />
+													<HelpfulButton article={twentyfiveArticles} signedIn={user()} />
 												</div>
 											</div>
 										)}

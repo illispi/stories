@@ -20,6 +20,8 @@ import {
 } from "./basic/mutations";
 import { allStats, articlesPagination, authStatus, textPagination } from "./basic/queries";
 import { crossFilter } from "./basic/explore";
+import { toggleHelpful } from "./basic/votes";
+import { deleteDraft, getDraft, listDrafts, saveDraft } from "./user/drafts";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -43,6 +45,11 @@ export const appRouter = router({
 	getNotifications,
 	allStats,
 	crossFilter,
+	toggleHelpful,
+	getDraft,
+	saveDraft,
+	deleteDraft,
+	listDrafts,
 	articlesPagination,
 	textPagination,
 	postPersonalStats,

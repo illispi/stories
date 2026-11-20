@@ -9,6 +9,18 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Account {
@@ -40,6 +52,12 @@ export interface Articles {
   user: string;
 }
 
+export interface ArticleVotes {
+  article_id: number;
+  created_at: Generated<Timestamp>;
+  user: string;
+}
+
 export interface AuthUser {
   created_at: Generated<Timestamp>;
   email: string;
@@ -57,14 +75,15 @@ export interface PersonalQuestions {
   age_of_onset: number;
   anhedonia: boolean | null;
   apathy: boolean | null;
-  cannabis: boolean;
+  cannabis: boolean | null;
   care_after_hospital: boolean | null;
-  children: boolean;
+  children: boolean | null;
   cognitive_symptoms: boolean;
   created_at: Generated<Timestamp>;
   current_age: number;
   current_med: string;
   decline_reason: string | null;
+  declined: Generated<string[]>;
   describe_hospital: string | null;
   diagnosis: string;
   difficulty_understanding: boolean | null;
@@ -72,7 +91,7 @@ export interface PersonalQuestions {
   efficacy_of_med: boolean;
   exercise: string | null;
   flat_expressions: boolean | null;
-  friends: boolean;
+  friends: boolean | null;
   gained_weight: boolean;
   gender: string;
   had_side_effs: boolean;
@@ -86,13 +105,13 @@ export interface PersonalQuestions {
   life_satisfaction: boolean;
   life_satisfaction_description: string | null;
   life_situation: string;
-  lost_relationships: boolean;
+  lost_relationships: boolean | null;
   negative_symptoms: boolean;
   no_interest_socially: boolean | null;
   not_have_schizophrenia: boolean;
   not_have_schizophrenia_description: string;
   other_help: string | null;
-  partner: boolean;
+  partner: boolean | null;
   personality_after: string | null;
   personality_before: string;
   personality_changed: boolean;
@@ -128,7 +147,7 @@ export interface PersonalQuestions {
   slow_thinking: boolean | null;
   smoking: boolean;
   smoking_amount: string | null;
-  suicidal_thoughts: boolean;
+  suicidal_thoughts: boolean | null;
   suicide_attempts: boolean | null;
   symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
@@ -241,6 +260,13 @@ export interface PersonalQuestionsFake {
   worst_symptom: string;
 }
 
+export interface PollDrafts {
+  data: Json;
+  poll: string;
+  updated_at: Generated<Timestamp>;
+  user: string;
+}
+
 export interface Session {
   created_at: Generated<Timestamp>;
   expires_at: Timestamp;
@@ -258,12 +284,13 @@ export interface TheirQuestions {
   age_of_onset: number;
   anhedonia: boolean | null;
   apathy: boolean | null;
-  cannabis: string;
+  cannabis: string | null;
   care_after_hospital: boolean | null;
   children: boolean | null;
   created_at: Generated<Timestamp>;
   current_age: number;
   decline_reason: string | null;
+  declined: Generated<string[]>;
   diagnosis: string;
   exercise: string | null;
   flat_expressions: boolean | null;
@@ -279,7 +306,7 @@ export interface TheirQuestions {
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
   life_situation: string;
-  lost_relationships: string;
+  lost_relationships: string | null;
   med_efficacy: boolean | null;
   negative_symptoms: boolean;
   no_interest_socially: boolean | null;
@@ -313,7 +340,7 @@ export interface TheirQuestions {
   side_effs_tardive: boolean | null;
   side_effs_weight_gain: boolean | null;
   smoking: boolean | null;
-  suicide_attempts: string;
+  suicide_attempts: string | null;
   symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
   symptoms_disorganized: boolean | null;
@@ -403,10 +430,12 @@ export interface Verification {
 
 export interface DB {
   account: Account;
+  article_votes: ArticleVotes;
   Articles: Articles;
   auth_user: AuthUser;
   Personal_questions: PersonalQuestions;
   Personal_questions_fake: PersonalQuestionsFake;
+  poll_drafts: PollDrafts;
   session: Session;
   Their_questions: TheirQuestions;
   Their_questions_fake: TheirQuestionsFake;

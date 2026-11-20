@@ -1,7 +1,10 @@
 import { z } from "zod";
+import { SENSITIVE, declinedConsistent } from "~/data/sensitiveQuestions";
 
 export const theirQuestionsSchemaCustom = z
   .object({
+    /** Sensitive questions answered "Prefer not to say" (src/data/sensitiveQuestions.ts) */
+    declined: z.array(z.enum(SENSITIVE.Their_questions)).max(SENSITIVE.Their_questions.length).default([]),
     gender: z.enum(["male", "female", "other"]),
     length_of_psychosis: z.enum([
       "few days",
@@ -79,7 +82,7 @@ export const theirQuestionsSchemaCustom = z
       .max(600, "Your text is too long! (Max. 600 characters)")
       .min(4, 'Your text is too short, even "okay" is enough'),
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
-    lost_relationships: z.enum(["yes", "no", "unknown"]),
+    lost_relationships: z.enum(["yes", "no", "unknown"]).nullable(),
 
     care_after_hospital: z.boolean().nullable(),
     psychosis_how_many: z.enum([
@@ -90,7 +93,7 @@ export const theirQuestionsSchemaCustom = z
       "five or more",
     ]),
     gained_weight: z.boolean(),
-    cannabis: z.enum(["yes", "no", "unknown"]),
+    cannabis: z.enum(["yes", "no", "unknown"]).nullable(),
     // Added 2026-11 (nullable for older submissions; the questionnaire always asks them)
     symptom_free_on_meds: z.boolean().nullable(),
     how_it_altered_life: z
@@ -105,7 +108,7 @@ export const theirQuestionsSchemaCustom = z
     exercise: z
       .enum(["no exercise", "little", "moderately", "lots of exercise"])
       .nullable(),
-    suicide_attempts: z.enum(["yes", "no", "unknown"]),
+    suicide_attempts: z.enum(["yes", "no", "unknown"]).nullable(),
     //TODO these below four need to be updated in everywhere
     has_been_hospitalized: z.enum(["yes", "no", "unknown"]),
     hospital_satisfaction: z.enum(["yes", "no", "unknown"]).nullable(),
@@ -301,6 +304,11 @@ export const theirQuestionsSchemaCustom = z
         : !data?.care_after_hospital;
     },
     { message: "31" }
+  )
+  .refine(
+    // partner/friends/children could already be left empty here
+    (data) => declinedConsistent("Their_questions", data, (key) => ["partner", "friends", "children"].includes(key)),
+    { message: "Sensitive answers don't match the declined list" }
   );
 
 export type QuestionsPersonalZodTypes = z.infer<

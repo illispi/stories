@@ -28,6 +28,8 @@ export const postPersonalStats = userProcedure
 					seen: true,
 				})
 				.execute();
+			// Submitted: the saved progress isn't needed any more
+			await ctx.db.deleteFrom("poll_drafts").where("user", "=", ctx.user.id).where("poll", "=", "personalQuestions").execute();
 		} catch (error) {
 			if (isUniqueViolation(error)) {
 				throw new TRPCError({ code: "CONFLICT", message: "You have already submitted the personal poll." });
@@ -51,6 +53,7 @@ export const postTheirStats = userProcedure
 				seen: true,
 			})
 			.execute();
+		await ctx.db.deleteFrom("poll_drafts").where("user", "=", ctx.user.id).where("poll", "=", "theirQuestions").execute();
 
 		return "Added succesfully";
 	});

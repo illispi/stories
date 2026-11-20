@@ -7,6 +7,7 @@ import { questions as questionsT } from "~/data/theirQuestionsArr";
 // biome-ignore lint/suspicious/noExplicitAny: values depend on the question type
 type Answers = Record<string, any>;
 import { confetti } from "~/utils/confetti";
+import { isSensitive, LS_POLL, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
@@ -120,6 +121,11 @@ export const UnitQuestion: ParentComponent<{
 	const [error, setError] = createSignal<string | null>(null);
 	const [multiSelections, setMultiSelections] = createSignal<Record<string, boolean>>(multiSelInit() ?? {});
 	const [yesOrNO, setYesOrNO] = createSignal(valueOfLS as boolean);
+	// "Prefer not to say" (sensitive questions only): stored as null + the key in `declined`
+	const sensitive = isSensitive(LS_POLL[props.LsName], questionDB);
+	const [declined, setDeclined] = createSignal(
+		Array.isArray(questionsLs.declined) && (questionsLs.declined as string[]).includes(questionDB),
+	);
 	const [selection, setSelection] = createSignal(valueOfLS as string);
 	const [metric, setMetric] = createSignal<boolean>(
 		JSON.parse(localStorage.getItem("system") ?? '"true"'),
@@ -197,9 +203,10 @@ export const UnitQuestion: ParentComponent<{
 
 	const handleSubmit = (
 		value: {
-			[property: string]: boolean | number | string | undefined;
+			[property: string]: boolean | number | string | null | undefined;
 		},
 		skipAmount?: number,
+		declineAnswer = false,
 	) => {
 		try {
 			if (questionDB === "weight_amount") {
@@ -216,9 +223,15 @@ export const UnitQuestion: ParentComponent<{
 			}
 			setSelection(value[questionDB] as string);
 			setYesOrNO(value[questionDB] as boolean);
+			setDeclined(declineAnswer);
+			const declinedList = new Set<string>(
+				Array.isArray(questionsLs.declined) ? (questionsLs.declined as string[]) : [],
+			);
+			if (declineAnswer) declinedList.add(questionDB);
+			else declinedList.delete(questionDB);
 			localStorage.setItem(
 				props.LsName,
-				JSON.stringify({ ...questionsLs, ...value }),
+				JSON.stringify({ ...questionsLs, ...value, declined: [...declinedList] }),
 			);
 			const LsExistsJunctions = localStorage.getItem(
 				`junctions_${props.LsName}`,
@@ -296,6 +309,34 @@ export const UnitQuestion: ParentComponent<{
 			return undefined;
 		}
 	};
+
+	/** "Prefer not to say": like "No", it skips the follow-up questions. */
+	const preferNot = () =>
+		handleSubmit(
+			{ [questionDB]: null },
+			skip
+				? questions.findIndex((e) => e.questionDB === skip) -
+						questions.findIndex((e) => e.questionDB === questionDB) -
+						1
+				: undefined,
+			true,
+		);
+
+	const PreferNotButton = () => (
+		<Show when={sensitive}>
+			<button
+				type="button"
+				class="w-56 rounded-full border-2 px-4 py-3 font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+				classList={{
+					"border-green-500 bg-green-500 text-white": declined(),
+					"border-slate-300 bg-white text-slate-700 hover:bg-slate-100": !declined(),
+				}}
+				onClick={preferNot}
+			>
+				{PREFER_NOT_LABEL}
+			</button>
+		</Show>
+	);
 
 	const handleNumber = (
 		e: SubmitEvent & { currentTarget: HTMLFormElement },
@@ -435,6 +476,9 @@ export const UnitQuestion: ParentComponent<{
 								</div>
 							)}
 						</For>
+						<div class="m-2">
+							<PreferNotButton />
+						</div>
 					</div>
 				</Box>
 			</Match>
@@ -594,6 +638,7 @@ export const UnitQuestion: ParentComponent<{
 						>
 							No
 						</CustomButton>
+						<PreferNotButton />
 					</div>
 				</Box>
 			</Match>

@@ -11,21 +11,18 @@ export const YesOrNoComponent: Component<{
 	const [qDAata, setQDAata] = createSignal<ChartistData | null>(null);
 
 	createEffect(() => {
-		if (props.data?.[props.stat]) {
+		const d = props.data?.[props.stat] as { yes: number; no: number; prefer_not?: number } | undefined;
+		if (d) {
+			// A third slice for "Prefer not to say" on sensitive questions, when anyone chose it
+			const parts: [string, number][] = [
+				["Yes", d.yes],
+				["No", d.no],
+				...(d.prefer_not ? ([["Prefer not to say", d.prefer_not]] as [string, number][]) : []),
+			];
+			const total = parts.reduce((a, [, n]) => a + n, 0);
 			setQDAata({
-				labels: [
-					`Yes ${Math.floor(
-						(props.data?.[props.stat].yes /
-							(props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-							100,
-					)}%`,
-					`No ${Math.floor(
-						(props.data?.[props.stat].no /
-							(props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-							100,
-					)}%`,
-				],
-				series: [props.data?.[props.stat].yes, props.data?.[props.stat].no],
+				labels: parts.map(([label, n]) => `${label} ${total ? Math.floor((n / total) * 100) : 0}%`),
+				series: parts.map(([, n]) => n),
 			});
 		}
 	});

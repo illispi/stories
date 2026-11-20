@@ -7,6 +7,7 @@ import type { MainReturn } from "~/types/types";
 import { publicProcedure } from "../../utils";
 import { countAgeBrackets } from "~/utils/ageBrackets";
 import { cachedStats } from "~/server/statsCache";
+import { isSensitive, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import { aggregateViewAllowed, allCellsSafe, matching, respondentCells, tooSmall } from "~/server/privacy";
 import type { Context } from "../../context";
 
@@ -116,11 +117,16 @@ const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Cont
 			const automatic: Record<string, any> = {};
 
 			questions.forEach((e) => {
+				// "Prefer not to say" answers (sensitive questions only), shown as their own slice/bar
+				const declinedCount = isSensitive(payload.pOrT, e.questionDB)
+					? filterSensitive.filter((d) => Array.isArray(d.declined) && d.declined.includes(e.questionDB)).length
+					: 0;
 				if (e.questionType === "yesOrNo") {
 					const yesOrNo = filterSensitive.map((i) => i[e.questionDB]);
 					automatic[e.questionDB] = {
 						yes: yesOrNo.filter((i) => i === true).length,
 						no: yesOrNo.filter((i) => i === false).length,
+						...(declinedCount ? { prefer_not: declinedCount } : {}),
 					};
 				} else if (e.questionType === "integer") {
 					if (e.questionDB === "weight_amount") {
@@ -197,6 +203,7 @@ const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Cont
 							(d) => d[e.questionDB] === i,
 						).length;
 					});
+					if (declinedCount) selections[PREFER_NOT_LABEL] = declinedCount;
 					automatic[e.questionDB] = selections;
 				} else if (e.questionType === "text") {
 					// Up to 5 random answers
@@ -336,15 +343,31 @@ export const articlesPagination = publicProcedure
 			page: z.number().int().min(0),
 			/** Only articles with this topic */
 			tag: z.enum(ARTICLE_TAG_KEYS).nullable().default(null),
+			sort: z.enum(["newest", "helpful"]).default("newest"),
 		}),
 	)
 	.query(async ({ input: payload, ctx }) => {
 		const hasTag = sql<boolean>`tags @> ARRAY[${payload.tag}]::text[]`;
+		const userId = ctx.user?.id ?? null;
 		const articles = await ctx.db
 			.selectFrom("Articles")
-			.select(["id", "link", "description", "tags"])
+			.select((eb) => [
+				"id",
+				"link",
+				"description",
+				"tags",
+				eb
+					.selectFrom("article_votes")
+					.select(eb.fn.countAll<number>().as("n"))
+					.whereRef("article_votes.article_id", "=", "Articles.id")
+					.as("helpful"),
+				// For the signed-in user: did they vote, is it their own (votes on those are refused)
+				sql<boolean>`exists (select 1 from article_votes v where v.article_id = "Articles".id and v."user" = ${userId})`.as("voted"),
+				sql<boolean>`coalesce("Articles"."user" = ${userId}, false)`.as("mine"),
+			])
 			.where("accepted", "=", true)
 			.$if(payload.tag !== null, (qb) => qb.where(hasTag))
+			.$if(payload.sort === "helpful", (qb) => qb.orderBy(sql`helpful`, "desc"))
 			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
 			.orderBy("created_at", "desc")
 			.orderBy("id", "desc")

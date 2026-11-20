@@ -19,6 +19,14 @@ const PrivacyNotice = () => {
 						on the "Your data" page.
 					</p>
 					<p class="text-lg">
+						While you're signed in, unfinished poll answers are saved to your
+						account so you can continue on another device. They're deleted when
+						you submit or clear the poll, and you can delete them on "Your data".
+						Which articles you voted helpful is stored too, but only the vote
+						count is shown. On "Your data" you can also download everything
+						stored about your account.
+					</p>
+					<p class="text-lg">
 						The site is served through Cloudflare, which processes visitors' IP
 						addresses for security and rate limiting. Anonymous visit statistics
 						are collected with Cloudflare Web Analytics, which uses no cookies and

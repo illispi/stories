@@ -2,7 +2,7 @@ import { A, useParams } from "~/utils/router";
 import { withProviders } from "~/islands/withProviders";
 import { route as routeGen } from "~/utils/routes";
 import type { ParentComponent, Setter } from "solid-js";
-import { createEffect, createSignal, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, on, onCleanup, Show, Suspense } from "solid-js";
 import { Transition } from "solid-transition-group";
 import CustomButton from "~/components/CustomButton";
 import { ModalOptions } from "~/components/ModalOptions";
@@ -12,6 +12,10 @@ import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsPersonal } from "~/data/personalQuestionsArr";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
 import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
+import { trpc } from "~/utils/trpc";
+import { Toaster, showToast } from "~/components/Toast";
+import PollIntro from "~/components/PollIntro";
+import { hasLocalAnswers, localSavedAt, localSnapshot, restoreSnapshot, setLocalSavedAt } from "~/utils/pollDraftLocal";
 
 /** Computed on the server by the .astro page (logged in? personal poll already submitted?). */
 export type UserState = { user: boolean; data: boolean };
@@ -176,8 +180,118 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 		}
 	});
 
+	/* ----- progress saved to the account (signed-in users), to continue on another device ----- */
+
+	const signedIn = Boolean(user()?.user);
+	const draftQuery = trpc.getDraft.createQuery(
+		() => ({ poll: LsName }),
+		() => ({ enabled: signedIn, refetchOnWindowFocus: false }),
+	);
+	const saveDraftMut = trpc.saveDraft.createMutation(() => ({
+		onSuccess: (r) => setLocalSavedAt(LsName, r.updatedAt),
+	}));
+	const deleteDraftMut = trpc.deleteDraft.createMutation();
+	// A newer draft from another device while this one has its own answers: let the user choose
+	const [draftOffer, setDraftOffer] = createSignal<{ data: Record<string, string>; updatedAt: number } | null>(null);
+	// Don't save before the saved draft has been checked, or a fresh device would overwrite it
+	const [draftChecked, setDraftChecked] = createSignal(!signedIn);
+
+	// Intro before the first question, for people who haven't started yet
+	const [showIntro, setShowIntro] = createSignal(
+		!hasLocalAnswers(LsName) && Number(localStorage.getItem(`page_${LsName}`) ?? 0) === 0,
+	);
+
+	// Not for someone who has already submitted the personal poll (they see a notice instead)
+	const introVisible = () => showIntro() && !(user()?.data && LsName === "personalQuestions");
+
+	const useDraft = (draft: { data: Record<string, string>; updatedAt: number }) => {
+		setShowIntro(false);
+		restoreSnapshot(LsName, draft.data, draft.updatedAt);
+		setDraftOffer(null);
+		setPage(-1); // re-read the page (and answers) from localStorage
+	};
+
+	createEffect(
+		on(
+			() => draftQuery.data,
+			(draft) => {
+				if (!signedIn || !draftQuery.isFetched || draftChecked()) return;
+				setDraftChecked(true);
+				if (!draft || draft.updatedAt <= localSavedAt(LsName)) return;
+				if (!hasLocalAnswers(LsName)) {
+					useDraft(draft);
+					showToast("Continuing where you left off");
+				} else {
+					setDraftOffer(draft);
+				}
+			},
+		),
+	);
+
+	// Save after every step (debounced), once the check above is done
+	let saveTimer: ReturnType<typeof setTimeout> | undefined;
+	createEffect(
+		on(page, (p) => {
+			if (!signedIn || !draftChecked() || draftOffer() || p < 0 || submissionStatus() === "success") return;
+			clearTimeout(saveTimer);
+			saveTimer = setTimeout(() => {
+				if (hasLocalAnswers(LsName)) saveDraftMut.mutate({ poll: LsName, data: localSnapshot(LsName) });
+			}, 800);
+		}),
+	);
+	onCleanup(() => clearTimeout(saveTimer));
+
+	const clearAnswers = () => {
+		localStorage.clear();
+		setClear(false);
+		setPage(-1);
+		if (signedIn) deleteDraftMut.mutate({ poll: LsName });
+	};
+
 	return (
 		<div class="flex h-screen w-full flex-col items-center justify-start">
+			<Toaster />
+			<Show when={draftOffer()}>
+				{(draft) => (
+					<div
+						role="dialog"
+						aria-label="Saved progress"
+						class="fixed inset-x-0 top-20 z-40 mx-auto flex w-11/12 max-w-lg flex-col gap-3 rounded-2xl bg-white p-5 text-center shadow-2xl ring-2 ring-fuchsia-300"
+					>
+						<p class="font-semibold">You have newer progress saved from another device.</p>
+						<p class="text-slate-600 text-sm">
+							Saved {new Date(draft().updatedAt).toLocaleString()}, at question{" "}
+							{Number(draft().data[`page_${LsName}`] ?? 0) + 1} of {questions.length}.
+						</p>
+						<div class="flex flex-wrap justify-center gap-2">
+							<CustomButton class="m-0" onClick={() => useDraft(draft())}>
+								Continue from saved
+							</CustomButton>
+							<CustomButton
+								class="m-0 bg-slate-500 hover:bg-slate-600 focus:bg-slate-600 active:bg-slate-600"
+								onClick={() => {
+									setDraftOffer(null);
+									saveDraftMut.mutate({ poll: LsName, data: localSnapshot(LsName) });
+								}}
+							>
+								Keep this device's answers
+							</CustomButton>
+						</div>
+					</div>
+				)}
+			</Show>
+			<Show when={introVisible()}>
+				<PollIntro
+					poll={LsName}
+					questions={questions}
+					signedIn={signedIn}
+					onStart={() => {
+						setShowIntro(false);
+						window.scrollTo({ top: 0 });
+					}}
+				/>
+			</Show>
+			<Show when={!introVisible()}>
 			<Suspense
 				fallback={
 					<div class="flex h-screen w-full flex-col items-center justify-center">
@@ -245,11 +359,7 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 
 									<CustomButton
 										class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
-										onClick={() => {
-											localStorage.clear();
-											setClear(false);
-											setPage(-1);
-										}}
+										onClick={clearAnswers}
 									>
 										Clear answers
 									</CustomButton>
@@ -352,11 +462,7 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 
 												<CustomButton
 													class="bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 active:bg-orange-600"
-													onClick={() => {
-														localStorage.clear();
-														setClear(false);
-														setPage(-1);
-													}}
+													onClick={clearAnswers}
 												>
 													Clear answers
 												</CustomButton>
@@ -377,6 +483,7 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 					</Show>
 				</Show>
 			</Suspense>
+			</Show>
 		</div>
 	);
 };

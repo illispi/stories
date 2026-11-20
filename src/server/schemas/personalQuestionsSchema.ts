@@ -1,8 +1,11 @@
 import { z } from "zod";
+import { SENSITIVE, declinedConsistent } from "~/data/sensitiveQuestions";
 
 export const personalQuestionsSchemaCustom = z
   .object({
     systemMetric: z.boolean(),
+    /** Sensitive questions answered "Prefer not to say" (src/data/sensitiveQuestions.ts) */
+    declined: z.array(z.enum(SENSITIVE.Personal_questions)).max(SENSITIVE.Personal_questions.length).default([]),
     diagnosis: z.enum(["schizophrenia", "schizoaffective"]),
     gender: z.enum(["other", "male", "female"]),
     //BUG maybe refine that age_of_onset is smaller than current age
@@ -88,7 +91,7 @@ export const personalQuestionsSchemaCustom = z
         "Less than 10 a week",
       ])
       .nullable(),
-    cannabis: z.boolean(),
+    cannabis: z.boolean().nullable(),
     // Added 2026-11 (nullable for older submissions; the questionnaire always asks them)
     symptom_free_on_meds: z.boolean().nullable(),
     how_it_altered_life: z
@@ -103,7 +106,7 @@ export const personalQuestionsSchemaCustom = z
     exercise: z
       .enum(["no exercise", "little", "moderately", "lots of exercise"])
       .nullable(),
-    suicidal_thoughts: z.boolean(),
+    suicidal_thoughts: z.boolean().nullable(),
     suicide_attempts: z.boolean().nullable(),
     negative_symptoms: z.boolean(),
     flat_expressions: z.boolean().nullable(),
@@ -148,9 +151,9 @@ export const personalQuestionsSchemaCustom = z
       "student",
       "other",
     ]),
-    partner: z.boolean(),
-    friends: z.boolean(),
-    children: z.boolean(),
+    partner: z.boolean().nullable(),
+    friends: z.boolean().nullable(),
+    children: z.boolean().nullable(),
     told_family: z.boolean(),
     told_nobody: z.boolean(),
     told_friends: z.boolean(),
@@ -181,7 +184,7 @@ export const personalQuestionsSchemaCustom = z
       .max(600, "Your text is too long! (Max. 600 characters)")
       .min(4, 'Your text is too short, even "okay" is enough'),
 
-    lost_relationships: z.boolean(),
+    lost_relationships: z.boolean().nullable(),
     relatives: z.boolean(),
     relative_cousins: z.boolean().nullable(),
     relative_parents: z.boolean().nullable(),
@@ -302,7 +305,7 @@ export const personalQuestionsSchemaCustom = z
   .refine(
     (data) => {
       return data.suicidal_thoughts
-        ? data.suicide_attempts !== null
+        ? data.suicide_attempts !== null || data.declined.includes("suicide_attempts")
         : !data?.suicide_attempts;
     },
     { message: "18" }
@@ -516,4 +519,12 @@ export const personalQuestionsSchemaCustom = z
         : !data?.describe_hospital;
     },
     { message: "39" }
+  )
+  .refine(
+    (data) =>
+      declinedConsistent("Personal_questions", data, (key) =>
+        // Not asked when there were no (or undisclosed) suicidal thoughts
+        key === "suicide_attempts" && data.suicidal_thoughts !== true,
+      ),
+    { message: "Sensitive answers don't match the declined list" }
   );

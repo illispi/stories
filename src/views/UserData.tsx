@@ -643,6 +643,23 @@ const Page = () => {
 				Edited submissions go back to review before they show up in the results.
 			</p>
 
+			<SavedProgress />
+
+			<div class="flex w-11/12 max-w-2xl flex-col items-center gap-4 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">Download your data</h2>
+				<p class="text-center text-lg">
+					Everything stored about your account, including answers waiting for review, as a JSON file.
+				</p>
+				<a
+					href="/api/user/export"
+					download
+					data-astro-reload
+					class="rounded-full bg-blue-500 p-3 px-6 font-semibold text-white transition-all duration-200 ease-in hover:scale-110 hover:bg-blue-600 focus:bg-blue-600 active:scale-125"
+				>
+					Download my data
+				</a>
+			</div>
+
 			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
 				<h2 class="text-center font-bold text-2xl lg:text-3xl">Delete account</h2>
 				<p class="text-center text-lg">Deletes both your account and all data you have submitted.</p>
@@ -687,6 +704,48 @@ const Page = () => {
 				</CssTranstionGrow>
 			</div>
 		</div>
+	);
+};
+
+/** Unfinished polls saved to the account (to continue on another device), with delete. */
+const SavedProgress = () => {
+	const utils = trpc.useContext();
+	const drafts = trpc.listDrafts.createQuery();
+	const del = trpc.deleteDraft.createMutation(() => ({ onSuccess: () => utils.listDrafts.invalidate() }));
+	const name = { personalQuestions: "Personal poll", theirQuestions: "Relatives' poll" } as const;
+	return (
+		<Show when={drafts.data?.length}>
+			<div class="flex w-11/12 max-w-2xl flex-col gap-4 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-10 shadow-xl lg:p-16">
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">Unfinished polls</h2>
+				<p class="text-center text-slate-600">
+					Progress saved to your account, so you can continue on any device. It isn't submitted or shown anywhere.
+				</p>
+				<For each={drafts.data}>
+					{(d) => (
+						<div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200">
+							<div>
+								<p class="font-semibold">{name[d.poll]}</p>
+								<p class="text-slate-600 text-sm">
+									At question {d.page + 1} · saved {new Date(d.updatedAt).toLocaleString()}
+								</p>
+							</div>
+							<div class="flex gap-2">
+								<A class={ctaClass} href={routeGen("/questionares/:personalQuestions", { personalQuestions: d.poll })}>
+									Continue
+								</A>
+								<CustomButton
+									class="m-0 bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+									disabled={del.isPending}
+									onClick={() => del.mutate({ poll: d.poll })}
+								>
+									Delete
+								</CustomButton>
+							</div>
+						</div>
+					)}
+				</For>
+			</div>
+		</Show>
 	);
 };
 

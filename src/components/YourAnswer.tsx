@@ -1,6 +1,7 @@
 import { Show } from "solid-js";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
+import { PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 
 type Poll = "Personal_questions" | "Their_questions";
 type Row = Record<string, unknown>;
@@ -37,6 +38,7 @@ export const answerText = (poll: Poll, stat: string, row: Row): string | null =>
 		return picked.length ? picked.join(", ") : "None of these";
 	}
 
+	if (Array.isArray(row.declined) && row.declined.includes(key)) return PREFER_NOT_LABEL;
 	const value = row[key];
 	if (value === null || value === undefined || value === "") return skipped;
 	switch (q.questionType) {
