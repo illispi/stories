@@ -10,11 +10,15 @@ const appOrigin = new URL(BETTER_AUTH_URL).origin;
 const matches = (path: string, prefixes: string[]) =>
 	prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 
-/** No framing by other sites (clickjacking), no MIME sniffing, no full URLs in Referer. */
+/**
+ * No framing by other sites (clickjacking), no MIME sniffing, no full URLs in Referer.
+ * Same-origin framing stays allowed: Astro's ClientRouter (in dev) loads the next page in a
+ * hidden same-origin iframe, and 'none' would make every page transition hang.
+ */
 const withSecurityHeaders = (response: Response) => {
 	try {
-		response.headers.set("X-Frame-Options", "DENY");
-		response.headers.set("Content-Security-Policy", "frame-ancestors 'none'");
+		response.headers.set("X-Frame-Options", "SAMEORIGIN");
+		response.headers.set("Content-Security-Policy", "frame-ancestors 'self'");
 		response.headers.set("X-Content-Type-Options", "nosniff");
 		response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
 	} catch {
