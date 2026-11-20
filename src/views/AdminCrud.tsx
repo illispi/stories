@@ -89,6 +89,15 @@ const Page = () => {
 		utils.pendingCounts.invalidate();
 	};
 
+	// Pending counts for the red badges on the filters (same query as the admin bell)
+	const pending = trpc.pendingCounts.createQuery(undefined, () => ({ placeholderData: (prev) => prev }));
+	const pendingFor = (t: Tab, poll: Poll) =>
+		t === "articles"
+			? (pending.data?.articles ?? 0)
+			: poll === "Their_questions"
+				? (pending.data?.their ?? 0)
+				: (pending.data?.personal ?? 0);
+
 	const submissions = trpc.listSubmissions.createQuery(
 		() => ({ page: page(), accepted: statusValue[status()], pOrT: pOrT() }),
 		() => ({ enabled: tab() === "poll", placeholderData: (prev) => prev }),
@@ -135,7 +144,7 @@ const Page = () => {
 	return (
 		<AdminShell title="Review submissions" description="New poll answers and articles stay hidden until accepted.">
 			<AdminCard>
-				<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+				<div class="flex flex-wrap items-center gap-x-6 gap-y-4 pt-1">
 					<Segmented
 						label="What to review"
 						options={[
@@ -143,6 +152,10 @@ const Page = () => {
 							["articles", "Articles"],
 						]}
 						value={tab()}
+						badges={{
+							poll: (pending.data?.personal ?? 0) + (pending.data?.their ?? 0),
+							articles: pending.data?.articles ?? 0,
+						}}
 						onChange={(v) => {
 							setTab(v);
 							resetView();
@@ -156,6 +169,10 @@ const Page = () => {
 								["Their_questions", "Other"],
 							]}
 							value={pOrT()}
+							badges={{
+								Personal_questions: pending.data?.personal ?? 0,
+								Their_questions: pending.data?.their ?? 0,
+							}}
 							onChange={(v) => {
 								setPOrT(v);
 								resetView();
@@ -170,6 +187,7 @@ const Page = () => {
 							["declined", "Declined"],
 						]}
 						value={status()}
+						badges={{ pending: pendingFor(tab(), pOrT()) }}
 						onChange={(v) => {
 							setStatus(v);
 							resetView();
