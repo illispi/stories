@@ -86,6 +86,9 @@ importers:
       pg:
         specifier: ^8.13.0
         version: 8.23.1
+      sharp:
+        specifier: ^0.35.3
+        version: 0.35.5(@types/node@26.6.6)
       solid-js:
         specifier: ^1.9.4
         version: 1.9.19
@@ -3618,8 +3621,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  '@img/colour@1.1.0':
-    optional: true
+  '@img/colour@1.1.0': {}
 
   '@img/sharp-darwin-arm64@0.35.5':
     optionalDependencies:
@@ -5499,7 +5501,6 @@ snapshots:
       '@img/sharp-win32-ia32': 0.35.5
       '@img/sharp-win32-x64': 0.35.5
       '@types/node': 26.6.6
-    optional: true
 
   shelljs.exec@1.1.8: {}
 
