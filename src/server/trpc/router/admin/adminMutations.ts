@@ -320,3 +320,11 @@ export const fakeArticlesForDev = devAdminProcedure.mutation(async ({ ctx }) => 
 		});
 	}
 });
+
+/**
+ * Throws on purpose so Sentry's server-side reporting can be tested from /admin/sentry.
+ * A plain Error becomes INTERNAL_SERVER_ERROR, which the tRPC handler reports to Sentry.
+ */
+export const sentryTestError = adminProcedure.mutation(() => {
+	throw new Error(`Sentry test: tRPC server error (${new Date().toISOString()})`);
+});

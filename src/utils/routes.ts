@@ -4,6 +4,7 @@ export type RouteParams = {
 	"/admin/": Record<string, never>;
 	"/admin/adminCrud": Record<string, never>;
 	"/admin/fake": Record<string, never>;
+	"/admin/sentry": Record<string, never>;
 	"/admin/users": Record<string, never>;
 	"/articles/": Record<string, never>;
 	"/compare/": Record<string, never>;

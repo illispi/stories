@@ -25,6 +25,12 @@ const Page = () => {
 				>
 					Find and delete an account
 				</A>
+				<A
+					class="duration-200 ease-out active:scale-125"
+					href={routeGen("/admin/sentry")}
+				>
+					Test Sentry error reporting
+				</A>
 			</div>
 		</Suspense>
 	);

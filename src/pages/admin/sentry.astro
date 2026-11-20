@@ -1,0 +1,9 @@
+---
+// Admin role is enforced by src/middleware.ts
+import Layout from "~/layouts/Layout.astro";
+import AdminSentry from "~/views/AdminSentry";
+---
+
+<Layout title="Sentry test · Admin">
+	<AdminSentry client:only="solid-js" />
+</Layout>
