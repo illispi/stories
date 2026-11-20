@@ -27,10 +27,46 @@ type DiagnosisFilter = "all" | "schizophrenia" | "schizoaffective";
 
 const isGender = (v: CompareOptions) => v === "male" || v === "female" || v === "other";
 
+/** Pill-shaped radio group: one option is always selected. */
+function Segmented<T extends string>(props: {
+	label: string;
+	options: [T, string][];
+	value: T;
+	onChange: (value: T) => void;
+}) {
+	return (
+		<div
+			role="radiogroup"
+			aria-label={props.label}
+			class="inline-flex flex-wrap justify-center rounded-full bg-slate-100 p-1 ring-1 ring-slate-200"
+		>
+			<For each={props.options}>
+				{([value, text]) => (
+					<button
+						type="button"
+						role="radio"
+						aria-checked={props.value === value}
+						class="rounded-full px-4 py-1.5 font-semibold text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+						classList={{
+							"bg-blue-800 text-white shadow-sm": props.value === value,
+							"text-slate-700 hover:bg-white": props.value !== value,
+						}}
+						onClick={() => props.onChange(value)}
+					>
+						{text}
+					</button>
+				)}
+			</For>
+		</div>
+	);
+}
+
 const Compared: Component<{
 	setB: Setter<CompareOptions>;
 	setA: Setter<CompareOptions>;
 	setCompOrder: Setter<(Stat | YesOrNo | Doughnut | Bar | Text)[]>;
+	a: CompareOptions;
+	b: CompareOptions;
 	diagnosis: DiagnosisFilter;
 	setDiagnosis: Setter<DiagnosisFilter>;
 }> = (props) => {
@@ -79,86 +115,95 @@ const Compared: Component<{
 		}
 	};
 
+	const chooseDiagnosis = () => {
+		setSelection("diagnosis");
+		props.setDiagnosis("all");
+		props.setCompOrder(byDiagnosis);
+		props.setA("schizophrenia");
+		props.setB("schizoaffective");
+	};
+
+	const chooseGender = () => {
+		setSelection("gender");
+		setMale(true);
+		setFemale(true);
+		setOther(false);
+		props.setDiagnosis("all");
+		props.setCompOrder(byGender);
+		props.setA("male");
+		props.setB("female");
+	};
+
 	return (
 		<div class="my-6 flex flex-col items-center justify-between">
 			<ModalPopUp setMessage={setMessage} message={message()} />
-			<div class="flex items-center justify-center">
-				<CustomButton
-					class={
-						selection() === "diagnosis"
-							? "w-32 bg-blue-800 hover:bg-blue-900 active:bg-blue-900"
-							: "w-32"
-					}
-					onClick={() => {
-						setSelection("diagnosis");
-						props.setDiagnosis("all");
-						props.setCompOrder(byDiagnosis);
-						props.setA("schizophrenia");
-						props.setB("schizoaffective");
+			<div class="flex w-11/12 max-w-md justify-center rounded-3xl bg-white p-4 shadow-sm shadow-slate-400 lg:max-w-xl">
+				{/* w-fit keeps the labels in one right-aligned column and the controls left-aligned. */}
+				<div class="w-full sm:w-fit">
+				<div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+					<span class="text-sm font-medium text-slate-600 sm:w-24 sm:text-right">Compare by</span>
+					<Segmented
+						label="Compare by"
+						options={[
+							["diagnosis", "Diagnosis"],
+							["gender", "Gender"],
+						]}
+						value={selection()}
+						onChange={(v) => (v === "diagnosis" ? chooseDiagnosis() : chooseGender())}
+					/>
+				</div>
+				{/* Gender options fold open below; grid-rows animates the height. */}
+				<div
+					class="grid transition-all duration-300 ease-in-out"
+					classList={{
+						"mt-4 grid-rows-[1fr] opacity-100": selection() === "gender",
+						"grid-rows-[0fr] opacity-0": selection() !== "gender",
 					}}
+					inert={selection() !== "gender"}
 				>
-					By Diagnosis
-				</CustomButton>
-				<CustomButton
-					class={
-						selection() !== "diagnosis"
-							? "w-32 bg-blue-800 hover:bg-blue-900 active:bg-blue-900"
-							: "w-32"
-					}
-					onClick={() => {
-						setSelection("gender");
-
-						setMale(true);
-						setFemale(true);
-						setOther(false);
-						props.setDiagnosis("all");
-						props.setCompOrder(byGender);
-						props.setA("male");
-						props.setB("female");
-					}}
-				>
-					By Gender
-				</CustomButton>
-			</div>
-			{/* NOTE how to animate invisible */}
-			<CustomButton
-				class={`mt-4 transition-all duration-300 ${
-					selection() !== "gender"
-						? "invisible opacity-0"
-						: "visible opacity-100"
-				}`}
-				onclick={() => {
-					setGenderModalVisible(true);
-					document.body.style.overflow = "hidden";
-				}}
-			>
-				Change Genders
-			</CustomButton>
-			<div
-				class={`mt-2 flex flex-col items-center transition-all duration-300 ${
-					selection() !== "gender" ? "invisible opacity-0" : "visible opacity-100"
-				}`}
-			>
-				<span class="text-sm">Diagnosis</span>
-				<div class="flex flex-wrap items-center justify-center">
-					<For
-						each={
-							[
-								["all", "All"],
-								["schizophrenia", "Schizophrenia"],
-								["schizoaffective", "Schizoaffective"],
-							] as const
-						}
-					>
-						{([value, text]) => (
-							<ToggleButton
-								toggled={props.diagnosis === value}
-								onClick={() => props.setDiagnosis(value)}
-							>
-								{text}
-							</ToggleButton>
-						)}
-					</For>
+					<div class="overflow-hidden">
+						<div class="flex flex-col gap-3 border-slate-200 border-t pt-4">
+							<div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+								<span class="text-sm font-medium text-slate-600 sm:w-24 sm:text-right">Genders</span>
+								<button
+									type="button"
+									class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 font-semibold text-slate-800 text-sm ring-1 ring-slate-200 transition-colors duration-200 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+									onClick={() => {
+										setGenderModalVisible(true);
+										document.body.style.overflow = "hidden";
+									}}
+								>
+									<span class="capitalize">{props.a}</span>
+									<span class="font-normal text-slate-500">vs</span>
+									<span class="capitalize">{props.b}</span>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										class="h-4 w-4 text-blue-700"
+										aria-hidden="true"
+									>
+										<path d="M13.586 3.586a2 2 0 1 1 2.828 2.828l-.793.793-2.828-2.828.793-.793ZM11.379 5.793 3 14.172V17h2.828l8.38-8.379-2.83-2.828Z" />
+									</svg>
+									<span class="sr-only">Change genders</span>
+								</button>
+							</div>
+							<div class="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+								<span class="text-sm font-medium text-slate-600 sm:w-24 sm:text-right">Diagnosis</span>
+								<Segmented
+									label="Diagnosis"
+									options={[
+										["all", "All"],
+										["schizophrenia", "Schizophrenia"],
+										["schizoaffective", "Schizoaffective"],
+									]}
+									value={props.diagnosis}
+									onChange={props.setDiagnosis}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
 				</div>
 			</div>
 
@@ -377,6 +422,8 @@ const CompareStats = () => {
 					setA={setA}
 					setB={setB}
 					setCompOrder={setCompOrder}
+					a={A()}
+					b={B()}
 					diagnosis={diagnosis()}
 					setDiagnosis={setDiagnosis}
 				/>
