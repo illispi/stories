@@ -11,7 +11,7 @@ import {
 	fakeForDevBulk,
 	fakeForFake,
 } from "./admin/adminMutations";
-import { listArticles, listSubmissions, searchUsersByText } from "./admin/adminQueries";
+import { listArticles, listSubmissions, pendingCounts, searchUsersByText } from "./admin/adminQueries";
 import {
 	postArticle,
 	postPersonalStats,
@@ -50,6 +50,7 @@ export const appRouter = router({
 	deleteArticleAdmin,
 	deleteUserAdmin,
 	searchUsersByText,
+	pendingCounts,
 	acceptSubmission,
 	declineSubmission,
 	fakeForFake,

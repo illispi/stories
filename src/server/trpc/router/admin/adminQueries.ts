@@ -186,3 +186,24 @@ export const searchUsersByText = adminProcedure
       matches: byUser.get(u.id) ?? [],
     }));
   });
+
+/** Submissions waiting for review (real data), for the admin bell in the navbar. */
+export const pendingCounts = adminProcedure.query(async ({ ctx }) => {
+  const count = async (table: "Personal_questions" | "Their_questions" | "Articles") =>
+    Number(
+      (
+        await ctx.db
+          .selectFrom(table)
+          .select((eb) => eb.fn.countAll<number>().as("n"))
+          .where("accepted", "is", null)
+          .executeTakeFirst()
+      )?.n ?? 0,
+    );
+
+  const [personal, their, articles] = await Promise.all([
+    count("Personal_questions"),
+    count("Their_questions"),
+    count("Articles"),
+  ]);
+  return { personal, their, articles, total: personal + their + articles };
+});

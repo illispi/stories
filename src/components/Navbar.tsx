@@ -6,6 +6,7 @@ import { ErrorBoundary, Show, Suspense, createEffect, createSignal } from "solid
 import clsx from "clsx";
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
+import AdminBell from "./AdminBell";
 import BellNotification from "./BellNotification";
 import "../app.css";
 
@@ -205,6 +206,9 @@ const NavBar: Component = () => {
 				</svg>
 			</A>
 			<div class="flex items-center justify-end gap-4">
+				<Show when={authStatusQ.data?.admin}>
+					<AdminBell />
+				</Show>
 				<Show when={authStatusQ.data?.user}>
 					<BellNotification />
 				</Show>

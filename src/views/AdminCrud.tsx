@@ -17,14 +17,18 @@ const declineSchema = v.object({
 
 const Page = () => {
 	const [accepted, setAccepted] = createSignal<null | boolean>(null);
+	// The admin bell links here with ?tab=articles or ?pOrT=Their_questions
+	const initial = new URLSearchParams(location.search);
 	const [pOrT, setPOrT] = createSignal<
 		"Personal_questions" | "Their_questions"
-	>("Personal_questions");
+	>(initial.get("pOrT") === "Their_questions" ? "Their_questions" : "Personal_questions");
 	const [page, setPage] = createSignal(0);
 	const [pageArticles, setPageArticles] = createSignal(0);
 	const [showModal, setShowModal] = createSignal(false);
 	const [entryEdit, setEntryEdit] = createSignal<number>(0);
-	const [tab, setTab] = createSignal<"poll" | "articles">("poll");
+	const [tab, setTab] = createSignal<"poll" | "articles">(
+		initial.get("tab") === "articles" ? "articles" : "poll",
+	);
 
 	const utils = trpc.useContext();
 
@@ -40,16 +44,28 @@ const Page = () => {
 	}));
 
 	const acceptMut = trpc.acceptSubmission.createMutation(() => ({
-		onSuccess: () => utils.listSubmissions.invalidate(),
+		onSuccess: () => {
+			utils.listSubmissions.invalidate();
+			utils.pendingCounts.invalidate();
+		},
 	}));
 	const declineMut = trpc.declineSubmission.createMutation(() => ({
-		onSuccess: () => utils.listSubmissions.invalidate(),
+		onSuccess: () => {
+			utils.listSubmissions.invalidate();
+			utils.pendingCounts.invalidate();
+		},
 	}));
 	const acceptArticleMut = trpc.acceptArticle.createMutation(() => ({
-		onSuccess: () => utils.listArticles.invalidate(),
+		onSuccess: () => {
+			utils.listArticles.invalidate();
+			utils.pendingCounts.invalidate();
+		},
 	}));
 	const declineArticleMut = trpc.declineArticle.createMutation(() => ({
-		onSuccess: () => utils.listArticles.invalidate(),
+		onSuccess: () => {
+			utils.listArticles.invalidate();
+			utils.pendingCounts.invalidate();
+		},
 	}));
 	// Two-step delete (no browser dialog): first click arms it for that article.
 	const [confirmDelete, setConfirmDelete] = createSignal<number | null>(null);
@@ -57,6 +73,7 @@ const Page = () => {
 		onSuccess: () => {
 			setConfirmDelete(null);
 			utils.listArticles.invalidate();
+			utils.pendingCounts.invalidate();
 		},
 	}));
 
