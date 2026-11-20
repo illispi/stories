@@ -8,6 +8,7 @@ import CustomButton from "~/components/CustomButton";
 import { allStatsPersonalArr } from "~/data/stats/allStatsArr";
 import { allStatsTheirArr } from "~/data/stats/allStatsTheir";
 import { trpc } from "~/utils/trpc";
+import YourAnswer from "~/components/YourAnswer";
 
 const CompareButton: Component = () => {
 	const params = useParams<{
@@ -61,6 +62,26 @@ const AllStatsPage: ParentComponent = () => {
 		params.pOrT === "Personal_questions"
 			? allStatsPersonalArr
 			: allStatsTheirArr;
+
+	// "How do I compare?": signed-in users see their own answer under each chart
+	const isPersonal = params.pOrT === "Personal_questions";
+	const authQuery = trpc.authStatus.createQuery();
+	const signedIn = () => Boolean(authQuery.data?.user);
+	const personalQuery = trpc.getPersonal.createQuery(undefined, () => ({ enabled: signedIn() && isPersonal }));
+	const theirsQuery = trpc.getTheirs.createQuery(undefined, () => ({ enabled: signedIn() && !isPersonal }));
+	// Several relatives' polls: the user picks which one to compare (0 = hide)
+	const [theirId, setTheirId] = createSignal<number | null>(null);
+	const theirs = () => theirsQuery.data ?? [];
+	const chosenTheir = () => {
+		const id = theirId() ?? theirs()[0]?.id;
+		return theirs().find((r) => r.id === id) ?? null;
+	};
+	const myRow = (): Record<string, unknown> | null =>
+		isPersonal ? (personalQuery.data ?? null) : chosenTheir();
+	const theirLabel = (r: Record<string, unknown>, index: number) =>
+		[`Poll ${index + 1}`, r.relation, r.gender, r.current_age ? `age ${r.current_age}` : null, r.diagnosis]
+			.filter(Boolean)
+			.join(" · ");
 
 	const [shown, setShown] = createSignal<Element[]>([]);
 	const [targets, setTargets] = createSignal<Element[]>([]);
@@ -150,17 +171,58 @@ const AllStatsPage: ParentComponent = () => {
 								<div class="flex flex-col items-center justify-center">
 									<div class="z-[5] flex w-full flex-col items-center justify-center gap-4 bg-white">
 										<CompareButton />
+										<Show when={signedIn() && (isPersonal ? personalQuery.data : theirs().length)}>
+											<div class="mx-6 flex flex-col items-center gap-3 rounded-3xl bg-fuchsia-50 p-6 text-center ring-1 ring-fuchsia-200">
+												<h2 class="font-bold text-lg">How do I compare?</h2>
+												<Show
+													when={!isPersonal}
+													fallback={<p>Your own answers are shown under each chart.</p>}
+												>
+													<label class="flex w-full flex-col gap-2">
+														<span>Show the answers from one of your relatives' polls under each chart:</span>
+														<select
+															class="w-full rounded-xl border border-slate-300 bg-white p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-500"
+															onChange={(e) => setTheirId(Number(e.currentTarget.value))}
+														>
+															<For each={theirs()}>
+																{(r, i) => (
+																	<option value={r.id} selected={r.id === chosenTheir()?.id}>
+																		{theirLabel(r, i())}
+																	</option>
+																)}
+															</For>
+															<option value={0} selected={theirId() === 0}>
+																Don't show my answers
+															</option>
+														</select>
+													</label>
+												</Show>
+												<Show when={myRow() && myRow()?.accepted !== true}>
+													<p class="text-slate-600 text-sm">
+														{myRow()?.accepted === false
+															? "This poll was declined, so it isn't counted in these results."
+															: "This poll is waiting for review, so it isn't counted in these results yet."}
+													</p>
+												</Show>
+												<Show when={params.fOrT === "fake"}>
+													<p class="text-slate-600 text-sm">These results are fake data.</p>
+												</Show>
+											</div>
+										</Show>
 										<For each={compOrder}>
 											{(comp) => (
-												<CompSelector
-													{...comp}
-													data={data()}
-													ref={(el: Element) => setTargets((p) => [...p, el])}
-													shown={shown()}
-													removeShown={removeShown}
-													pOrT={params.pOrT}
-													fOrT={params.fOrT}
-												/>
+												<div class="w-full">
+													<CompSelector
+														{...comp}
+														data={data()}
+														ref={(el: Element) => setTargets((p) => [...p, el])}
+														shown={shown()}
+														removeShown={removeShown}
+														pOrT={params.pOrT}
+														fOrT={params.fOrT}
+													/>
+													<YourAnswer poll={params.pOrT} stat={comp.stat} row={myRow()} />
+												</div>
 											)}
 										</For>
 
