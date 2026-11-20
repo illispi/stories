@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/browser";
+import * as Sentry from "@sentry/astro";
 import { QueryClientProvider } from "@tanstack/solid-query";
 import { type Component, ErrorBoundary, Suspense } from "solid-js";
 import CustomButton from "~/components/CustomButton";
@@ -15,7 +15,7 @@ export const withProviders =
 			<ParamsContext.Provider value={props.params ?? {}}>
 				<ErrorBoundary
 					fallback={(e, reset) => {
-						if (import.meta.env.PROD) Sentry.captureException(e);
+						Sentry.captureException(e); // no-op unless Sentry is enabled (production)
 						console.error(e);
 						return (
 							<div class="fixed top-0 left-0 z-40 flex h-screen w-screen items-center justify-center bg-black/30 backdrop-blur-sm transition-all duration-500">

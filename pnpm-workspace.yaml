@@ -2,6 +2,8 @@
 
 # Packages allowed to run install scripts
 allowBuilds:
+  # Downloads the sentry-cli binary, used to upload source maps when SENTRY_AUTH_TOKEN is set
+  '@sentry/cli': true
   esbuild: true
   sharp: true
 

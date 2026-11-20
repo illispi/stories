@@ -2,12 +2,26 @@
 import { defineConfig, envField } from "astro/config";
 import node from "@astrojs/node";
 import solid from "@astrojs/solid-js";
+import sentry from "@sentry/astro";
 
 export default defineConfig({
 	site: "https://poll.delvis.org",
 	output: "server",
 	adapter: node({ mode: "standalone" }),
-	integrations: [solid()],
+	// Error reporting: sentry.client.config.ts / sentry.server.config.ts; the server middleware
+	// for request errors is added automatically. Source maps are uploaded to Sentry only when a
+	// build has SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT set (e.g. in CI).
+	integrations: [
+		solid(),
+		sentry({
+			sourceMapsUploadOptions: {
+				enabled: Boolean(process.env.SENTRY_AUTH_TOKEN),
+				authToken: process.env.SENTRY_AUTH_TOKEN,
+				org: process.env.SENTRY_ORG,
+				project: process.env.SENTRY_PROJECT,
+			},
+		}),
+	],
 	security: { checkOrigin: true },
 	server: { port: 4321 },
 	env: {
@@ -27,11 +41,8 @@ export default defineConfig({
 				access: "public",
 				default: "77657924-9c0f-47e6-9bd1-a282a883c2c9",
 			}),
-			PUBLIC_SENTRY_DSN: envField.string({
-				context: "client",
-				access: "public",
-				default: "https://3a32bedf009e401cbf2249d2b82e97bb@glitchtip.delvis.org/1",
-			}),
+			// The Sentry project's DSN; without it nothing is reported
+			PUBLIC_SENTRY_DSN: envField.string({ context: "client", access: "public", optional: true }),
 		},
 	},
 });

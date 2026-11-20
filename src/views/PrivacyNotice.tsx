@@ -21,8 +21,8 @@ const PrivacyNotice = () => {
 					<p class="text-lg">
 						The site is served through Cloudflare, which processes visitors' IP
 						addresses for security and rate limiting. Anonymous visit statistics
-						are collected with Umami, and errors are reported to a self-hosted
-						error tracker.
+						are collected with Umami. Errors are reported to Sentry, without IP
+						addresses or other personal data.
 					</p>
 					<p class="text-lg">
 						If you lose access to your Discord account, message me on Reddit with

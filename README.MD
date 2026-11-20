@@ -9,6 +9,7 @@ User poll and shared articles about schizophrenia, live at <https://poll.delvis.
 - [tRPC](https://trpc.io) 11 + TanStack Solid Query for the API (`/api/trpc`)
 - PostgreSQL via [Kysely](https://kysely.dev); migrations in `src/migrations`
 - Tailwind CSS 3, Apache ECharts 6 for charts (SVG renderer, tree-shaken in `src/utils/echarts.ts`)
+- Error reporting: [`@sentry/astro`](https://docs.sentry.io/platforms/javascript/guides/astro/) (browser + server, production only) to Sentry; set up in `sentry.client.config.ts` / `sentry.server.config.ts`, DSN from `PUBLIC_SENTRY_DSN`
 - Node.js 26, pnpm 11
 
 ## Local development
@@ -56,7 +57,7 @@ src/
   views/        Page-level Solid components (mounted as islands)
   components/   Shared Solid components
   islands/      Island wrappers (providers, navbar)
-  layouts/      Base layout (navbar, footer, Umami, Sentry)
+  layouts/      Base layout (navbar, footer, Umami)
   server/       DB, Better Auth, tRPC routers, param validation
   middleware.ts Session -> Astro.locals, protected routes, CSRF check for tRPC
   migrations/   Kysely migrations (run by Node's built-in TypeScript support)
@@ -81,6 +82,12 @@ Runtime environment variables (set on the server, never in the image):
 `PSQL_HOST`, `PSQL_PORT`, `PSQL_DATABASE`, `PSQL_USERNAME`, `PSQL_PASSWORD`,
 `BETTER_AUTH_SECRET` (`openssl rand -base64 32`), `BETTER_AUTH_URL=https://poll.delvis.org`,
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`.
+
+Error reporting: set the GitHub Actions variable `PUBLIC_SENTRY_DSN` (repository →
+Settings → Secrets and variables → Actions → Variables) to the Sentry project's DSN; it's
+baked in at build time. Without it nothing is reported. In the Sentry project, turn on
+Settings → Security & Privacy → "Prevent Storing of IP Addresses", which the privacy notice
+relies on.
 
 Put the app behind Cloudflare only (Tunnel or a firewall that allows only Cloudflare IPs):
 rate limiting is done with Cloudflare WAF rules, and the app stores no IP addresses.
