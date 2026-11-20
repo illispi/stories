@@ -396,6 +396,9 @@ export const articlesPagination = publicProcedure
 			.selectFrom("Articles")
 			.select(["link", "description"])
 			.where("accepted", "=", true)
+			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
+			.orderBy("created_at", "desc")
+			.orderBy("id", "desc")
 			.offset(payload.page * 25)
 			.limit(25)
 			.execute();
