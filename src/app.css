@@ -66,6 +66,38 @@ body {
   animation-delay: 300ms;
 }
 
+/* Back navigation (Astro sets data-astro-transition="back"): slide the other way */
+@keyframes slideOutFadeBack {
+  from {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+
+  to {
+    transform: translateX(100px);
+    opacity: 0%;
+  }
+}
+@keyframes slideInFadeBack {
+  from {
+    transform: translateX(-100px);
+    opacity: 0%;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+}
+
+html[data-astro-transition="back"]::view-transition-old(slide) {
+  animation-name: slideOutFadeBack;
+}
+
+html[data-astro-transition="back"]::view-transition-new(slide) {
+  animation-name: slideInFadeBack;
+}
+
 .slide {
   view-transition-name: slide;
 }
