@@ -23,6 +23,7 @@ import {
 	removeArticle,
 	editTheir,
 	editPersonal,
+	editArticle,
 	markRead,
 } from "./user/userMutations";
 import {
@@ -60,6 +61,7 @@ export const appRouter = router({
 	getArticles,
 	editPersonal,
 	editTheir,
+	editArticle,
 	fakeForDevBulk,
 });
 

@@ -21,6 +21,8 @@ export const getTheirs = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Their_questions")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		// Stable order, so an edited row doesn't jump to another page
+		.orderBy("id")
 		.execute();
 
 	if (!unSafe.length) {
@@ -40,6 +42,8 @@ export const getArticles = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Articles")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		// Stable order, so an edited row doesn't jump to another page
+		.orderBy("id")
 		.execute();
 
 	if (!unSafe.length) {

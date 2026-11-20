@@ -1,33 +1,101 @@
 import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
 import { A, Navigate } from "~/utils/router";
-import {
-	createMutation,
-	createQuery,
-	useQueryClient,
-} from "@tanstack/solid-query";
 import { route as routeGen } from "~/utils/routes";
-import type { ParentComponent } from "solid-js";
-import { For, Show, Suspense, createEffect, createSignal } from "solid-js";
+import type { Component, ParentComponent } from "solid-js";
+import { For, Show, createEffect, createSignal, on } from "solid-js";
 import * as v from "valibot";
 import CssTranstionGrow from "~/components/CssTranstionGrow";
 import CustomButton from "~/components/CustomButton";
 import PaginationNav from "~/components/PaginationNav";
 import { withProviders } from "~/islands/withProviders";
-import TransitionFade from "~/components/TransitionFade";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
 
-const Box: ParentComponent = (props) => {
-	return (
-		<div class="my-8 flex w-11/12 max-w-2xl flex-col items-center justify-center gap-16 overflow-hidden rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
-			{props.children}
-		</div>
-	);
-};
+/* ---------- shared look for the three data sections ---------- */
+
+const cardClass =
+	"flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16";
+const ctaClass =
+	"w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl";
+const deleteClass = "bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600";
+const textareaClass =
+	"box-border w-full resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500";
+const inputClass =
+	"box-border w-full rounded-lg border border-slate-600 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500";
+
+const Section: ParentComponent<{ title: string }> = (props) => (
+	<div class={cardClass}>
+		<h2 class="text-center font-bold text-2xl lg:text-3xl">{props.title}</h2>
+		{props.children}
+	</div>
+);
+
+const EmptyState: Component<{ text: string; href: string; cta: string }> = (props) => (
+	<div class="flex w-full flex-col items-center justify-center gap-8">
+		<p class="text-center text-lg">{props.text}</p>
+		<A class={ctaClass} href={props.href}>
+			{props.cta}
+		</A>
+	</div>
+);
+
+/** Review status as a coloured pill, plus the decline reason when there is one. */
+const Status: Component<{ accepted: boolean | null | undefined; reason?: string | null }> = (
+	props,
+) => (
+	<div class="flex flex-col items-center gap-2">
+		<span
+			class="rounded-full px-3 py-1 font-semibold text-sm"
+			classList={{
+				"bg-green-100 text-green-800": props.accepted === true,
+				"bg-red-100 text-red-800": props.accepted === false,
+				"bg-amber-100 text-amber-800": props.accepted == null,
+			}}
+		>
+			{props.accepted === true ? "Accepted" : props.accepted === false ? "Declined" : "Pending review"}
+		</span>
+		<Show when={props.accepted === false && props.reason}>
+			<p class="text-center text-slate-700">{`Reason: ${props.reason}`}</p>
+		</Show>
+	</div>
+);
+
+/** Edit / Delete row, the same for every kind of submission. */
+const ItemActions: Component<{
+	what: string;
+	editing: boolean;
+	onToggleEdit: () => void;
+	deleting: boolean;
+	onDelete: () => void;
+}> = (props) => (
+	<div class="flex flex-wrap items-center justify-center">
+		<CustomButton onClick={() => props.onToggleEdit()}>
+			{props.editing ? "Cancel editing" : `Edit ${props.what}`}
+		</CustomButton>
+		<CustomButton class={deleteClass} disabled={props.deleting} onClick={() => props.onDelete()}>
+			{`Delete ${props.what}`}
+		</CustomButton>
+	</div>
+);
+
+const Answer: ParentComponent<{ title: string }> = (props) => (
+	<div class="flex w-full flex-col items-center gap-4">
+		<h3 class="text-center font-bold text-2xl lg:text-3xl">{props.title}</h3>
+		{props.children}
+	</div>
+);
+
+const SaveError: Component<{ show: boolean }> = (props) => (
+	<Show when={props.show}>
+		<p class="text-center text-red-600">Couldn't save your changes. Check your answers and try again.</p>
+	</Show>
+);
+
+/* ---------- form schemas ---------- */
 
 /**
  * A free-text answer. Only answers the user already gave are editable, and they can't be
- * blanked: the server's poll schema requires them (some always, some depending on earlier
+ * blanked: the server's poll schemas require them (some always, some depending on earlier
  * answers). Unanswered questions aren't rendered, so their input stays undefined.
  */
 const optionalText = v.optional(
@@ -51,29 +119,55 @@ const PersonalFormSchema = v.object({
 	what_others_should_know: optionalText,
 	not_have_schizophrenia_description: optionalText,
 });
-
 type PersonalFormKey = keyof v.InferInput<typeof PersonalFormSchema>;
 
-interface theirEdit {
-	data: any;
-	id: number;
-}
+const TheirFormSchema = v.object({
+	personality_before: optionalText,
+	personality_after: optionalText,
+	what_others_should_know: optionalText,
+});
+type TheirFormKey = keyof v.InferInput<typeof TheirFormSchema>;
+
+/** Same rules as the article submit form. */
+const ArticleFormSchema = v.object({
+	link: v.pipe(
+		v.string(),
+		v.trim(),
+		v.minLength(5, "Please enter your link to article."),
+		v.maxLength(1000, "Your link is too long"),
+	),
+	description: v.pipe(
+		v.string(),
+		v.trim(),
+		v.minLength(10, "Article description must be at least 10 characters long."),
+		v.maxLength(500, "Max length of article description is 500 characters."),
+	),
+});
+
+const personalHeaders: Record<PersonalFormKey, string> = {
+	describe_hospital: "Describe hospital:",
+	what_kind_of_care_after: "What kind of hospital care:",
+	personality_before: "Your personality before:",
+	personality_after: "Your personality after:",
+	other_help: "Other help beyond medication:",
+	goals_after: "Life goals after illness:",
+	responded_to_telling: "How people responded to you:",
+	life_satisfaction_description: "Your life satisfaction:",
+	what_others_should_know: "What others should know about illness:",
+	not_have_schizophrenia_description: "Have or not have schizophrenia:",
+};
+
+const theirHeaders: Record<TheirFormKey, string> = {
+	personality_before: "Their personality before:",
+	personality_after: "Their personality after:",
+	what_others_should_know: "What others should know about schizophrenia:",
+};
+
+/** Only send fields that were edited; undefined would drop the saved answer. */
+const editedOnly = (values: Record<string, unknown>) =>
+	Object.fromEntries(Object.entries(values).filter(([, value]) => value !== undefined));
 
 const Page = () => {
-	//TODO test roles
-	const headers = {
-		describe_hospital: "Describe hospital:",
-		what_kind_of_care_after: "What kind of hospital care:",
-		personality_before: "Your personality before:",
-		personality_after: "Your personality after:",
-		other_help: "Other help beyond medication:",
-		goals_after: "Life goals after illness:",
-		responded_to_telling: "How people responded to you:",
-		life_satisfaction_description: "Your life satisfaction:",
-		what_others_should_know: "What others should know about illness:",
-		not_have_schizophrenia_description: "Have or not have schizophrenia:",
-	};
-
 	const [showPersonal, setShowPersonal] = createSignal(false);
 	const [showTheirs, setShowTheirs] = createSignal(false);
 	const [showArticles, setShowArticles] = createSignal(false);
@@ -81,55 +175,55 @@ const Page = () => {
 	const [pageTheir, setPageTheir] = createSignal(0);
 	const [pageArticles, setPageArticles] = createSignal(0);
 	const [personalEdit, setPersonalEdit] = createSignal(false);
+	const [theirEdit, setTheirEdit] = createSignal(false);
+	const [editingArticle, setEditingArticle] = createSignal<number | null>(null);
 
 	const [dir, setDir] = createSignal(1);
 
-	const utils = trpc.useContext();
+	// Leaving a page closes any edit form that was open on it
+	createEffect(on(pageTheir, () => setTheirEdit(false), { defer: true }));
+	createEffect(on(pageArticles, () => setEditingArticle(null), { defer: true }));
 
-	//BUG should removeAcc redirect?
+	const utils = trpc.useContext();
+	const invalidate = () => utils.invalidate();
 
 	const removeAccAndDataMut = trpc.removeAccountAndData.createMutation(() => ({
-		onSuccess: () => {
-			utils.invalidate();
-		},
+		onSuccess: invalidate,
 	}));
 	const personalDataQuery = trpc.getPersonal.createQuery();
 	const theirDataQuery = trpc.getTheirs.createQuery();
-
 	const articlesDataQuery = trpc.getArticles.createQuery();
 
-	const removePersonalMut = trpc.removePersonal.createMutation(() => ({
-		onSuccess: () => {
-			utils.invalidate();
-		},
-	}));
-
+	const removePersonalMut = trpc.removePersonal.createMutation(() => ({ onSuccess: invalidate }));
 	const removeTheirMut = trpc.removeTheir.createMutation(() => ({
 		onSuccess: () => {
-			utils.invalidate();
+			setTheirEdit(false);
+			setPageTheir(0);
+			invalidate();
 		},
 	}));
-
-	const removeArticleMut = trpc.removeArticle.createMutation(() => ({
-		onSuccess: () => {
-			utils.invalidate();
-		},
-	}));
+	const removeArticleMut = trpc.removeArticle.createMutation(() => ({ onSuccess: invalidate }));
 
 	const editPersonalMut = trpc.editPersonal.createMutation(() => ({
 		onSuccess: () => {
 			setPersonalEdit(false);
-			utils.invalidate();
+			invalidate();
 		},
 	}));
-	//TODO editTheir mut
 	const editTheirMut = trpc.editTheir.createMutation(() => ({
 		onSuccess: () => {
-			utils.invalidate();
+			setTheirEdit(false);
+			invalidate();
+		},
+	}));
+	const editArticleMut = trpc.editArticle.createMutation(() => ({
+		onSuccess: () => {
+			setEditingArticle(null);
+			invalidate();
 		},
 	}));
 
-	//TODO editArticle mut
+	/* ----- personal poll ----- */
 
 	const personalForm = createForm({ schema: PersonalFormSchema });
 
@@ -138,7 +232,7 @@ const Page = () => {
 		if (personalDataQuery.data) {
 			const data = personalDataQuery.data as Record<string, unknown>;
 			const initialInput = Object.fromEntries(
-				(Object.keys(headers) as PersonalFormKey[]).map((key) => [
+				(Object.keys(personalHeaders) as PersonalFormKey[]).map((key) => [
 					key,
 					(data[key] as string | null | undefined) ?? undefined,
 				]),
@@ -148,195 +242,163 @@ const Page = () => {
 	});
 
 	const handleEditPersonal: SubmitHandler<typeof PersonalFormSchema> = (values) => {
-		// Only send fields that were edited; undefined would drop the saved answer
-		const edited = Object.fromEntries(
-			Object.entries(values).filter(([, value]) => value !== undefined),
-		);
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
-			...edited,
+			...editedOnly(values),
 			systemMetric: true,
 		} as Parameters<typeof editPersonalMut.mutate>[0]);
 	};
 
+	/* ----- other poll (one submission per page) ----- */
+
+	const theirForm = createForm({ schema: TheirFormSchema });
+	const currentTheir = () => theirDataQuery.data?.[pageTheir()];
+
+	const startTheirEdit = () => {
+		const row = currentTheir() as Record<string, unknown> | undefined;
+		if (!row) return;
+		editTheirMut.reset();
+		reset(theirForm, {
+			initialInput: Object.fromEntries(
+				(Object.keys(theirHeaders) as TheirFormKey[]).map((key) => [
+					key,
+					(row[key] as string | null | undefined) ?? undefined,
+				]),
+			),
+		});
+		setTheirEdit(true);
+	};
+
+	const handleEditTheir: SubmitHandler<typeof TheirFormSchema> = (values) => {
+		const row = currentTheir();
+		if (!row) return;
+		editTheirMut.mutate({
+			id: row.id,
+			data: { ...row, ...editedOnly(values) },
+		} as Parameters<typeof editTheirMut.mutate>[0]);
+	};
+
+	/* ----- articles (five per page, one edited at a time) ----- */
+
+	const articleForm = createForm({ schema: ArticleFormSchema });
+
+	const startArticleEdit = (article: { id: number; link: string; description: string }) => {
+		editArticleMut.reset();
+		reset(articleForm, { initialInput: { link: article.link, description: article.description } });
+		setEditingArticle(article.id);
+	};
+
+	const handleEditArticle: SubmitHandler<typeof ArticleFormSchema> = (values) => {
+		const id = editingArticle();
+		if (id === null) return;
+		editArticleMut.mutate({ id, ...values });
+	};
+
 	return (
 		<div class="flex min-h-screen w-full flex-col items-center justify-start gap-16 bg-slate-100 py-20 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300">
-			<h1 class="my-28 font-bold text-4xl lg:my-40 lg:text-6xl">
-				Your account and data
-			</h1>
+			<h1 class="my-28 font-bold text-4xl lg:my-40 lg:text-6xl">Your account and data</h1>
 
-			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center font-bold text-2xl lg:text-3xl">
-					Personal poll data
-				</h2>
+			<Section title="Personal poll data">
 				<Show
 					when={personalDataQuery.data}
 					fallback={
-						<div class="flex w-full flex-col items-center justify-center gap-8">
-							<p class="text-center text-lg">
-								You haven't submitted personal poll data yet
-							</p>
-							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
-								href={routeGen("/questionares/")}
-							>
-								Do personal poll
-							</A>
-						</div>
+						<EmptyState
+							text="You haven't submitted personal poll data yet"
+							href={routeGen("/questionares/")}
+							cta="Do personal poll"
+						/>
 					}
 				>
-					<CustomButton
-						onClick={() => {
-							setShowPersonal(() => !showPersonal());
-						}}
-					>
-						{`${!showPersonal() ? "Show" : "Close"} personal questions data`}
+					<CustomButton onClick={() => setShowPersonal(!showPersonal())}>
+						{`${showPersonal() ? "Close" : "Show"} your personal poll data`}
 					</CustomButton>
 
-					<TransitionFade>
-						<Show when={showPersonal()}>
-							<div class="flex flex-col items-center justify-start gap-8">
-								<CustomButton
-									disabled={removePersonalMut.isPending}
-									class="bg-orange-500 active:bg-orange-600 focus:bg-orange-600 hover:bg-orange-600"
-									onClick={() => {
-										removePersonalMut.mutate();
-									}}
-								>
-									Delete this personal poll data
-								</CustomButton>
-								<Show
-									when={!personalEdit()}
-									fallback={
-										<CustomButton
-											onClick={() => {
-												setPersonalEdit(false);
-											}}
-										>
-											Cancel editing personal poll data
-										</CustomButton>
-									}
-								>
-									<CustomButton
-										onClick={() => {
-											editPersonalMut.reset();
-											setPersonalEdit(true);
-										}}
-									>
-										Edit this personal poll data
-									</CustomButton>
-								</Show>
-								<h4 class="font-semibold text-lg">{`status: ${
-									personalDataQuery.data?.accepted
-										? "Accepted"
-										: personalDataQuery.data?.accepted === null
-											? "Pending"
-											: "Declined"
-								}`}</h4>
-								<Show when={!personalDataQuery.data?.accepted}>
-									{personalDataQuery.data?.decline_reason}
-								</Show>
+					<CssTranstionGrow visible={showPersonal()}>
+						<div class="flex w-full flex-col items-center justify-start gap-8">
+							<Status
+								accepted={personalDataQuery.data?.accepted}
+								reason={personalDataQuery.data?.decline_reason}
+							/>
+							<ItemActions
+								what="poll data"
+								editing={personalEdit()}
+								onToggleEdit={() => {
+									editPersonalMut.reset();
+									setPersonalEdit(!personalEdit());
+								}}
+								deleting={removePersonalMut.isPending}
+								onDelete={() => removePersonalMut.mutate()}
+							/>
 
-								<Show
-									when={!personalEdit()}
-									fallback={
-										<Form of={personalForm} onSubmit={handleEditPersonal}>
-											<For
-												each={
-													Object.keys(headers) as Array<keyof typeof headers>
-												}
-											>
-												{(el) => (
-													<Show when={personalDataQuery.data?.[el]}>
-														<h2 class="font-bold text-2xl lg:text-3xl">
-															{headers[el]}
-														</h2>
+							<Show
+								when={!personalEdit()}
+								fallback={
+									<Form of={personalForm} onSubmit={handleEditPersonal}>
+										<div class="flex w-full flex-col items-center gap-8">
+										<For each={Object.keys(personalHeaders) as PersonalFormKey[]}>
+											{(el) => (
+												<Show when={personalDataQuery.data?.[el]}>
+													<Answer title={personalHeaders[el]}>
 														<Field of={personalForm} path={[el]}>
 															{(field) => (
 																<>
 																	<textarea
-																		class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
+																		class={textareaClass}
 																		{...field.props}
 																		value={field.input ?? ""}
-																		cols={20}
 																		rows={8}
 																		autocomplete="off"
 																	/>
-																	{field.errors && (
-																		<div class="text-red-600">{field.errors[0]}</div>
-																	)}
+																	{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
 																</>
 															)}
 														</Field>
-													</Show>
-												)}
-											</For>
-											<Show when={editPersonalMut.isError}>
-												<p class="text-red-600">
-													Couldn't save your changes. Check your answers and try again.
-												</p>
-											</Show>
-											<CustomButton
-												disabled={editPersonalMut.isPending}
-												type="submit"
-											>
-												Submit Edit
-											</CustomButton>
-										</Form>
-									}
-								>
-									<For
-										each={Object.keys(headers) as Array<keyof typeof headers>}
-									>
-										{(el) => (
-											<Show when={personalDataQuery.data?.[el]}>
-												<h2 class="font-bold text-2xl lg:text-3xl">
-													{headers[el]}
-												</h2>
+													</Answer>
+												</Show>
+											)}
+										</For>
+										<SaveError show={editPersonalMut.isError} />
+										<CustomButton disabled={editPersonalMut.isPending} type="submit">
+											Save changes
+										</CustomButton>
+										</div>
+									</Form>
+								}
+							>
+								<For each={Object.keys(personalHeaders) as PersonalFormKey[]}>
+									{(el) => (
+										<Show when={personalDataQuery.data?.[el]}>
+											<Answer title={personalHeaders[el]}>
 												<p>{personalDataQuery.data?.[el]}</p>
-											</Show>
-										)}
-									</For>
-								</Show>
-							</div>
-						</Show>
-					</TransitionFade>
+											</Answer>
+										</Show>
+									)}
+								</For>
+							</Show>
+						</div>
+					</CssTranstionGrow>
 				</Show>
-			</div>
+			</Section>
 
-			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center font-bold text-2xl lg:text-3xl">
-					Other poll data
-				</h2>
+			<Section title="Other poll data">
 				<Show
 					when={theirDataQuery.data}
 					fallback={
-						<div class="flex w-full flex-col items-center justify-center gap-8">
-							<p class="text-center text-lg">
-								You haven't submitted other poll data yet
-							</p>
-							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
-								href={routeGen("/questionares/")}
-							>
-								Do other poll
-							</A>
-						</div>
+						<EmptyState
+							text="You haven't submitted other poll data yet"
+							href={routeGen("/questionares/")}
+							cta="Do other poll"
+						/>
 					}
 				>
-					<CustomButton
-						class="bg-fuchsia-500 active:bg-fuchsia-600 focus:bg-fuchsia-600 hover:bg-fuchsia-600"
-						onClick={() => {
-							setShowTheirs(() => !showTheirs());
-						}}
-					>
-						{`${!showTheirs() ? "Show" : "Close"} your other poll data`}
-					</CustomButton>
+					{(their) => (
+						<>
+							<CustomButton onClick={() => setShowTheirs(!showTheirs())}>
+								{`${showTheirs() ? "Close" : "Show"} your other poll data`}
+							</CustomButton>
 
-					<CssTranstionGrow visible={showTheirs()}>
-						<Show when={theirDataQuery.data}>
-							{(their) => (
+							<CssTranstionGrow visible={showTheirs()}>
 								<div class="flex w-full flex-col gap-16">
 									<div class="flex items-center justify-center">
 										<PaginationNav
@@ -344,7 +406,6 @@ const Page = () => {
 											page={pageTheir()}
 											perPageNum={1}
 											setPage={setPageTheir}
-											classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
 											dirSetter={setDir}
 										/>
 									</div>
@@ -352,80 +413,95 @@ const Page = () => {
 									<TransitionSlide dir={dir()}>
 										<Show when={pageTheir() === 0 ? true : pageTheir()} keyed>
 											<div class="flex flex-col items-center justify-center gap-8">
-												<CustomButton
-													disabled={removeTheirMut.isPending}
-													class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
-													onClick={() => {
-														removeTheirMut.mutate({
-															id: their()[pageTheir()].id,
-														});
+												<Status
+													accepted={currentTheir()?.accepted}
+													reason={currentTheir()?.decline_reason}
+												/>
+												<ItemActions
+													what="poll data"
+													editing={theirEdit()}
+													onToggleEdit={() => (theirEdit() ? setTheirEdit(false) : startTheirEdit())}
+													deleting={removeTheirMut.isPending}
+													onDelete={() => {
+														const row = currentTheir();
+														if (row) removeTheirMut.mutate({ id: row.id });
 													}}
-												>
-													Delete this poll data
-												</CustomButton>
-												<Show when={their()[pageTheir()].personality_before}>
-													<h2 class="font-bold text-2xl lg:text-3xl">
-														Their personality before:
-													</h2>
-													<p>{their()[pageTheir()].personality_before}</p>
-												</Show>
-												<Show when={their()[pageTheir()].personality_after}>
-													<h2 class="font-bold text-2xl lg:text-3xl">
-														Their personality after:
-													</h2>
-
-													<p>{their()[pageTheir()].personality_after}</p>
-												</Show>
+												/>
 												<Show
-													when={their()[pageTheir()].what_others_should_know}
+													when={!theirEdit()}
+													fallback={
+														<Form of={theirForm} onSubmit={handleEditTheir}>
+															<div class="flex w-full flex-col items-center gap-8">
+															<For each={Object.keys(theirHeaders) as TheirFormKey[]}>
+																{(el) => (
+																	<Show when={currentTheir()?.[el]}>
+																		<Answer title={theirHeaders[el]}>
+																			<Field of={theirForm} path={[el]}>
+																				{(field) => (
+																					<>
+																						<textarea
+																							class={textareaClass}
+																							{...field.props}
+																							value={field.input ?? ""}
+																							rows={8}
+																							autocomplete="off"
+																						/>
+																						{field.errors && (
+																							<div class="text-red-600">{field.errors[0]}</div>
+																						)}
+																					</>
+																				)}
+																			</Field>
+																		</Answer>
+																	</Show>
+																)}
+															</For>
+															<SaveError show={editTheirMut.isError} />
+															<CustomButton disabled={editTheirMut.isPending} type="submit">
+																Save changes
+															</CustomButton>
+															</div>
+														</Form>
+													}
 												>
-													<h2 class="font-bold text-2xl lg:text-3xl">
-														What others should know about schizophrenia:
-													</h2>
-													<p>{their()[pageTheir()].what_others_should_know}</p>
+													<For each={Object.keys(theirHeaders) as TheirFormKey[]}>
+														{(el) => (
+															<Show when={currentTheir()?.[el]}>
+																<Answer title={theirHeaders[el]}>
+																	<p>{currentTheir()?.[el]}</p>
+																</Answer>
+															</Show>
+														)}
+													</For>
 												</Show>
 											</div>
 										</Show>
 									</TransitionSlide>
 								</div>
-							)}
-						</Show>
-					</CssTranstionGrow>
+							</CssTranstionGrow>
+						</>
+					)}
 				</Show>
-			</div>
+			</Section>
 
-			<div class="flex w-11/12 max-w-2xl flex-col items-center justify-start gap-12 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center font-bold text-2xl lg:text-3xl">
-					Your submitted articles
-				</h2>
+			<Section title="Your submitted articles">
 				<Show
 					when={articlesDataQuery.data}
 					fallback={
-						<div class="flex w-full flex-col items-center justify-center gap-8">
-							<p class="text-center text-lg">
-								You haven't submitted any articles yet
-							</p>
-							<A
-								class="w-full max-w-xs rounded-full border border-fuchsia-600 bg-white p-3 text-center font-semibold text-black text-xl shadow-fuchsia-600 shadow-lg transition-all duration-200 ease-out active:scale-125 hover:scale-110 2xl:text-2xl"
-								href={routeGen("/articles/")}
-							>
-								Submit articles
-							</A>
-						</div>
+						<EmptyState
+							text="You haven't submitted any articles yet"
+							href={routeGen("/articles/")}
+							cta="Submit articles"
+						/>
 					}
 				>
-					<CustomButton
-						class="bg-fuchsia-500 active:bg-fuchsia-600 focus:bg-fuchsia-600 hover:bg-fuchsia-600"
-						onClick={() => {
-							setShowArticles(() => !showArticles());
-						}}
-					>
-						{`${!showArticles() ? "Show" : "Close"} your submitted articles`}
-					</CustomButton>
+					{(articles) => (
+						<>
+							<CustomButton onClick={() => setShowArticles(!showArticles())}>
+								{`${showArticles() ? "Close" : "Show"} your submitted articles`}
+							</CustomButton>
 
-					<CssTranstionGrow visible={showArticles()}>
-						<Show when={articlesDataQuery.data}>
-							{(articles) => (
+							<CssTranstionGrow visible={showArticles()}>
 								<div class="flex w-full flex-col gap-16">
 									<div class="flex items-center justify-center">
 										<PaginationNav
@@ -433,44 +509,80 @@ const Page = () => {
 											page={pageArticles()}
 											perPageNum={5}
 											setPage={setPageArticles}
-											classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
 											dirSetter={setDir}
 										/>
 									</div>
 									<TransitionSlide dir={dir()}>
-										<Show
-											when={pageArticles() === 0 ? true : pageArticles()}
-											keyed
-										>
-											<div class="flex flex-col items-center justify-center gap-8 border-t-fuchsia-600">
-												<For
-													each={articles().slice(
-														pageArticles() * 5,
-														pageArticles() * 5 + 5,
-													)}
-												>
-													{(fiveArticles) => (
-														<div class="flex w-full flex-col items-center justify-center gap-8">
-															<CustomButton
-																disabled={removeArticleMut.isPending}
-																class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
-																onClick={() => {
-																	removeArticleMut.mutate({
-																		id: fiveArticles.id,
-																	});
-																}}
+										<Show when={pageArticles() === 0 ? true : pageArticles()} keyed>
+											<div class="flex flex-col items-center justify-center gap-8">
+												<For each={articles().slice(pageArticles() * 5, pageArticles() * 5 + 5)}>
+													{(article) => (
+														<div class="flex w-full flex-col items-center justify-center gap-6 border-b-2 border-b-fuchsia-400 pb-8">
+															<Status accepted={article.accepted} reason={article.decline_reason} />
+															<ItemActions
+																what="article"
+																editing={editingArticle() === article.id}
+																onToggleEdit={() =>
+																	editingArticle() === article.id
+																		? setEditingArticle(null)
+																		: startArticleEdit(article)
+																}
+																deleting={removeArticleMut.isPending}
+																onDelete={() => removeArticleMut.mutate({ id: article.id })}
+															/>
+															<Show
+																when={editingArticle() === article.id}
+																fallback={
+																	<>
+																		<a
+																			class="break-all text-center text-fuchsia-600 text-lg transition-all hover:scale-105 visited:text-fuchsia-800"
+																			href={article.link}
+																		>
+																			{article.link}
+																		</a>
+																		<p class="w-full text-base">{article.description}</p>
+																	</>
+																}
 															>
-																Delete this article
-															</CustomButton>
-															<a
-																class="flex-1 text-fuchsia-600 text-lg transition-all hover:scale-110 visited:text-fuchsia-800"
-																href={fiveArticles.link}
-															>
-																{fiveArticles.link}
-															</a>
-															<p class="w-full flex-1 border-b-2 border-b-fuchsia-400 pb-8 text-base">
-																{fiveArticles.description}
-															</p>
+																<Form of={articleForm} onSubmit={handleEditArticle}>
+																	<div class="flex w-full flex-col items-center gap-4">
+																	<Field of={articleForm} path={["link"]}>
+																		{(field) => (
+																			<label class="flex w-full flex-col gap-2">
+																				<span class="font-semibold">Link</span>
+																				<input
+																					class={inputClass}
+																					{...field.props}
+																					type="url"
+																					value={field.input ?? ""}
+																					autocomplete="off"
+																				/>
+																				{field.errors && <span class="text-red-600">{field.errors[0]}</span>}
+																			</label>
+																		)}
+																	</Field>
+																	<Field of={articleForm} path={["description"]}>
+																		{(field) => (
+																			<label class="flex w-full flex-col gap-2">
+																				<span class="font-semibold">Description</span>
+																				<textarea
+																					class={textareaClass}
+																					{...field.props}
+																					value={field.input ?? ""}
+																					rows={5}
+																					autocomplete="off"
+																				/>
+																				{field.errors && <span class="text-red-600">{field.errors[0]}</span>}
+																			</label>
+																		)}
+																	</Field>
+																	<SaveError show={editArticleMut.isError} />
+																	<CustomButton disabled={editArticleMut.isPending} type="submit">
+																		Save changes
+																	</CustomButton>
+																	</div>
+																</Form>
+															</Show>
 														</div>
 													)}
 												</For>
@@ -478,19 +590,19 @@ const Page = () => {
 										</Show>
 									</TransitionSlide>
 								</div>
-							)}
-						</Show>
-					</CssTranstionGrow>
+							</CssTranstionGrow>
+						</>
+					)}
 				</Show>
-			</div>
+			</Section>
+
+			<p class="w-11/12 max-w-2xl text-center text-slate-600">
+				Edited submissions go back to review before they show up in the results.
+			</p>
 
 			<div class="flex w-11/12 max-w-2xl flex-col justify-between gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16">
-				<h2 class="text-center font-bold text-2xl lg:text-3xl">
-					Delete account
-				</h2>
-				<p class="text-center text-lg">
-					Deletes both your account and all data you have submitted.
-				</p>
+				<h2 class="text-center font-bold text-2xl lg:text-3xl">Delete account</h2>
+				<p class="text-center text-lg">Deletes both your account and all data you have submitted.</p>
 
 				<Show when={removeAccAndDataMut.isSuccess}>
 					<Navigate href={"/"} />
@@ -513,7 +625,7 @@ const Page = () => {
 						<div class="flex flex-col items-center justify-center gap-8">
 							<CustomButton
 								disabled={removeAccAndDataMut.isPending}
-								class="bg-red-500 active:bg-red-600 focus:bg-red-600 hover:bg-red-600"
+								class={deleteClass}
 								onClick={() => {
 									removeAccAndDataMut.mutate();
 								}}
@@ -536,5 +648,3 @@ const Page = () => {
 };
 
 export default withProviders(Page);
-
-//BUG counting in articles is messed up, only in SSR

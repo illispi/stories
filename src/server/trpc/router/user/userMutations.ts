@@ -76,6 +76,48 @@ export const removeArticle = userProcedure
 		return "Deleted succesfully";
 	});
 
+/** Same rules as postArticle. An edited article goes back to review. */
+export const editArticle = userProcedure
+	.input(
+		z.object({
+			id: z.number(),
+			link: z
+				.string()
+				.max(1000, { message: "Must be 1000 or fewer characters long" })
+				.min(5, { message: "Must be 5 or more characters long" })
+				.trim(),
+			description: z
+				.string()
+				.max(500, { message: "Must be 500 or fewer characters long" })
+				.min(5, { message: "Must be 5 or more characters long" })
+				.trim(),
+		}),
+	)
+	.mutation(async ({ ctx, input }) => {
+		const updated = await ctx.db
+			.updateTable("Articles")
+			.set({
+				link: input.link,
+				description: input.description,
+				updated_at: new Date(),
+				accepted: null,
+				decline_reason: null,
+				seen: true,
+			})
+			.where("user", "=", ctx.user.id)
+			.where("id", "=", input.id)
+			.executeTakeFirst();
+
+		if (!updated.numUpdatedRows) {
+			throw new TRPCError({
+				code: "NOT_FOUND",
+				message: "Article not found",
+			});
+		}
+
+		return "Updated succesfully";
+	});
+
 export const editPersonal = userProcedure
 	.input(personalQuestionsSchema)
 	.mutation(async ({ ctx, input }) => {
