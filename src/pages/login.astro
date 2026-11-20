@@ -18,11 +18,12 @@ const failed = Astro.url.searchParams.has("error");
 		>
 			<p class="text-lg">
 				Sign in with your Discord account. This site only saves your Discord account ID, so it
-				can recognise you next time. Your email isn't even requested, and your username and
-				avatar are never saved.
+				can recognise you next time. Your email isn't even requested, and your username,
+				avatar and banner are never saved.
 			</p>
 			<p class="rounded-2xl bg-blue-50 p-4 text-slate-700">
-				Discord's permission screen will say this site can see your username and avatar. That's
+				Discord's permission screen will say this site can access your username, avatar and
+				banner. That's
 				part of the most basic permission Discord offers (<code>identify</code>), which is all
 				this site asks for. Those details are thrown away right after you sign in.
 			</p>
