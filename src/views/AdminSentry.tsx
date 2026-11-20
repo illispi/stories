@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/astro";
 import { For, Show, createSignal } from "solid-js";
+import AdminShell from "~/components/AdminShell";
 import CustomButton from "~/components/CustomButton";
 import { withProviders } from "~/islands/withProviders";
 import { trpc } from "~/utils/trpc";
@@ -68,9 +69,8 @@ const Page = () => {
 	];
 
 	return (
-		<div class="flex min-h-screen w-full flex-col items-center gap-8 bg-slate-100 py-16">
-			<div class="flex w-11/12 max-w-2xl flex-col gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-10 shadow-xl lg:p-12">
-				<h1 class="text-center font-bold text-2xl lg:text-3xl">Test Sentry error reporting</h1>
+		<AdminShell title="Test Sentry error reporting">
+			<div class="flex w-full flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 				<p
 					class="rounded-2xl p-4"
 					classList={{ "bg-green-50 text-green-800": enabled, "bg-amber-50 text-amber-800": !enabled }}
@@ -102,7 +102,7 @@ const Page = () => {
 			<Show when={renderBoom()}>
 				<Thrower />
 			</Show>
-		</div>
+		</AdminShell>
 	);
 };
 

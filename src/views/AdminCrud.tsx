@@ -1,9 +1,10 @@
 import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
-import { ErrorBoundary, For, Show, Suspense, createEffect, createSignal } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import * as v from "valibot";
+import AdminShell, { AdminCard } from "~/components/AdminShell";
 import CustomButton from "~/components/CustomButton";
+import Segmented from "~/components/Segmented";
 import { withProviders } from "~/islands/withProviders";
-
 import { trpc } from "~/utils/trpc";
 
 const declineSchema = v.object({
@@ -15,399 +16,271 @@ const declineSchema = v.object({
 	),
 });
 
+type Tab = "poll" | "articles";
+type Poll = "Personal_questions" | "Their_questions";
+type Status = "pending" | "published" | "declined";
+const statusValue: Record<Status, boolean | null> = { pending: null, published: true, declined: false };
+const PER_PAGE = 25;
+
+const green = "bg-green-600 hover:bg-green-700 focus:bg-green-700 active:bg-green-700";
+const amber = "bg-amber-500 hover:bg-amber-600 focus:bg-amber-600 active:bg-amber-600";
+const red = "bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600";
+
+/** "what_others_should_know" → "What others should know" */
+const label = (key: string) => key.replaceAll("_", " ").replace(/^./, (c) => c.toUpperCase());
+
+/** The written answers of an entry, skipping empty ones and the internal id/count. */
+const Fields = (props: { entry: Record<string, unknown> }) => (
+	<dl class="flex flex-col gap-3">
+		<For each={Object.keys(props.entry).filter((k) => k !== "id" && k !== "count" && props.entry[k] != null && props.entry[k] !== "")}>
+			{(key) => (
+				<div>
+					<dt class="font-semibold text-slate-500 text-sm">{label(key)}</dt>
+					<dd class="whitespace-pre-line break-words">{String(props.entry[key])}</dd>
+				</div>
+			)}
+		</For>
+	</dl>
+);
+
+const Pager = (props: { page: number; total: number; setPage: (p: number) => void }) => {
+	const pages = () => Math.max(1, Math.ceil(props.total / PER_PAGE));
+	return (
+		<Show when={pages() > 1}>
+			<div class="flex items-center justify-center gap-4">
+				<CustomButton disabled={props.page === 0} class="disabled:opacity-40" onClick={() => props.setPage(props.page - 1)}>
+					Back
+				</CustomButton>
+				<span class="font-semibold">{`Page ${props.page + 1} / ${pages()}`}</span>
+				<CustomButton
+					disabled={props.page + 1 >= pages()}
+					class="disabled:opacity-40"
+					onClick={() => props.setPage(props.page + 1)}
+				>
+					Next
+				</CustomButton>
+			</div>
+		</Show>
+	);
+};
+
 const Page = () => {
-	const [accepted, setAccepted] = createSignal<null | boolean>(null);
 	// The admin bell links here with ?tab=articles or ?pOrT=Their_questions
 	const initial = new URLSearchParams(location.search);
-	const [pOrT, setPOrT] = createSignal<
-		"Personal_questions" | "Their_questions"
-	>(initial.get("pOrT") === "Their_questions" ? "Their_questions" : "Personal_questions");
-	const [page, setPage] = createSignal(0);
-	const [pageArticles, setPageArticles] = createSignal(0);
-	const [showModal, setShowModal] = createSignal(false);
-	const [entryEdit, setEntryEdit] = createSignal<number>(0);
-	const [tab, setTab] = createSignal<"poll" | "articles">(
-		initial.get("tab") === "articles" ? "articles" : "poll",
+	const [tab, setTab] = createSignal<Tab>(initial.get("tab") === "articles" ? "articles" : "poll");
+	const [pOrT, setPOrT] = createSignal<Poll>(
+		initial.get("pOrT") === "Their_questions" ? "Their_questions" : "Personal_questions",
 	);
+	const [status, setStatus] = createSignal<Status>("pending");
+	const [page, setPage] = createSignal(0);
+	const [declining, setDeclining] = createSignal<number | null>(null);
+	const [confirmDelete, setConfirmDelete] = createSignal<number | null>(null);
+
+	const resetView = () => {
+		setPage(0);
+		setDeclining(null);
+		setConfirmDelete(null);
+	};
 
 	const utils = trpc.useContext();
+	const refresh = () => {
+		utils.listSubmissions.invalidate();
+		utils.listArticles.invalidate();
+		utils.pendingCounts.invalidate();
+	};
 
-	const submissions = trpc.listSubmissions.createQuery(() => ({
-		page: page(),
-		accepted: accepted(),
-		pOrT: pOrT(),
-	}));
+	const submissions = trpc.listSubmissions.createQuery(
+		() => ({ page: page(), accepted: statusValue[status()], pOrT: pOrT() }),
+		() => ({ enabled: tab() === "poll", placeholderData: (prev) => prev }),
+	);
+	const articles = trpc.listArticles.createQuery(
+		() => ({ page: page(), accepted: statusValue[status()] }),
+		() => ({ enabled: tab() === "articles", placeholderData: (prev) => prev }),
+	);
 
-	const articles = trpc.listArticles.createQuery(() => ({
-		page: pageArticles(),
-		accepted: accepted(),
-	}));
-
-	const acceptMut = trpc.acceptSubmission.createMutation(() => ({
-		onSuccess: () => {
-			utils.listSubmissions.invalidate();
-			utils.pendingCounts.invalidate();
-		},
-	}));
-	const declineMut = trpc.declineSubmission.createMutation(() => ({
-		onSuccess: () => {
-			utils.listSubmissions.invalidate();
-			utils.pendingCounts.invalidate();
-		},
-	}));
-	const acceptArticleMut = trpc.acceptArticle.createMutation(() => ({
-		onSuccess: () => {
-			utils.listArticles.invalidate();
-			utils.pendingCounts.invalidate();
-		},
-	}));
-	const declineArticleMut = trpc.declineArticle.createMutation(() => ({
-		onSuccess: () => {
-			utils.listArticles.invalidate();
-			utils.pendingCounts.invalidate();
-		},
-	}));
-	// Two-step delete (no browser dialog): first click arms it for that article.
-	const [confirmDelete, setConfirmDelete] = createSignal<number | null>(null);
+	const acceptMut = trpc.acceptSubmission.createMutation(() => ({ onSuccess: refresh }));
+	const acceptArticleMut = trpc.acceptArticle.createMutation(() => ({ onSuccess: refresh }));
+	const declineMut = trpc.declineSubmission.createMutation(() => ({ onSuccess: () => doneDeclining() }));
+	const declineArticleMut = trpc.declineArticle.createMutation(() => ({ onSuccess: () => doneDeclining() }));
 	const deleteArticleMut = trpc.deleteArticleAdmin.createMutation(() => ({
 		onSuccess: () => {
 			setConfirmDelete(null);
-			utils.listArticles.invalidate();
-			utils.pendingCounts.invalidate();
+			refresh();
 		},
 	}));
 
 	const declineForm = createForm({ schema: declineSchema });
-	createEffect(() => {
-		if (declineMut.isSuccess || declineArticleMut.isSuccess) {
-			setShowModal(false);
-			setEntryEdit(0);
-			declineMut.reset();
-			declineArticleMut.reset();
-			reset(declineForm);
-		}
-	});
-
+	const doneDeclining = () => {
+		setDeclining(null);
+		reset(declineForm);
+		refresh();
+	};
 	const handleDecline: SubmitHandler<typeof declineSchema> = (values) => {
-		if (tab() === "poll") {
-			declineMut.mutate({
-				id: entryEdit(),
-				pOrT: pOrT(),
-				decline_reason: values.decline_reason,
-			});
-		} else if (tab() === "articles") {
-			declineArticleMut.mutate({
-				id: entryEdit(),
-				decline_reason: values.decline_reason,
-			});
-		}
+		const id = declining();
+		if (id === null) return;
+		if (tab() === "poll") declineMut.mutate({ id, pOrT: pOrT(), decline_reason: values.decline_reason });
+		else declineArticleMut.mutate({ id, decline_reason: values.decline_reason });
 	};
 
+	const entries = () =>
+		(tab() === "poll" ? submissions.data?.poll : articles.data) as Record<string, unknown>[] | undefined;
+	const total = () =>
+		tab() === "poll" ? (submissions.data?.total ?? 0) : Number(articles.data?.[0]?.count ?? 0);
+	const busy = () =>
+		acceptMut.isPending || acceptArticleMut.isPending || declineMut.isPending || declineArticleMut.isPending;
+
+	const accept = (id: number) =>
+		tab() === "poll" ? acceptMut.mutate({ id, pOrT: pOrT() }) : acceptArticleMut.mutate({ id });
+
 	return (
-		<>
-			<div class="flex flex-col items-center">
-				<Show when={showModal()}>
-					<dialog open>
-						<div class="fixed top-0 left-0 z-40 h-screen w-screen bg-black opacity-50" />
-						<div class="fixed top-1/2 left-1/2 z-50 flex gap-10 border-2 border-red-700 bg-white p-8">
-							<Form of={declineForm} onSubmit={handleDecline}>
-								<Field of={declineForm} path={["decline_reason"]}>
-									{(field) => (
-										<>
-											<textarea
-												class="box-border w-11/12 resize-none rounded-lg border border-slate-600 p-4 focus-visible:outline-none"
-												{...field.props}
-												value={field.input ?? ""}
-												cols={20}
-												rows={3}
-												required
-												autocomplete="off"
-												placeholder="Decline reason"
-											/>
-											{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
-										</>
-									)}
-								</Field>
-								<CustomButton
-									disabled={declineArticleMut.isPending || declineMut.isPending}
-									type="submit"
-								>
-									Decline
-								</CustomButton>
-								<CustomButton
-									onClick={() => {
-										setShowModal(false);
-										setEntryEdit(0);
-										reset(declineForm);
-									}}
-								>
-									Cancel
-								</CustomButton>
-							</Form>
-						</div>
-					</dialog>
-				</Show>
-				<CustomButton
-					onClick={() => {
-						setTab(tab() === "articles" ? "poll" : "articles");
-					}}
-				>
-					{tab() === "articles"
-						? "Switch to poll CRUD"
-						: "Switch to articles CRUD"}
-				</CustomButton>
-				<Show
-					when={tab() === "poll"}
-					fallback={
-						<>
-							<div class="my-10 flex items-center justify-center gap-4 p-4">
-								<CustomButton
-									class={accepted() ? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900" : ""}
-									onClick={() => {
-										setAccepted(accepted() === true ? null : true);
-										setPageArticles(0);
-										setConfirmDelete(null);
-									}}
-								>
-									{accepted() ? "Showing published" : "Showing pending"}
-								</CustomButton>
-							</div>
-							<Show when={articles.data && articles.data.length === 0}>
-								<p class="text-center">No articles here.</p>
-							</Show>
-							<div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
-								<For each={articles.data}>
-									{(article, index) => (
-										<div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
-											<div class="m-8 flex items-center justify-between">
-												<h3 class="font-bold text-xl">{index()}</h3>
-												<Show
-													when={accepted()}
-													fallback={
-														<>
-															<CustomButton
-																disabled={acceptArticleMut.isPending}
-																onclick={() => {
-																	acceptArticleMut.mutate({
-																		id: article.id,
-																	});
-																}}
-															>
-																Accept
-															</CustomButton>
+		<AdminShell title="Review submissions" description="New poll answers and articles stay hidden until accepted.">
+			<AdminCard>
+				<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+					<Segmented
+						label="What to review"
+						options={[
+							["poll", "Polls"],
+							["articles", "Articles"],
+						]}
+						value={tab()}
+						onChange={(v) => {
+							setTab(v);
+							resetView();
+						}}
+					/>
+					<Show when={tab() === "poll"}>
+						<Segmented
+							label="Poll"
+							options={[
+								["Personal_questions", "Personal"],
+								["Their_questions", "Other"],
+							]}
+							value={pOrT()}
+							onChange={(v) => {
+								setPOrT(v);
+								resetView();
+							}}
+						/>
+					</Show>
+					<Segmented
+						label="Status"
+						options={[
+							["pending", "Pending"],
+							["published", "Published"],
+							["declined", "Declined"],
+						]}
+						value={status()}
+						onChange={(v) => {
+							setStatus(v);
+							resetView();
+						}}
+					/>
+					<span class="ml-auto text-slate-600">{`${total()} ${total() === 1 ? "entry" : "entries"}`}</span>
+				</div>
+			</AdminCard>
 
-															<CustomButton
-																onclick={() => {
-																	setEntryEdit(article.id);
-																	setShowModal(true);
-																}}
-															>
-																Decline
-															</CustomButton>
-														</>
-													}
-												>
-													<CustomButton
-														onclick={() => {
-															setEntryEdit(article.id);
-															setShowModal(true);
-														}}
-													>
-														Decline
-													</CustomButton>
-												</Show>
-											</div>
-											<Show
-												when={confirmDelete() === article.id}
-												fallback={
-													<CustomButton
-														class="self-center bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
-														onclick={() => setConfirmDelete(article.id)}
-													>
-														Delete
-													</CustomButton>
-												}
-											>
-												<div class="flex flex-col items-center gap-2">
-													<p class="font-semibold text-red-700">Delete this article permanently?</p>
-													<div class="flex flex-wrap justify-center">
-														<CustomButton
-															class="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-700"
-															disabled={deleteArticleMut.isPending}
-															onclick={() => deleteArticleMut.mutate({ id: article.id })}
-														>
-															Yes, delete
-														</CustomButton>
-														<CustomButton onclick={() => setConfirmDelete(null)}>Cancel</CustomButton>
-													</div>
-												</div>
-											</Show>
-											<For each={Object.keys(article)}>
-												{(keys) => (
-													<>
-														<h4 class="w-full font-bold text-lg">{keys}</h4>
-														<p class="w-full">{String((article as Record<string, unknown>)[keys] ?? "")}</p>
-													</>
-												)}
-											</For>
-										</div>
-									)}
-								</For>
-							</div>
-							<div class="m-16 flex w-full items-center justify-around">
-								<CustomButton
-									class={pageArticles() === 0 ? "invisible" : ""}
-									onClick={() =>
-										setPageArticles((prev) => (prev === 0 ? 0 : prev - 1))
-									}
-								>
-									Back
-								</CustomButton>
-								<h5 class="font-bold text-lg">{`Page: ${pageArticles() + 1}/${
-									Math.floor((articles.data?.[0]?.count ?? 0) / 25) + 1
-								}`}</h5>
+			<Show when={entries()?.length === 0}>
+				<p class="py-10 text-center text-slate-500">Nothing here.</p>
+			</Show>
 
-								<CustomButton
-									class={
-										(articles.data?.[0]?.count ?? 0) / ((pageArticles() + 1) * 25) <= 1
-											? "invisible"
-											: ""
-									}
-									onClick={() =>
-										setPageArticles((prev) =>
-											(articles.data?.[0]?.count ?? 0) / ((prev + 1) * 25) <= 1
-												? prev
-												: prev + 1,
-										)
-									}
-								>
-									Next
-								</CustomButton>
+			<For each={entries()}>
+				{(entry, index) => {
+					const id = entry.id as number;
+					return (
+						<AdminCard>
+							<div class="flex flex-wrap items-center gap-2">
+								<span class="font-semibold text-slate-500">{`#${page() * PER_PAGE + index() + 1} · id ${id}`}</span>
+								<div class="ml-auto flex flex-wrap">
+									<Show when={status() !== "published"}>
+										<CustomButton class={green} disabled={busy()} onClick={() => accept(id)}>
+											Accept
+										</CustomButton>
+									</Show>
+									<Show when={status() !== "declined"}>
+										<CustomButton class={amber} onClick={() => setDeclining(declining() === id ? null : id)}>
+											Decline
+										</CustomButton>
+									</Show>
+									<Show when={tab() === "articles"}>
+										<CustomButton class={red} onClick={() => setConfirmDelete(confirmDelete() === id ? null : id)}>
+											Delete
+										</CustomButton>
+									</Show>
+								</div>
 							</div>
-						</>
-					}
-				>
-					<div class="my-10 flex items-center justify-between gap-4 p-4">
-						<CustomButton
-							class={`${
-								pOrT() === "Personal_questions"
-									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
-									: ""
-							}`}
-							onClick={() => setPOrT("Personal_questions")}
-						>
-							Personal
-						</CustomButton>
-						<CustomButton
-							class={`${
-								accepted()
-									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
-									: ""
-							}`}
-							onClick={() => setAccepted(accepted() === true ? null : true)}
-						>
-							Accepted
-						</CustomButton>
-						<CustomButton
-							class={`${
-								pOrT() === "Their_questions"
-									? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900"
-									: ""
-							}`}
-							onClick={() => setPOrT("Their_questions")}
-						>
-							Their
-						</CustomButton>
-					</div>
-					<div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
-						<For each={submissions.data?.poll}>
-							{(entry, index) => (
-								<div class="flex w-full flex-col gap-2 rounded-3xl bg-blue-200 p-8">
-									<div class="m-8 flex items-center justify-between">
-										<h3 class="font-bold text-xl">{index()}</h3>
-										<Show
-											when={accepted()}
-											fallback={
+
+							<Show when={declining() === id}>
+								<Form of={declineForm} onSubmit={handleDecline} class="w-full">
+									<div class="flex flex-col gap-2 rounded-xl bg-amber-50 p-4">
+										<Field of={declineForm} path={["decline_reason"]}>
+											{(field) => (
 												<>
-													<CustomButton
-														disabled={acceptMut.isPending}
-														onclick={() => {
-															acceptMut.mutate({
-																id: entry.id,
-																pOrT: pOrT(),
-															});
-														}}
-													>
-														Accept
-													</CustomButton>
-
-													<CustomButton
-														onclick={() => {
-															setEntryEdit(entry.id);
-															setShowModal(true);
-														}}
-													>
-														Decline
-													</CustomButton>
+													<label class="font-semibold" for={`reason-${id}`}>
+														Reason, shown to the author
+													</label>
+													<textarea
+														id={`reason-${id}`}
+														class="w-full resize-y rounded-lg border border-slate-400 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+														{...field.props}
+														value={field.input ?? ""}
+														rows={3}
+														autocomplete="off"
+													/>
+													{field.errors && <p class="text-red-600 text-sm">{field.errors[0]}</p>}
 												</>
-											}
-										>
-											<CustomButton
-												onclick={() => {
-													setEntryEdit(entry.id);
-													setShowModal(true);
-												}}
-											>
+											)}
+										</Field>
+										<div class="flex flex-wrap">
+											<CustomButton type="submit" class={amber} disabled={busy()}>
 												Decline
 											</CustomButton>
-										</Show>
+											<CustomButton
+												onClick={() => {
+													setDeclining(null);
+													reset(declineForm);
+												}}
+											>
+												Cancel
+											</CustomButton>
+										</div>
 									</div>
-									<For each={Object.keys(entry)}>
-										{(keys) => (
-											<>
-												<h4 class="w-full font-bold text-lg">{keys}</h4>
-												<p class="w-full">{String((entry as Record<string, unknown>)[keys] ?? "")}</p>
-											</>
-										)}
-									</For>
-								</div>
-							)}
-						</For>
-					</div>
-					<div class="m-16 flex w-full items-center justify-around">
-						<CustomButton
-							class={page() === 0 ? "invisible" : ""}
-							onClick={() => setPage((prev) => (prev === 0 ? 0 : prev - 1))}
-						>
-							Back
-						</CustomButton>
-						<h5 class="font-bold text-lg">{`Page: ${page() + 1}/${
-							Math.floor((submissions.data?.total ?? 0) / 25) + 1
-						}`}</h5>
+								</Form>
+							</Show>
 
-						<CustomButton
-							class={
-								(submissions.data?.total ?? 0) / ((page() + 1) * 25) <= 1
-									? "invisible"
-									: ""
-							}
-							onClick={() =>
-								setPage((prev) =>
-									(submissions.data?.total ?? 0) / ((prev + 1) * 25) <= 1
-										? prev
-										: prev + 1,
-								)
-							}
-						>
-							Next
-						</CustomButton>
-					</div>
-				</Show>
-			</div>
-		</>
+							<Show when={confirmDelete() === id}>
+								<div class="flex flex-wrap items-center gap-2 rounded-xl bg-red-50 p-4">
+									<p class="font-semibold text-red-700">Delete this article permanently?</p>
+									<div class="ml-auto flex">
+										<CustomButton
+											class="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-700"
+											disabled={deleteArticleMut.isPending}
+											onClick={() => deleteArticleMut.mutate({ id })}
+										>
+											Yes, delete
+										</CustomButton>
+										<CustomButton onClick={() => setConfirmDelete(null)}>Cancel</CustomButton>
+									</div>
+								</div>
+							</Show>
+
+							<Fields entry={entry} />
+						</AdminCard>
+					);
+				}}
+			</For>
+
+			<Pager
+				page={page()}
+				total={total()}
+				setPage={(p) => {
+					setPage(p);
+					setDeclining(null);
+					setConfirmDelete(null);
+					window.scrollTo({ top: 0, behavior: "smooth" });
+				}}
+			/>
+		</AdminShell>
 	);
 };
 
 export default withProviders(Page);
-
-//BUG SSR doesnt work probably show without single parent jsx

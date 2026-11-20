@@ -1,4 +1,5 @@
 import { For, Show, createSignal } from "solid-js";
+import AdminShell from "~/components/AdminShell";
 import CustomButton from "~/components/CustomButton";
 import { withProviders } from "~/islands/withProviders";
 import { trpc } from "~/utils/trpc";
@@ -41,9 +42,8 @@ const Page = () => {
 	const date = (d: Date | string) => new Date(d).toLocaleDateString();
 
 	return (
-		<div class="flex min-h-screen w-full flex-col items-center gap-8 bg-slate-100 py-16">
-			<div class="flex w-11/12 max-w-2xl flex-col gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-10 shadow-xl lg:p-12">
-				<h1 class="text-center font-bold text-2xl lg:text-3xl">Find and delete an account</h1>
+		<AdminShell title="Find and delete an account">
+			<div class="flex w-full flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
 				<p class="text-slate-700">
 					Paste a piece of text the person says they wrote (a poll answer or an article description or
 					link). Every account with matching text is listed, with what it has submitted. Deleting an
@@ -66,12 +66,12 @@ const Page = () => {
 			</div>
 
 			<Show when={deleted()}>
-				<p class="rounded-full bg-green-100 px-4 py-2 font-semibold text-green-800">
+				<p class="self-start rounded-full bg-green-100 px-4 py-2 font-semibold text-green-800">
 					Account and all its data deleted.
 				</p>
 			</Show>
 			<Show when={deleteMut.isError}>
-				<p class="rounded-full bg-red-100 px-4 py-2 font-semibold text-red-800">
+				<p class="self-start rounded-full bg-red-100 px-4 py-2 font-semibold text-red-800">
 					{deleteMut.error?.message ?? "Couldn't delete the account."}
 				</p>
 			</Show>
@@ -85,7 +85,7 @@ const Page = () => {
 
 			<For each={results.data}>
 				{(user) => (
-					<div class="flex w-11/12 max-w-2xl flex-col gap-4 rounded-3xl bg-white px-4 py-8 shadow-md lg:p-10">
+					<div class="shadow-md flex w-full flex-col gap-4 rounded-2xl bg-white p-6 ring-1 ring-slate-200">
 						<div class="flex flex-wrap items-baseline justify-between gap-2">
 							<h2 class="font-bold text-lg">
 								Account <span class="font-mono text-base">{user.id}</span>
@@ -139,7 +139,7 @@ const Page = () => {
 					</div>
 				)}
 			</For>
-		</div>
+		</AdminShell>
 	);
 };
 
