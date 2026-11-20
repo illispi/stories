@@ -91,61 +91,27 @@ const SaveError: Component<{ show: boolean }> = (props) => (
 	</Show>
 );
 
-/** Shows the newer questions' answers, "Not answered" when empty. */
-const ExtraAnswers: Component<{ row: Record<string, unknown> | undefined; labels: Record<ExtraKey, string> }> = (
-	props,
-) => (
-	<For each={EXTRA_KEYS}>
-		{(key) => (
-			<Answer title={props.labels[key]}>
-				<p classList={{ "italic text-slate-500": props.row?.[key] == null }}>{formatExtra(props.row?.[key])}</p>
-			</Answer>
-		)}
-	</For>
-);
-
-/** Inputs for the newer questions. `form` is the personal or other-poll form; both have these fields. */
+/** Text box for the "altered life" answer. `form` is the personal or other-poll form; both have it. */
 // biome-ignore lint/suspicious/noExplicitAny: shared by two differently typed forms
-const ExtraFields: Component<{ form: any; labels: Record<ExtraKey, string> }> = (props) => (
-	<For each={EXTRA_KEYS}>
-		{(key) => (
-			<Answer title={props.labels[key]}>
-				<Field of={props.form} path={[key]}>
-					{/* biome-ignore lint/suspicious/noExplicitAny: see above */}
-					{(field: any) => (
-						<>
-							{key === "how_it_altered_life" ? (
-								<textarea
-									class={textareaClass}
-									{...field.props}
-									value={field.input ?? ""}
-									rows={6}
-									autocomplete="off"
-									placeholder="Not answered"
-								/>
-							) : (
-								// `selected` per option: a value on <select> is applied before the
-								// options exist, so the saved answer wouldn't show
-								<select class={inputClass} {...field.props}>
-									<option value="" selected={!field.input}>
-										Not answered
-									</option>
-									<For each={CHOICES[key as ChoiceKey]}>
-										{(choice) => (
-											<option value={choice} selected={field.input === choice}>
-												{choice}
-											</option>
-										)}
-									</For>
-								</select>
-							)}
-							{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
-						</>
-					)}
-				</Field>
-			</Answer>
-		)}
-	</For>
+const AlteredLifeField: Component<{ form: any; title: string }> = (props) => (
+	<Answer title={props.title}>
+		<Field of={props.form} path={["how_it_altered_life"]}>
+			{/* biome-ignore lint/suspicious/noExplicitAny: see above */}
+			{(field: any) => (
+				<>
+					<textarea
+						class={textareaClass}
+						{...field.props}
+						value={field.input ?? ""}
+						rows={8}
+						autocomplete="off"
+						placeholder="Not answered yet"
+					/>
+					{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
+				</>
+			)}
+		</Field>
+	</Answer>
 );
 
 /* ---------- form schemas ---------- */
@@ -164,25 +130,12 @@ const optionalText = v.optional(
 	),
 );
 
-/*
- * Questions added in 2026-11. Submissions from before then have no answer to them, so
- * here they're always shown and can be answered, changed or cleared (empty = no answer).
+/**
+ * "How did the illness alter your life?" was added in 2026-11, so older submissions have no
+ * answer. Unlike the other text answers it's always editable: it can be added, changed or
+ * cleared (empty = no answer).
  */
-const SCHOOL = ["really poorly", "bad", "average", "good", "great"] as const;
-const EXERCISE = ["no exercise", "little", "moderately", "lots of exercise"] as const;
-const EXTRA_KEYS = ["symptom_free_on_meds", "exercise", "school_performance", "how_it_altered_life"] as const;
-type ExtraKey = (typeof EXTRA_KEYS)[number];
-type ChoiceKey = Exclude<ExtraKey, "how_it_altered_life">;
-const CHOICES: Record<ChoiceKey, readonly string[]> = {
-	symptom_free_on_meds: ["yes", "no"],
-	exercise: EXERCISE,
-	school_performance: SCHOOL,
-};
-
-const extraFields = {
-	symptom_free_on_meds: v.optional(v.picklist(["", "yes", "no"])),
-	exercise: v.optional(v.picklist(["", ...EXERCISE])),
-	school_performance: v.optional(v.picklist(["", ...SCHOOL])),
+const alteredLife = {
 	how_it_altered_life: v.optional(
 		v.pipe(
 			v.string(),
@@ -192,35 +145,19 @@ const extraFields = {
 		),
 	),
 };
+type AlteredKey = "how_it_altered_life";
 
-/** Saved row → form input ("" when not answered). */
-const extraInput = (row: Record<string, unknown>) => ({
-	symptom_free_on_meds:
-		row.symptom_free_on_meds == null ? "" : row.symptom_free_on_meds ? "yes" : "no",
-	exercise: (row.exercise as string | null) ?? "",
-	school_performance: (row.school_performance as string | null) ?? "",
+const alteredInput = (row: Record<string, unknown>) => ({
 	how_it_altered_life: (row.how_it_altered_life as string | null) ?? "",
 });
 
-/** Form values → column values (null when cleared). */
-const extraOutput = (values: Record<string, unknown>) => {
-	const out: Record<string, unknown> = {};
-	for (const key of EXTRA_KEYS) {
-		const value = values[key];
-		if (value === undefined) continue;
-		out[key] =
-			value === "" ? null : key === "symptom_free_on_meds" ? value === "yes" : value;
-	}
-	return out;
-};
+/** Form value → column value (null when cleared). */
+const alteredOutput = (values: Record<string, unknown>) =>
+	values.how_it_altered_life === undefined
+		? {}
+		: { how_it_altered_life: values.how_it_altered_life === "" ? null : values.how_it_altered_life };
 
-const withoutExtra = (values: Record<string, unknown>) =>
-	Object.fromEntries(
-		Object.entries(values).filter(([key]) => !(EXTRA_KEYS as readonly string[]).includes(key)),
-	);
-
-const formatExtra = (value: unknown) =>
-	value == null || value === "" ? "Not answered" : value === true ? "Yes" : value === false ? "No" : String(value);
+const withoutAltered = ({ how_it_altered_life: _, ...rest }: Record<string, unknown>) => rest;
 
 const PersonalFormSchema = v.object({
 	describe_hospital: optionalText,
@@ -233,17 +170,17 @@ const PersonalFormSchema = v.object({
 	life_satisfaction_description: optionalText,
 	what_others_should_know: optionalText,
 	not_have_schizophrenia_description: optionalText,
-	...extraFields,
+	...alteredLife,
 });
-type PersonalFormKey = Exclude<keyof v.InferInput<typeof PersonalFormSchema>, ExtraKey>;
+type PersonalFormKey = Exclude<keyof v.InferInput<typeof PersonalFormSchema>, AlteredKey>;
 
 const TheirFormSchema = v.object({
 	personality_before: optionalText,
 	personality_after: optionalText,
 	what_others_should_know: optionalText,
-	...extraFields,
+	...alteredLife,
 });
-type TheirFormKey = Exclude<keyof v.InferInput<typeof TheirFormSchema>, ExtraKey>;
+type TheirFormKey = Exclude<keyof v.InferInput<typeof TheirFormSchema>, AlteredKey>;
 
 /** Same rules as the article submit form. */
 const ArticleFormSchema = v.object({
@@ -280,18 +217,9 @@ const theirHeaders: Record<TheirFormKey, string> = {
 	what_others_should_know: "What others should know about schizophrenia:",
 };
 
-const personalExtraLabels: Record<ExtraKey, string> = {
-	symptom_free_on_meds: "Symptom free while on medication:",
-	exercise: "How much you exercise:",
-	school_performance: "How you did in school:",
-	how_it_altered_life: "How the illness altered your life:",
-};
-
-const theirExtraLabels: Record<ExtraKey, string> = {
-	symptom_free_on_meds: "Symptom free while on medication:",
-	exercise: "How much they exercise:",
-	school_performance: "How they did in school:",
-	how_it_altered_life: "How the illness altered their life:",
+const alteredTitle = {
+	personal: "How the illness altered your life:",
+	their: "How the illness altered their life:",
 };
 
 /** Only send fields that were edited; undefined would drop the saved answer. */
@@ -368,7 +296,7 @@ const Page = () => {
 					(data[key] as string | null | undefined) ?? undefined,
 				]),
 			);
-			reset(personalForm, { initialInput: { ...initialInput, ...extraInput(data) } });
+			reset(personalForm, { initialInput: { ...initialInput, ...alteredInput(data) } });
 		}
 	});
 
@@ -376,8 +304,8 @@ const Page = () => {
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
-			...editedOnly(withoutExtra(values)),
-			...extraOutput(values),
+			...editedOnly(withoutAltered(values)),
+			...alteredOutput(values),
 			systemMetric: true,
 		} as Parameters<typeof editPersonalMut.mutate>[0]);
 	};
@@ -399,7 +327,7 @@ const Page = () => {
 						(row[key] as string | null | undefined) ?? undefined,
 					]),
 				),
-				...extraInput(row),
+				...alteredInput(row),
 			},
 		});
 		setTheirEdit(true);
@@ -410,7 +338,7 @@ const Page = () => {
 		if (!row) return;
 		editTheirMut.mutate({
 			id: row.id,
-			data: { ...row, ...editedOnly(withoutExtra(values)), ...extraOutput(values) },
+			data: { ...row, ...editedOnly(withoutAltered(values)), ...alteredOutput(values) },
 		} as Parameters<typeof editTheirMut.mutate>[0]);
 	};
 
@@ -493,7 +421,7 @@ const Page = () => {
 												</Show>
 											)}
 										</For>
-										<ExtraFields form={personalForm} labels={personalExtraLabels} />
+										<AlteredLifeField form={personalForm} title={alteredTitle.personal} />
 										<SaveError show={editPersonalMut.isError} />
 										<CustomButton disabled={editPersonalMut.isPending} type="submit">
 											Save changes
@@ -511,10 +439,11 @@ const Page = () => {
 										</Show>
 									)}
 								</For>
-								<ExtraAnswers
-									row={personalDataQuery.data as Record<string, unknown> | undefined}
-									labels={personalExtraLabels}
-								/>
+								<Show when={personalDataQuery.data?.how_it_altered_life}>
+									<Answer title={alteredTitle.personal}>
+										<p>{personalDataQuery.data?.how_it_altered_life}</p>
+									</Answer>
+								</Show>
 							</Show>
 						</div>
 					</CssTranstionGrow>
@@ -596,7 +525,7 @@ const Page = () => {
 																	</Show>
 																)}
 															</For>
-															<ExtraFields form={theirForm} labels={theirExtraLabels} />
+															<AlteredLifeField form={theirForm} title={alteredTitle.their} />
 															<SaveError show={editTheirMut.isError} />
 															<CustomButton disabled={editTheirMut.isPending} type="submit">
 																Save changes
@@ -614,10 +543,11 @@ const Page = () => {
 															</Show>
 														)}
 													</For>
-													<ExtraAnswers
-														row={currentTheir() as Record<string, unknown> | undefined}
-														labels={theirExtraLabels}
-													/>
+													<Show when={currentTheir()?.how_it_altered_life}>
+														<Answer title={alteredTitle.their}>
+															<p>{currentTheir()?.how_it_altered_life}</p>
+														</Answer>
+													</Show>
 												</Show>
 											</div>
 										</Show>
