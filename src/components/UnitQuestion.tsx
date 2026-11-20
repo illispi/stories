@@ -56,6 +56,21 @@ export const UnitQuestion: ParentComponent<{
 	const sendStats =
 		props.LsName === "personalQuestions" ? personalMut : theirMut;
 
+	// Show why a submit was refused (e.g. ages that don't fit, poll already submitted)
+	createEffect(() => {
+		const err = sendStats.error;
+		if (!err) return;
+		let message = err.message;
+		try {
+			// Validation errors arrive as a JSON list of issues
+			const issues = JSON.parse(message) as { message?: string }[];
+			if (Array.isArray(issues) && issues[0]?.message) message = issues[0].message;
+		} catch {
+			// a plain message
+		}
+		setError(`Couldn't submit: ${message}`);
+	});
+
 	createEffect(() => {
 		if (sendStats.isSuccess) {
 			props.setSubmissionStatus("success");
@@ -302,8 +317,6 @@ export const UnitQuestion: ParentComponent<{
 				);
 			}
 		} else {
-			//TODO Maybe handle if age is smaller than onset
-
 			numberSchema = pipe(numberBot("Age is required, 5-110"),
 				minValue(5, "Minimum age is 5"),
 				maxValue(110, "Maximum age is 110"),
@@ -313,8 +326,20 @@ export const UnitQuestion: ParentComponent<{
 
 		const result = safeParse(numberSchema, Number(number()));
 
+		// Age of onset can't be after the current age (current age is asked first)
+		const saved: Record<string, unknown> = JSON.parse(localStorage.getItem(props.LsName) ?? "{}");
+		const ageConflict = !result.success
+			? null
+			: questionDB === "age_of_onset" && typeof saved.current_age === "number" && result.output > saved.current_age
+				? `Age of onset can't be higher than current age (${saved.current_age}).`
+				: questionDB === "current_age" && typeof saved.age_of_onset === "number" && result.output < saved.age_of_onset
+					? `Current age can't be lower than age of onset (${saved.age_of_onset}).`
+					: null;
+
 		if (!result.success) {
 			setError(result.issues[0].message);
+		} else if (ageConflict) {
+			setError(ageConflict);
 		} else {
 			handleSubmit({ [questionDB]: result.output });
 			setError(null);

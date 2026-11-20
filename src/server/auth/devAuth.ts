@@ -8,8 +8,7 @@ import { betterAuth } from "better-auth";
 import { testUtils } from "better-auth/plugins";
 import { authOptions } from "./auth";
 
-/** Test accounts are recognisable by this made-up domain. */
-export const TEST_EMAIL_DOMAIN = "@test.invalid";
+export { TEST_EMAIL_DOMAIN } from "./testEmail";
 
 let instance: ReturnType<typeof create> | undefined;
 const create = () => betterAuth({ ...authOptions, plugins: [testUtils()] });

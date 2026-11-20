@@ -4,6 +4,8 @@ import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import { publicProcedure } from "../../utils";
 import { countAgeBrackets } from "~/utils/ageBrackets";
+import { cachedStats } from "~/server/statsCache";
+import type { Context } from "../../context";
 
 // Only free-text answers may be paged through textPagination. Anything else
 // (e.g. the `user` column) must never be selectable by name from the client.
@@ -12,26 +14,28 @@ const textStats = new Set<string>(
 		.filter((q) => q.questionType === "text")
 		.map((q) => q.questionDB as string),
 );
-//TODO remember to only update this every once in a while in production
+// allStats results are cached for a minute (src/server/statsCache.ts)
+
+const allStatsInput = z.object({
+	value: z.enum([
+		"all",
+		"schizophrenia",
+		"schizoaffective",
+		"female",
+		"other",
+		"male",
+	]),
+	pOrT: z.enum(["Personal_questions", "Their_questions"]),
+	fake: z.enum(["real", "fake"]),
+	/** Only used with a gender `value`: limit that gender to one diagnosis. */
+	diagnosis: z.enum(["all", "schizophrenia", "schizoaffective"]).default("all"),
+});
 
 export const allStats = publicProcedure
-	.input(
-		z.object({
-			value: z.enum([
-				"all",
-				"schizophrenia",
-				"schizoaffective",
-				"female",
-				"other",
-				"male",
-			]),
-			pOrT: z.enum(["Personal_questions", "Their_questions"]),
-			fake: z.enum(["real", "fake"]),
-			/** Only used with a gender `value`: limit that gender to one diagnosis. */
-			diagnosis: z.enum(["all", "schizophrenia", "schizoaffective"]).default("all"),
-		}),
-	)
-	.query(async ({ input: payload, ctx }) => {
+	.input(allStatsInput)
+	.query(({ input, ctx }) => cachedStats(JSON.stringify(input), () => computeAllStats(input, ctx)));
+
+const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Context) => {
 		{
 			let stats: Record<string, any>[] = [];
 
@@ -182,25 +186,15 @@ export const allStats = publicProcedure
 					});
 					automatic[e.questionDB] = selections;
 				} else if (e.questionType === "text") {
+					// Up to 5 random answers
 					const allTexts = filterSensitive
 						.map((i) => i[e.questionDB])
-						.filter((f) => f !== null);
-
-					automatic[e.questionDB] = [];
-
-					for (
-						let index = 0;
-						index <= (allTexts.length <= 5 ? allTexts.length : 4);
-						index++
-					) {
-						const element =
-							allTexts.length === 1
-								? 0
-								: Math.floor(Math.random() * allTexts.length);
-
-						automatic[e.questionDB].push(allTexts[element]);
-						allTexts.splice(element, 1);
+						.filter((f) => f !== null && f !== undefined && f !== "");
+					const picked: unknown[] = [];
+					while (picked.length < 5 && allTexts.length) {
+						picked.push(allTexts.splice(Math.floor(Math.random() * allTexts.length), 1)[0]);
 					}
+					automatic[e.questionDB] = picked;
 				} else if (e.questionType === "multiSelect") {
 					const multiSelections = {};
 
@@ -214,62 +208,11 @@ export const allStats = publicProcedure
 				}
 			});
 
-			//BUG below code soesnt work currently, and its not even used in frontend
-
-			const maleSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "male")
-				.where("accepted", "=", true)
-				.execute();
-
-			const femaleSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "female")
-				.where("accepted", "=", true)
-				.execute();
-			const otherSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "other")
-				.where("accepted", "=", true)
-				.execute();
-
-			//BUG above seems to return too little
-
-			/*   const selections = {};
-      e.selections?.forEach((i) => {
-        selections[i] = filterSensitive.filter(
-          (d) => d[e.questionDB] === i
-        ).length;
-      });
-      automatic[e.questionDB] = selections; */
-
-			const lengthPsyFunc = (split: { length_of_psychosis: string }[]) => {
-				const object: Record<string, number> = {};
-
-				const lengthSelections = questions
-					.find((q) => q.questionDB === "length_of_psychosis")
-					?.selections?.map((r) => r);
-				lengthSelections?.forEach((e) => {
-					object[e] = split.filter((i) => i.length_of_psychosis === e).length;
-				});
-
-				return object;
-			};
-
-			automatic.lengthByGender = {
-				maleSplit: lengthPsyFunc(maleSplit),
-				femaleSplit: lengthPsyFunc(femaleSplit),
-				otherSplit: lengthPsyFunc(otherSplit),
-			};
-
 			automatic.total = responsesTotal;
 
 			return automatic as MainReturn;
 		}
-	});
+};
 
 export const textPagination = publicProcedure
 	.input(
@@ -315,6 +258,8 @@ export const textPagination = publicProcedure
 		}
 
 		const stats = await statsQuery
+			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
+			.orderBy("id", "desc")
 			.offset(payload.page * 25)
 			.limit(25)
 			.execute();

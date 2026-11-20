@@ -108,7 +108,6 @@ export interface MainReturn {
   what_others_should_know: string[];
   not_have_schizophrenia: AfterHospitalSatisfaction;
   not_have_schizophrenia_description: string[];
-  lengthByGender: LengthByGender;
   total: number;
 }
 
@@ -142,12 +141,6 @@ export interface Gender {
   female: number;
   male: number;
   other: number;
-}
-
-export interface LengthByGender {
-  maleSplit: LengthOfPsychosis;
-  femaleSplit: LengthOfPsychosis;
-  otherSplit: LengthOfPsychosis;
 }
 
 export interface LengthOfPsychosis {

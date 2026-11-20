@@ -10,11 +10,24 @@ const appOrigin = new URL(BETTER_AUTH_URL).origin;
 const matches = (path: string, prefixes: string[]) =>
 	prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 
+/** No framing by other sites (clickjacking), no MIME sniffing, no full URLs in Referer. */
+const withSecurityHeaders = (response: Response) => {
+	try {
+		response.headers.set("X-Frame-Options", "DENY");
+		response.headers.set("Content-Security-Policy", "frame-ancestors 'none'");
+		response.headers.set("X-Content-Type-Options", "nosniff");
+		response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+	} catch {
+		// Some responses (e.g. redirects made with Response.redirect) have immutable headers
+	}
+	return response;
+};
+
 export const onRequest = defineMiddleware(async (ctx, next) => {
 	const path = ctx.url.pathname;
 
 	// Better Auth handles its own routes (and their CSRF/origin checks)
-	if (path.startsWith("/api/auth/")) return next();
+	if (path.startsWith("/api/auth/")) return withSecurityHeaders(await next());
 
 	// CSRF for our JSON API: Astro's checkOrigin only covers form content types
 	if (path.startsWith("/api/trpc") && !["GET", "HEAD", "OPTIONS"].includes(ctx.request.method)) {
@@ -34,5 +47,5 @@ export const onRequest = defineMiddleware(async (ctx, next) => {
 		return ctx.redirect(ctx.locals.user ? "/" : `/login?redir=${encodeURIComponent(path)}`);
 	}
 
-	return next();
+	return withSecurityHeaders(await next());
 });

@@ -2,6 +2,8 @@ import { z } from "zod";
 import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
+import { clearStatsCache } from "~/server/statsCache";
+import { TEST_EMAIL_DOMAIN } from "~/server/auth/testEmail";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
@@ -20,6 +22,24 @@ const changedSinceLoaded = () =>
 		code: "CONFLICT",
 		message: "This entry was edited after the list loaded. It has been reloaded: review it again.",
 	});
+
+/**
+ * Owner for a dev fake row. Their_questions rows go to the admin; a personal poll is one per
+ * account, so each fake one gets a new test account (listed and deletable on /dev/test-users).
+ */
+const fakeOwner = async (
+	db: typeof import("~/server/db").db,
+	pOrT: "Personal_questions" | "Their_questions",
+	adminId: string,
+) => {
+	if (pOrT === "Their_questions") return adminId;
+	const id = crypto.randomUUID();
+	await db
+		.insertInto("auth_user")
+		.values({ id, name: "", email: `fake_${id.slice(0, 8)}${TEST_EMAIL_DOMAIN}`, email_verified: false, role: "user" })
+		.execute();
+	return id;
+};
 
 /** `systemMetric` is a form-only field, not a DB column. */
 const withoutSystemMetric = <T extends object>(data: T) => {
@@ -65,6 +85,7 @@ export const deleteUserAdmin = adminProcedure
 		}
 
 		await ctx.db.deleteFrom("auth_user").where("id", "=", input.userId).execute();
+		clearStatsCache();
 
 		return "Deleted succesfully";
 	});
@@ -90,7 +111,7 @@ export const declineArticle = adminProcedure
 		}),
 	)
 	.mutation(async ({ ctx, input }) => {
-		const insertion = await ctx.db
+		const updated = await ctx.db
 			.updateTable("Articles")
 			.set({
 				accepted: false,
@@ -101,12 +122,7 @@ export const declineArticle = adminProcedure
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw new TRPCError({ code: "NOT_FOUND", message: "Article not found" });
 
 		return "Added succesfully";
 	});
@@ -133,6 +149,7 @@ export const acceptSubmission = adminProcedure
 			.executeTakeFirst();
 
 		if (!updated.numUpdatedRows) throw changedSinceLoaded();
+		clearStatsCache();
 		return "Updated succesfully";
 	});
 
@@ -156,12 +173,9 @@ export const declineSubmission = adminProcedure
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw new TRPCError({ code: "NOT_FOUND", message: "Submission not found" });
+		// Declining a published entry takes it out of the stats
+		clearStatsCache();
 
 		return "Updated succesfully";
 	});
@@ -200,6 +214,7 @@ export const fakeForFake = adminProcedure
 					});
 				}
 			}
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
 			console.error(error);
@@ -233,7 +248,7 @@ export const fakeForDev = devAdminProcedure
 				.insertInto(input.pOrT)
 				.values({
 					...fakeDataPruned,
-					user: ctx.user.id,
+					user: await fakeOwner(ctx.db, input.pOrT, ctx.user.id),
 					accepted: null,
 				})
 				.executeTakeFirst();
@@ -245,6 +260,7 @@ export const fakeForDev = devAdminProcedure
 				});
 			}
 
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
 			console.error(error);
@@ -277,7 +293,7 @@ export const fakeForDevBulk = devAdminProcedure
 					.insertInto(input.pOrT)
 					.values({
 						...withoutSystemMetric(fakeData),
-						user: ctx.user.id,
+						user: await fakeOwner(ctx.db, input.pOrT, ctx.user.id),
 						accepted: true,
 					})
 					.executeTakeFirst();
@@ -289,6 +305,7 @@ export const fakeForDevBulk = devAdminProcedure
 					});
 				}
 			}
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
 			console.error(error);

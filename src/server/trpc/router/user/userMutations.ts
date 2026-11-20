@@ -1,9 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
 
+const notFound = (what: string) => new TRPCError({ code: "NOT_FOUND", message: `${what} not found` });
+
 /** `systemMetric` is a form-only field, not a DB column. */
 const withoutSystemMetric = <T extends { systemMetric?: boolean }>({ systemMetric: _systemMetric, ...rest }: T) => rest;
 import { z } from "zod";
+import { clearStatsCache } from "~/server/statsCache";
 import { articleFields } from "~/server/schemas/articleSchema";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 
@@ -13,12 +16,8 @@ export const removeAccountAndData = userProcedure.mutation(async ({ ctx }) => {
 		.where("id", "=", ctx.user.id)
 		.executeTakeFirst();
 
-	if (!deletion) {
-		throw new TRPCError({
-			code: "INTERNAL_SERVER_ERROR",
-			message: "Deletion failed",
-		});
-	}
+	if (!deletion.numDeletedRows) throw notFound("Account");
+	clearStatsCache();
 
 	return "Deleted succesfully";
 });
@@ -29,12 +28,8 @@ export const removePersonal = userProcedure.mutation(async ({ ctx }) => {
 		.where("user", "=", ctx.user.id)
 		.executeTakeFirst();
 
-	if (!deletion) {
-		throw new TRPCError({
-			code: "INTERNAL_SERVER_ERROR",
-			message: "Deletion failed",
-		});
-	}
+	if (!deletion.numDeletedRows) throw notFound("Personal poll");
+	clearStatsCache();
 
 	return "Deleted succesfully";
 });
@@ -48,12 +43,8 @@ export const removeTheir = userProcedure
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!deletion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Deletion failed",
-			});
-		}
+		if (!deletion.numDeletedRows) throw notFound("Submission");
+		clearStatsCache();
 
 		return "Deleted succesfully";
 	});
@@ -67,12 +58,8 @@ export const removeArticle = userProcedure
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!deletion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Deletion failed",
-			});
-		}
+		if (!deletion.numDeletedRows) throw notFound("Article");
+		clearStatsCache();
 
 		return "Deleted succesfully";
 	});
@@ -114,12 +101,9 @@ export const editPersonal = userProcedure
 			.where("user", "=", ctx.user.id)
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw notFound("Personal poll");
+		// An edit sends the entry back to review, so it drops out of the stats
+		clearStatsCache();
 
 		return "Updated succesfully";
 	});
@@ -134,46 +118,16 @@ export const editTheir = userProcedure
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw notFound("Submission");
+		// An edit sends the entry back to review, so it drops out of the stats
+		clearStatsCache();
 
 		return "Updated succesfully";
 	});
 
 export const markRead = userProcedure.mutation(async ({ ctx }) => {
-	const markReadPersonal = await ctx.db
-		.updateTable("Personal_questions")
-		.set({
-			seen: true,
-		})
-		.where("user", "=", ctx.user.id)
-		.executeTakeFirst();
-
-	const markReadTheir = await ctx.db
-		.updateTable("Their_questions")
-		.set({
-			seen: true,
-		})
-		.where("user", "=", ctx.user.id)
-		.execute();
-
-	const markReadArticles = await ctx.db
-		.updateTable("Articles")
-		.set({
-			seen: true,
-		})
-		.where("user", "=", ctx.user.id)
-		.execute();
-
-	if (markReadPersonal && markReadTheir && markReadArticles) {
-		return true;
+	for (const table of ["Personal_questions", "Their_questions", "Articles"] as const) {
+		await ctx.db.updateTable(table).set({ seen: true }).where("user", "=", ctx.user.id).execute();
 	}
-	throw new TRPCError({
-		code: "INTERNAL_SERVER_ERROR",
-		message: "Update failed",
-	});
+	return true;
 });
