@@ -19,6 +19,12 @@ const Page = () => {
 				>
 					Fake
 				</A>
+				<A
+					class="duration-200 ease-out active:scale-125"
+					href={routeGen("/admin/users")}
+				>
+					Find and delete an account
+				</A>
 			</div>
 		</Suspense>
 	);

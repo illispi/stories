@@ -42,6 +42,32 @@ export const acceptArticle = adminProcedure
 		return "Added succesfully";
 	});
 
+/**
+ * Deletes an account and everything it submitted (poll answers, articles, sessions): the
+ * tables reference auth_user with ON DELETE CASCADE. For people who can't sign in any more
+ * and ask for removal. Admin accounts (including your own) can't be deleted here.
+ */
+export const deleteUserAdmin = adminProcedure
+	.input(z.object({ userId: z.string().min(1) }))
+	.mutation(async ({ ctx, input }) => {
+		const target = await ctx.db
+			.selectFrom("auth_user")
+			.select(["id", "role"])
+			.where("id", "=", input.userId)
+			.executeTakeFirst();
+
+		if (!target) {
+			throw new TRPCError({ code: "NOT_FOUND", message: "Account not found" });
+		}
+		if (target.role === "admin" || target.id === ctx.user.id) {
+			throw new TRPCError({ code: "FORBIDDEN", message: "Admin accounts can't be deleted here" });
+		}
+
+		await ctx.db.deleteFrom("auth_user").where("id", "=", input.userId).execute();
+
+		return "Deleted succesfully";
+	});
+
 /** Removes any article, including accepted ones already shown on the Articles page. */
 export const deleteArticleAdmin = adminProcedure
 	.input(z.object({ id: z.number() }))

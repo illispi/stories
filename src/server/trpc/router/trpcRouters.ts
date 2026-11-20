@@ -5,12 +5,13 @@ import {
 	declineArticle,
 	declineSubmission,
 	deleteArticleAdmin,
+	deleteUserAdmin,
 	fakeArticlesForDev,
 	fakeForDev,
 	fakeForDevBulk,
 	fakeForFake,
 } from "./admin/adminMutations";
-import { listArticles, listSubmissions } from "./admin/adminQueries";
+import { listArticles, listSubmissions, searchUsersByText } from "./admin/adminQueries";
 import {
 	postArticle,
 	postPersonalStats,
@@ -47,6 +48,8 @@ export const appRouter = router({
 	acceptArticle,
 	declineArticle,
 	deleteArticleAdmin,
+	deleteUserAdmin,
+	searchUsersByText,
 	acceptSubmission,
 	declineSubmission,
 	fakeForFake,
