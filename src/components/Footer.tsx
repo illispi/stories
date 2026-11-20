@@ -18,8 +18,8 @@ const Footer: Component<{}> = (props) => {
 						Github
 					</a>
 
-					<a class="text-white text-xl" href="https://x.com/delvis1640088">
-						X.com
+					<a class="text-white text-xl" href="https://www.reddit.com/user/Delvisreddit/">
+						Reddit
 					</a>
 				</div>
 				<div class="flex flex-col items-center justify-around gap-4">
