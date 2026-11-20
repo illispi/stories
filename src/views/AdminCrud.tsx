@@ -51,6 +51,14 @@ const Page = () => {
 	const declineArticleMut = trpc.declineArticle.createMutation(() => ({
 		onSuccess: () => utils.listArticles.invalidate(),
 	}));
+	// Two-step delete (no browser dialog): first click arms it for that article.
+	const [confirmDelete, setConfirmDelete] = createSignal<number | null>(null);
+	const deleteArticleMut = trpc.deleteArticleAdmin.createMutation(() => ({
+		onSuccess: () => {
+			setConfirmDelete(null);
+			utils.listArticles.invalidate();
+		},
+	}));
 
 	const declineForm = createForm({ schema: declineSchema });
 	createEffect(() => {
@@ -135,6 +143,21 @@ const Page = () => {
 					when={tab() === "poll"}
 					fallback={
 						<>
+							<div class="my-10 flex items-center justify-center gap-4 p-4">
+								<CustomButton
+									class={accepted() ? "bg-blue-900 active:bg-blue-900 focus:bg-blue-900" : ""}
+									onClick={() => {
+										setAccepted(accepted() === true ? null : true);
+										setPageArticles(0);
+										setConfirmDelete(null);
+									}}
+								>
+									{accepted() ? "Showing published" : "Showing pending"}
+								</CustomButton>
+							</div>
+							<Show when={articles.data && articles.data.length === 0}>
+								<p class="text-center">No articles here.</p>
+							</Show>
 							<div class="flex w-full max-w-xs flex-col gap-8 xl:max-w-2xl">
 								<For each={articles.data}>
 									{(article, index) => (
@@ -177,6 +200,31 @@ const Page = () => {
 													</CustomButton>
 												</Show>
 											</div>
+											<Show
+												when={confirmDelete() === article.id}
+												fallback={
+													<CustomButton
+														class="self-center bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+														onclick={() => setConfirmDelete(article.id)}
+													>
+														Delete
+													</CustomButton>
+												}
+											>
+												<div class="flex flex-col items-center gap-2">
+													<p class="font-semibold text-red-700">Delete this article permanently?</p>
+													<div class="flex flex-wrap justify-center">
+														<CustomButton
+															class="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-700"
+															disabled={deleteArticleMut.isPending}
+															onclick={() => deleteArticleMut.mutate({ id: article.id })}
+														>
+															Yes, delete
+														</CustomButton>
+														<CustomButton onclick={() => setConfirmDelete(null)}>Cancel</CustomButton>
+													</div>
+												</div>
+											</Show>
 											<For each={Object.keys(article)}>
 												{(keys) => (
 													<>

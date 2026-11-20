@@ -4,9 +4,5 @@ import Articles from "~/views/Articles";
 ---
 
 <Layout title="Articles · Schizophrenia poll">
-	<Articles
-		client:only="solid-js"
-		user={Boolean(Astro.locals.user)}
-		admin={Astro.locals.user?.role === "admin"}
-	/>
+	<Articles client:only="solid-js" user={Boolean(Astro.locals.user)} />
 </Layout>

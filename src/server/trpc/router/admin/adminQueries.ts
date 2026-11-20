@@ -85,7 +85,9 @@ export const listArticles = adminProcedure
         // total number of matching rows, repeated on every row (window function)
         eb.fn.countAll<number>().over().as("count"),
       ])
-      .where("accepted", "is", null)
+      // null = waiting for review, true = published
+      .where("accepted", input.accepted === null ? "is" : "=", input.accepted)
+      .orderBy("id", "desc")
       .limit(25)
       .offset(input.page * 25)
       .execute();
