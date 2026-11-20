@@ -19,7 +19,7 @@ const Footer: Component<{}> = (props) => {
 					</a>
 
 					<a class="text-white text-xl" href="https://x.com/delvis1640088">
-						Twitter
+						X.com
 					</a>
 				</div>
 				<div class="flex flex-col items-center justify-around gap-4">

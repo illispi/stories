@@ -25,7 +25,7 @@ const PrivacyNotice = () => {
 						error tracker.
 					</p>
 					<p class="text-lg">
-						If you lose access to your Discord account, message me on Twitter with
+						If you lose access to your Discord account, message me on X.com with
 						a snippet of your poll or article text so I can remove the correct
 						account and data.
 					</p>
@@ -33,7 +33,7 @@ const PrivacyNotice = () => {
 						class="mx-auto text-blue-900 text-xl"
 						href="https://x.com/delvis1640088"
 					>
-						Twitter
+						X.com
 					</a>
 				</div>
 			</div>
