@@ -25,7 +25,7 @@ const PieChartCustom: Component<{
 			series: [
 				{
 					type: "pie",
-					radius: ["40%", "70%"],
+					radius: ["45%", "75%"],
 					startAngle: 180,
 					avoidLabelOverlap: true,
 					data: data.labels.map((name, i) => ({
@@ -34,7 +34,7 @@ const PieChartCustom: Component<{
 						itemStyle: { color: chartColor(i) },
 						label: { show: (values[i] ?? 0) > 0 },
 					})),
-					label: { color: "#000", fontSize: 12, width: 80, overflow: "break" },
+					label: { color: "#000", fontSize: 14, width: 90, overflow: "break" },
 					labelLine: { length: 6, length2: 6 },
 				},
 			],
@@ -48,7 +48,7 @@ const PieChartCustom: Component<{
 			<div class="flex flex-col items-center justify-center">
 				<div
 					ref={mergeRefs(props.ref, (node: Element) => setEl(node as HTMLDivElement))}
-					class={`h-56 w-72 ${!props.data ? "hidden" : ""}`}
+					class={`h-80 w-80 sm:h-96 sm:w-96 ${!props.data ? "hidden" : ""}`}
 				/>
 				<div class={`h-56 w-56 ${props.data ? "hidden" : ""} flex items-center justify-center`}>
 					<svg

@@ -18,6 +18,8 @@ export interface Adds {
 	axisY?: { offset?: number };
 }
 
+const LABEL_WIDTH = 140;
+
 const flatten = (series: ChartistData["series"]) =>
 	(series as (number | number[])[]).map((v) => (Array.isArray(v) ? (v[0] ?? 0) : v));
 
@@ -38,7 +40,8 @@ const BarChartCustom: Component<{
 		return {
 			aria: { enabled: true },
 			tooltip: { trigger: "item" },
-			grid: { left: 8, right: 40, top: 8, bottom: 8 },
+			// Fixed label column, so every bar chart starts its bars at the same x.
+			grid: { left: LABEL_WIDTH + 12, right: 40, top: 8, bottom: 24, outerBoundsMode: "none" },
 			xAxis: {
 				type: "value",
 				minInterval: 1,
@@ -50,7 +53,7 @@ const BarChartCustom: Component<{
 				data: data.labels,
 				inverse: !!props.options?.reverseData,
 				axisTick: { show: false },
-				axisLabel: { color: "#000", fontSize: 14, width: 150, overflow: "break" },
+				axisLabel: { color: "#000", fontSize: 14, width: LABEL_WIDTH, overflow: "break" },
 			},
 			series: [
 				{
