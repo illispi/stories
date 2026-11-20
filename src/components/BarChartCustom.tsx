@@ -1,6 +1,6 @@
 import { mergeRefs } from "@solid-primitives/refs";
 import type { Component } from "solid-js";
-import { Show, createEffect, createMemo, createSignal, onCleanup } from "solid-js";
+import { Show, createMemo, createSignal } from "solid-js";
 import type { ChartistData } from "~/types/types";
 import { type ChartOption, chartColor, createChart } from "~/utils/echarts";
 import { useLazyReady } from "~/utils/useLazyReady";
@@ -18,10 +18,9 @@ export interface Adds {
 	axisY?: { offset?: number };
 }
 
-const LABEL_WIDTH = 140;
-const GRID_LEFT = LABEL_WIDTH + 12;
-/** Narrowest plot area worth keeping when the right margin mirrors the label column. */
-const MIN_PLOT_WIDTH = 220;
+/** Same margin on both sides: bars start at the same x everywhere and the plot is centred. */
+const GRID_SIDE = 40;
+const BAR_WIDTH = 28;
 
 const flatten = (series: ChartistData["series"]) =>
 	(series as (number | number[])[]).map((v) => (Array.isArray(v) ? (v[0] ?? 0) : v));
@@ -35,15 +34,6 @@ const BarChartCustom: Component<{
 }> = (props) => {
 	const [el, setEl] = createSignal<HTMLDivElement>();
 	const visible = useLazyReady(el, props);
-	const [width, setWidth] = createSignal(0);
-
-	createEffect(() => {
-		const target = el();
-		if (!target) return;
-		const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
-		observer.observe(target);
-		onCleanup(() => observer.disconnect());
-	});
 
 	const option = createMemo<ChartOption | undefined>(() => {
 		const data = props.data;
@@ -52,15 +42,7 @@ const BarChartCustom: Component<{
 		return {
 			aria: { enabled: true },
 			tooltip: { trigger: "item" },
-			// Fixed label column, so every bar chart starts its bars at the same x. Where there's room,
-			// the right margin mirrors it, so the plot area is centred like the doughnut charts.
-			grid: {
-				left: GRID_LEFT,
-				right: width() >= GRID_LEFT * 2 + MIN_PLOT_WIDTH ? GRID_LEFT : 40,
-				top: 8,
-				bottom: 24,
-				outerBoundsMode: "none",
-			},
+			grid: { left: GRID_SIDE, right: GRID_SIDE, top: 8, bottom: 24, outerBoundsMode: "none" },
 			xAxis: {
 				type: "value",
 				minInterval: 1,
@@ -72,12 +54,20 @@ const BarChartCustom: Component<{
 				data: data.labels,
 				inverse: !!props.options?.reverseData,
 				axisTick: { show: false },
-				axisLabel: { color: "#000", fontSize: 14, width: LABEL_WIDTH, overflow: "break" },
+				// Category names sit above their bar: inside the plot, lifted by half a bar plus a gap.
+				axisLabel: {
+					inside: true,
+					color: "#000",
+					fontSize: 14,
+					align: "left",
+					verticalAlign: "bottom",
+					padding: [0, 0, BAR_WIDTH / 2 + 4, 4],
+				},
 			},
 			series: [
 				{
 					type: "bar",
-					barMaxWidth: 48,
+					barWidth: BAR_WIDTH,
 					data: values.map((value, i) => ({ value, itemStyle: { color: chartColor(i) } })),
 					label: { show: true, position: "right", color: "#000" },
 				},
