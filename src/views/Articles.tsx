@@ -62,14 +62,8 @@ const articles: Component<{ user: boolean }> = (props) => {
 									setPage={setPage}
 									classButton="bg-fuchsia-500 hover:bg-fuchsia-600 focus:bg-fuchsia-600 active:bg-fuchsia-600"
 									dirSetter={setDir}
-									backOnClick={() => {
-										setSearchParams({ page: page() + 1 });
-										window.scrollTo({ top: 0, behavior: "smooth" });
-									}}
-									nextOnClick={() => {
-										setSearchParams({ page: page() + 1 });
-										window.scrollTo({ top: 0, behavior: "smooth" });
-									}}
+									backOnClick={() => setSearchParams({ page: page() + 1 })}
+									nextOnClick={() => setSearchParams({ page: page() + 1 })}
 								/>
 							</div>
 						)}
