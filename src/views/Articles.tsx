@@ -10,7 +10,7 @@ import PaginationNav from "~/components/PaginationNav";
 import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
 
-const articles: Component<{ user: boolean }> = (props) => {
+const articles: Component<{ user: boolean; admin?: boolean }> = (props) => {
 	const user = () => props.user;
 
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +24,16 @@ const articles: Component<{ user: boolean }> = (props) => {
 	);
 
 	const [dir, setDir] = createSignal(1);
+
+	// Admin only (the server checks the role too): two-step delete, no browser dialog.
+	const [confirmDelete, setConfirmDelete] = createSignal<number | null>(null);
+	const utils = trpc.useContext();
+	const deleteMut = trpc.deleteArticleAdmin.createMutation(() => ({
+		onSuccess: () => {
+			setConfirmDelete(null);
+			utils.invalidate();
+		},
+	}));
 
 	return (
 		<Suspense>
@@ -91,6 +101,33 @@ const articles: Component<{ user: boolean }> = (props) => {
 													<p class="flex-1 text-base">
 														{twentyfiveArticles.description}
 													</p>
+													<Show when={props.admin}>
+														<Show
+															when={confirmDelete() === twentyfiveArticles.id}
+															fallback={
+																<CustomButton
+																	class="bg-red-500 hover:bg-red-600 focus:bg-red-600 active:bg-red-600"
+																	onClick={() => setConfirmDelete(twentyfiveArticles.id)}
+																>
+																	Delete (admin)
+																</CustomButton>
+															}
+														>
+															<div class="flex flex-col items-center gap-2">
+																<p class="font-semibold text-red-700">Delete this article for everyone?</p>
+																<div class="flex flex-wrap justify-center">
+																	<CustomButton
+																		class="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-700"
+																		disabled={deleteMut.isPending}
+																		onClick={() => deleteMut.mutate({ id: twentyfiveArticles.id })}
+																	>
+																		Yes, delete
+																	</CustomButton>
+																	<CustomButton onClick={() => setConfirmDelete(null)}>Cancel</CustomButton>
+																</div>
+															</div>
+														</Show>
+													</Show>
 												</div>
 											</div>
 										)}

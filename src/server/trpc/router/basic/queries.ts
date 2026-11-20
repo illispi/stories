@@ -394,7 +394,7 @@ export const articlesPagination = publicProcedure
 	.query(async ({ input: payload, ctx }) => {
 		const articles = await ctx.db
 			.selectFrom("Articles")
-			.select(["link", "description"])
+			.select(["id", "link", "description"])
 			.where("accepted", "=", true)
 			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
 			.orderBy("created_at", "desc")

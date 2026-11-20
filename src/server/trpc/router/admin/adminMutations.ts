@@ -42,6 +42,19 @@ export const acceptArticle = adminProcedure
 		return "Added succesfully";
 	});
 
+/** Removes any article, including accepted ones already shown on the Articles page. */
+export const deleteArticleAdmin = adminProcedure
+	.input(z.object({ id: z.number() }))
+	.mutation(async ({ ctx, input }) => {
+		const deleted = await ctx.db.deleteFrom("Articles").where("id", "=", input.id).executeTakeFirst();
+
+		if (!deleted.numDeletedRows) {
+			throw new TRPCError({ code: "NOT_FOUND", message: "Article not found" });
+		}
+
+		return "Deleted succesfully";
+	});
+
 export const declineArticle = adminProcedure
 	.input(
 		z.object({
