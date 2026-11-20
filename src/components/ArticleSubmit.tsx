@@ -7,6 +7,7 @@ import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
 import { trpc } from "~/utils/trpc";
 import CustomButton from "./CustomButton";
 import { showToast } from "./Toast";
+import { confetti } from "~/utils/confetti";
 
 const ArticleSchema = v.object({
 	link: v.pipe(
@@ -31,6 +32,7 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 			utils.invalidate();
 			// Close the form and confirm with a toast instead of a separate success view
 			showToast("Your article was submitted for review!");
+			confetti();
 			reset(articleForm);
 			setTags([]);
 			setTagsError(null);

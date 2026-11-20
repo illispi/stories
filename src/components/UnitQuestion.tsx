@@ -6,6 +6,7 @@ import { questions as questionsT } from "~/data/theirQuestionsArr";
 /** Poll answers in localStorage, keyed by question (personal or relative poll). */
 // biome-ignore lint/suspicious/noExplicitAny: values depend on the question type
 type Answers = Record<string, any>;
+import { confetti } from "~/utils/confetti";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
@@ -74,6 +75,7 @@ export const UnitQuestion: ParentComponent<{
 	createEffect(() => {
 		if (sendStats.isSuccess) {
 			props.setSubmissionStatus("success");
+			confetti();
 			localStorage.clear();
 		}
 	});
