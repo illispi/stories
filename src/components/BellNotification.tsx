@@ -1,4 +1,6 @@
 import { type Component, For, Match, Show, Switch, createSignal, onCleanup, onMount } from "solid-js";
+import { A } from "~/utils/router";
+import { route } from "~/utils/routes";
 import { trpc } from "~/utils/trpc";
 import { ModalOptions } from "./ModalOptions";
 import CustomButton from "./CustomButton";
@@ -120,6 +122,13 @@ const BellNotification = () => {
 						}
 						fallback={<p class="text-center text-slate-600">No new notifications.</p>}
 					>
+						<A
+							href={route("/user/data")}
+							class="mx-2 rounded-full border-2 border-blue-500 p-3 text-center font-semibold text-blue-700 transition-all duration-200 ease-in hover:scale-105 hover:bg-blue-50"
+							onClick={() => setShowNotifications(false)}
+						>
+							See your submissions in Your data
+						</A>
 						<CustomButton
 							disabled={markReadMut.isPending}
 							onClick={() => {
