@@ -8,7 +8,7 @@ User poll and shared articles about schizophrenia, live at <https://poll.delvis.
 - [Better Auth](https://better-auth.com): Discord sign-in only, no passwords; only the Discord account ID is stored
 - [tRPC](https://trpc.io) 11 + TanStack Solid Query for the API (`/api/trpc`)
 - PostgreSQL via [Kysely](https://kysely.dev); migrations in `src/migrations`
-- Tailwind CSS 3, Chartist for charts
+- Tailwind CSS 3, Apache ECharts 6 for charts (SVG renderer, tree-shaken in `src/utils/echarts.ts`)
 - Node.js 26, pnpm 11
 
 ## Local development

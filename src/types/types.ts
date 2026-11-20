@@ -1,4 +1,4 @@
-import type { AxisOptions, BarChartOptions } from "chartist";
+import type { Adds } from "~/components/BarChartCustom";
 import type { PersonalQuestions, TheirQuestions } from "./zodFromTypes";
 
 export type ChartType = "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
@@ -36,7 +36,7 @@ export interface Doughnut {
 }
 export interface Bar {
   type: ChartType;
-  options?: BarChartOptions<AxisOptions, AxisOptions>;
+  options?: Adds;
   header: string;
   stat: StatKey;
   function:

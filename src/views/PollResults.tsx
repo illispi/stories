@@ -53,10 +53,7 @@ const AllStatsPage: ParentComponent = () => {
 	const [targets, setTargets] = createSignal<Element[]>([]);
 
 	const removeShown = (el: Element) => {
-		const index = shown().indexOf(el);
-		if (index > -1) {
-			setShown(() => shown().splice(index, 1));
-		}
+		setShown((els) => els.filter((e) => e !== el));
 	};
 
 	createEffect(() => {

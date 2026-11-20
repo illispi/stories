@@ -1,18 +1,14 @@
 import { mergeRefs } from "@solid-primitives/refs";
-import type { AxisOptions, BarChartOptions } from "chartist";
-import { BarChart } from "chartist";
 import type { Component } from "solid-js";
 import { Show, Suspense, createEffect, createUniqueId, onCleanup } from "solid-js";
 import type { ChartistData } from "~/types/types";
-import "../../styles/index.css";
 import { useIsRouting } from "~/utils/router";
 
-interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
+interface Adds {
 	height?: string;
 }
 
 const BarChartCustomtest = (_props: { options?: Adds }) => {
-	let bar: BarChart;
 	const id = 1;
 
 	// createEffect(() => {
