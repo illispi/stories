@@ -1,11 +1,12 @@
 import { Field, Form, type SubmitHandler, createForm, reset } from "@formisch/solid";
-import { type Component, type Setter, Show, createSignal } from "solid-js";
+import { type Component, type Setter, createSignal } from "solid-js";
 import { TagPicker, tagError } from "~/components/ArticleTags";
 import type { ArticleTag } from "~/data/articleTags";
 import * as v from "valibot";
 import { toWebLink, WEB_LINK_MESSAGE } from "~/utils/articleLink";
 import { trpc } from "~/utils/trpc";
 import CustomButton from "./CustomButton";
+import { showToast } from "./Toast";
 
 const ArticleSchema = v.object({
 	link: v.pipe(
@@ -26,7 +27,17 @@ const ArticleSchema = v.object({
 const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 	const utils = trpc.useContext();
 	const articleMut = trpc.postArticle.createMutation(() => ({
-		onSuccess: () => utils.invalidate(),
+		onSuccess: () => {
+			utils.invalidate();
+			// Close the form and confirm with a toast instead of a separate success view
+			showToast("Your article was submitted for review!");
+			reset(articleForm);
+			setTags([]);
+			setTagsError(null);
+			articleMut.reset();
+			props.setSubmitVis(false);
+		},
+		onError: () => showToast("Couldn't submit the article. Please try again.", "error"),
 	}));
 	const articleForm = createForm({ schema: ArticleSchema });
 	// Topics live outside the form: a set of toggle chips, checked on submit
@@ -41,25 +52,6 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 
 	return (
 		<div>
-			<Show
-				when={!articleMut.isSuccess}
-				fallback={
-					<div class="flex w-full flex-col items-center justify-center">
-						<h2 class="font-bold text-lg">
-							Your article was submitted for review!
-						</h2>
-						<CustomButton
-							onClick={() => {
-								articleMut.reset();
-								reset(articleForm);
-								setTags([]);
-							}}
-						>
-							Submit another one
-						</CustomButton>
-					</div>
-				}
-			>
 				<Form of={articleForm} onSubmit={handleSubmit}>
 					<div class="m-4 flex flex-col items-center justify-center gap-4">
 						<h3 class="text-lg underline underline-offset-4">
@@ -115,7 +107,6 @@ const ArticleSubmit: Component<{ setSubmitVis: Setter<boolean> }> = (props) => {
 						</CustomButton>
 					</div>
 				</Form>
-			</Show>
 		</div>
 	);
 };

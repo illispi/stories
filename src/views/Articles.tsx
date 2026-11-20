@@ -11,6 +11,7 @@ import TransitionSlide from "~/components/TransitionSlide";
 import { trpc } from "~/utils/trpc";
 import { toWebLink } from "~/utils/articleLink";
 import { TagChips } from "~/components/ArticleTags";
+import { Toaster } from "~/components/Toast";
 import { ARTICLE_TAGS, type ArticleTag, isArticleTag, tagLabel } from "~/data/articleTags";
 
 const articles: Component<{ user: boolean }> = (props) => {
@@ -39,6 +40,7 @@ const articles: Component<{ user: boolean }> = (props) => {
 	return (
 		<Suspense>
 			<div class="my-16 flex min-h-screen w-full flex-col items-center justify-start gap-8">
+				<Toaster />
 				<Suspense>
 					<div class="flex w-11/12 max-w-prose flex-col items-center justify-start gap-10 rounded-3xl border-fuchsia-600 border-t-4 bg-white py-12 shadow-xl">
 						<h2 class="font-bold text-2xl lg:text-3xl">
