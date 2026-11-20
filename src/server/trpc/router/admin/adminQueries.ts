@@ -21,7 +21,7 @@ export const listSubmissions = adminProcedure
         "personality_before",
         "personality_after",
         "other_help",
-        "goals_after",
+        "how_it_altered_life",
         "responded_to_telling",
         "life_satisfaction_description",
         "what_others_should_know",
@@ -34,6 +34,7 @@ export const listSubmissions = adminProcedure
         "id",
         "personality_before",
         "personality_after",
+        "how_it_altered_life",
         "what_others_should_know",
       ]);
 

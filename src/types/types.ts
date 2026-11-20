@@ -101,8 +101,6 @@ export interface MainReturn {
   partner: AfterHospitalSatisfaction;
   friends: AfterHospitalSatisfaction;
   children: AfterHospitalSatisfaction;
-  goals_changed: AfterHospitalSatisfaction;
-  goals_after: string[];
   told_family: ToldFamily;
   responded_to_telling: string[];
   life_satisfaction: AfterHospitalSatisfaction;

@@ -1,7 +1,12 @@
 import { faker } from "@faker-js/faker";
+import { fakeAge } from "./fakeAge";
 import type { PersonalQuestions } from "~/types/zodFromTypes";
 
 export const createFakeDataPersonal = () => {
+	// Ages shaped like the illness, not uniform 5-110: most people answering are 18-60,
+	// and onset is usually in the late teens to early thirties (never after current age).
+	const currentAge = fakeAge(16, 75);
+	const ageOfOnset = Math.min(fakeAge(13, 40), currentAge);
 	const hospitalized_on_first = faker.helpers.arrayElement([true, false]);
 	const care_after_hospital = hospitalized_on_first
 		? faker.helpers.arrayElement([true, false])
@@ -15,7 +20,6 @@ export const createFakeDataPersonal = () => {
 	const negative_symptoms = faker.helpers.arrayElement([true, false]);
 	const cognitive_symptoms = faker.helpers.arrayElement([true, false]);
 	const personality_changed = faker.helpers.arrayElement([true, false]);
-	const goals_changed = faker.helpers.arrayElement([true, false]);
 	const told_nobody = faker.helpers.arrayElement([true, false]);
 	const life_satisfaction = faker.helpers.arrayElement([true, false]);
 	const relatives = faker.helpers.arrayElement([true, false]);
@@ -23,8 +27,8 @@ export const createFakeDataPersonal = () => {
 	const fakeData: PersonalQuestions = {
 		diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
 		gender: faker.helpers.arrayElement(["other", "male", "female"]),
-		current_age: faker.number.int({ min: 5, max: 110 }),
-		age_of_onset: faker.number.int({ min: 5, max: 110 }),
+		current_age: currentAge,
+		age_of_onset: ageOfOnset,
 		length_of_psychosis: faker.helpers.arrayElement([
 			"few days",
 			"few weeks",
@@ -215,12 +219,6 @@ export const createFakeDataPersonal = () => {
 		partner: faker.helpers.arrayElement([true, false]),
 		friends: faker.helpers.arrayElement([true, false]),
 		children: faker.helpers.arrayElement([true, false]),
-		goals_changed: goals_changed,
-		goals_after: goals_changed
-			? faker.lorem
-					.paragraphs(20)
-					.substring(0, Math.floor(Math.random() * 595) + 4)
-			: null,
 		told_family: faker.helpers.arrayElement([true, false]),
 		told_nobody: told_nobody,
 		told_friends: faker.helpers.arrayElement([true, false]),
@@ -232,11 +230,10 @@ export const createFakeDataPersonal = () => {
 					.substring(0, Math.floor(Math.random() * 595) + 4)
 			: null,
 		life_satisfaction: life_satisfaction,
-		life_satisfaction_description: life_satisfaction
-			? faker.lorem
-					.paragraphs(20)
-					.substring(0, Math.floor(Math.random() * 595) + 4)
-			: null,
+		// Asked of everyone, whatever the yes/no answer
+		life_satisfaction_description: faker.lorem
+			.paragraphs(20)
+			.substring(0, Math.floor(Math.random() * 595) + 4),
 		what_others_should_know: faker.lorem
 			.paragraphs(20)
 			.substring(0, Math.floor(Math.random() * 595) + 4),

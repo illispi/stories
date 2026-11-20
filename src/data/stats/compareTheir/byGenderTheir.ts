@@ -13,6 +13,7 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   //TODO maybe add age of onset, but needs custom logic instead of the usual
   {

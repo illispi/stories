@@ -13,6 +13,7 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   {
     type: "unknown",

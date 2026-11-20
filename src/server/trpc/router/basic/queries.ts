@@ -3,6 +3,7 @@ import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
 import { publicProcedure } from "../../utils";
+import { countAgeBrackets } from "~/utils/ageBrackets";
 
 // Only free-text answers may be paged through textPagination. Anything else
 // (e.g. the `user` column) must never be selectable by name from the client.
@@ -142,9 +143,9 @@ export const allStats = publicProcedure
 							});
 						automatic.weight_amount = resBrackets;
 					} else if (e.questionDB === "age_of_onset") {
-						const average = (obj: typeof maleAge) => {
-							return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
-						};
+						// Whole years; 0 when nobody of that gender answered (instead of NaN)
+						const average = (obj: typeof maleAge) =>
+							obj.length ? Math.round(obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length) : 0;
 						const median = (obj: typeof maleAge) => {
 							const arr = obj.map((i) => i.age_of_onset);
 							const sorted = arr.sort((a, b) => a - b);
@@ -162,34 +163,7 @@ export const allStats = publicProcedure
 
 						automatic.ageOfOnsetByGender = ageOfOnsetByGender;
 					} else if (e.questionDB === "current_age") {
-						const resBrackets = {
-							b09: 0,
-							b1015: 0,
-							b1620: 0,
-							b2125: 0,
-							b2630: 0,
-							b3135: 0,
-							b3680: 0,
-						};
-						filterSensitive.forEach((i) => {
-							if (i.current_age <= 10) {
-								resBrackets.b09++;
-							} else if (i.current_age >= 10 && i.current_age <= 15) {
-								resBrackets.b1015++;
-							} else if (i.current_age >= 16 && i.current_age <= 20) {
-								resBrackets.b1620++;
-							} else if (i.current_age >= 21 && i.current_age <= 25) {
-								resBrackets.b2125++;
-							} else if (i.current_age >= 26 && i.current_age <= 30) {
-								resBrackets.b2630++;
-							} else if (i.current_age >= 31 && i.current_age <= 35) {
-								resBrackets.b3135++;
-							} else if (i.current_age >= 36 && i.current_age <= 80) {
-								resBrackets.b3680++;
-							}
-						});
-
-						automatic.current_age = resBrackets;
+						automatic.current_age = countAgeBrackets(filterSensitive.map((i) => i.current_age));
 					}
 				} else if (e.questionType === "selection") {
 					const selections: Record<string, number> = {};

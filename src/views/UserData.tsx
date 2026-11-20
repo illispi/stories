@@ -91,29 +91,6 @@ const SaveError: Component<{ show: boolean }> = (props) => (
 	</Show>
 );
 
-/** Text box for the "altered life" answer. `form` is the personal or other-poll form; both have it. */
-// biome-ignore lint/suspicious/noExplicitAny: shared by two differently typed forms
-const AlteredLifeField: Component<{ form: any; title: string }> = (props) => (
-	<Answer title={props.title}>
-		<Field of={props.form} path={["how_it_altered_life"]}>
-			{/* biome-ignore lint/suspicious/noExplicitAny: see above */}
-			{(field: any) => (
-				<>
-					<textarea
-						class={textareaClass}
-						{...field.props}
-						value={field.input ?? ""}
-						rows={8}
-						autocomplete="off"
-						placeholder="Not answered yet"
-					/>
-					{field.errors && <div class="text-red-600">{field.errors[0]}</div>}
-				</>
-			)}
-		</Field>
-	</Answer>
-);
-
 /* ---------- form schemas ---------- */
 
 /**
@@ -131,33 +108,38 @@ const optionalText = v.optional(
 );
 
 /**
- * "How did the illness alter your life?" was added in 2026-11, so older submissions have no
- * answer. Unlike the other text answers it's always editable: it can be added, changed or
- * cleared (empty = no answer).
+ * Text questions every respondent is asked, but which older submissions may not have
+ * answered ("how it altered your life" is new; "life satisfaction" used to be optional).
+ * These are always shown in the edit form and can be added, changed or cleared ("" = no answer).
  */
-const alteredLife = {
-	how_it_altered_life: v.optional(
-		v.pipe(
-			v.string(),
-			v.trim(),
-			v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
-			v.check((text) => text === "" || text.length >= 4, 'Your text is too short, even "okay" is enough'),
-		),
+const ALWAYS_EDITABLE = ["how_it_altered_life", "life_satisfaction_description"] as const;
+const isAlwaysEditable = (key: string) => (ALWAYS_EDITABLE as readonly string[]).includes(key);
+
+const clearableText = v.optional(
+	v.pipe(
+		v.string(),
+		v.trim(),
+		v.maxLength(600, "Your text is too long! (Max. 600 characters)"),
+		v.check((text) => text === "" || text.length >= 4, 'Your text is too short, even "okay" is enough'),
 	),
-};
-type AlteredKey = "how_it_altered_life";
+);
 
-const alteredInput = (row: Record<string, unknown>) => ({
-	how_it_altered_life: (row.how_it_altered_life as string | null) ?? "",
-});
+/** Saved row → form input: unanswered always-editable questions start empty. */
+const toInput = (row: Record<string, unknown>, keys: string[]) =>
+	Object.fromEntries(
+		keys.map((key) => [key, (row[key] as string | null | undefined) ?? (isAlwaysEditable(key) ? "" : undefined)]),
+	);
 
-/** Form value → column value (null when cleared). */
-const alteredOutput = (values: Record<string, unknown>) =>
-	values.how_it_altered_life === undefined
-		? {}
-		: { how_it_altered_life: values.how_it_altered_life === "" ? null : values.how_it_altered_life };
-
-const withoutAltered = ({ how_it_altered_life: _, ...rest }: Record<string, unknown>) => rest;
+/**
+ * Form values → column values. Undefined (a question that isn't shown) keeps the saved
+ * answer; "" clears an always-editable one.
+ */
+const toColumns = (values: Record<string, unknown>) =>
+	Object.fromEntries(
+		Object.entries(values)
+			.filter(([, value]) => value !== undefined)
+			.map(([key, value]) => [key, isAlwaysEditable(key) && value === "" ? null : value]),
+	);
 
 const PersonalFormSchema = v.object({
 	describe_hospital: optionalText,
@@ -165,22 +147,21 @@ const PersonalFormSchema = v.object({
 	personality_before: optionalText,
 	personality_after: optionalText,
 	other_help: optionalText,
-	goals_after: optionalText,
 	responded_to_telling: optionalText,
-	life_satisfaction_description: optionalText,
+	life_satisfaction_description: clearableText,
 	what_others_should_know: optionalText,
 	not_have_schizophrenia_description: optionalText,
-	...alteredLife,
+	how_it_altered_life: clearableText,
 });
-type PersonalFormKey = Exclude<keyof v.InferInput<typeof PersonalFormSchema>, AlteredKey>;
+type PersonalFormKey = keyof v.InferInput<typeof PersonalFormSchema>;
 
 const TheirFormSchema = v.object({
 	personality_before: optionalText,
 	personality_after: optionalText,
 	what_others_should_know: optionalText,
-	...alteredLife,
+	how_it_altered_life: clearableText,
 });
-type TheirFormKey = Exclude<keyof v.InferInput<typeof TheirFormSchema>, AlteredKey>;
+type TheirFormKey = keyof v.InferInput<typeof TheirFormSchema>;
 
 /** Same rules as the article submit form. */
 const ArticleFormSchema = v.object({
@@ -204,7 +185,7 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 	personality_before: "Your personality before:",
 	personality_after: "Your personality after:",
 	other_help: "Other help beyond medication:",
-	goals_after: "Life goals after illness:",
+	how_it_altered_life: "How the illness altered your life:",
 	responded_to_telling: "How people responded to you:",
 	life_satisfaction_description: "Your life satisfaction:",
 	what_others_should_know: "What others should know about illness:",
@@ -214,17 +195,9 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 const theirHeaders: Record<TheirFormKey, string> = {
 	personality_before: "Their personality before:",
 	personality_after: "Their personality after:",
+	how_it_altered_life: "How the illness altered their life:",
 	what_others_should_know: "What others should know about schizophrenia:",
 };
-
-const alteredTitle = {
-	personal: "How the illness altered your life:",
-	their: "How the illness altered their life:",
-};
-
-/** Only send fields that were edited; undefined would drop the saved answer. */
-const editedOnly = (values: Record<string, unknown>) =>
-	Object.fromEntries(Object.entries(values).filter(([, value]) => value !== undefined));
 
 const Page = () => {
 	const [showPersonal, setShowPersonal] = createSignal(false);
@@ -290,13 +263,7 @@ const Page = () => {
 	createEffect(() => {
 		if (personalDataQuery.data) {
 			const data = personalDataQuery.data as Record<string, unknown>;
-			const initialInput = Object.fromEntries(
-				(Object.keys(personalHeaders) as PersonalFormKey[]).map((key) => [
-					key,
-					(data[key] as string | null | undefined) ?? undefined,
-				]),
-			);
-			reset(personalForm, { initialInput: { ...initialInput, ...alteredInput(data) } });
+			reset(personalForm, { initialInput: toInput(data, Object.keys(personalHeaders)) });
 		}
 	});
 
@@ -304,8 +271,7 @@ const Page = () => {
 		// systemMetric is a form-only field: stored weights are already in kg
 		editPersonalMut.mutate({
 			...personalDataQuery.data,
-			...editedOnly(withoutAltered(values)),
-			...alteredOutput(values),
+			...toColumns(values),
 			systemMetric: true,
 		} as Parameters<typeof editPersonalMut.mutate>[0]);
 	};
@@ -320,15 +286,7 @@ const Page = () => {
 		if (!row) return;
 		editTheirMut.reset();
 		reset(theirForm, {
-			initialInput: {
-				...Object.fromEntries(
-					(Object.keys(theirHeaders) as TheirFormKey[]).map((key) => [
-						key,
-						(row[key] as string | null | undefined) ?? undefined,
-					]),
-				),
-				...alteredInput(row),
-			},
+			initialInput: toInput(row, Object.keys(theirHeaders)),
 		});
 		setTheirEdit(true);
 	};
@@ -338,7 +296,7 @@ const Page = () => {
 		if (!row) return;
 		editTheirMut.mutate({
 			id: row.id,
-			data: { ...row, ...editedOnly(withoutAltered(values)), ...alteredOutput(values) },
+			data: { ...row, ...toColumns(values) },
 		} as Parameters<typeof editTheirMut.mutate>[0]);
 	};
 
@@ -401,7 +359,7 @@ const Page = () => {
 										<div class="flex w-full flex-col items-center gap-8">
 										<For each={Object.keys(personalHeaders) as PersonalFormKey[]}>
 											{(el) => (
-												<Show when={personalDataQuery.data?.[el]}>
+												<Show when={personalDataQuery.data?.[el] || isAlwaysEditable(el)}>
 													<Answer title={personalHeaders[el]}>
 														<Field of={personalForm} path={[el]}>
 															{(field) => (
@@ -421,7 +379,6 @@ const Page = () => {
 												</Show>
 											)}
 										</For>
-										<AlteredLifeField form={personalForm} title={alteredTitle.personal} />
 										<SaveError show={editPersonalMut.isError} />
 										<CustomButton disabled={editPersonalMut.isPending} type="submit">
 											Save changes
@@ -439,11 +396,6 @@ const Page = () => {
 										</Show>
 									)}
 								</For>
-								<Show when={personalDataQuery.data?.how_it_altered_life}>
-									<Answer title={alteredTitle.personal}>
-										<p>{personalDataQuery.data?.how_it_altered_life}</p>
-									</Answer>
-								</Show>
 							</Show>
 						</div>
 					</CssTranstionGrow>
@@ -503,7 +455,7 @@ const Page = () => {
 															<div class="flex w-full flex-col items-center gap-8">
 															<For each={Object.keys(theirHeaders) as TheirFormKey[]}>
 																{(el) => (
-																	<Show when={currentTheir()?.[el]}>
+																	<Show when={currentTheir()?.[el] || isAlwaysEditable(el)}>
 																		<Answer title={theirHeaders[el]}>
 																			<Field of={theirForm} path={[el]}>
 																				{(field) => (
@@ -525,7 +477,6 @@ const Page = () => {
 																	</Show>
 																)}
 															</For>
-															<AlteredLifeField form={theirForm} title={alteredTitle.their} />
 															<SaveError show={editTheirMut.isError} />
 															<CustomButton disabled={editTheirMut.isPending} type="submit">
 																Save changes
@@ -543,11 +494,6 @@ const Page = () => {
 															</Show>
 														)}
 													</For>
-													<Show when={currentTheir()?.how_it_altered_life}>
-														<Answer title={alteredTitle.their}>
-															<p>{currentTheir()?.how_it_altered_life}</p>
-														</Answer>
-													</Show>
 												</Show>
 											</div>
 										</Show>

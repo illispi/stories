@@ -30,6 +30,7 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   {
     type: "bar",
@@ -281,16 +282,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "lost_relationships",
     header: "Has lost relationships due to schizophrenia",
-  },
-  {
-    type: "yesOrNo",
-    stat: "goals_changed",
-    header: "Life goals changed",
-  },
-  {
-    type: "text",
-    stat: "goals_after",
-    header: "How life goals changed",
   },
   {
     type: "bar",

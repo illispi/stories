@@ -151,13 +151,6 @@ export const personalQuestionsSchemaCustom = z
     partner: z.boolean(),
     friends: z.boolean(),
     children: z.boolean(),
-    goals_changed: z.boolean(),
-    goals_after: z
-      .string()
-      .trim()
-      .max(600, "Your text is too long! (Max. 600 characters)")
-      .min(4, 'Your text is too short, even "okay" is enough')
-      .nullable(),
     told_family: z.boolean(),
     told_nobody: z.boolean(),
     told_friends: z.boolean(),
@@ -211,14 +204,6 @@ export const personalQuestionsSchemaCustom = z
         : !data?.responded_to_telling;
     },
     { message: "4" }
-  )
-  .refine(
-    (data) => {
-      return data.goals_changed
-        ? data.goals_after !== null
-        : !data?.goals_after;
-    },
-    { message: "5" }
   )
   .refine(
     (data) => {

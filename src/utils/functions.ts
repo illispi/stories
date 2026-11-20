@@ -53,23 +53,20 @@ export const dataGender = (data: MainReturn["gender"]) => {
   };
 };
 
+/** Age groups from the server (keys in group order, see ~/utils/ageBrackets), with shares. */
 export const dataAgeOfRes = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
-  const labelsAgeGroup = [
-    "0-9",
-    "10-15",
-    "16-20",
-    "21-25",
-    "26-30",
-    "31-35",
-    "36-80",
-  ];
+  const keys = Object.keys(data);
+  const series = keys.map((key) => data[key]);
+  const total = series.reduce((sum, n) => sum + n, 0);
 
   return {
-    labels: labelsAgeGroup,
-    series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
+    labels: keys.map(
+      (key, i) => `${key} ${total ? Math.floor((series[i] / total) * 100) : 0}%`
+    ),
+    series,
   };
 };
 export const dataMultiSelect = (data: Counts | null | undefined) => {
@@ -132,11 +129,11 @@ export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
   const onset = data;
   return {
     labels: [
-      `Male, ${Math.floor(onset.maleAverage)}`,
-      `Female, ${Math.floor(onset.femaleAverage)}`,
-      `Other, ${Math.floor(onset.otherAverage)}`,
+      `Male, ${Math.round(onset.maleAverage)}`,
+      `Female, ${Math.round(onset.femaleAverage)}`,
+      `Other, ${Math.round(onset.otherAverage)}`,
     ],
-    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
+    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage].map(Math.round),
   };
 };
 

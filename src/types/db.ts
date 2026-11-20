@@ -74,8 +74,6 @@ export interface PersonalQuestions {
   friends: boolean;
   gained_weight: boolean;
   gender: string;
-  goals_after: string | null;
-  goals_changed: boolean;
   had_side_effs: boolean;
   hospital_satisfaction: boolean | null;
   hospitalized_on_first: boolean;
@@ -171,8 +169,6 @@ export interface PersonalQuestionsFake {
   friends: boolean;
   gained_weight: boolean;
   gender: string;
-  goals_after: string | null;
-  goals_changed: boolean;
   had_side_effs: boolean;
   hospital_satisfaction: boolean | null;
   hospitalized_on_first: boolean;

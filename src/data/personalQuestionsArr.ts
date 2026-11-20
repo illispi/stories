@@ -375,17 +375,6 @@ export const questions: QuestionPersonal[] = [
     questionDB: "children",
   },
   {
-    question: "Did your life goals change after experiencing psychosis?",
-    questionType: "yesOrNo",
-    questionDB: "goals_changed",
-    skip: "told_nobody",
-  },
-  {
-    question: "How did your life goals change?",
-    questionType: "text",
-    questionDB: "goals_after",
-  },
-  {
     question: "Have you told anybody you have schizophrenia?",
     questionType: "yesOrNo",
     questionDB: "told_nobody",
@@ -418,7 +407,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "life_satisfaction",
   },
   {
-    question: "Why or why not are you satisfied with life",
+    question: "Why or why not are you satisfied with life?",
     questionType: "text",
     questionDB: "life_satisfaction_description",
   },
