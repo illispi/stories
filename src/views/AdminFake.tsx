@@ -79,6 +79,13 @@ const Page = () => {
 						error={fakeForDevMut.isError || fakeArticlesForDevMut.isError}
 						pending={fakeForDevMut.isPending || fakeArticlesForDevMut.isPending}
 					/>
+					<p class="text-slate-600">
+						To test with several accounts, use{" "}
+						<a class="font-semibold text-blue-700 underline" href="/dev/test-users">
+							Test users
+						</a>
+						.
+					</p>
 					<Show when={fakeForDevMut.isError}>
 						<p class="text-red-600 text-sm">{fakeForDevMut.error?.message}</p>
 					</Show>

@@ -150,6 +150,7 @@ const Hamburger: Component<{
 				<MenuItem route={routeGen("/articles/")} content="Articles" />
 				<Show when={import.meta.env.DEV}>
 					<MenuItem route={"/testing/"} content="Testing" />
+					<MenuItem route={"/dev/test-users"} content="Test users" />
 				</Show>
 				<Show when={authQuery.data?.admin}>
 					<MenuItem route={"/admin/"} content="admin" />

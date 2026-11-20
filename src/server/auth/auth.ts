@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
 import {
 	BETTER_AUTH_SECRET,
 	BETTER_AUTH_URL,
@@ -13,7 +13,8 @@ const syntheticEmail = (provider: string, id: string) => `${provider}_${id}@user
 
 const timestamps = { createdAt: "created_at", updatedAt: "updated_at" } as const;
 
-export const auth = betterAuth({
+/** Exported so the dev-only test-user tools (devAuth.ts) can reuse the same setup. */
+export const authOptions = {
 	baseURL: BETTER_AUTH_URL,
 	secret: BETTER_AUTH_SECRET,
 	database: pool, // same pg pool as Kysely
@@ -132,7 +133,9 @@ export const auth = betterAuth({
 			},
 		},
 	},
-});
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth(authOptions);
 
 export type AuthSession = typeof auth.$Infer.Session;
 // `role` comes from user.additionalFields; spelled out so it is typed even if inference changes.

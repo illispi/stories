@@ -1,0 +1,12 @@
+---
+// Development only: switch between test accounts. 404 in production builds.
+import Layout from "~/layouts/Layout.astro";
+import DevTestUsers from "~/views/DevTestUsers";
+
+if (!import.meta.env.DEV) return Astro.rewrite("/404");
+if (!Astro.locals.user) return Astro.redirect("/login?redir=%2Fdev%2Ftest-users");
+---
+
+<Layout title="Test users · Dev">
+	<DevTestUsers client:only="solid-js" />
+</Layout>
