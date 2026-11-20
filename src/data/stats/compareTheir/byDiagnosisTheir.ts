@@ -91,6 +91,11 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   {
     type: "yesOrNo",
+    stat: "symptom_free_on_meds",
+    header: "Symptom free while on medication",
+  },
+  {
+    type: "yesOrNo",
     stat: "had_side_effs",
     header: "Had side effects from medication",
   },
@@ -133,6 +138,13 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Has used cannabis",
   },
   {
+    type: "bar",
+    stat: "exercise",
+    header: "Exercise",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
     type: "unknown",
     stat: "suicide_attempts",
     header: "Has attempted suicide",
@@ -169,6 +181,18 @@ export const byDiagnosisTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
+  },
+  {
+    type: "bar",
+    stat: "school_performance",
+    header: "How they did in school",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
+    type: "text",
+    stat: "how_it_altered_life",
+    header: "How the illness altered life",
   },
   {
     type: "yesOrNo",

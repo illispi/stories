@@ -136,6 +136,12 @@ export const questions: QuestionTheir[] = [
     questionDB: "med_efficacy",
   },
   {
+    question:
+      "Are they psychosis symptom free as long as they take medication?",
+    questionType: "yesOrNo",
+    questionDB: "symptom_free_on_meds",
+  },
+  {
     question: "Did the antipsychotic medication cause side effects",
     questionType: "yesOrNo",
     questionDB: "had_side_effs",
@@ -181,6 +187,12 @@ export const questions: QuestionTheir[] = [
     question: "Have they ever used cannabis?",
     questionType: "unknown",
     questionDB: "cannabis",
+  },
+  {
+    question: "Do they exercise?",
+    questionType: "selection",
+    questionDB: "exercise",
+    selections: ["no exercise", "little", "moderately", "lots of exercise"],
   },
   {
     question: "Have they ever attempted suicide?",
@@ -235,6 +247,17 @@ export const questions: QuestionTheir[] = [
       "student",
       "other",
     ],
+  },
+  {
+    question: "How did they do in school?",
+    questionType: "selection",
+    questionDB: "school_performance",
+    selections: ["really poorly", "bad", "average", "good", "great"],
+  },
+  {
+    question: "How did the illness alter their life?",
+    questionType: "text",
+    questionDB: "how_it_altered_life",
   },
   {
     question: "Are they currently in a relationship?",

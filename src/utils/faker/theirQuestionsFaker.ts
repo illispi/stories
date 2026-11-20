@@ -104,6 +104,12 @@ export const createFakeDataTheir = () => {
     smoking: faker.helpers.arrayElement([true, false]),
 
     cannabis: faker.helpers.arrayElement(["no", "yes", "unknown"]),
+    symptom_free_on_meds: faker.helpers.arrayElement([true, false]),
+    how_it_altered_life: faker.lorem
+      .paragraphs(20)
+      .substring(0, Math.floor(Math.random() * 595) + 4),
+    school_performance: faker.helpers.arrayElement(["really poorly", "bad", "average", "good", "great"]),
+    exercise: faker.helpers.arrayElement(["no exercise", "little", "moderately", "lots of exercise"]),
     suicide_attempts: faker.helpers.arrayElement(["no", "yes", "unknown"]),
 
     negative_symptoms: negative_symptoms,

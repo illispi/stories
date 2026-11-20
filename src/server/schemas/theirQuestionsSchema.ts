@@ -82,6 +82,20 @@ export const theirQuestionsSchemaCustom = z
     ]),
     gained_weight: z.boolean(),
     cannabis: z.enum(["yes", "no", "unknown"]),
+    // Added 2026-11 (nullable for older submissions; the questionnaire always asks them)
+    symptom_free_on_meds: z.boolean().nullable(),
+    how_it_altered_life: z
+      .string()
+      .trim()
+      .max(600, "Your text is too long! (Max. 600 characters)")
+      .min(4, 'Your text is too short, even "okay" is enough')
+      .nullable(),
+    school_performance: z
+      .enum(["really poorly", "bad", "average", "good", "great"])
+      .nullable(),
+    exercise: z
+      .enum(["no exercise", "little", "moderately", "lots of exercise"])
+      .nullable(),
     suicide_attempts: z.enum(["yes", "no", "unknown"]),
     //TODO these below four need to be updated in everywhere
     has_been_hospitalized: z.enum(["yes", "no", "unknown"]),

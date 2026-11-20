@@ -111,6 +111,11 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Medications helped to psychosis symptoms",
   },
   {
+    type: "yesOrNo",
+    stat: "symptom_free_on_meds",
+    header: "Symptom free while on medication",
+  },
+  {
     type: "bar",
     stat: "side_effs_dizziness",
     header: "Side effects from medication",
@@ -173,6 +178,13 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "cannabis",
     header: "Has used cannabis",
+  },
+  {
+    type: "bar",
+    stat: "exercise",
+    header: "Exercise",
+    function: "dataSelection",
+    options: { reverseData: true },
   },
   {
     type: "yesOrNo",
@@ -242,6 +254,18 @@ export const byGenderPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
+  },
+  {
+    type: "bar",
+    stat: "school_performance",
+    header: "How they did in school",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
+    type: "text",
+    stat: "how_it_altered_life",
+    header: "How the illness altered life",
   },
   {
     type: "yesOrNo",

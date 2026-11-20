@@ -69,6 +69,7 @@ export interface PersonalQuestions {
   difficulty_understanding: boolean | null;
   disorganized_thinking: boolean | null;
   efficacy_of_med: boolean;
+  exercise: string | null;
   flat_expressions: boolean | null;
   friends: boolean;
   gained_weight: boolean;
@@ -79,6 +80,7 @@ export interface PersonalQuestions {
   hospital_satisfaction: boolean | null;
   hospitalized_on_first: boolean;
   hospitalized_voluntarily: boolean | null;
+  how_it_altered_life: string | null;
   id: Generated<number>;
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
@@ -116,6 +118,7 @@ export interface PersonalQuestions {
   relative_siblings: boolean | null;
   relatives: boolean;
   responded_to_telling: string | null;
+  school_performance: string | null;
   seen: Generated<boolean>;
   side_effs_dizziness: boolean | null;
   side_effs_movement_effects: boolean | null;
@@ -128,6 +131,7 @@ export interface PersonalQuestions {
   smoking_amount: string | null;
   suicidal_thoughts: boolean;
   suicide_attempts: boolean | null;
+  symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
   symptoms_disorganized: boolean | null;
   symptoms_hallucinations: boolean | null;
@@ -162,6 +166,7 @@ export interface PersonalQuestionsFake {
   difficulty_understanding: boolean | null;
   disorganized_thinking: boolean | null;
   efficacy_of_med: boolean;
+  exercise: string | null;
   flat_expressions: boolean | null;
   friends: boolean;
   gained_weight: boolean;
@@ -172,6 +177,7 @@ export interface PersonalQuestionsFake {
   hospital_satisfaction: boolean | null;
   hospitalized_on_first: boolean;
   hospitalized_voluntarily: boolean | null;
+  how_it_altered_life: string | null;
   id: Generated<number>;
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
@@ -209,6 +215,7 @@ export interface PersonalQuestionsFake {
   relative_siblings: boolean | null;
   relatives: boolean;
   responded_to_telling: string | null;
+  school_performance: string | null;
   side_effs_dizziness: boolean | null;
   side_effs_movement_effects: boolean | null;
   side_effs_sedation: boolean | null;
@@ -220,6 +227,7 @@ export interface PersonalQuestionsFake {
   smoking_amount: string | null;
   suicidal_thoughts: boolean;
   suicide_attempts: boolean | null;
+  symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
   symptoms_disorganized: boolean | null;
   symptoms_hallucinations: boolean | null;
@@ -260,6 +268,7 @@ export interface TheirQuestions {
   current_age: number;
   decline_reason: string | null;
   diagnosis: string;
+  exercise: string | null;
   flat_expressions: boolean | null;
   friends: boolean | null;
   gained_weight: boolean;
@@ -268,6 +277,7 @@ export interface TheirQuestions {
   happy: string;
   has_been_hospitalized: string;
   hospital_satisfaction: string | null;
+  how_it_altered_life: string | null;
   id: Generated<number>;
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
@@ -297,6 +307,7 @@ export interface TheirQuestions {
   relative_parents: boolean | null;
   relative_siblings: boolean | null;
   relatives: string;
+  school_performance: string | null;
   seen: Generated<boolean>;
   side_effs_dizziness: boolean | null;
   side_effs_movement_effects: boolean | null;
@@ -306,6 +317,7 @@ export interface TheirQuestions {
   side_effs_weight_gain: boolean | null;
   smoking: boolean | null;
   suicide_attempts: string;
+  symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
   symptoms_disorganized: boolean | null;
   symptoms_hallucinations: boolean | null;
@@ -326,6 +338,7 @@ export interface TheirQuestionsFake {
   created_at: Generated<Timestamp | null>;
   current_age: number;
   diagnosis: string;
+  exercise: string | null;
   flat_expressions: boolean | null;
   friends: boolean | null;
   gained_weight: boolean;
@@ -334,6 +347,7 @@ export interface TheirQuestionsFake {
   happy: string;
   has_been_hospitalized: string;
   hospital_satisfaction: string | null;
+  how_it_altered_life: string | null;
   id: Generated<number>;
   lack_of_motivation: boolean | null;
   length_of_psychosis: string;
@@ -363,6 +377,7 @@ export interface TheirQuestionsFake {
   relative_parents: boolean | null;
   relative_siblings: boolean | null;
   relatives: string;
+  school_performance: string | null;
   side_effs_dizziness: boolean | null;
   side_effs_movement_effects: boolean | null;
   side_effs_sedation: boolean | null;
@@ -371,6 +386,7 @@ export interface TheirQuestionsFake {
   side_effs_weight_gain: boolean | null;
   smoking: boolean | null;
   suicide_attempts: string;
+  symptom_free_on_meds: boolean | null;
   symptoms_delusions: boolean | null;
   symptoms_disorganized: boolean | null;
   symptoms_hallucinations: boolean | null;

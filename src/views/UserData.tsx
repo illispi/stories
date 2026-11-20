@@ -118,6 +118,7 @@ const PersonalFormSchema = v.object({
 	life_satisfaction_description: optionalText,
 	what_others_should_know: optionalText,
 	not_have_schizophrenia_description: optionalText,
+	how_it_altered_life: optionalText,
 });
 type PersonalFormKey = keyof v.InferInput<typeof PersonalFormSchema>;
 
@@ -125,6 +126,7 @@ const TheirFormSchema = v.object({
 	personality_before: optionalText,
 	personality_after: optionalText,
 	what_others_should_know: optionalText,
+	how_it_altered_life: optionalText,
 });
 type TheirFormKey = keyof v.InferInput<typeof TheirFormSchema>;
 
@@ -150,6 +152,7 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 	personality_before: "Your personality before:",
 	personality_after: "Your personality after:",
 	other_help: "Other help beyond medication:",
+	how_it_altered_life: "How the illness altered your life:",
 	goals_after: "Life goals after illness:",
 	responded_to_telling: "How people responded to you:",
 	life_satisfaction_description: "Your life satisfaction:",
@@ -160,6 +163,7 @@ const personalHeaders: Record<PersonalFormKey, string> = {
 const theirHeaders: Record<TheirFormKey, string> = {
 	personality_before: "Their personality before:",
 	personality_after: "Their personality after:",
+	how_it_altered_life: "How the illness altered their life:",
 	what_others_should_know: "What others should know about schizophrenia:",
 };
 

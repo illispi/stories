@@ -42,12 +42,19 @@ Returning immediately allows malicious actors to figure out valid usernames from
 
 
 
-admin remove account, based on text field search, if user cant access discord
+admin remove account and all data, based on text field search, if user cant access discord
 
 Privacy notice on initital sign up, it says it uses discord email but make sure it's not saved 
 
-editing for articles and their  
-
-Fade away grey before transitioning to next page when hamburger menu is open
-
 Add sentry for error reporting
+
+How test users when i only have one discord account
+
+
+
+
+
+
+
+
+

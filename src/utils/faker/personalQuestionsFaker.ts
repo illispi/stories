@@ -142,6 +142,12 @@ export const createFakeDataPersonal = () => {
 				])
 			: null,
 		cannabis: faker.helpers.arrayElement([true, false]),
+		symptom_free_on_meds: faker.helpers.arrayElement([true, false]),
+		how_it_altered_life: faker.lorem
+			.paragraphs(20)
+			.substring(0, Math.floor(Math.random() * 595) + 4),
+		school_performance: faker.helpers.arrayElement(["really poorly", "bad", "average", "good", "great"]),
+		exercise: faker.helpers.arrayElement(["no exercise", "little", "moderately", "lots of exercise"]),
 		suicidal_thoughts: suicidal_thoughts,
 		suicide_attempts: suicidal_thoughts
 			? faker.helpers.arrayElement([true, false])
