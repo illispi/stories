@@ -15,10 +15,17 @@ import { questions as questionsTheirs } from "~/data/theirQuestionsArr";
 import { trpc } from "~/utils/trpc";
 import { Toaster, showToast } from "~/components/Toast";
 import PollIntro from "~/components/PollIntro";
-import { hasLocalAnswers, localSavedAt, localSnapshot, restoreSnapshot, setLocalSavedAt } from "~/utils/pollDraftLocal";
+import {
+	claimLocalProgress,
+	hasLocalAnswers,
+	localSavedAt,
+	localSnapshot,
+	restoreSnapshot,
+	setLocalSavedAt,
+} from "~/utils/pollDraftLocal";
 
 /** Computed on the server by the .astro page (logged in? personal poll already submitted?). */
-export type UserState = { user: boolean; data: boolean };
+export type UserState = { user: boolean; id: string | null; data: boolean };
 
 const Counter: ParentComponent<{
 	page: number;
@@ -176,6 +183,9 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 		params.personalQuestions === "personalQuestions"
 			? "personalQuestions"
 			: "theirQuestions";
+
+	// Drop another account's leftover progress in this browser before reading it
+	claimLocalProgress(LsName, user()?.id ?? null);
 
 	const paginate = (newDirection: number) => {
 		setDirection(newDirection);

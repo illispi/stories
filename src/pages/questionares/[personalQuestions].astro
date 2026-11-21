@@ -23,6 +23,6 @@ const hasPersonal = user
 	<Questionnaire
 		client:only="solid-js"
 		params={{ personalQuestions }}
-		userState={{ user: Boolean(user), data: hasPersonal }}
+		userState={{ user: Boolean(user), id: user?.id ?? null, data: hasPersonal }}
 	/>
 </Layout>

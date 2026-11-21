@@ -31,3 +31,35 @@ export const restoreSnapshot = (poll: PollLs, data: Record<string, string>, save
 
 export const localSavedAt = (poll: PollLs) => Number(localStorage.getItem(savedAtKey(poll)) ?? 0) || 0;
 export const setLocalSavedAt = (poll: PollLs, at: number) => localStorage.setItem(savedAtKey(poll), String(at));
+
+/* ----- local progress belongs to one account ----- */
+
+const ownerKey = (poll: PollLs) => `progress_owner_${poll}`;
+
+/** Remove this browser's progress for a poll (answers, page, skip bookkeeping, sync info). */
+export const clearLocalProgress = (poll: PollLs) => {
+	for (const key of Object.keys(localSnapshot(poll))) localStorage.removeItem(key);
+	localStorage.removeItem(savedAtKey(poll));
+	localStorage.removeItem(ownerKey(poll));
+};
+
+export const clearAllLocalProgress = () => {
+	clearLocalProgress("personalQuestions");
+	clearLocalProgress("theirQuestions");
+};
+
+/**
+ * Keep local progress only for the account it was made with, so a shared browser never shows
+ * (or saves) one person's answers for another. Progress made while signed out is adopted by
+ * whoever signs in (people often answer first and sign in to submit). Progress of a signed-in
+ * account is already saved to that account, so clearing it here loses nothing.
+ */
+export const claimLocalProgress = (poll: PollLs, userId: string | null) => {
+	const owner = localStorage.getItem(ownerKey(poll));
+	if (userId) {
+		if (owner && owner !== userId) clearLocalProgress(poll);
+		localStorage.setItem(ownerKey(poll), userId);
+	} else if (owner) {
+		clearLocalProgress(poll);
+	}
+};
