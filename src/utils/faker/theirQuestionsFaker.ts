@@ -1,9 +1,14 @@
 import { faker } from "@faker-js/faker";
+import { fakeAge } from "./fakeAge";
 import type { TheirQuestions } from "~/types/zodFromTypes";
 
 //TODO maybe test wrong values as well
 
 export const createFakeDataTheir = () => {
+  // Ages shaped like the illness, not uniform 5-110: most people answering are 18-60,
+  // and onset is usually in the late teens to early thirties (never after current age).
+  const currentAge = fakeAge(16, 75);
+  const ageOfOnset = Math.min(fakeAge(13, 40), currentAge);
   const has_been_hospitalized = faker.helpers.arrayElement([
     "no",
     "yes",
@@ -23,10 +28,12 @@ export const createFakeDataTheir = () => {
   const relatives = faker.helpers.arrayElement(["no", "yes", "unknown"]);
 
   const fakeData: TheirQuestions = {
+    // Fake answers never use "Prefer not to say"
+    declined: [],
     diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
     gender: faker.helpers.arrayElement(["other", "male", "female"]),
-    current_age: faker.number.int({ min: 5, max: 110 }),
-    age_of_onset: faker.number.int({ min: 5, max: 110 }),
+    current_age: currentAge,
+    age_of_onset: ageOfOnset,
     length_of_psychosis: faker.helpers.arrayElement([
       "few days",
       "few weeks",
@@ -104,6 +111,12 @@ export const createFakeDataTheir = () => {
     smoking: faker.helpers.arrayElement([true, false]),
 
     cannabis: faker.helpers.arrayElement(["no", "yes", "unknown"]),
+    symptom_free_on_meds: faker.helpers.arrayElement([true, false]),
+    how_it_altered_life: faker.lorem
+      .paragraphs(20)
+      .substring(0, Math.floor(Math.random() * 595) + 4),
+    school_performance: faker.helpers.arrayElement(["really poorly", "bad", "average", "good", "great"]),
+    exercise: faker.helpers.arrayElement(["no exercise", "little", "moderately", "lots of exercise"]),
     suicide_attempts: faker.helpers.arrayElement(["no", "yes", "unknown"]),
 
     negative_symptoms: negative_symptoms,

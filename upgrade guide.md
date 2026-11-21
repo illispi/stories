@@ -12,6 +12,37 @@ This guide covers four things that are done together:
 
 ---
 
+## Status (2026-11-20): migration done on branch `astro-migration`
+
+Stages 1 to 3 are implemented and were tested in the browser against a local database.
+Where the implementation differs from the plan below, the implementation wins:
+
+| Topic | Plan below | What was actually done |
+|---|---|---|
+| Runtime | Node 22.12+ / 24 | **Node 26** (LTS since Oct 2026), `engines: >=26`, Docker `node:26-alpine` |
+| Package manager | pnpm, overrides in `package.json` | **pnpm 11**: overrides and `allowBuilds` live in `pnpm-workspace.yaml` (pnpm 11 ignores the `pnpm` field in `package.json`) |
+| Migrations | `tsx` | Node's built-in TypeScript type stripping (`node src/utils/migrate.ts`); `tsx` removed |
+| Validation | Drop zod, valibot only | **zod 4** kept for poll schemas and tRPC inputs; valibot 1 for the client forms |
+| Forms | — | **Formisch** (`@formisch/solid`), the successor of Modular Forms (which is in maintenance mode); schemas in valibot 1 |
+| tRPC client | Rewrite call sites | Small shim (`src/utils/trpc.ts`) keeps the old `createQuery`/`createMutation`/`useContext` API |
+| Router APIs | Rewrite components | Small shims (`src/utils/router.tsx`, `src/utils/routes.ts`) |
+| Auth | GitHub/Reddit + Discord | **Discord only**, `identify` scope, synthetic emails, no IP / user agent / OAuth tokens stored, no cookie cache |
+| Rate limiting | Better Auth | **Cloudflare WAF**; Better Auth rate limiting off (§4.7) |
+| Sentry | `@sentry/astro` | `@sentry/browser` initialised in the layout (same GlitchTip DSN) |
+| Tailwind | Tailwind 4 | **Still Tailwind 3** (optional follow-up) |
+| Timestamps | — | New migration converts poll/article `created_at`/`updated_at` to `timestamptz` |
+
+Bugs found and fixed along the way (pre-existing): `markRead` marked every user's notifications
+as read; `editTheir` updated all of a user's rows; editing personal poll data never worked;
+`textPagination` let the client select any column (e.g. `user`); admin article list crashed when
+empty and its count was always 1; age-of-onset stats used the wrong diagnosis and unaccepted rows.
+
+Dependabot is configured in `.github/dependabot.yml` (npm weekly, Node base image weekly, GitHub Actions monthly).
+
+Still open: Tailwind 4, and Cloudflare (Tunnel/firewall + WAF rules) on the server.
+
+---
+
 ## 0. TL;DR checklist
 
 - [ ] Create branch `astro-migration`
@@ -90,7 +121,7 @@ Nothing in our own code uses these packages; once `@solidjs/start`, `vinxi`, `@s
 | `@trpc/server` | 10.45.2 | 1 | high (prototype pollution) | 10.45.3, but we go to **tRPC 11 latest** | §3.2 |
 | `solid-js` | 1.9.2 | 1 | high (XSS: HTML not escaped in JSX fragments) | **≥ 1.9.4** (take latest 1.9.x) | |
 | `valibot` | 0.42.1 (+1.0.0-beta.0 via `@typeschema`) | 2 | high (ReDoS) | **≥ 1.4.2** | Drop `@typeschema/valibot` |
-| `zod` | 3.23.8 | 1 | high (memory exhaustion) | ≥ 4.6.6, or **remove** | Only used by `@t3-oss/env-core` (commented out) and `zodFromTypes.ts` |
+| `zod` | 3.23.8 | 1 | high (memory exhaustion) | **≥ 4.6.6** | Kept: the poll schemas (`server/schemas/*`) and all tRPC inputs use zod; their API is zod-4 compatible |
 | `postcss` | 8.4.47 | 4 | high (file read, path traversal via source maps) | ≥ 8.5.23 | |
 | `@faker-js/faker` (dev) | 9.0.3 | 1 | high (code execution in `helpers.fake`) | ≥ 10.5.0 | |
 | `sharp` (via `vite-imagetools`) | 0.33.5 | 3 | high (libvips/libheif/librsvg) | ≥ 0.35.5 | Remove `vite-imagetools`; Astro pulls its own `sharp`, check it resolves ≥ 0.35.5 |
@@ -241,8 +272,7 @@ Packages that go away completely: `lucia`, `@lucia-auth/adapter-postgresql`, `@l
    "migrate:latest": "tsx ./src/utils/migrate.ts",
    "migrate:down": "tsx ./src/utils/migrate.ts down",
    "new:migration": "tsx ./src/utils/migrationFilename.ts",
-   "sql-types": "kysely-codegen --dialect postgres --out-file ./src/types/db.ts",
-   "auth:schema": "npx @better-auth/cli@latest generate --config ./src/server/auth/auth.ts --output ./auth-schema.sql"
+   "sql-types": "kysely-codegen --dialect postgres --out-file ./src/types/db.ts"
    ```
 
 6. Park the old routes: `git mv src/routes src/_legacy_routes` (delete at the end).
@@ -373,8 +403,8 @@ Better Auth gets told about the name via `user.modelName` (§4.3).
 Workflow:
 
 1. Write `src/server/auth/auth.ts` (§4.3).
-2. `pnpm auth:schema` → `auth-schema.sql`. The CLI emits exactly the tables and columns your config expects (including the `auth_user` name, the snake_case field mapping and the `role` field).
-3. Translate that into the Kysely migration so migrations stay the single source of truth. It will look roughly like this; **the generated SQL wins wherever the two differ**:
+2. Write the Kysely migration by hand (below). The Better Auth CLI (`npx @better-auth/cli generate`) can't load `auth.ts` because it imports `astro:env`, so there is no generator step. If Better Auth reports a missing column at runtime, the error names it.
+3. The migration (implemented in `src/migrations/2023_03_14_06_11_46_auth.ts`):
 
 ```ts
 import type { Kysely } from "kysely";
@@ -490,7 +520,7 @@ export const auth = betterAuth({
   account: {
     // Synthetic emails must never be used to auto-link accounts across providers.
     accountLinking: { enabled: false },
-    encryptOAuthTokens: true, // we never call provider APIs; tokens are stored encrypted (or wipe them in a hook)
+    encryptOAuthTokens: true, // belt and braces: the account hooks below null the tokens anyway
   },
 
   session: {

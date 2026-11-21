@@ -1,37 +1,107 @@
 import { z } from "zod";
-import { adminProcedure } from "../../utils";
+import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
-import {
-	personalQuestionsSchema,
-	theirQuestionsSchema,
-} from "~/types/zodFromTypes";
+import { sql } from "kysely";
+import { clearStatsCache } from "~/server/statsCache";
+import { ARTICLE_TAG_KEYS } from "~/data/articleTags";
+import { TEST_EMAIL_DOMAIN } from "~/server/auth/testEmail";
+import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
 import { createFakeDataTheir } from "~/utils/faker/theirQuestionsFaker";
 import { faker } from "@faker-js/faker";
+import type { PersonalQuestions } from "~/types/zodFromTypes";
+
+/**
+ * The entry must still be the version the admin reviewed: if its author edited it after the
+ * review list loaded, accepting would publish text nobody has read. `version` is
+ * `extract(epoch from updated_at)::text` as listSubmissions/listArticles return it.
+ */
+const sameVersion = (version: string | null) =>
+	sql<boolean>`extract(epoch from updated_at)::text is not distinct from ${version}`;
+const changedSinceLoaded = () =>
+	new TRPCError({
+		code: "CONFLICT",
+		message: "This entry was edited after the list loaded. It has been reloaded: review it again.",
+	});
+
+/**
+ * Owner for a dev fake row. Their_questions rows go to the admin; a personal poll is one per
+ * account, so each fake one gets a new test account (listed and deletable on /dev/test-users).
+ */
+const fakeOwner = async (
+	db: typeof import("~/server/db").db,
+	pOrT: "Personal_questions" | "Their_questions",
+	adminId: string,
+) => {
+	if (pOrT === "Their_questions") return adminId;
+	const id = crypto.randomUUID();
+	await db
+		.insertInto("auth_user")
+		.values({ id, name: "", email: `fake_${id.slice(0, 8)}${TEST_EMAIL_DOMAIN}`, email_verified: false, role: "user" })
+		.execute();
+	return id;
+};
+
+/** `systemMetric` is a form-only field, not a DB column. */
+const withoutSystemMetric = <T extends object>(data: T) => {
+	if (!("systemMetric" in data)) return data;
+	const { systemMetric: _systemMetric, ...rest } = data as T & Pick<PersonalQuestions, "systemMetric">;
+	return rest as unknown as T;
+};
 
 export const acceptArticle = adminProcedure
-	.input(
-		z.object({
-			id: z.number(),
-		}),
-	)
+	.input(z.object({ id: z.number(), version: z.string().nullable() }))
 	.mutation(async ({ ctx, input }) => {
-		const insertion = await ctx.db
+		const updated = await ctx.db
 			.updateTable("Articles")
 			.set({
 				accepted: true,
+				decline_reason: null,
+				// A review result is news for the author: show it on their bell.
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
+			.where(sameVersion(input.version))
 			.executeTakeFirst();
 
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
+		if (!updated.numUpdatedRows) throw changedSinceLoaded();
+		return "Added succesfully";
+	});
+
+export const deleteUserAdmin = adminProcedure
+	.input(z.object({ userId: z.string().min(1) }))
+	.mutation(async ({ ctx, input }) => {
+		const target = await ctx.db
+			.selectFrom("auth_user")
+			.select(["id", "role"])
+			.where("id", "=", input.userId)
+			.executeTakeFirst();
+
+		if (!target) {
+			throw new TRPCError({ code: "NOT_FOUND", message: "Account not found" });
+		}
+		if (target.role === "admin" || target.id === ctx.user.id) {
+			throw new TRPCError({ code: "FORBIDDEN", message: "Admin accounts can't be deleted here" });
 		}
 
-		return "Added succesfully";
+		await ctx.db.deleteFrom("auth_user").where("id", "=", input.userId).execute();
+		clearStatsCache();
+
+		return "Deleted succesfully";
+	});
+
+/** Removes any article, including accepted ones already shown on the Articles page. */
+export const deleteArticleAdmin = adminProcedure
+	.input(z.object({ id: z.number() }))
+	.mutation(async ({ ctx, input }) => {
+		const deleted = await ctx.db.deleteFrom("Articles").where("id", "=", input.id).executeTakeFirst();
+
+		if (!deleted.numDeletedRows) {
+			throw new TRPCError({ code: "NOT_FOUND", message: "Article not found" });
+		}
+
+		return "Deleted succesfully";
 	});
 
 export const declineArticle = adminProcedure
@@ -42,21 +112,18 @@ export const declineArticle = adminProcedure
 		}),
 	)
 	.mutation(async ({ ctx, input }) => {
-		const insertion = await ctx.db
+		const updated = await ctx.db
 			.updateTable("Articles")
 			.set({
 				accepted: false,
 				decline_reason: input.decline_reason,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw new TRPCError({ code: "NOT_FOUND", message: "Article not found" });
 
 		return "Added succesfully";
 	});
@@ -66,6 +133,7 @@ export const acceptSubmission = adminProcedure
 		z.object({
 			id: z.number(),
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
+			version: z.string().nullable(),
 		}),
 	)
 	.mutation(async ({ ctx, input }) => {
@@ -74,17 +142,15 @@ export const acceptSubmission = adminProcedure
 			.set({
 				accepted: true,
 				decline_reason: null,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
+			.where(sameVersion(input.version))
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
-
+		if (!updated.numUpdatedRows) throw changedSinceLoaded();
+		clearStatsCache();
 		return "Updated succesfully";
 	});
 
@@ -102,16 +168,15 @@ export const declineSubmission = adminProcedure
 			.set({
 				accepted: false,
 				decline_reason: input.decline_reason,
+				seen: false,
+				updated_at: new Date(),
 			})
 			.where("id", "=", input.id)
 			.executeTakeFirst();
 
-		if (!updated) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Update failed",
-			});
-		}
+		if (!updated.numUpdatedRows) throw new TRPCError({ code: "NOT_FOUND", message: "Submission not found" });
+		// Declining a published entry takes it out of the stats
+		clearStatsCache();
 
 		return "Updated succesfully";
 	});
@@ -134,18 +199,14 @@ export const fakeForFake = adminProcedure
 					? personalQuestionsSchema.parse(fakeData)
 					: theirQuestionsSchema.parse(fakeData);
 
-				let fakeDataPruned = fakeData;
-
-				if (input.pOrT === "Personal_questions_fake") {
-					const { systemMetric, ...rest } = fakeData;
-					fakeDataPruned = rest;
-				}
+				// The fake tables have no `declined` column (fake answers never decline)
+				const { declined: _declined, ...fakeDataPruned } = withoutSystemMetric(fakeData);
 
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
-					.values({
-						...fakeDataPruned,
-					})
+					// The poll types allow null for "Prefer not to say" answers; the fake tables don't,
+					// and the generators never produce null there (they never decline).
+					.values(fakeDataPruned as never)
 					.executeTakeFirst();
 
 				if (!fakeInsert) {
@@ -155,13 +216,18 @@ export const fakeForFake = adminProcedure
 					});
 				}
 			}
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
-			throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+			console.error(error);
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: error instanceof Error ? error.message : "Insertion failed",
+			});
 		}
 	});
 
-export const fakeForDev = adminProcedure
+export const fakeForDev = devAdminProcedure
 	.input(
 		z.object({
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
@@ -178,18 +244,13 @@ export const fakeForDev = adminProcedure
 				? personalQuestionsSchema.parse(fakeData)
 				: theirQuestionsSchema.parse(fakeData);
 
-			let fakeDataPruned = fakeData;
-
-			if (input.pOrT === "Personal_questions") {
-				const { systemMetric, ...rest } = fakeData;
-				fakeDataPruned = rest;
-			}
+			const fakeDataPruned = withoutSystemMetric(fakeData);
 
 			const fakeInsert = await ctx.db
 				.insertInto(input.pOrT)
 				.values({
 					...fakeDataPruned,
-					user: ctx.user.id,
+					user: await fakeOwner(ctx.db, input.pOrT, ctx.user.id),
 					accepted: null,
 				})
 				.executeTakeFirst();
@@ -201,17 +262,18 @@ export const fakeForDev = adminProcedure
 				});
 			}
 
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
 			console.error(error);
 			throw new TRPCError({
 				code: "INTERNAL_SERVER_ERROR",
-				message: error.message,
+				message: error instanceof Error ? error.message : "Insertion failed",
 			});
 		}
 	});
 
-export const fakeForDevBulk = adminProcedure
+export const fakeForDevBulk = devAdminProcedure
 	.input(
 		z.object({
 			pOrT: z.enum(["Personal_questions", "Their_questions"]),
@@ -232,8 +294,8 @@ export const fakeForDevBulk = adminProcedure
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
 					.values({
-						...fakeData,
-						user: ctx.user.id,
+						...withoutSystemMetric(fakeData),
+						user: await fakeOwner(ctx.db, input.pOrT, ctx.user.id),
 						accepted: true,
 					})
 					.executeTakeFirst();
@@ -245,6 +307,7 @@ export const fakeForDevBulk = adminProcedure
 					});
 				}
 			}
+			clearStatsCache();
 			return "Insertion success";
 		} catch (error) {
 			console.error(error);
@@ -252,7 +315,7 @@ export const fakeForDevBulk = adminProcedure
 		}
 	});
 
-export const fakeArticlesForDev = adminProcedure.mutation(async ({ ctx }) => {
+export const fakeArticlesForDev = devAdminProcedure.mutation(async ({ ctx }) => {
 	const add = await ctx.db
 		.insertInto("Articles")
 		.values({
@@ -260,7 +323,8 @@ export const fakeArticlesForDev = adminProcedure.mutation(async ({ ctx }) => {
 				.paragraphs(10)
 				.substring(0, Math.floor(Math.random() * 400) + 4),
 			link: faker.internet.url(),
-			user: ctx.user?.id,
+			tags: [faker.helpers.arrayElement(ARTICLE_TAG_KEYS)],
+			user: ctx.user.id,
 		})
 		.executeTakeFirst();
 
@@ -272,4 +336,12 @@ export const fakeArticlesForDev = adminProcedure.mutation(async ({ ctx }) => {
 			message: "Failed to fake article",
 		});
 	}
+});
+
+/**
+ * Throws on purpose so Sentry's server-side reporting can be tested from /admin/sentry.
+ * A plain Error becomes INTERNAL_SERVER_ERROR, which the tRPC handler reports to Sentry.
+ */
+export const sentryTestError = adminProcedure.mutation(() => {
+	throw new Error(`Sentry test: tRPC server error (${new Date().toISOString()})`);
 });

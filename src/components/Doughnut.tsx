@@ -1,13 +1,12 @@
-import { Component, Show } from "solid-js";
-import { PersonalQuestions } from "zod-types";
-import { MainReturn } from "~/types/types";
+import { type Component, Show } from "solid-js";
+import type { StatsData } from "~/types/types";
 import { selector } from "~/utils/functions";
 import PieChartCustom from "./PieChartCustom";
 
 export const DoughnutComponent: Component<{
-  data: MainReturn | undefined;
+  data: StatsData | undefined;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: string;
   function:
     | "dataSelection"
     | "dataOnset"
@@ -18,7 +17,7 @@ export const DoughnutComponent: Component<{
   return (
     <div id={props.header.split(" ").join("")} class="flex flex-col items-center justify-center">
       <h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-      <div class="mb-4 flex w-11/12 items-center justify-center lg:max-w-xs">
+      <div class="mb-4 flex w-11/12 items-center justify-center lg:max-w-md">
         <Show
           when={props.data}
           fallback={
@@ -27,7 +26,7 @@ export const DoughnutComponent: Component<{
         >
           <PieChartCustom
             {...props}
-            data={selector(props.function, props.data?.[props.stat])}
+            data={selector(props.function, props.data?.[props.stat]) ?? null}
           />
         </Show>
       </div>

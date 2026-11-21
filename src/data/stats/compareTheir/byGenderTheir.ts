@@ -13,12 +13,14 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   //TODO maybe add age of onset, but needs custom logic instead of the usual
   {
     type: "unknown",
     stat: "relatives",
     header: "Has relatives with schizophrenia",
+    function: "dataSelection",
   },
   {
     type: "bar",
@@ -85,6 +87,11 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   {
     type: "yesOrNo",
+    stat: "symptom_free_on_meds",
+    header: "Symptom free while on medication",
+  },
+  {
+    type: "yesOrNo",
     stat: "had_side_effs",
     header: "Had side effects from medication",
   },
@@ -127,6 +134,13 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Has used cannabis",
   },
   {
+    type: "bar",
+    stat: "exercise",
+    header: "Exercise",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
     type: "unknown",
     stat: "suicide_attempts",
     header: "Has attempted suicide",
@@ -163,6 +177,18 @@ export const byGenderTheir: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "life_situation",
     header: "Occupancy",
     function: "dataSelection",
+  },
+  {
+    type: "bar",
+    stat: "school_performance",
+    header: "School performance",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
+    type: "text",
+    stat: "how_it_altered_life",
+    header: "How the illness altered life",
   },
   {
     type: "yesOrNo",

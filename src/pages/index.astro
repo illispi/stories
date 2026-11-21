@@ -1,0 +1,24 @@
+---
+import { getImage } from "astro:assets";
+import Layout from "~/layouts/Layout.astro";
+import Home from "~/views/Home";
+import first from "~/assets/pictures/first.png";
+import second from "~/assets/pictures/second.png";
+import third from "~/assets/pictures/third.png";
+
+const image = async (src: ImageMetadata) => {
+	const responsive = await getImage({ src, widths: [300, 600, 1200], format: "avif" });
+	const fallback = await getImage({ src, format: "avif" });
+	return { srcset: responsive.srcSet.attribute, src: fallback.src };
+};
+
+const images = {
+	first: await image(first),
+	second: await image(second),
+	third: await image(third),
+};
+---
+
+<Layout>
+	<Home images={images} />
+</Layout>

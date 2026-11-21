@@ -1,4 +1,4 @@
-import { ParentComponent, Setter, Show } from "solid-js";
+import { type ParentComponent, type Setter, Show } from "solid-js";
 import { Transition } from "solid-transition-group";
 import CustomButton from "./CustomButton";
 import clsx from "clsx";
@@ -7,9 +7,14 @@ import { Portal } from "solid-js/web";
 export const ModalOptions: ParentComponent<{
 	show: boolean;
 	setShow: Setter<boolean>;
+	/**
+	 * Render in place instead of portalling to <body>. Needed inside persisted islands
+	 * (the navbar): ClientRouter swaps <body> on navigation, which removes portalled nodes.
+	 */
+	inline?: boolean;
 }> = (props) => {
-	return (
-		<Portal>
+	const modal = () => (
+		<>
 			{/* <Transition
         onEnter={(el, done) => {
           const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
@@ -73,8 +78,7 @@ export const ModalOptions: ParentComponent<{
 					{props.children}
 				</div>
 			</div>
-			{/* </Show> */}
-			{/* </Transition> */}
-		</Portal>
+		</>
 	);
+	return props.inline ? modal() : <Portal>{modal()}</Portal>;
 };

@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { userProcedure } from "../../utils";
 
 export const getPersonal = userProcedure.query(async ({ ctx }) => {
@@ -22,6 +21,8 @@ export const getTheirs = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Their_questions")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		// Stable order, so an edited row doesn't jump to another page
+		.orderBy("id")
 		.execute();
 
 	if (!unSafe.length) {
@@ -41,6 +42,8 @@ export const getArticles = userProcedure.query(async ({ ctx }) => {
 		.selectFrom("Articles")
 		.selectAll()
 		.where("user", "=", ctx.user.id)
+		// Stable order, so an edited row doesn't jump to another page
+		.orderBy("id")
 		.execute();
 
 	if (!unSafe.length) {
@@ -61,6 +64,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.executeTakeFirst();
 
 	const statusPersonal =
@@ -77,6 +82,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.execute();
 
 	const statusTheir = their.length
@@ -92,6 +99,8 @@ export const getNotifications = userProcedure.query(async ({ ctx }) => {
 		.selectAll()
 		.where("user", "=", ctx.user.id)
 		.where("seen", "=", false)
+		// Pending items aren't notifications; only review results are.
+		.where("accepted", "is not", null)
 		.execute();
 
 	const statusArticles = articles.length

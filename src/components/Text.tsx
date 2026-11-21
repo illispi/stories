@@ -1,15 +1,14 @@
-import { A, useLocation } from "@solidjs/router";
-import { route } from "routes-gen";
+import { A, useLocation } from "~/utils/router";
+import { route } from "~/utils/routes";
 import type { Component } from "solid-js";
 import { For, Show } from "solid-js";
 
-import type { MainReturn } from "~/types/types";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
+import type { StatsData } from "~/types/types";
 
 export const TextComponent: Component<{
 	header: string;
-	stat: keyof PersonalQuestions;
-	data: MainReturn | undefined;
+	stat: string;
+	data: StatsData | undefined;
 	pOrT: string;
 	fOrT: string;
 }> = (props) => {
@@ -17,7 +16,7 @@ export const TextComponent: Component<{
 	return (
 		<>
 			<Show
-				when={props.data?.[props.stat].length > 0 && props.data?.[props.stat]}
+				when={props.data?.[props.stat]?.length > 0 && props.data?.[props.stat]}
 			>
 				<div
 					id={props.header.split(" ").join("")}
@@ -37,7 +36,7 @@ export const TextComponent: Component<{
 						onclick={() => {
 							history.replaceState(
 								null,
-								null,
+								"",
 								location.pathname + "#" + props.header.split(" ").join(""),
 							);
 						}}

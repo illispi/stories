@@ -1,0 +1,12 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import { isFOrT, isPOrT } from "~/server/params";
+import PollResults from "~/views/PollResults";
+
+const { pOrT, fOrT } = Astro.params;
+if (!isPOrT(pOrT) || !isFOrT(fOrT)) return Astro.rewrite("/404");
+---
+
+<Layout title="Poll results · Schizophrenia poll">
+	<PollResults client:only="solid-js" params={{ pOrT, fOrT }} />
+</Layout>

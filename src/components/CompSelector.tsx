@@ -5,7 +5,9 @@ import { BarComponent } from "./Bar";
 import { TextComponent } from "./Text";
 import { YesOrNoComponent } from "./YesOrNo";
 
-export const CompSelector = (props) => {
+// Dispatches a chart config (Stat | Doughnut | Bar | Text | YesOrNo) plus data to its component.
+// biome-ignore lint/suspicious/noExplicitAny: heterogeneous chart configs
+export const CompSelector = (props: any) => {
   return (
     <Switch>
       <Match when={props.type === "stat"}>

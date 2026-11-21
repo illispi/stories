@@ -1,24 +1,14 @@
 import { mergeRefs } from "@solid-primitives/refs";
-import type { AxisOptions, BarChartOptions } from "chartist";
-import { BarChart } from "chartist";
 import type { Component } from "solid-js";
-import {
-	Show,
-	Suspense,
-	createEffect,
-	createUniqueId,
-	onCleanup,
-} from "solid-js";
+import { Show, Suspense, createEffect, createUniqueId, onCleanup } from "solid-js";
 import type { ChartistData } from "~/types/types";
-import "../../styles/index.css";
-import { useIsRouting } from "@solidjs/router";
+import { useIsRouting } from "~/utils/router";
 
-interface Adds extends BarChartOptions<AxisOptions, AxisOptions> {
+interface Adds {
 	height?: string;
 }
 
-const BarChartCustomtest = (props) => {
-	let bar: BarChart;
+const BarChartCustomtest = (_props: { options?: Adds }) => {
 	const id = 1;
 
 	// createEffect(() => {
@@ -48,7 +38,6 @@ const BarChartCustomtest = (props) => {
 	return (
 		<Suspense>
 			<div>
-				{console.log("before")}
 				<div class="flex w-full flex-col items-center justify-center h-64">
 					<div class={`h-64 w-full lg:w-11/12`} id={`chartBar1`} />
 				</div>

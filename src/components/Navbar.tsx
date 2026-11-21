@@ -1,25 +1,25 @@
-import { Title } from "@solidjs/meta";
-import { A, useSearchParams } from "@solidjs/router";
-import { route as routeGen } from "routes-gen";
+import { Title } from "~/utils/router";
+import { A, useSearchParams } from "~/utils/router";
+import { route as routeGen } from "~/utils/routes";
 import type { Accessor, Component, Setter } from "solid-js";
-import {
-	ErrorBoundary,
-	Show,
-	Suspense,
-	createEffect,
-	createSignal,
-} from "solid-js";
+import { ErrorBoundary, Show, Suspense, createEffect, createSignal } from "solid-js";
 import clsx from "clsx";
 import Auth from "./Auth";
 import { trpc } from "~/utils/trpc";
+import AdminBell from "./AdminBell";
 import BellNotification from "./BellNotification";
 import "../app.css";
+import BackupNoticeBanner from "./BackupNoticeBanner";
 
-const MenuItem: Component<{ route: string; content: string }> = (props) => {
+const MenuItem: Component<{
+	route: string;
+	content: string;
+	class?: string;
+}> = (props) => {
 	return (
 		<>
 			<A
-				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class}`}
+				class={`font-light text-3xl uppercase transition-all hover:scale-110${props.class ? ` ${props.class}` : ""}`}
 				href={props.route}
 			>
 				{props.content}
@@ -47,7 +47,7 @@ const Hamburger: Component<{
 		});
 		if (window.performance.getEntriesByType && !reloaded()) {
 			if (
-				window.performance.getEntriesByType("navigation")[0].type === "reload"
+				(window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type === "reload"
 			) {
 				setReloaded(true);
 				if (searchParams.nav === "true") {
@@ -113,10 +113,11 @@ const Hamburger: Component<{
 			</div>
 
 			<div
-				class=" fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
+				// menuOverlay: own view-transition group, so it fades while the page slides (app.css)
+				class="menuOverlay fixed top-14 right-0 z-30 h-screen w-screen bg-slate-950 transition-all duration-300"
 				classList={{
 					"opacity-0 invisible": !searchParams.nav,
-					"visible, opacity-40": searchParams.nav === "true",
+					"visible opacity-40": searchParams.nav === "true",
 				}}
 				onClick={() => {
 					setSearchParams({ nav: null });
@@ -146,10 +147,12 @@ const Hamburger: Component<{
 				</Suspense>
 				<div class="w-full border-black border-b-2" />
 				<MenuItem route={routeGen("/pollResults/")} content="results" />
+				<MenuItem route={routeGen("/explore/")} content="explore" />
 				<MenuItem route={routeGen("/questionares/")} content="poll" />
 				<MenuItem route={routeGen("/articles/")} content="Articles" />
 				<Show when={import.meta.env.DEV}>
 					<MenuItem route={"/testing/"} content="Testing" />
+					<MenuItem route={"/dev/test-users"} content="Test users" />
 				</Show>
 				<Show when={authQuery.data?.admin}>
 					<MenuItem route={"/admin/"} content="admin" />
@@ -190,6 +193,7 @@ const NavBar: Component = () => {
 	const authStatusQ = trpc.authStatus.createQuery();
 
 	return (
+		<>
 		<div class="header sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
 			<A
 				class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
@@ -206,12 +210,18 @@ const NavBar: Component = () => {
 				</svg>
 			</A>
 			<div class="flex items-center justify-end gap-4">
+				<Show when={authStatusQ.data?.admin}>
+					<AdminBell />
+				</Show>
 				<Show when={authStatusQ.data?.user}>
 					<BellNotification />
 				</Show>
 				<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 			</div>
 		</div>
+		{/* "Backup restored" notice, posted from the admin panel */}
+		<BackupNoticeBanner />
+		</>
 	);
 };
 

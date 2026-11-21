@@ -66,6 +66,38 @@ body {
   animation-delay: 300ms;
 }
 
+/* Back navigation (Astro sets data-astro-transition="back"): slide the other way */
+@keyframes slideOutFadeBack {
+  from {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+
+  to {
+    transform: translateX(100px);
+    opacity: 0%;
+  }
+}
+@keyframes slideInFadeBack {
+  from {
+    transform: translateX(-100px);
+    opacity: 0%;
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 100%;
+  }
+}
+
+html[data-astro-transition="back"]::view-transition-old(slide) {
+  animation-name: slideOutFadeBack;
+}
+
+html[data-astro-transition="back"]::view-transition-new(slide) {
+  animation-name: slideInFadeBack;
+}
+
 .slide {
   view-transition-name: slide;
 }
@@ -90,10 +122,26 @@ body {
   view-transition-name: headerSlide;
 }
 
+/*
+ * Open menu during a page change: the link click navigates straight away, and the new URL
+ * (no ?nav) closes the menu. The panel and grey overlay are their own groups, so only
+ * their live "new" view is drawn: the CSS fade/slide-out runs while the page slides,
+ * instead of being frozen into the outgoing page snapshot.
+ */
 ::view-transition-old(headerTrans),
-::view-transition-new(headerTrans) {
+::view-transition-old(menuOverlay) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(headerTrans),
+::view-transition-new(menuOverlay) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+.menuOverlay {
+  view-transition-name: menuOverlay;
 }
 
 .headerTrans {

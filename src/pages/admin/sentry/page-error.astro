@@ -1,0 +1,5 @@
+---
+// Admin only (src/middleware.ts). Throws while rendering, to test that Sentry's server
+// middleware reports page errors. Linked from /admin/sentry.
+throw new Error(`Sentry test: page render error (${new Date().toISOString()})`);
+---

@@ -1,0 +1,9 @@
+---
+// Admin role is enforced by src/middleware.ts
+import Layout from "~/layouts/Layout.astro";
+import Admin from "~/views/Admin";
+---
+
+<Layout title="Admin · Schizophrenia poll">
+	<Admin client:only="solid-js" />
+</Layout>

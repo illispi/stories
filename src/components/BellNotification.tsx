@@ -1,11 +1,6 @@
-import {
-	type Component,
-	For,
-	Match,
-	Show,
-	Switch,
-	createSignal,
-} from "solid-js";
+import { type Component, For, Match, Show, Switch, createSignal, onCleanup, onMount } from "solid-js";
+import { A } from "~/utils/router";
+import { route } from "~/utils/routes";
 import { trpc } from "~/utils/trpc";
 import { ModalOptions } from "./ModalOptions";
 import CustomButton from "./CustomButton";
@@ -19,6 +14,13 @@ const BellNotification = () => {
 		() => ({ placeholderData: null }),
 	);
 	const utils = trpc.useContext();
+
+	// The navbar island persists across page navigations, so check for news on each one.
+	onMount(() => {
+		const refresh = () => notificationsQuery.refetch();
+		document.addEventListener("astro:after-swap", refresh);
+		onCleanup(() => document.removeEventListener("astro:after-swap", refresh));
+	});
 
 	const markReadMut = trpc.markRead.createMutation(() => ({
 		onSuccess: () => utils.invalidate(),
@@ -68,7 +70,8 @@ const BellNotification = () => {
 									d="M12.994 7.875A4.008 4.008 0 0 1 12 8h-.01v.217c0 .909.143 1.818.442 2.691l.371 1.113h-9.63v-.012l.37-1.113a8.633 8.633 0 0 0 .443-2.691V6.004c0-.563.12-1.113.347-1.616.227-.514.55-.969.969-1.34.419-.382.91-.67 1.436-.837.538-.18 1.1-.24 1.65-.18l.12.018c.182-.327.41-.625.673-.887a5.15 5.15 0 0 0-.697-.135c-.694-.072-1.4 0-2.07.227-.67.215-1.28.574-1.794 1.053a4.923 4.923 0 0 0-1.208 1.675 5.067 5.067 0 0 0-.431 2.022v2.2a7.61 7.61 0 0 1-.383 2.37L2 12.343l.479.658h3.505c0 .526.215 1.04.586 1.412.37.37.885.586 1.412.586.526 0 1.04-.215 1.411-.586s.587-.886.587-1.412h3.505l.478-.658-.586-1.77a7.63 7.63 0 0 1-.383-2.381v-.318ZM7.982 14.02a.997.997 0 0 0 .706-.3.939.939 0 0 0 .287-.705H6.977c0 .263.107.514.299.706.191.191.443.299.706.299Z"
 									clip-rule="evenodd"
 								/>
-								<path d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+								{/* The "something new" dot: red like the admin bell's badge */}
+								<path d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" fill="#dc2626" />
 								<title>Bell Full</title>
 							</svg>
 						</Show>
@@ -76,7 +79,7 @@ const BellNotification = () => {
 				</Show>
 			</div>
 
-			<ModalOptions setShow={setShowNotifications} show={showNotifications()}>
+			<ModalOptions inline setShow={setShowNotifications} show={showNotifications()}>
 				<div class="flex max-h-[600px] w-11/12 max-w-xl flex-col justify-start gap-6 overflow-y-auto rounded-3xl border-fuchsia-600 border-t-4 bg-white p-8 shadow-xl">
 					<h2 class="mb-8 text-center font-bold text-2xl lg:text-3xl">
 						Notifications
@@ -118,7 +121,15 @@ const BellNotification = () => {
 							notificationsQuery.data?.personal ||
 							notificationsQuery.data?.their
 						}
+						fallback={<p class="text-center text-slate-600">No new notifications.</p>}
 					>
+						<A
+							href={route("/user/data")}
+							class="mx-2 rounded-full border-2 border-blue-500 p-3 text-center font-semibold text-blue-700 transition-all duration-200 ease-in hover:scale-105 hover:bg-blue-50"
+							onClick={() => setShowNotifications(false)}
+						>
+							See your submissions in Your data
+						</A>
 						<CustomButton
 							disabled={markReadMut.isPending}
 							onClick={() => {
@@ -139,7 +150,7 @@ export default BellNotification;
 
 const Notification: Component<{
 	seen: boolean;
-	time: Date;
+	time: Date | string; // dates arrive as ISO strings over tRPC (no transformer)
 	status: boolean | null;
 	name: string;
 }> = (props) => {

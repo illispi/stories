@@ -1,0 +1,9 @@
+---
+// Admin role is enforced by src/middleware.ts
+import Layout from "~/layouts/Layout.astro";
+import AdminNotice from "~/views/AdminNotice";
+---
+
+<Layout title="Site notice · Admin">
+	<AdminNotice client:only="solid-js" />
+</Layout>

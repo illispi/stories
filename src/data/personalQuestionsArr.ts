@@ -164,6 +164,12 @@ export const questions: QuestionPersonal[] = [
     questionDB: "efficacy_of_med",
   },
   {
+    question:
+      "Are you psychosis symptom free as long as you take medication?",
+    questionType: "yesOrNo",
+    questionDB: "symptom_free_on_meds",
+  },
+  {
     question: "Did the antipsychotic medication cause side effects",
     questionType: "yesOrNo",
     questionDB: "had_side_effs",
@@ -240,6 +246,12 @@ export const questions: QuestionPersonal[] = [
     question: "Have you ever used cannabis?",
     questionType: "yesOrNo",
     questionDB: "cannabis",
+  },
+  {
+    question: "Do you exercise?",
+    questionType: "selection",
+    questionDB: "exercise",
+    selections: ["no exercise", "little", "moderately", "lots of exercise"],
   },
   {
     question: "Have you ever had suicidal thoughts?",
@@ -337,6 +349,17 @@ export const questions: QuestionPersonal[] = [
     ],
   },
   {
+    question: "How did you do in school?",
+    questionType: "selection",
+    questionDB: "school_performance",
+    selections: ["really poorly", "bad", "average", "good", "great"],
+  },
+  {
+    question: "How did the illness alter your life?",
+    questionType: "text",
+    questionDB: "how_it_altered_life",
+  },
+  {
     question: "Are you currently in a relationship?",
     questionType: "yesOrNo",
     questionDB: "partner",
@@ -350,17 +373,6 @@ export const questions: QuestionPersonal[] = [
     question: "Do you have children?",
     questionType: "yesOrNo",
     questionDB: "children",
-  },
-  {
-    question: "Did your life goals change after experiencing psychosis?",
-    questionType: "yesOrNo",
-    questionDB: "goals_changed",
-    skip: "told_nobody",
-  },
-  {
-    question: "How did your life goals change?",
-    questionType: "text",
-    questionDB: "goals_after",
   },
   {
     question: "Have you told anybody you have schizophrenia?",
@@ -395,7 +407,7 @@ export const questions: QuestionPersonal[] = [
     questionDB: "life_satisfaction",
   },
   {
-    question: "Why or why not are you satisfied with life",
+    question: "Why or why not are you satisfied with life?",
     questionType: "text",
     questionDB: "life_satisfaction_description",
   },

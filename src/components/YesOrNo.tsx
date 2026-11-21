@@ -1,31 +1,28 @@
 import type { Component } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
-import type { MainReturn } from "~/types/types";
+import type { ChartistData, StatsData } from "~/types/types";
 import PieChartCustom from "./PieChartCustom";
 
 export const YesOrNoComponent: Component<{
-	stat: keyof MainReturn;
+	stat: string;
 	header: string;
-	data: MainReturn | undefined;
+	data: StatsData | undefined;
 }> = (props) => {
-	const [qDAata, setQDAata] = createSignal(null);
+	const [qDAata, setQDAata] = createSignal<ChartistData | null>(null);
 
 	createEffect(() => {
-		if (props.data?.[props.stat]) {
+		const d = props.data?.[props.stat] as { yes: number; no: number; prefer_not?: number } | undefined;
+		if (d) {
+			// A third slice for "Prefer not to say" on sensitive questions, when anyone chose it
+			const parts: [string, number][] = [
+				["Yes", d.yes],
+				["No", d.no],
+				...(d.prefer_not ? ([["Prefer not to say", d.prefer_not]] as [string, number][]) : []),
+			];
+			const total = parts.reduce((a, [, n]) => a + n, 0);
 			setQDAata({
-				labels: [
-					`Yes ${Math.floor(
-						(props.data?.[props.stat].yes /
-							(props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-							100,
-					)}%`,
-					`No ${Math.floor(
-						(props.data?.[props.stat].no /
-							(props.data?.[props.stat].yes + props.data?.[props.stat].no)) *
-							100,
-					)}%`,
-				],
-				series: [props.data?.[props.stat].yes, props.data?.[props.stat].no],
+				labels: parts.map(([label, n]) => `${label} ${total ? Math.floor((n / total) * 100) : 0}%`),
+				series: parts.map(([, n]) => n),
 			});
 		}
 	});
@@ -36,7 +33,7 @@ export const YesOrNoComponent: Component<{
 			class="flex flex-col items-center justify-center"
 		>
 			<h4 class="m-2 text-center text-xl underline underline-offset-8">{`${props.header}:`}</h4>
-			<div class="mb-4 flex w-11/12 items-center justify-center lg:max-w-xs">
+			<div class="mb-4 flex w-11/12 items-center justify-center lg:max-w-md">
 				<Show
 					when={props.data}
 					fallback={

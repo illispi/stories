@@ -1,4 +1,4 @@
-import { ParentComponent } from "solid-js";
+import { type ParentComponent } from "solid-js";
 import { Transition } from "solid-transition-group";
 
 const TransitionFade: ParentComponent = (props) => {

@@ -1,4 +1,4 @@
-import { A } from "@solidjs/router";
+import { A } from "~/utils/router";
 import type { Component } from "solid-js";
 
 const InfoBox: Component<{

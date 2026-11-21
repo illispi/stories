@@ -1,0 +1,35 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import LoginButton from "~/islands/LoginButton";
+import { safeRedirect } from "~/utils/auth-client";
+
+const redir = safeRedirect(Astro.url.searchParams.get("redir"));
+if (Astro.locals.user) return Astro.redirect(redir);
+const failed = Astro.url.searchParams.has("error");
+---
+
+<Layout title="Sign in · Schizophrenia poll">
+	<main
+		class="flex min-h-screen w-full flex-col items-center justify-center bg-slate-100 lg:shadow-[inset_0px_0px_200px_rgba(0,0,0,0.9)] lg:shadow-blue-300"
+	>
+		<h1 class="my-16 font-bold text-5xl lg:text-6xl">Sign in</h1>
+		<div
+			class="mb-16 flex w-11/12 max-w-2xl flex-col justify-start gap-6 rounded-3xl border-fuchsia-600 border-t-4 bg-white px-4 py-12 shadow-xl lg:p-16"
+		>
+			<p class="text-lg">
+				Sign in with your Discord account. This site only saves your Discord account ID, so it
+				can recognise you next time. Your email isn't even requested, and your username,
+				avatar and banner are never saved.
+			</p>
+			<p class="rounded-2xl bg-blue-50 p-4 text-slate-700">
+				Discord's permission screen will say this site can access your username, avatar and
+				banner. That's
+				part of the most basic permission Discord offers (<code>identify</code>), which is all
+				this site asks for. Those details are thrown away right after you sign in.
+			</p>
+			<p class="text-lg">You can delete your account and all your data at any time.</p>
+			{failed && <p class="text-red-600">Sign in failed or was cancelled. Please try again.</p>}
+			<LoginButton client:load redir={redir} />
+		</div>
+	</main>
+</Layout>

@@ -3,20 +3,16 @@ import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
-import type { PersonalQuestions, TheirQuestions } from "~/types/zodFromTypes";
+/** Poll answers in the poll store (src/utils/pollStore.ts), keyed by question. */
+// biome-ignore lint/suspicious/noExplicitAny: values depend on the question type
+type Answers = Record<string, any>;
+import { confetti } from "~/utils/confetti";
+import { pollStore } from "~/utils/pollStore";
+import { isSensitive, LS_POLL, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
 import type { QuestionTheir } from "~/data/theirQuestionsArr";
-import {
-	integer,
-	maxLength,
-	maxValue,
-	minLength,
-	minValue,
-	number as numberBot,
-	safeParse,
-	string,
-} from "valibot";
+import { integer, maxLength, maxValue, minLength, minValue, number as numberBot, safeParse, string, pipe } from "valibot";
 import LoginA from "./LoginA";
 import { trpc } from "~/utils/trpc";
 import clsx from "clsx";
@@ -63,10 +59,26 @@ export const UnitQuestion: ParentComponent<{
 	const sendStats =
 		props.LsName === "personalQuestions" ? personalMut : theirMut;
 
+	// Show why a submit was refused (e.g. ages that don't fit, poll already submitted)
+	createEffect(() => {
+		const err = sendStats.error;
+		if (!err) return;
+		let message = err.message;
+		try {
+			// Validation errors arrive as a JSON list of issues
+			const issues = JSON.parse(message) as { message?: string }[];
+			if (Array.isArray(issues) && issues[0]?.message) message = issues[0].message;
+		} catch {
+			// a plain message
+		}
+		setError(`Couldn't submit: ${message}`);
+	});
+
 	createEffect(() => {
 		if (sendStats.isSuccess) {
 			props.setSubmissionStatus("success");
-			localStorage.clear();
+			confetti();
+			pollStore.clear();
 		}
 	});
 
@@ -76,8 +88,8 @@ export const UnitQuestion: ParentComponent<{
 	const { question, questionDB, questionType, selections, multiSelect, skip } =
 		props.content;
 
-	const questionsLs: PersonalQuestions | TheirQuestions = JSON.parse(
-		localStorage.getItem(props.LsName) ?? "{}",
+	const questionsLs: Answers = JSON.parse(
+		pollStore.getItem(props.LsName) ?? "{}",
 	);
 
 	const valueOfLS = questionsLs[questionDB] ?? "";
@@ -89,13 +101,13 @@ export const UnitQuestion: ParentComponent<{
 				(acc, curr) => (
 					curr in questionsLs && (acc[curr] = questionsLs[curr] as boolean), acc
 				),
-				{} as Record<keyof PersonalQuestions, boolean>,
+				{} as Record<string, boolean>,
 			);
 
 		if (Object.keys(selectionsObj ? selectionsObj : {}).length === 0) {
 			const allFalse = multiSelect?.reduce(
 				(acc, curr) => ((acc[curr[0]] = false), acc),
-				{} as Record<keyof PersonalQuestions, boolean>,
+				{} as Record<string, boolean>,
 			);
 
 			return allFalse;
@@ -105,24 +117,29 @@ export const UnitQuestion: ParentComponent<{
 
 	//NOTE removed lazy inits in solid see old react code
 
-	const [number, setNumber] = createSignal(valueOfLS as string);
+	const [number, setNumber] = createSignal<string | null>(valueOfLS as string);
 	const [text, setText] = createSignal(valueOfLS as string);
 	const [error, setError] = createSignal<string | null>(null);
-	const [multiSelections, setMultiSelections] = createSignal(multiSelInit());
+	const [multiSelections, setMultiSelections] = createSignal<Record<string, boolean>>(multiSelInit() ?? {});
 	const [yesOrNO, setYesOrNO] = createSignal(valueOfLS as boolean);
+	// "Prefer not to say" (sensitive questions only): stored as null + the key in `declined`
+	const sensitive = isSensitive(LS_POLL[props.LsName], questionDB);
+	const [declined, setDeclined] = createSignal(
+		Array.isArray(questionsLs.declined) && (questionsLs.declined as string[]).includes(questionDB),
+	);
 	const [selection, setSelection] = createSignal(valueOfLS as string);
 	const [metric, setMetric] = createSignal<boolean>(
-		JSON.parse(localStorage.getItem("system") ?? '"true"'),
+		JSON.parse(pollStore.getItem("system") ?? '"true"'),
 	);
 
 	const submitResults = () => {
-		(Object.keys(questionsLs) as Array<keyof PersonalQuestions>).forEach(
+		(Object.keys(questionsLs) as Array<string>).forEach(
 			(e) => {
 				if (
 					questions.find((el) => el.questionDB === e)?.questionType ===
 					"integer"
 				) {
-					(questionsLs as unknown as Record<keyof PersonalQuestions, number>)[ //TODO this as unknown has to have something better
+					(questionsLs as unknown as Record<string, number>)[ //TODO this as unknown has to have something better
 						e
 					] = Number(questionsLs[e]); //NOTE is this as number really good practice?
 				}
@@ -143,20 +160,25 @@ export const UnitQuestion: ParentComponent<{
 			.filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
 			.forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-		sendStats.mutate({
-			...questionsLs,
-			systemMetric: JSON.parse(localStorage.getItem("system") ?? true),
-		});
+		// Answers come from the poll store; the server validates them with the poll schema.
+		if (props.LsName === "personalQuestions") {
+			personalMut.mutate({
+				...questionsLs,
+				systemMetric: JSON.parse(pollStore.getItem("system") ?? "true"),
+			} as Parameters<typeof personalMut.mutate>[0]);
+		} else {
+			theirMut.mutate(questionsLs as Parameters<typeof theirMut.mutate>[0]);
+		}
 	};
 
 	const handleMultiSubmit = (
-		values: Record<keyof PersonalQuestions, boolean>,
+		values: Record<string, boolean>,
 	) => {
 		if (!values) {
 			return undefined; //TODO might need something better, this a null check
 		}
 		if (
-			(Object.keys(values) as Array<keyof PersonalQuestions>).filter(
+			(Object.keys(values) as Array<string>).filter(
 				(e) => values[e] === false,
 			).length === multiSelect?.map((e) => e[0]).length
 		) {
@@ -167,7 +189,7 @@ export const UnitQuestion: ParentComponent<{
 				//TODO clear all values on previous gesture, if skipping
 				//TODO remeber to refactor this as well to delete on skip no
 
-				localStorage.setItem(
+				pollStore.setItem(
 					props.LsName,
 					JSON.stringify({ ...questionsLs, ...values }),
 				);
@@ -182,13 +204,14 @@ export const UnitQuestion: ParentComponent<{
 
 	const handleSubmit = (
 		value: {
-			[Property in keyof PersonalQuestions]?: boolean | number | string;
+			[property: string]: boolean | number | string | null | undefined;
 		},
 		skipAmount?: number,
+		declineAnswer = false,
 	) => {
 		try {
 			if (questionDB === "weight_amount") {
-				localStorage.setItem("system", JSON.stringify(metric()));
+				pollStore.setItem("system", JSON.stringify(metric()));
 			}
 			if (
 				questionDB === "weight_amount" &&
@@ -201,14 +224,20 @@ export const UnitQuestion: ParentComponent<{
 			}
 			setSelection(value[questionDB] as string);
 			setYesOrNO(value[questionDB] as boolean);
-			localStorage.setItem(
-				props.LsName,
-				JSON.stringify({ ...questionsLs, ...value }),
+			setDeclined(declineAnswer);
+			const declinedList = new Set<string>(
+				Array.isArray(questionsLs.declined) ? (questionsLs.declined as string[]) : [],
 			);
-			const LsExistsJunctions = localStorage.getItem(
+			if (declineAnswer) declinedList.add(questionDB);
+			else declinedList.delete(questionDB);
+			pollStore.setItem(
+				props.LsName,
+				JSON.stringify({ ...questionsLs, ...value, declined: [...declinedList] }),
+			);
+			const LsExistsJunctions = pollStore.getItem(
 				`junctions_${props.LsName}`,
 			);
-			let junctions: Record<keyof PersonalQuestions, number> = LsExistsJunctions
+			let junctions: Record<string, number> = LsExistsJunctions
 				? JSON.parse(LsExistsJunctions)
 				: null;
 
@@ -223,13 +252,13 @@ export const UnitQuestion: ParentComponent<{
 							questions.findIndex((e) => e.questionDB === skip) -
 							questions.findIndex((e) => e.questionDB === questionDB),
 					};
-					localStorage.setItem(
+					pollStore.setItem(
 						`junctions_${props.LsName}`,
 						JSON.stringify(junctions),
 					);
 				} else {
 					if (junctions?.[questionDB]) {
-						const LsTotal = localStorage.getItem(props.LsName);
+						const LsTotal = pollStore.getItem(props.LsName);
 						const curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
 
 						const indexOfItem = questions.findIndex(
@@ -253,12 +282,12 @@ export const UnitQuestion: ParentComponent<{
 								}
 							});
 
-						localStorage.setItem(
+						pollStore.setItem(
 							props.LsName,
 							JSON.stringify(curQuestionsObject),
 						);
 						delete junctions[questionDB];
-						localStorage.setItem(
+						pollStore.setItem(
 							`junctions_${props.LsName}`,
 							JSON.stringify(junctions),
 						);
@@ -266,12 +295,12 @@ export const UnitQuestion: ParentComponent<{
 				}
 
 				if (skipAmount) {
-					localStorage.setItem(
+					pollStore.setItem(
 						`to_${skip}_${props.LsName}`,
 						JSON.stringify(skipAmount),
 					);
 				} else {
-					localStorage.removeItem(`to_${skip}_${props.LsName}`);
+					pollStore.removeItem(`to_${skip}_${props.LsName}`);
 				}
 			}
 
@@ -282,11 +311,36 @@ export const UnitQuestion: ParentComponent<{
 		}
 	};
 
+	/** "Prefer not to say": like "No", it skips the follow-up questions. */
+	const preferNot = () =>
+		handleSubmit(
+			{ [questionDB]: null },
+			skip
+				? questions.findIndex((e) => e.questionDB === skip) -
+						questions.findIndex((e) => e.questionDB === questionDB) -
+						1
+				: undefined,
+			true,
+		);
+
+	const PreferNotButton = () => (
+		<Show when={sensitive}>
+			<button
+				type="button"
+				class="w-56 rounded-full border-2 px-4 py-3 font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+				classList={{
+					"border-green-500 bg-green-500 text-white": declined(),
+					"border-slate-300 bg-white text-slate-700 hover:bg-slate-100": !declined(),
+				}}
+				onClick={preferNot}
+			>
+				{PREFER_NOT_LABEL}
+			</button>
+		</Show>
+	);
+
 	const handleNumber = (
-		e: Event & { submitter: HTMLElement } & {
-			currentTarget: HTMLFormElement;
-			target: Element;
-		},
+		e: SubmitEvent & { currentTarget: HTMLFormElement },
 	) => {
 		e.preventDefault();
 
@@ -294,32 +348,42 @@ export const UnitQuestion: ParentComponent<{
 
 		if (questionDB === "weight_amount") {
 			if (metric()) {
-				numberSchema = numberBot("Weight is required, 1-300 kilograms", [
+				numberSchema = pipe(numberBot("Weight is required, 1-300 kilograms"),
 					minValue(1, "Minimum weight increase is 1 kilos"),
 					maxValue(300, "Maximum weight increase is 300 kilos"),
 					integer("Please provide whole number only (e.g 15, not 15.6)"),
-				]);
+				);
 			} else {
-				numberSchema = numberBot("Weight is required, 1-650 pounds", [
+				numberSchema = pipe(numberBot("Weight is required, 1-650 pounds"),
 					minValue(1, "Minimum weight increase is 1 pounds"),
-					maxValue(300, "Maximum weight increase is 650 pounds"),
+					maxValue(650, "Maximum weight increase is 650 pounds"),
 					integer("Please provide whole number only (e.g 15, not 15.6)"),
-				]);
+				);
 			}
 		} else {
-			//TODO Maybe handle if age is smaller than onset
-
-			numberSchema = numberBot("Age is required, 5-110", [
+			numberSchema = pipe(numberBot("Age is required, 5-110"),
 				minValue(5, "Minimum age is 5"),
 				maxValue(110, "Maximum age is 110"),
 				integer("Please provide whole number only (e.g 15, not 15.6)"),
-			]);
+			);
 		}
 
 		const result = safeParse(numberSchema, Number(number()));
 
+		// Age of onset can't be after the current age (current age is asked first)
+		const saved: Record<string, unknown> = JSON.parse(pollStore.getItem(props.LsName) ?? "{}");
+		const ageConflict = !result.success
+			? null
+			: questionDB === "age_of_onset" && typeof saved.current_age === "number" && result.output > saved.current_age
+				? `Age of onset can't be higher than current age (${saved.current_age}).`
+				: questionDB === "current_age" && typeof saved.age_of_onset === "number" && result.output < saved.age_of_onset
+					? `Current age can't be lower than age of onset (${saved.age_of_onset}).`
+					: null;
+
 		if (!result.success) {
 			setError(result.issues[0].message);
+		} else if (ageConflict) {
+			setError(ageConflict);
 		} else {
 			handleSubmit({ [questionDB]: result.output });
 			setError(null);
@@ -327,17 +391,14 @@ export const UnitQuestion: ParentComponent<{
 	};
 
 	const handleText = (
-		e: Event & { submitter: HTMLElement } & {
-			currentTarget: HTMLFormElement;
-			target: Element;
-		},
+		e: SubmitEvent & { currentTarget: HTMLFormElement },
 	) => {
 		e.preventDefault();
 
-		const textFieldSchema = string([
+		const textFieldSchema = pipe(string(),
 			maxLength(600, "Your text is too long! (Max. 600 characters)"),
 			minLength(4, 'Your text is too short, even "okay" is enough'),
-		]);
+		);
 		const result = safeParse(textFieldSchema, text());
 
 		if (!result.success) {
@@ -416,6 +477,9 @@ export const UnitQuestion: ParentComponent<{
 								</div>
 							)}
 						</For>
+						<div class="m-2">
+							<PreferNotButton />
+						</div>
 					</div>
 				</Box>
 			</Match>
@@ -435,7 +499,7 @@ export const UnitQuestion: ParentComponent<{
 								}`}
 								id="int"
 								type="number"
-								value={number()}
+								value={number() ?? ""}
 								onInput={(e) => {
 									setNumber(e.target.value);
 									setError(null);
@@ -485,7 +549,7 @@ export const UnitQuestion: ParentComponent<{
                 autocomplete="off"
                 id="int"
                 type="number"
-                value={number()}
+                value={number() ?? ""}
                 onInput={(e) => {
                   e.currentTarget.value.match("^[0-9]*$")
                     ? setNumber(e.currentTarget.value)
@@ -499,7 +563,7 @@ export const UnitQuestion: ParentComponent<{
 								autocomplete="off"
 								id="int"
 								type="number"
-								value={number()}
+								value={number() ?? ""}
 								onInput={(e) => {
 									setNumber(e.target.value);
 									setError(null);
@@ -528,7 +592,7 @@ export const UnitQuestion: ParentComponent<{
 								value={text()}
 								onInput={(e) => {
 									setText(e.target.value);
-									localStorage.setItem(
+									pollStore.setItem(
 										props.LsName,
 										JSON.stringify({ ...questionsLs, [questionDB]: text() }),
 									);
@@ -575,6 +639,7 @@ export const UnitQuestion: ParentComponent<{
 						>
 							No
 						</CustomButton>
+						<PreferNotButton />
 					</div>
 				</Box>
 			</Match>

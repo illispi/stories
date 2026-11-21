@@ -1,0 +1,58 @@
+# Dependabot version updates. Every PR runs the "check" job in deploy.yml
+# (audit, astro check, build) before it can be merged.
+version: 2
+
+updates:
+  # npm packages (pnpm 11 lockfile)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Helsinki
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    groups:
+      # Astro and its integrations release together
+      astro:
+        patterns:
+          - "astro"
+          - "@astrojs/*"
+      # Better Auth packages must be upgraded together
+      better-auth:
+        patterns:
+          - "better-auth"
+          - "@better-auth/*"
+      trpc:
+        patterns:
+          - "@trpc/*"
+      # Everything else: one PR for minor/patch updates, majors stay separate
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Track the runtime via the Docker image; keep types on the same major as Node
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
+
+  # Node.js runtime: the node:<major>-alpine base image in the Dockerfile
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Helsinki
+
+  # GitHub Actions used in the workflows
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"

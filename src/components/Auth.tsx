@@ -1,7 +1,7 @@
 import { Show, type VoidComponent } from "solid-js";
 import CustomButton from "./CustomButton";
 
-import { useNavigate } from "@solidjs/router";
+import { useNavigate } from "~/utils/router";
 import { trpc } from "~/utils/trpc";
 import LoginA from "./LoginA";
 

@@ -1,102 +1,70 @@
-import {
-	personalQuestionsSchema,
-	theirQuestionsSchema,
-} from "~/types/zodFromTypes";
+import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { userProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { onsetNotAfterAge, ONSET_AFTER_AGE_MESSAGE } from "~/server/schemas/ageRule";
+import { articleFields } from "~/server/schemas/articleSchema";
+
+/** Postgres unique_violation: Personal_questions has one row per user (unique constraint). */
+const isUniqueViolation = (error: unknown) =>
+	typeof error === "object" && error !== null && (error as { code?: string }).code === "23505";
 
 export const postPersonalStats = userProcedure
-	.input(personalQuestionsSchema)
+	.input(personalQuestionsSchema.refine(onsetNotAfterAge, { message: ONSET_AFTER_AGE_MESSAGE }))
 	.mutation(async ({ ctx, input }) => {
-		const existsAlready = await ctx.db
-			.selectFrom("Personal_questions")
-			.selectAll()
-			.where("user", "=", ctx.user.id)
-			.executeTakeFirst();
-
-		if (existsAlready) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Personal poll exists already",
-			});
-		}
-
-		if (input.weight_amount) {
-			input.weight_amount = input.systemMetric
-				? input.weight_amount
-				: Math.floor(input.weight_amount * 0.453);
-		}
-
 		const { systemMetric, ...rest } = input;
-		const insertion = await ctx.db
-			.insertInto("Personal_questions")
-			.values({
-				...rest,
+		if (rest.weight_amount && !systemMetric) {
+			rest.weight_amount = Math.floor(rest.weight_amount * 0.453);
+		}
 
-				user: ctx.user.id,
-				accepted: null,
-			})
-			.executeTakeFirst();
-
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
+		try {
+			await ctx.db
+				.insertInto("Personal_questions")
+				.values({
+					...rest,
+					user: ctx.user.id,
+					accepted: null,
+					// Your own submission isn't news; the bell lights up once it's reviewed.
+					seen: true,
+				})
+				.execute();
+			// Submitted: the saved progress isn't needed any more
+			await ctx.db.deleteFrom("poll_drafts").where("user", "=", ctx.user.id).where("poll", "=", "personalQuestions").execute();
+		} catch (error) {
+			if (isUniqueViolation(error)) {
+				throw new TRPCError({ code: "CONFLICT", message: "You have already submitted the personal poll." });
+			}
+			throw error;
 		}
 
 		return "Added succesfully";
 	});
 
 export const postTheirStats = userProcedure
-	.input(theirQuestionsSchema)
+	.input(theirQuestionsSchema.refine(onsetNotAfterAge, { message: ONSET_AFTER_AGE_MESSAGE }))
 	.mutation(async ({ ctx, input }) => {
-		const insertion = await ctx.db
+		await ctx.db
 			.insertInto("Their_questions")
 			.values({
 				...input,
 				user: ctx.user.id,
 				accepted: null,
+				// Your own submission isn't news; the bell lights up once it's reviewed.
+				seen: true,
 			})
-			.executeTakeFirst();
-
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
-		}
+			.execute();
+		await ctx.db.deleteFrom("poll_drafts").where("user", "=", ctx.user.id).where("poll", "=", "theirQuestions").execute();
 
 		return "Added succesfully";
 	});
 
 export const postArticle = userProcedure
-	.input(
-		z.object({
-			link: z
-				.string()
-				.max(1000, { message: "Must be 1000 or fewer characters long" })
-				.min(5, { message: "Must be 5 or more characters long" })
-				.trim(),
-			description: z
-				.string()
-				.max(500, { message: "Must be 500 or fewer characters long" })
-				.min(5, { message: "Must be 5 or more characters long" })
-				.trim(),
-		}),
-	)
+	.input(z.object(articleFields))
 	.mutation(async ({ input, ctx }) => {
-		const insertion = await ctx.db
+		await ctx.db
 			.insertInto("Articles")
-			.values({ ...input, user: ctx.user.id, accepted: null })
-			.executeTakeFirst();
-		if (!insertion) {
-			throw new TRPCError({
-				code: "INTERNAL_SERVER_ERROR",
-				message: "Insertion failed",
-			});
-		}
+			.values({ ...input, user: ctx.user.id, accepted: null, seen: true })
+			.execute();
 
 		return "Added succesfully";
 	});

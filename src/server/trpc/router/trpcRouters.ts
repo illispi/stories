@@ -4,19 +4,25 @@ import {
 	acceptSubmission,
 	declineArticle,
 	declineSubmission,
+	deleteArticleAdmin,
+	deleteUserAdmin,
 	fakeArticlesForDev,
+	sentryTestError,
 	fakeForDev,
 	fakeForDevBulk,
 	fakeForFake,
 } from "./admin/adminMutations";
-import { listArticles, listSubmissions } from "./admin/adminQueries";
-import { authStatus, logOut, signIn, signUp } from "./basic/authQandM";
+import { listArticles, listSubmissions, pendingCounts, searchUsersByText } from "./admin/adminQueries";
 import {
 	postArticle,
 	postPersonalStats,
 	postTheirStats,
 } from "./basic/mutations";
-import { allStats, articlesPagination, textPagination } from "./basic/queries";
+import { allStats, articlesPagination, authStatus, textPagination } from "./basic/queries";
+import { crossFilter } from "./basic/explore";
+import { toggleHelpful } from "./basic/votes";
+import { clearBackupNotice, setBackupNotice, siteNotice } from "./basic/siteNotice";
+import { deleteDraft, getDraft, listDrafts, saveDraft } from "./user/drafts";
 import {
 	removeAccountAndData,
 	removePersonal,
@@ -24,6 +30,7 @@ import {
 	removeArticle,
 	editTheir,
 	editPersonal,
+	editArticle,
 	markRead,
 } from "./user/userMutations";
 import {
@@ -34,13 +41,19 @@ import {
 } from "./user/userQueries";
 
 export const appRouter = router({
+	authStatus,
 	markRead,
 	getNotifications,
-	signIn,
-	signUp,
-	logOut,
-	authStatus,
 	allStats,
+	crossFilter,
+	toggleHelpful,
+	siteNotice,
+	setBackupNotice,
+	clearBackupNotice,
+	getDraft,
+	saveDraft,
+	deleteDraft,
+	listDrafts,
 	articlesPagination,
 	textPagination,
 	postPersonalStats,
@@ -48,6 +61,11 @@ export const appRouter = router({
 	postArticle,
 	acceptArticle,
 	declineArticle,
+	deleteArticleAdmin,
+	deleteUserAdmin,
+	searchUsersByText,
+	pendingCounts,
+	sentryTestError,
 	acceptSubmission,
 	declineSubmission,
 	fakeForFake,
@@ -64,6 +82,7 @@ export const appRouter = router({
 	getArticles,
 	editPersonal,
 	editTheir,
+	editArticle,
 	fakeForDevBulk,
 });
 

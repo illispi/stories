@@ -1,203 +1,132 @@
 import { z } from "zod";
+import { sql } from "kysely";
+import { ARTICLE_TAG_KEYS } from "~/data/articleTags";
 import { questions as personalQuestions } from "~/data/personalQuestionsArr";
 import { questions as theirQuestions } from "~/data/theirQuestionsArr";
 import type { MainReturn } from "~/types/types";
-import type { PersonalQuestions } from "~/types/zodFromTypes";
-import { wrap } from "@typeschema/valibot";
-import { Argon2id } from "oslo/password";
-import { TRPCError } from "@trpc/server";
-import { lucia } from "~/lib/auth/lucia";
-import { db } from "~/server/db";
-import { maxLength, minLength, object, string } from "valibot";
-import { generateId } from "lucia";
 import { publicProcedure } from "../../utils";
-//TODO remember to only update this every once in a while in production
+import { countAgeBrackets } from "~/utils/ageBrackets";
+import { cachedStats } from "~/server/statsCache";
+import { isSensitive, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
+import { aggregateViewAllowed, allCellsSafe, matching, respondentCells, tooSmall } from "~/server/privacy";
+import type { Context } from "../../context";
+
+// Only free-text answers may be paged through textPagination. Anything else
+// (e.g. the `user` column) must never be selectable by name from the client.
+const textStats = new Set<string>(
+	[...personalQuestions, ...theirQuestions]
+		.filter((q) => q.questionType === "text")
+		.map((q) => q.questionDB as string),
+);
+// allStats results are cached for a minute (src/server/statsCache.ts)
+
+const allStatsInput = z.object({
+	value: z.enum([
+		"all",
+		"schizophrenia",
+		"schizoaffective",
+		"female",
+		"other",
+		"male",
+	]),
+	pOrT: z.enum(["Personal_questions", "Their_questions"]),
+	fake: z.enum(["real", "fake"]),
+	/** Only used with a gender `value`: limit that gender to one diagnosis. */
+	diagnosis: z.enum(["all", "schizophrenia", "schizoaffective"]).default("all"),
+});
 
 export const allStats = publicProcedure
-	.input(
-		z.object({
-			value: z.enum([
-				"all",
-				"schizophrenia",
-				"schizoaffective",
-				"female",
-				"other",
-				"male",
-			]),
-			pOrT: z.enum(["Personal_questions", "Their_questions"]),
-			fake: z.enum(["real", "fake"]),
-		}),
-	)
-	.query(async ({ input: payload, ctx }) => {
+	.input(allStatsInput)
+	.query(({ input, ctx }) => cachedStats(JSON.stringify(input), () => computeAllStats(input, ctx)));
+
+const computeAllStats = async (payload: z.infer<typeof allStatsInput>, ctx: Context) => {
 		{
-			let stats;
+			let stats: Record<string, any>[] = [];
 
 			const questions =
 				payload.pOrT === "Personal_questions"
 					? personalQuestions
 					: theirQuestions;
 
+			// A gender view can also be narrowed to one diagnosis (Compare → By Gender).
+			const gender =
+				payload.value === "male" || payload.value === "female" || payload.value === "other"
+					? payload.value
+					: null;
+			const diagnosis =
+				payload.value === "schizophrenia" || payload.value === "schizoaffective"
+					? payload.value
+					: gender && payload.diagnosis !== "all"
+						? payload.diagnosis
+						: null;
+
+			// Real data: refuse views that would show (or let someone work out) a group of 1-4 people
+			if (payload.fake === "real") {
+				const cells = await respondentCells(ctx.db, payload.pOrT);
+				if (!aggregateViewAllowed(cells, gender, diagnosis)) {
+					return { total: matching(cells, gender, diagnosis), hidden: true } as unknown as MainReturn;
+				}
+			}
+
 			if (payload.fake === "fake") {
-				switch (payload.value) {
-					case "all":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.execute();
-
-						break;
-					case "female":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "female")
-							.execute();
-
-						break;
-					case "other":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "other")
-							.execute();
-
-						break;
-					case "male":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("gender", "=", "male")
-							.execute();
-
-						break;
-					case "schizophrenia":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("diagnosis", "=", "schizophrenia")
-							.execute();
-
-						break;
-					case "schizoaffective":
-						stats = await ctx.db
-							.selectFrom(`${payload.pOrT}_fake`)
-							.selectAll()
-							.where("diagnosis", "=", "schizoaffective")
-							.execute();
-
-						break;
-
-					default:
-						break;
-				}
+				let q = ctx.db.selectFrom(`${payload.pOrT}_fake`).selectAll();
+				if (gender) q = q.where("gender", "=", gender);
+				if (diagnosis) q = q.where("diagnosis", "=", diagnosis);
+				stats = await q.execute();
 			} else {
-				switch (payload.value) {
-					case "all":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "female":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "female")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "other":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "other")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "male":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("gender", "=", "male")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "schizophrenia":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("diagnosis", "=", "schizophrenia")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-					case "schizoaffective":
-						stats = await ctx.db
-							.selectFrom(payload.pOrT)
-							.selectAll()
-							.where("diagnosis", "=", "schizoaffective")
-							.where("accepted", "=", true)
-							.execute();
-
-						break;
-
-					default:
-						break;
-				}
+				let q = ctx.db.selectFrom(payload.pOrT).selectAll().where("accepted", "=", true);
+				if (gender) q = q.where("gender", "=", gender);
+				if (diagnosis) q = q.where("diagnosis", "=", diagnosis);
+				stats = await q.execute();
 			}
 
 			const responsesTotal: number = stats.length; //TODO use postgres count here
 
-			let maleAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "male");
+			// Age of onset per gender, for the selected diagnosis (none for "all", or for a gender
+			// view without a diagnosis). Real data only counts accepted submissions; fake tables
+			// have no `accepted` column.
+			const diagnosisFilter = diagnosis;
 
-			maleAge =
-				payload.value === "schizoaffective"
-					? await maleAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await maleAge.where("diagnosis", "=", "schizoaffective").execute();
+			const ageOfOnset = (gender: "male" | "female" | "other") => {
+				if (payload.fake === "fake") {
+					let q = ctx.db
+						.selectFrom(`${payload.pOrT}_fake`)
+						.select(["age_of_onset"])
+						.where("gender", "=", gender);
+					if (diagnosisFilter) q = q.where("diagnosis", "=", diagnosisFilter);
+					return q.execute();
+				}
+				let q = ctx.db
+					.selectFrom(payload.pOrT)
+					.select(["age_of_onset"])
+					.where("gender", "=", gender)
+					.where("accepted", "=", true);
+				if (diagnosisFilter) q = q.where("diagnosis", "=", diagnosisFilter);
+				return q.execute();
+			};
 
-			let femaleAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "female");
-
-			femaleAge =
-				payload.value === "schizoaffective"
-					? await femaleAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await femaleAge
-							.where("diagnosis", "=", "schizoaffective")
-							.execute();
-
-			let otherAge = ctx.db
-				.selectFrom(`${payload.pOrT}${payload.fake === "fake" ? "_fake" : ""}`)
-				.select(["age_of_onset"])
-				.where("gender", "=", "other");
-
-			otherAge =
-				payload.value === "schizoaffective"
-					? await otherAge.where("diagnosis", "=", "schizophrenia").execute()
-					: await otherAge.where("diagnosis", "=", "schizoaffective").execute();
+			const maleAge = await ageOfOnset("male");
+			const femaleAge = await ageOfOnset("female");
+			const otherAge = await ageOfOnset("other");
 
 			const filterSensitive = stats.map((e: (typeof stats)[0]) => {
 				const { user, created_at, id, ...filtered } = e;
 				return filtered;
 			});
 
-			const automatic: MainReturn = {} as any;
+			const automatic: Record<string, any> = {};
 
 			questions.forEach((e) => {
+				// "Prefer not to say" answers (sensitive questions only), shown as their own slice/bar
+				const declinedCount = isSensitive(payload.pOrT, e.questionDB)
+					? filterSensitive.filter((d) => Array.isArray(d.declined) && d.declined.includes(e.questionDB)).length
+					: 0;
 				if (e.questionType === "yesOrNo") {
 					const yesOrNo = filterSensitive.map((i) => i[e.questionDB]);
 					automatic[e.questionDB] = {
 						yes: yesOrNo.filter((i) => i === true).length,
 						no: yesOrNo.filter((i) => i === false).length,
+						...(declinedCount ? { prefer_not: declinedCount } : {}),
 					};
 				} else if (e.questionType === "integer") {
 					if (e.questionDB === "weight_amount") {
@@ -235,13 +164,15 @@ export const allStats = publicProcedure
 							});
 						automatic.weight_amount = resBrackets;
 					} else if (e.questionDB === "age_of_onset") {
-						const average = (obj: typeof maleAge) => {
-							return obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length;
-						};
+						// Whole years; 0 when nobody of that gender answered (instead of NaN)
+						// null = no answers, or (real data) too few to show without revealing someone's age
+						const hide = (obj: typeof maleAge) => !obj.length || (payload.fake === "real" && tooSmall(obj.length));
+						const average = (obj: typeof maleAge) =>
+							hide(obj) ? null : Math.round(obj.reduce((a, b) => a + b.age_of_onset, 0) / obj.length);
 						const median = (obj: typeof maleAge) => {
-							const arr = obj.map((i) => i.age_of_onset);
-							const sorted = arr.sort((a, b) => a - b);
-							return sorted[Math.floor(arr.length / 2)];
+							if (hide(obj)) return null;
+							const sorted = obj.map((i) => i.age_of_onset).sort((a, b) => a - b);
+							return sorted[Math.floor(sorted.length / 2)];
 						};
 
 						const ageOfOnsetByGender = {
@@ -255,37 +186,10 @@ export const allStats = publicProcedure
 
 						automatic.ageOfOnsetByGender = ageOfOnsetByGender;
 					} else if (e.questionDB === "current_age") {
-						const resBrackets = {
-							b09: 0,
-							b1015: 0,
-							b1620: 0,
-							b2125: 0,
-							b2630: 0,
-							b3135: 0,
-							b3680: 0,
-						};
-						filterSensitive.forEach((i) => {
-							if (i.current_age <= 10) {
-								resBrackets.b09++;
-							} else if (i.current_age >= 10 && i.current_age <= 15) {
-								resBrackets.b1015++;
-							} else if (i.current_age >= 16 && i.current_age <= 20) {
-								resBrackets.b1620++;
-							} else if (i.current_age >= 21 && i.current_age <= 25) {
-								resBrackets.b2125++;
-							} else if (i.current_age >= 26 && i.current_age <= 30) {
-								resBrackets.b2630++;
-							} else if (i.current_age >= 31 && i.current_age <= 35) {
-								resBrackets.b3135++;
-							} else if (i.current_age >= 36 && i.current_age <= 80) {
-								resBrackets.b3680++;
-							}
-						});
-
-						automatic.current_age = resBrackets;
+						automatic.current_age = countAgeBrackets(filterSensitive.map((i) => i.current_age));
 					}
 				} else if (e.questionType === "selection") {
-					const selections = {};
+					const selections: Record<string, number> = {};
 					e.selections?.forEach((i) => {
 						selections[i] = filterSensitive.filter(
 							(d) => d[e.questionDB] === i,
@@ -293,33 +197,24 @@ export const allStats = publicProcedure
 					});
 					automatic[e.questionDB] = selections;
 				} else if (e.questionType === "unknown") {
-					const selections = {};
+					const selections: Record<string, number> = {};
 					["yes", "no", "unknown"].forEach((i) => {
 						selections[i] = filterSensitive.filter(
 							(d) => d[e.questionDB] === i,
 						).length;
 					});
+					if (declinedCount) selections[PREFER_NOT_LABEL] = declinedCount;
 					automatic[e.questionDB] = selections;
 				} else if (e.questionType === "text") {
+					// Up to 5 random answers
 					const allTexts = filterSensitive
 						.map((i) => i[e.questionDB])
-						.filter((f) => f !== null);
-
-					automatic[e.questionDB] = [];
-
-					for (
-						let index = 0;
-						index <= (allTexts.length <= 5 ? allTexts.length : 4);
-						index++
-					) {
-						const element =
-							allTexts.length === 1
-								? 0
-								: Math.floor(Math.random() * allTexts.length);
-
-						automatic[e.questionDB].push(allTexts[element]);
-						allTexts.splice(element, 1);
+						.filter((f) => f !== null && f !== undefined && f !== "");
+					const picked: unknown[] = [];
+					while (picked.length < 5 && allTexts.length) {
+						picked.push(allTexts.splice(Math.floor(Math.random() * allTexts.length), 1)[0]);
 					}
+					automatic[e.questionDB] = picked;
 				} else if (e.questionType === "multiSelect") {
 					const multiSelections = {};
 
@@ -333,83 +228,43 @@ export const allStats = publicProcedure
 				}
 			});
 
-			//BUG below code soesnt work currently, and its not even used in frontend
-
-			const maleSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "male")
-				.where("accepted", "=", true)
-				.execute();
-
-			const femaleSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "female")
-				.where("accepted", "=", true)
-				.execute();
-			const otherSplit = await ctx.db
-				.selectFrom("Personal_questions")
-				.select(["length_of_psychosis"])
-				.where("gender", "=", "other")
-				.where("accepted", "=", true)
-				.execute();
-
-			//BUG above seems to return too little
-
-			/*   const selections = {};
-      e.selections?.forEach((i) => {
-        selections[i] = filterSensitive.filter(
-          (d) => d[e.questionDB] === i
-        ).length;
-      });
-      automatic[e.questionDB] = selections; */
-
-			const lengthPsyFunc = (split) => {
-				const object = {};
-
-				const lengthSelections = questions
-					.find((q) => q.questionDB === "length_of_psychosis")
-					?.selections?.map((r) => r);
-				lengthSelections?.forEach((e) => {
-					object[e] = split.filter((i) => i.length_of_psychosis === e).length;
-				});
-
-				return object;
-			};
-
-			automatic.lengthByGender = {
-				maleSplit: lengthPsyFunc(maleSplit),
-				femaleSplit: lengthPsyFunc(femaleSplit),
-				otherSplit: lengthPsyFunc(otherSplit),
-			};
-
 			automatic.total = responsesTotal;
 
-			return automatic;
+			return automatic as MainReturn;
 		}
-	});
+};
 
 export const textPagination = publicProcedure
 	.input(
 		z.object({
-			page: z.number(),
-			stat: z.string() as keyof PersonalQuestions,
+			page: z.number().int().min(0),
+			stat: z.string().refine((s) => textStats.has(s), "Unknown text question"),
 			gender: z.enum(["Female", "Other", "Male"]).nullable(),
 			diagnosis: z.enum(["Schizophrenia", "Schizoaffective"]).nullable(),
 			personalOrTheir: z.enum(["Personal_questions", "Their_questions"]),
 			fake: z.enum(["real", "fake"]),
 		}),
 	)
-	.query(async ({ input: payload, ctx }) => {
+	.query(async ({ input, ctx }) => {
+		const payload = input;
+		const { ref } = ctx.db.dynamic;
+
+		// Real data: each answer is labelled with gender and diagnosis, and the list can be
+		// filtered by them. While any gender × diagnosis group has 1-4 people, both are off:
+		// otherwise that group's answers could be picked out (e.g. "male" list ∩ "schizoaffective"
+		// list) and linked across questions.
+		const labelsAndFilters = payload.fake === "fake" || allCellsSafe(await respondentCells(ctx.db, payload.personalOrTheir));
+		if (!labelsAndFilters && (payload.gender || payload.diagnosis)) {
+			return { stats: [], count: 0, filtersAvailable: false };
+		}
 		let statsQuery = ctx.db
 			.selectFrom(
 				payload.fake === "fake"
 					? `${payload.personalOrTheir}_fake`
 					: payload.personalOrTheir,
 			)
-			.select((eb) => [payload.stat, "gender", "diagnosis"])
-			.where(payload.stat, "is not", null);
+			.select([ref(payload.stat), "gender", "diagnosis"])
+			.where(ref(payload.stat), "is not", null);
 
 		if (payload.fake === "real") {
 			statsQuery = statsQuery.where("accepted", "=", true);
@@ -432,6 +287,8 @@ export const textPagination = publicProcedure
 		}
 
 		const stats = await statsQuery
+			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
+			.orderBy("id", "desc")
 			.offset(payload.page * 25)
 			.limit(25)
 			.execute();
@@ -450,7 +307,7 @@ export const textPagination = publicProcedure
 					? `${payload.personalOrTheir}_fake`
 					: payload.personalOrTheir,
 			)
-			.select((eb) => eb.fn.count<number>(payload.stat).as("count"));
+			.select((eb) => eb.fn.count<number>(ref(payload.stat)).as("count"));
 
 		if (payload.fake === "real") {
 			lengthQuery = lengthQuery.where("accepted", "=", true);
@@ -473,20 +330,47 @@ export const textPagination = publicProcedure
 		}
 		const count = await lengthQuery.executeTakeFirst();
 
-		return { stats, ...count };
+		return {
+			stats: labelsAndFilters ? stats : stats.map((row) => ({ ...row, gender: null, diagnosis: null })),
+			...count,
+			filtersAvailable: labelsAndFilters,
+		};
 	});
 
 export const articlesPagination = publicProcedure
 	.input(
 		z.object({
-			page: z.number().int(),
+			page: z.number().int().min(0),
+			/** Only articles with this topic */
+			tag: z.enum(ARTICLE_TAG_KEYS).nullable().default(null),
+			sort: z.enum(["newest", "helpful"]).default("newest"),
 		}),
 	)
 	.query(async ({ input: payload, ctx }) => {
+		const hasTag = sql<boolean>`tags @> ARRAY[${payload.tag}]::text[]`;
+		const userId = ctx.user?.id ?? null;
 		const articles = await ctx.db
 			.selectFrom("Articles")
-			.select(["link", "description"])
+			.select((eb) => [
+				"id",
+				"link",
+				"description",
+				"tags",
+				eb
+					.selectFrom("article_votes")
+					.select(eb.fn.countAll<number>().as("n"))
+					.whereRef("article_votes.article_id", "=", "Articles.id")
+					.as("helpful"),
+				// For the signed-in user: did they vote, is it their own (votes on those are refused)
+				sql<boolean>`exists (select 1 from article_votes v where v.article_id = "Articles".id and v."user" = ${userId})`.as("voted"),
+				sql<boolean>`coalesce("Articles"."user" = ${userId}, false)`.as("mine"),
+			])
 			.where("accepted", "=", true)
+			.$if(payload.tag !== null, (qb) => qb.where(hasTag))
+			.$if(payload.sort === "helpful", (qb) => qb.orderBy(sql`helpful`, "desc"))
+			// Offset paging needs a fixed order, or pages can repeat or skip rows. Newest first.
+			.orderBy("created_at", "desc")
+			.orderBy("id", "desc")
 			.offset(payload.page * 25)
 			.limit(25)
 			.execute();
@@ -495,7 +379,14 @@ export const articlesPagination = publicProcedure
 			.selectFrom("Articles")
 			.select((eb) => [eb.fn.countAll("Articles").as("count")])
 			.where("accepted", "=", true)
+			.$if(payload.tag !== null, (qb) => qb.where(hasTag))
 			.executeTakeFirst();
 
 		return { articles, count };
 	});
+
+/** Used by the navbar and other islands to show login/admin state. */
+export const authStatus = publicProcedure.query(({ ctx }) => ({
+	user: Boolean(ctx.user),
+	admin: ctx.user?.role === "admin",
+}));

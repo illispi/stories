@@ -5,6 +5,7 @@ dist
 .netlify
 netlify
 audit.json
+check.txt
 
 # Seems to fail in GH actions
 bun.lockb
@@ -102,3 +103,6 @@ gitignore
 Thumbs.db
 # template without secrets
 !.env.example
+
+# Astro generated types
+.astro/

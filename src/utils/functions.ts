@@ -1,4 +1,6 @@
-import { AgeOfOnsetByGender, Gender, MainReturn } from "~/types/types";
+import type { AgeOfOnsetByGender, Gender, MainReturn } from "~/types/types";
+
+type Counts = Record<string, number>;
 
 export const weightBrackets = (data: MainReturn["weight_amount"]) => {
   if (!data) {
@@ -51,26 +53,23 @@ export const dataGender = (data: MainReturn["gender"]) => {
   };
 };
 
-export const dataAgeOfRes = (data) => {
+/** Age groups from the server (keys in group order, see ~/utils/ageBrackets), with shares. */
+export const dataAgeOfRes = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
-  const labelsAgeGroup = [
-    "0-9",
-    "10-15",
-    "16-20",
-    "21-25",
-    "26-30",
-    "31-35",
-    "36-80",
-  ];
+  const keys = Object.keys(data);
+  const series = keys.map((key) => data[key]);
+  const total = series.reduce((sum, n) => sum + n, 0);
 
   return {
-    labels: labelsAgeGroup,
-    series: (Object.keys(data) as Array<keyof typeof data>).map((e) => data[e]),
+    labels: keys.map(
+      (key, i) => `${key} ${total ? Math.floor((series[i] / total) * 100) : 0}%`
+    ),
+    series,
   };
 };
-export const dataMultiSelect = (data) => {
+export const dataMultiSelect = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
@@ -86,7 +85,7 @@ export const dataMultiSelect = (data) => {
     (f, i) => `${f} ${Math.floor((series[i] / total) * 100)}%`
   );
 
-  const seriesMultiSelect = [];
+  const seriesMultiSelect: number[] = [];
   for (let i = 0; i < keys.length; i++) {
     seriesMultiSelect.push(data[keys[i]]);
   }
@@ -97,7 +96,7 @@ export const dataMultiSelect = (data) => {
   };
 };
 
-export const dataSelection = (data) => {
+export const dataSelection = (data: Counts | null | undefined) => {
   if (!data) {
     return null;
   }
@@ -128,13 +127,15 @@ export const dataOnset = (data: MainReturn["ageOfOnsetByGender"]) => {
     return null;
   }
   const onset = data;
+  // null: no answers yet, or too few to show without revealing someone's age
+  const label = (name: string, v: number | null) => `${name}, ${v === null ? "too few answers" : Math.round(v)}`;
   return {
     labels: [
-      `Male, ${Math.floor(onset.maleAverage)}`,
-      `Female, ${Math.floor(onset.femaleAverage)}`,
-      `Other, ${Math.floor(onset.otherAverage)}`,
+      label("Male", onset.maleAverage),
+      label("Female", onset.femaleAverage),
+      label("Other", onset.otherAverage),
     ],
-    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage],
+    series: [onset.maleAverage, onset.femaleAverage, onset.otherAverage].map((v) => Math.round(v ?? 0)),
   };
 };
 
@@ -146,24 +147,24 @@ export const selector = (
     | "dataAgeOfRes"
     | "dataMultiSelect"
     | "weightBrackets",
-  rawData: Gender | AgeOfOnsetByGender
+  rawData: unknown
 ) => {
   switch (selection) {
     case "dataAgeOfRes":
-      return dataAgeOfRes(rawData);
+      return dataAgeOfRes(rawData as Counts);
 
     case "dataGender":
-      return dataGender(rawData);
+      return dataGender(rawData as Gender);
 
     case "dataMultiSelect":
-      return dataMultiSelect(rawData);
+      return dataMultiSelect(rawData as Counts);
 
     case "dataOnset":
-      return dataOnset(rawData);
+      return dataOnset(rawData as AgeOfOnsetByGender);
     case "dataSelection":
-      return dataSelection(rawData);
+      return dataSelection(rawData as Counts);
     case "weightBrackets":
-      return weightBrackets(rawData);
+      return weightBrackets(rawData as Counts);
 
     default:
       break;

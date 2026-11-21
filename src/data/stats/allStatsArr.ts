@@ -30,6 +30,7 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   {
     type: "bar",
@@ -115,6 +116,11 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
   },
   {
     type: "yesOrNo",
+    stat: "symptom_free_on_meds",
+    header: "Symptom free while on medication",
+  },
+  {
+    type: "yesOrNo",
     stat: "had_side_effs",
     header: "Had side effects from medication",
   },
@@ -173,6 +179,13 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "cannabis",
     header: "Has used cannabis",
+  },
+  {
+    type: "bar",
+    stat: "exercise",
+    header: "Exercise",
+    function: "dataSelection",
+    options: { reverseData: true },
   },
   {
     type: "yesOrNo",
@@ -239,6 +252,18 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
+    type: "bar",
+    stat: "school_performance",
+    header: "School performance",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
+    type: "text",
+    stat: "how_it_altered_life",
+    header: "How the illness altered life",
+  },
+  {
     type: "yesOrNo",
     stat: "partner",
     header: "Has partner",
@@ -257,16 +282,6 @@ export const allStatsPersonalArr: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "lost_relationships",
     header: "Has lost relationships due to schizophrenia",
-  },
-  {
-    type: "yesOrNo",
-    stat: "goals_changed",
-    header: "Life goals changed",
-  },
-  {
-    type: "text",
-    stat: "goals_after",
-    header: "How life goals changed",
   },
   {
     type: "bar",

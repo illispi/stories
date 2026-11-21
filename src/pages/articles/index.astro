@@ -1,0 +1,8 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import Articles from "~/views/Articles";
+---
+
+<Layout title="Articles · Schizophrenia poll">
+	<Articles client:only="solid-js" user={Boolean(Astro.locals.user)} />
+</Layout>

@@ -1,5 +1,5 @@
-import { A } from "@solidjs/router";
-import { route } from "routes-gen";
+import { A } from "~/utils/router";
+import { route } from "~/utils/routes";
 import type { Component } from "solid-js";
 
 const Footer: Component<{}> = (props) => {
@@ -18,8 +18,8 @@ const Footer: Component<{}> = (props) => {
 						Github
 					</a>
 
-					<a class="text-white text-xl" href="https://x.com/delvis1640088">
-						Twitter
+					<a class="text-white text-xl" href="https://www.reddit.com/user/Delvisreddit/">
+						Reddit
 					</a>
 				</div>
 				<div class="flex flex-col items-center justify-around gap-4">

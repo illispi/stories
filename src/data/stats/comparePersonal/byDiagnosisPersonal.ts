@@ -14,6 +14,7 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     stat: "current_age",
     header: "Age of responses",
     function: "dataAgeOfRes",
+    options: { reverseData: true },
   },
   {
     type: "yesOrNo",
@@ -117,6 +118,11 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     header: "Medications helped to psychosis symptoms",
   },
   {
+    type: "yesOrNo",
+    stat: "symptom_free_on_meds",
+    header: "Symptom free while on medication",
+  },
+  {
     type: "bar",
     stat: "side_effs_dizziness",
     header: "Side effects from medication",
@@ -179,6 +185,13 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "cannabis",
     header: "Has used cannabis",
+  },
+  {
+    type: "bar",
+    stat: "exercise",
+    header: "Exercise",
+    function: "dataSelection",
+    options: { reverseData: true },
   },
   {
     type: "yesOrNo",
@@ -245,6 +258,18 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     function: "dataSelection",
   },
   {
+    type: "bar",
+    stat: "school_performance",
+    header: "School performance",
+    function: "dataSelection",
+    options: { reverseData: true },
+  },
+  {
+    type: "text",
+    stat: "how_it_altered_life",
+    header: "How the illness altered life",
+  },
+  {
     type: "yesOrNo",
     stat: "partner",
     header: "Has partner",
@@ -258,16 +283,6 @@ export const byDiagnosisPersonal: (Stat | YesOrNo | Doughnut | Bar | Text)[] = [
     type: "yesOrNo",
     stat: "children",
     header: "Has children",
-  },
-  {
-    type: "yesOrNo",
-    stat: "goals_changed",
-    header: "Life goals changed",
-  },
-  {
-    type: "text",
-    stat: "goals_after",
-    header: "How life goals changed",
   },
   {
     type: "bar",

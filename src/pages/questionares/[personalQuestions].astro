@@ -1,0 +1,28 @@
+---
+import Layout from "~/layouts/Layout.astro";
+import { db } from "~/server/db";
+import { isQuestionnaire } from "~/server/params";
+import Questionnaire from "~/views/Questionnaire";
+
+const { personalQuestions } = Astro.params;
+if (!isQuestionnaire(personalQuestions)) return Astro.rewrite("/404");
+
+const user = Astro.locals.user;
+const hasPersonal = user
+	? Boolean(
+			await db
+				.selectFrom("Personal_questions")
+				.select("id")
+				.where("user", "=", user.id)
+				.executeTakeFirst(),
+		)
+	: false;
+---
+
+<Layout title="Poll · Schizophrenia poll">
+	<Questionnaire
+		client:only="solid-js"
+		params={{ personalQuestions }}
+		userState={{ user: Boolean(user), id: user?.id ?? null, data: hasPersonal }}
+	/>
+</Layout>

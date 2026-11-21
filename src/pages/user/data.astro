@@ -1,0 +1,9 @@
+---
+// Login is enforced by src/middleware.ts
+import Layout from "~/layouts/Layout.astro";
+import UserData from "~/views/UserData";
+---
+
+<Layout title="Your data · Schizophrenia poll">
+	<UserData client:only="solid-js" />
+</Layout>

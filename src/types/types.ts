@@ -1,5 +1,12 @@
-import type { AxisOptions, BarChartOptions } from "chartist";
-import type { PersonalQuestions } from "./zodFromTypes";
+import type { Adds } from "~/components/BarChartCustom";
+import type { PersonalQuestions, TheirQuestions } from "./zodFromTypes";
+
+export type ChartType = "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
+/** Stats returned by allStats, indexed dynamically by question key in the chart components. */
+// biome-ignore lint/suspicious/noExplicitAny: shape depends on the question type
+export type StatsData = Record<string, any>;
+
+export type StatKey = keyof PersonalQuestions | keyof TheirQuestions | keyof MainReturn;
 
 export interface ChartistData {
   labels: string[];
@@ -7,19 +14,19 @@ export interface ChartistData {
 }
 
 export interface YesOrNo {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
-  stat: keyof MainReturn;
+  type: ChartType;
+  stat: StatKey;
   header: string;
 }
 export interface Unknown {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo" | "unknown";
-  stat: keyof MainReturn;
+  type: ChartType;
+  stat: StatKey;
   header: string;
 }
 export interface Doughnut {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
   function:
     | "dataSelection"
     | "dataOnset"
@@ -28,10 +35,10 @@ export interface Doughnut {
     | "dataMultiSelect";
 }
 export interface Bar {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
-  options?: BarChartOptions<AxisOptions, AxisOptions>;
+  type: ChartType;
+  options?: Adds;
   header: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
   function:
     | "dataSelection"
     | "dataOnset"
@@ -41,13 +48,13 @@ export interface Bar {
     | "weightBrackets";
 }
 export interface Text {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   header?: string;
 }
 export interface Stat {
-  type: "bar" | "doughnut" | "stat" | "text" | "yesOrNo";
+  type: ChartType;
   name: string;
-  stat: keyof PersonalQuestions;
+  stat: StatKey;
 }
 
 export interface MainReturn {
@@ -94,8 +101,6 @@ export interface MainReturn {
   partner: AfterHospitalSatisfaction;
   friends: AfterHospitalSatisfaction;
   children: AfterHospitalSatisfaction;
-  goals_changed: AfterHospitalSatisfaction;
-  goals_after: string[];
   told_family: ToldFamily;
   responded_to_telling: string[];
   life_satisfaction: AfterHospitalSatisfaction;
@@ -103,8 +108,9 @@ export interface MainReturn {
   what_others_should_know: string[];
   not_have_schizophrenia: AfterHospitalSatisfaction;
   not_have_schizophrenia_description: string[];
-  lengthByGender: LengthByGender;
   total: number;
+  /** Real data with a group too small to show (src/server/privacy.ts): only `total` is set */
+  hidden?: boolean;
 }
 
 export interface AfterHospitalSatisfaction {
@@ -112,11 +118,12 @@ export interface AfterHospitalSatisfaction {
   no: number;
 }
 
+/** null: no answers, or too few to show (real data) */
 export interface AgeOfOnsetByGender {
-  maleAverage: number;
-  femaleAverage: number;
-  otherAverage: number;
-  maleMedian: number;
+  maleAverage: number | null;
+  femaleAverage: number | null;
+  otherAverage: number | null;
+  maleMedian: number | null;
 }
 
 export interface Diagnosis {
@@ -137,12 +144,6 @@ export interface Gender {
   female: number;
   male: number;
   other: number;
-}
-
-export interface LengthByGender {
-  maleSplit: LengthOfPsychosis;
-  femaleSplit: LengthOfPsychosis;
-  otherSplit: LengthOfPsychosis;
 }
 
 export interface LengthOfPsychosis {
