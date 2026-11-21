@@ -21,6 +21,7 @@ import {
 import { allStats, articlesPagination, authStatus, textPagination } from "./basic/queries";
 import { crossFilter } from "./basic/explore";
 import { toggleHelpful } from "./basic/votes";
+import { clearBackupNotice, setBackupNotice, siteNotice } from "./basic/siteNotice";
 import { deleteDraft, getDraft, listDrafts, saveDraft } from "./user/drafts";
 import {
 	removeAccountAndData,
@@ -46,6 +47,9 @@ export const appRouter = router({
 	allStats,
 	crossFilter,
 	toggleHelpful,
+	siteNotice,
+	setBackupNotice,
+	clearBackupNotice,
 	getDraft,
 	saveDraft,
 	deleteDraft,

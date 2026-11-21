@@ -1,0 +1,71 @@
+---
+// What a restored backup means for users, linked from the header notice.
+import Layout from "~/layouts/Layout.astro";
+import { BACKUP_NOTICE_KEY, type BackupNotice, formatBackupDate } from "~/data/backupNotice";
+import { db } from "~/server/db";
+
+const row = await db
+	.selectFrom("site_settings")
+	.select("value")
+	.where("key", "=", BACKUP_NOTICE_KEY)
+	.executeTakeFirst();
+const notice = (row?.value as BackupNotice | undefined) ?? null;
+const backup = notice ? formatBackupDate(notice.backupDate) : null;
+const restored = notice ? formatBackupDate(notice.postedAt.slice(0, 10)) : null;
+const signedIn = Boolean(Astro.locals.user);
+const cta =
+	"rounded-full bg-blue-500 px-6 py-3 text-center font-semibold text-white transition-all duration-200 ease-in hover:scale-105 hover:bg-blue-600";
+---
+
+<Layout title="Backup restored · Schizophrenia poll">
+	<main class="flex min-h-screen w-full flex-col items-center bg-slate-100 px-4 py-24">
+		<section class="flex w-full max-w-2xl flex-col gap-6 rounded-3xl border-t-4 border-fuchsia-600 bg-white p-6 shadow-xl lg:p-12">
+			<h1 class="text-center font-bold text-3xl lg:text-4xl">We restored a backup</h1>
+			{
+				notice ? (
+					<>
+						<p class="text-lg">
+							On {restored} the site's data was restored from a backup taken on <strong>{backup}</strong>.
+							Changes made after that day may have been undone.
+						</p>
+						<div class="flex flex-col gap-3 rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-200">
+							<h2 class="font-bold text-xl">Did you delete something after {backup}?</h2>
+							<p>
+								Poll answers, articles or even your whole account that you deleted after {backup} may be back.
+								Please sign in again and delete them again on "Your data". You can delete single answers and
+								articles there, or your whole account with everything in it.
+							</p>
+							<div class="flex flex-wrap gap-3">
+								{
+									signedIn ? (
+										<a class={cta} href="/user/data">
+											Go to Your data
+										</a>
+									) : (
+										<a class={cta} href="/login?redir=%2Fuser%2Fdata">
+											Sign in to delete your data
+										</a>
+									)
+								}
+							</div>
+						</div>
+						<div class="flex flex-col gap-2">
+							<h2 class="font-bold text-xl">Did you submit or edit something after {backup}?</h2>
+							<p>
+								It may be missing or back to its earlier version. You can check on "Your data" and submit or edit
+								it again. Unfinished polls may also have gone back to where they were on {backup}.
+							</p>
+						</div>
+						<p class="text-slate-600">
+							If you can't sign in any more and want your data removed, contact me on{" "}
+							<a class="font-semibold text-blue-900 underline" href="https://www.reddit.com/user/Delvisreddit/">Reddit</a>{" "}
+							with a snippet of your answer or article.
+						</p>
+					</>
+				) : (
+					<p class="text-center text-lg">There's no backup notice at the moment. Your data is as you left it.</p>
+				)
+			}
+		</section>
+	</main>
+</Layout>

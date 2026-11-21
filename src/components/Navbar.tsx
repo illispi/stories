@@ -9,6 +9,7 @@ import { trpc } from "~/utils/trpc";
 import AdminBell from "./AdminBell";
 import BellNotification from "./BellNotification";
 import "../app.css";
+import BackupNoticeBanner from "./BackupNoticeBanner";
 
 const MenuItem: Component<{
 	route: string;
@@ -192,6 +193,7 @@ const NavBar: Component = () => {
 	const authStatusQ = trpc.authStatus.createQuery();
 
 	return (
+		<>
 		<div class="header sticky top-0 z-40 flex w-full items-center justify-between bg-gradient-to-b from-blue-200 to-blue-300">
 			<A
 				class="p-3 transition-transform duration-200 ease-out active:scale-150 hover:scale-125"
@@ -217,6 +219,9 @@ const NavBar: Component = () => {
 				<Hamburger menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
 			</div>
 		</div>
+		{/* "Backup restored" notice, posted from the admin panel */}
+		<BackupNoticeBanner />
+		</>
 	);
 };
 

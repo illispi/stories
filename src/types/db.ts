@@ -58,6 +58,12 @@ export interface ArticleVotes {
   user: string;
 }
 
+export interface SiteSettings {
+  key: string;
+  updated_at: Generated<Timestamp>;
+  value: Json;
+}
+
 export interface AuthUser {
   created_at: Generated<Timestamp>;
   email: string;
@@ -436,6 +442,7 @@ export interface DB {
   Personal_questions: PersonalQuestions;
   Personal_questions_fake: PersonalQuestionsFake;
   poll_drafts: PollDrafts;
+  site_settings: SiteSettings;
   session: Session;
   Their_questions: TheirQuestions;
   Their_questions_fake: TheirQuestionsFake;

@@ -6,6 +6,8 @@ export type RouteParams = {
 	"/admin/fake": Record<string, never>;
 	"/admin/sentry": Record<string, never>;
 	"/admin/users": Record<string, never>;
+	"/admin/notice": Record<string, never>;
+	"/backup-restored": Record<string, never>;
 	"/articles/": Record<string, never>;
 	"/compare/": Record<string, never>;
 	"/compare/:pOrT/:fOrT/compare": { pOrT: string; fOrT: string };

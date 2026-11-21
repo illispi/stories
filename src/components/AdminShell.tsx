@@ -5,6 +5,7 @@ const LINKS = [
 	{ href: "/admin/", label: "Overview" },
 	{ href: "/admin/adminCrud", label: "Review" },
 	{ href: "/admin/users", label: "Accounts" },
+	{ href: "/admin/notice", label: "Site notice" },
 	{ href: "/admin/fake", label: "Fake data" },
 	{ href: "/admin/sentry", label: "Sentry test" },
 ] as const;
