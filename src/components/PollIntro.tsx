@@ -1,6 +1,7 @@
 import { For, Show, createSignal } from "solid-js";
 import { isSensitive, LS_POLL, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import CustomButton from "~/components/CustomButton";
+import { ESTIMATED_MINUTES } from "~/data/pollInfo";
 
 type Q = {
 	question?: string;
@@ -33,12 +34,6 @@ const answerKinds = (poll: "personalQuestions" | "theirQuestions", q: Q): string
 	}
 };
 
-/** Rough time: a minute per written answer, ten seconds for the rest, rounded up to 5 minutes. */
-export const estimateMinutes = (questions: Q[]) => {
-	const asked = questions.filter((q) => q.questionType !== "submit");
-	const seconds = asked.reduce((s, q) => s + (q.questionType === "text" ? 60 : 10), 0);
-	return Math.max(5, Math.ceil(seconds / 60 / 5) * 5);
-};
 
 /** Shown before the first question: what to expect and how answers are used. */
 export default function PollIntro(props: {
@@ -70,7 +65,7 @@ export default function PollIntro(props: {
 				<div class="flex flex-wrap justify-center gap-3">
 					<span class="rounded-full bg-blue-100 px-4 py-1.5 font-semibold text-blue-900">{count()} questions</span>
 					<span class="rounded-full bg-blue-100 px-4 py-1.5 font-semibold text-blue-900">
-						about {estimateMinutes(props.questions)} minutes
+						about {ESTIMATED_MINUTES[props.poll]} minutes
 					</span>
 				</div>
 				<p class="text-center text-lg text-slate-700">

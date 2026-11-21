@@ -1,6 +1,7 @@
 import { route } from "~/utils/routes";
 import { Suspense, type Component } from "solid-js";
 import InfoBox from "~/components/InfoBox";
+import { ESTIMATED_MINUTES } from "~/data/pollInfo";
 
 const Questionares: Component = () => {
 	return (
@@ -13,7 +14,7 @@ const Questionares: Component = () => {
 					<InfoBox
 						header="Poll for people with schizophrenia"
 						link="Personal poll"
-						text="Answer various questions about your experience about schizophrenia. Estimated completion time is 12 minutes"
+						text={`Answer various questions about your experience about schizophrenia. Estimated completion time is ${ESTIMATED_MINUTES.personalQuestions} minutes`}
 						route={route("/questionares/:personalQuestions", {
 							personalQuestions: "personalQuestions",
 						})}
@@ -26,7 +27,7 @@ const Questionares: Component = () => {
 					<InfoBox
 						header="Poll for relatives or someone familiar with people with schizophrenia"
 						link="Relative poll"
-						text="Answer questions from schizophrenics relatives perspective. Estimated completion time is 7 minutes"
+						text={`Answer questions from schizophrenics relatives perspective. Estimated completion time is ${ESTIMATED_MINUTES.theirQuestions} minutes`}
 						route={route("/questionares/:personalQuestions", {
 							personalQuestions: "theirQuestions",
 						})}
