@@ -35,7 +35,7 @@ ENV NODE_ENV=production \
 	PORT=3000
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
-COPY package.json entrypoint.sh ./
+COPY package.json entrypoint.sh start.mjs ./
 # Migrations run with Node's built-in TypeScript type stripping (no tsx needed)
 COPY src/migrations ./src/migrations
 COPY src/utils/migrate.ts ./src/utils/migrate.ts

@@ -1,4 +1,5 @@
-// Runs outside Astro (via tsx), so it reads .env with dotenv instead of astro:env.
+// Runs outside Astro (Node's built-in TypeScript support), so it reads .env with dotenv
+// instead of astro:env. Used by `pnpm migrate:latest` / `migrate:down` and by start.mjs.
 import { promises as fs } from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -22,7 +23,8 @@ const fileUrlMigrationProvider: MigrationProvider = {
 	},
 };
 
-async function migrate(args: string[]) {
+/** Apply all pending migrations (or roll back one with "down"). Throws if one fails. */
+export async function migrate(args: string[] = []) {
 	const db = new Kysely<unknown>({
 		log: ["error"],
 		dialect: new PostgresDialect({
@@ -57,9 +59,14 @@ async function migrate(args: string[]) {
 
 	if (error) {
 		console.error("failed to migrate");
-		console.error(error);
-		process.exit(1);
+		throw error;
 	}
 }
 
-migrate(process.argv.slice(2));
+// Run directly (node ./src/utils/migrate.ts [down]); start.mjs imports migrate() instead
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+	migrate(process.argv.slice(2)).catch((error) => {
+		console.error(error);
+		process.exit(1);
+	});
+}
