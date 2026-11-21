@@ -10,16 +10,18 @@ export default defineConfig({
 	adapter: node({ mode: "standalone" }),
 	// Error reporting: sentry.client.config.ts / sentry.server.config.ts; the server middleware
 	// for request errors is added automatically. Source maps are uploaded to Sentry only when a
-	// build has SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT set (e.g. in CI).
+	// build has SENTRY_AUTH_TOKEN (plus SENTRY_ORG, SENTRY_PROJECT, optionally SENTRY_RELEASE),
+	// i.e. release builds in CI. Without the token no source maps are generated at all.
 	integrations: [
 		solid(),
 		sentry({
-			sourceMapsUploadOptions: {
-				enabled: Boolean(process.env.SENTRY_AUTH_TOKEN),
-				authToken: process.env.SENTRY_AUTH_TOKEN,
-				org: process.env.SENTRY_ORG,
-				project: process.env.SENTRY_PROJECT,
+			// org, project and authToken are read from the SENTRY_* environment variables
+			sourcemaps: {
+				disable: !process.env.SENTRY_AUTH_TOKEN,
+				// Never ship .map files: delete them once uploaded
+				filesToDeleteAfterUpload: ["./dist/**/client/**/*.map", "./dist/**/server/**/*.map"],
 			},
+			telemetry: false,
 		}),
 	],
 	security: { checkOrigin: true },

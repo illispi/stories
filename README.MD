@@ -67,8 +67,9 @@ src/
 
 ## Deployment
 
-Pull requests and pushes to `main` only run the checks in `.github/workflows/deploy.yml`
-(audit, type-check, build). A release is made by pushing a version tag:
+Pull requests and pushes to `main` run the checks in `.github/workflows/deploy.yml` (audit,
+type-check, build) and build the Docker image without pushing it, so a broken Dockerfile
+shows up before a release. A release is made by pushing a version tag:
 
 ```sh
 git tag v1.0.0
@@ -76,7 +77,8 @@ git push origin v1.0.0
 ```
 
 That runs the checks again, then builds and pushes `illispi/stories:1.0.0`, `:1.0` and
-`:latest` to Docker Hub. The container runs pending migrations on start, then serves on
+`:latest` to Docker Hub. A pre-release tag such as `v1.1.0-rc.1` is pushed only as
+`:1.1.0-rc.1` (never `latest`). The container runs pending migrations on start, then serves on
 port 3000.
 
 Without Docker (plain Node 26 on the server, no pnpm needed there):
@@ -95,6 +97,30 @@ Runtime environment variables (set on the server, never in the image):
 `PSQL_HOST`, `PSQL_PORT`, `PSQL_DATABASE`, `PSQL_USERNAME`, `PSQL_PASSWORD`,
 `BETTER_AUTH_SECRET` (`openssl rand -base64 32`), `BETTER_AUTH_URL=https://poll.delvis.org`,
 `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`.
+
+Readable Sentry stack traces (source maps), uploaded by release builds only:
+
+1. In Sentry: Settings → Developer Settings → Organization Tokens → create a token (it gets
+   the scopes needed for source map uploads).
+2. In GitHub (Settings → Secrets and variables → Actions): secret `SENTRY_AUTH_TOKEN` with
+   that token, and variables `SENTRY_ORG` and `SENTRY_PROJECT` with the org and project slugs
+   (as in the Sentry URL).
+
+The token reaches the Docker build as a BuildKit secret, so it never ends up in the image.
+The `.map` files are deleted after the upload and are never served. Each upload is labelled
+with the version tag (e.g. `v1.0.0`) as the Sentry release. Without the token, builds skip the
+upload and generate no source maps.
+
+The workflow's actions are referenced by version tag. To pin them to commit SHAs (so a moved
+or compromised tag can't change what runs), run this once in the repository and commit the
+result; Dependabot (`.github/dependabot.yml`) then keeps the SHAs up to date:
+
+```sh
+npx pin-github-action .github/workflows/deploy.yml
+```
+
+The `DOCKERHUB_TOKEN` secret should be a Docker Hub access token with read & write access to
+the `illispi/stories` repository only.
 
 Error reporting: set the GitHub Actions variable `PUBLIC_SENTRY_DSN` (repository →
 Settings → Secrets and variables → Actions → Variables) to the Sentry project's DSN; it's

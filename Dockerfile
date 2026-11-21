@@ -21,7 +21,15 @@ ARG PUBLIC_SENTRY_DSN
 ENV PUBLIC_SITE=$PUBLIC_SITE \
 	PUBLIC_CF_ANALYTICS_TOKEN=$PUBLIC_CF_ANALYTICS_TOKEN \
 	PUBLIC_SENTRY_DSN=$PUBLIC_SENTRY_DSN
-RUN pnpm build
+# Sentry source maps (release builds): org/project/release are plain build args; the auth token
+# is a BuildKit secret, so it's only visible to this RUN step and never stored in a layer.
+# Without the secret the build skips the upload (and generates no source maps).
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
+ARG SENTRY_RELEASE
+RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+	SENTRY_ORG=$SENTRY_ORG SENTRY_PROJECT=$SENTRY_PROJECT SENTRY_RELEASE=$SENTRY_RELEASE \
+	pnpm build
 
 # Production dependencies only
 FROM base AS prod-deps
