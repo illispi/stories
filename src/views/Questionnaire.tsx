@@ -244,7 +244,7 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 	// Save to the account shortly after every change, and right away when leaving the page
 	const save = (keepalive = false) => {
 		if (!loaded() || submissionStatus() === "success" || !hasAnswers(LsName)) return;
-		const body = { poll: LsName, data: pollSnapshot(LsName) };
+		const body: { poll: typeof LsName; data: Record<string, string> } = { poll: LsName, data: pollSnapshot(LsName) };
 		if (keepalive) {
 			// The page may be closing: a keepalive request still completes
 			void fetch("/api/trpc/saveDraft", {

@@ -199,7 +199,8 @@ export const fakeForFake = adminProcedure
 					? personalQuestionsSchema.parse(fakeData)
 					: theirQuestionsSchema.parse(fakeData);
 
-				const fakeDataPruned = withoutSystemMetric(fakeData);
+				// The fake tables have no `declined` column (fake answers never decline)
+				const { declined: _declined, ...fakeDataPruned } = withoutSystemMetric(fakeData);
 
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)

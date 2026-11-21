@@ -25,6 +25,8 @@ export const createFakeDataPersonal = () => {
 	const relatives = faker.helpers.arrayElement([true, false]);
 
 	const fakeData: PersonalQuestions = {
+		// Fake answers never use "Prefer not to say"
+		declined: [],
 		diagnosis: faker.helpers.arrayElement(["schizophrenia", "schizoaffective"]),
 		gender: faker.helpers.arrayElement(["other", "male", "female"]),
 		current_age: currentAge,

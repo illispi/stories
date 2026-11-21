@@ -653,7 +653,7 @@ const Page = () => {
 				</p>
 				<a
 					href="/api/user/export"
-					download
+					download=""
 					data-astro-reload
 					class="rounded-full bg-blue-500 p-3 px-6 font-semibold text-white transition-all duration-200 ease-in hover:scale-110 hover:bg-blue-600 focus:bg-blue-600 active:scale-125"
 				>

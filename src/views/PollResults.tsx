@@ -221,7 +221,7 @@ const AllStatsPage: ParentComponent = () => {
 														pOrT={params.pOrT}
 														fOrT={params.fOrT}
 													/>
-													<YourAnswer poll={params.pOrT} stat={comp.stat} row={myRow()} />
+													<YourAnswer poll={params.pOrT} stat={"stat" in comp ? String(comp.stat) : ""} row={myRow()} />
 												</div>
 											)}
 										</For>
