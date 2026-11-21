@@ -314,7 +314,8 @@ const Page = () => {
 	const startArticleEdit = (article: { id: number; link: string; description: string; tags?: string[] }) => {
 		editArticleMut.reset();
 		reset(articleForm, { initialInput: { link: article.link, description: article.description } });
-		setArticleTags((article.tags ?? []).filter(isArticleTag));
+		// One topic per article; older articles may have had up to three, keep the first
+		setArticleTags((article.tags ?? []).filter(isArticleTag).slice(0, 1));
 		setArticleTagsError(null);
 		setEditingArticle(article.id);
 	};

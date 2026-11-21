@@ -3,7 +3,7 @@ import { adminProcedure, devAdminProcedure } from "../../utils";
 import { TRPCError } from "@trpc/server";
 import { sql } from "kysely";
 import { clearStatsCache } from "~/server/statsCache";
-import { ARTICLE_TAG_KEYS, MAX_ARTICLE_TAGS } from "~/data/articleTags";
+import { ARTICLE_TAG_KEYS } from "~/data/articleTags";
 import { TEST_EMAIL_DOMAIN } from "~/server/auth/testEmail";
 import { personalQuestionsSchema, theirQuestionsSchema } from "~/types/zodFromTypes";
 import { createFakeDataPersonal } from "~/utils/faker/personalQuestionsFaker";
@@ -322,7 +322,7 @@ export const fakeArticlesForDev = devAdminProcedure.mutation(async ({ ctx }) => 
 				.paragraphs(10)
 				.substring(0, Math.floor(Math.random() * 400) + 4),
 			link: faker.internet.url(),
-			tags: faker.helpers.arrayElements(ARTICLE_TAG_KEYS, { min: 1, max: MAX_ARTICLE_TAGS }),
+			tags: [faker.helpers.arrayElement(ARTICLE_TAG_KEYS)],
 			user: ctx.user.id,
 		})
 		.executeTakeFirst();

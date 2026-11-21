@@ -18,7 +18,7 @@ export const articleFields = {
 		.max(500, { message: "Must be 500 or fewer characters long" }),
 	tags: z
 		.array(z.enum(ARTICLE_TAG_KEYS))
-		.min(1, { message: "Pick at least one topic" })
-		.max(MAX_ARTICLE_TAGS, { message: `Pick at most ${MAX_ARTICLE_TAGS} topics` })
+		.min(1, { message: "Pick a topic" })
+		.max(MAX_ARTICLE_TAGS, { message: "Pick only one topic" })
 		.transform((tags) => [...new Set(tags)]),
 };
