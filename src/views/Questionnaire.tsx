@@ -295,7 +295,7 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 	};
 
 	return (
-		<div class="flex h-screen w-full flex-col items-center justify-start">
+		<div class="flex min-h-screen w-full flex-col items-center justify-start">
 			<Toaster />
 			<Show when={signedIn && draftQuery.isError}>
 				<div class="mx-auto mt-32 flex w-11/12 max-w-md flex-col items-center gap-4 rounded-3xl bg-white p-8 text-center shadow-xl">
