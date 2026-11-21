@@ -8,6 +8,7 @@ export const ARTICLE_TAGS = [
 	["family", "Family & relatives"],
 	["work-school", "Work & school"],
 	["interview", "Interview"],
+	["other", "Other"],
 ] as const;
 
 export type ArticleTag = (typeof ARTICLE_TAGS)[number][0];
