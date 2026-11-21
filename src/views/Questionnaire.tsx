@@ -136,6 +136,21 @@ const Questions: ParentComponent<{
 	);
 };
 
+/** Slide used between the intro and the first question (same as between questions). */
+const slide = (el: Element, dir: "in" | "out") =>
+	el.animate(
+		dir === "in"
+			? [
+					{ opacity: 0, transform: "translate(340px)" },
+					{ opacity: 1, transform: "translate(0)" },
+				]
+			: [
+					{ opacity: 1, transform: "translate(0)" },
+					{ opacity: 0, transform: "translate(-340px)" },
+				],
+		{ duration: matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 450, easing: "ease-in-out" },
+	);
+
 const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => {
 	const user = () => props.userState;
 	const params = useParams<{
@@ -280,18 +295,16 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 					</div>
 				)}
 			</Show>
-			<Show when={introVisible()}>
-				<PollIntro
-					poll={LsName}
-					questions={questions}
-					signedIn={signedIn}
-					onStart={() => {
-						setShowIntro(false);
-						window.scrollTo({ top: 0 });
-					}}
-				/>
-			</Show>
-			<Show when={!introVisible()}>
+			{/* Intro → first question: the same slide as moving between questions */}
+			<Transition
+				mode="outin"
+				onEnter={(el, done) => slide(el, "in").finished.then(done)}
+				onExit={(el, done) => slide(el, "out").finished.then(done)}
+			>
+				<Show
+					when={introVisible()}
+					fallback={
+						<div class="flex w-full flex-col items-center justify-start">
 			<Suspense
 				fallback={
 					<div class="flex h-screen w-full flex-col items-center justify-center">
@@ -483,7 +496,20 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 					</Show>
 				</Show>
 			</Suspense>
-			</Show>
+						</div>
+					}
+				>
+				<PollIntro
+					poll={LsName}
+					questions={questions}
+					signedIn={signedIn}
+					onStart={() => {
+						setShowIntro(false);
+						window.scrollTo({ top: 0 });
+					}}
+				/>
+				</Show>
+			</Transition>
 		</div>
 	);
 };
