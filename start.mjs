@@ -4,6 +4,10 @@
 // migration files with its built-in type stripping).
 import { migrate } from "./src/utils/migrate.ts";
 
+// As PID 1 in a container, Node ignores stop signals unless they're handled, so
+// `docker stop` would wait 10 s and then kill it. Exit promptly instead.
+for (const signal of ["SIGTERM", "SIGINT"]) process.once(signal, () => process.exit(0));
+
 try {
 	await migrate();
 } catch (error) {

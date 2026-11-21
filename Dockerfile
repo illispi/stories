@@ -35,11 +35,11 @@ ENV NODE_ENV=production \
 	PORT=3000
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
-COPY package.json entrypoint.sh start.mjs ./
+COPY package.json start.mjs ./
 # Migrations run with Node's built-in TypeScript type stripping (no tsx needed)
 COPY src/migrations ./src/migrations
 COPY src/utils/migrate.ts ./src/utils/migrate.ts
-RUN chmod +x entrypoint.sh
 USER node
 EXPOSE 3000
-ENTRYPOINT ["./entrypoint.sh"]
+# Applies pending migrations, then starts the server (see start.mjs)
+CMD ["node", "start.mjs"]
