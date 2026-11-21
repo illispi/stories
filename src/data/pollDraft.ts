@@ -1,5 +1,5 @@
 /**
- * Poll progress lives in localStorage under these keys (answers, current page, skip
+ * Poll progress is kept under these keys (answers, current page, skip
  * bookkeeping, unit choice). A draft saved to the account is a copy of exactly these.
  */
 export type PollLs = "personalQuestions" | "theirQuestions";

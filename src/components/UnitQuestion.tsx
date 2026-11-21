@@ -3,10 +3,11 @@ import { createEffect, createSignal, For, Match, Show, Switch } from "solid-js";
 import type { QuestionPersonal } from "~/data/personalQuestionsArr";
 import { questions as questionsP } from "~/data/personalQuestionsArr";
 import { questions as questionsT } from "~/data/theirQuestionsArr";
-/** Poll answers in localStorage, keyed by question (personal or relative poll). */
+/** Poll answers in the poll store (src/utils/pollStore.ts), keyed by question. */
 // biome-ignore lint/suspicious/noExplicitAny: values depend on the question type
 type Answers = Record<string, any>;
 import { confetti } from "~/utils/confetti";
+import { pollStore } from "~/utils/pollStore";
 import { isSensitive, LS_POLL, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import CustomButton from "./CustomButton";
 import ModalPopUp from "./ModalPopUp";
@@ -77,7 +78,7 @@ export const UnitQuestion: ParentComponent<{
 		if (sendStats.isSuccess) {
 			props.setSubmissionStatus("success");
 			confetti();
-			localStorage.clear();
+			pollStore.clear();
 		}
 	});
 
@@ -88,7 +89,7 @@ export const UnitQuestion: ParentComponent<{
 		props.content;
 
 	const questionsLs: Answers = JSON.parse(
-		localStorage.getItem(props.LsName) ?? "{}",
+		pollStore.getItem(props.LsName) ?? "{}",
 	);
 
 	const valueOfLS = questionsLs[questionDB] ?? "";
@@ -128,7 +129,7 @@ export const UnitQuestion: ParentComponent<{
 	);
 	const [selection, setSelection] = createSignal(valueOfLS as string);
 	const [metric, setMetric] = createSignal<boolean>(
-		JSON.parse(localStorage.getItem("system") ?? '"true"'),
+		JSON.parse(pollStore.getItem("system") ?? '"true"'),
 	);
 
 	const submitResults = () => {
@@ -159,11 +160,11 @@ export const UnitQuestion: ParentComponent<{
 			.filter((j) => !array2?.includes(j ? j : "")) //BUG there might be a bug here
 			.forEach((e) => (e ? ((questionsLs[e] as boolean) = false) : null));
 
-		// Answers come from localStorage; the server validates them with the poll schema.
+		// Answers come from the poll store; the server validates them with the poll schema.
 		if (props.LsName === "personalQuestions") {
 			personalMut.mutate({
 				...questionsLs,
-				systemMetric: JSON.parse(localStorage.getItem("system") ?? "true"),
+				systemMetric: JSON.parse(pollStore.getItem("system") ?? "true"),
 			} as Parameters<typeof personalMut.mutate>[0]);
 		} else {
 			theirMut.mutate(questionsLs as Parameters<typeof theirMut.mutate>[0]);
@@ -188,7 +189,7 @@ export const UnitQuestion: ParentComponent<{
 				//TODO clear all values on previous gesture, if skipping
 				//TODO remeber to refactor this as well to delete on skip no
 
-				localStorage.setItem(
+				pollStore.setItem(
 					props.LsName,
 					JSON.stringify({ ...questionsLs, ...values }),
 				);
@@ -210,7 +211,7 @@ export const UnitQuestion: ParentComponent<{
 	) => {
 		try {
 			if (questionDB === "weight_amount") {
-				localStorage.setItem("system", JSON.stringify(metric()));
+				pollStore.setItem("system", JSON.stringify(metric()));
 			}
 			if (
 				questionDB === "weight_amount" &&
@@ -229,11 +230,11 @@ export const UnitQuestion: ParentComponent<{
 			);
 			if (declineAnswer) declinedList.add(questionDB);
 			else declinedList.delete(questionDB);
-			localStorage.setItem(
+			pollStore.setItem(
 				props.LsName,
 				JSON.stringify({ ...questionsLs, ...value, declined: [...declinedList] }),
 			);
-			const LsExistsJunctions = localStorage.getItem(
+			const LsExistsJunctions = pollStore.getItem(
 				`junctions_${props.LsName}`,
 			);
 			let junctions: Record<string, number> = LsExistsJunctions
@@ -251,13 +252,13 @@ export const UnitQuestion: ParentComponent<{
 							questions.findIndex((e) => e.questionDB === skip) -
 							questions.findIndex((e) => e.questionDB === questionDB),
 					};
-					localStorage.setItem(
+					pollStore.setItem(
 						`junctions_${props.LsName}`,
 						JSON.stringify(junctions),
 					);
 				} else {
 					if (junctions?.[questionDB]) {
-						const LsTotal = localStorage.getItem(props.LsName);
+						const LsTotal = pollStore.getItem(props.LsName);
 						const curQuestionsObject = LsTotal ? JSON.parse(LsTotal) : null;
 
 						const indexOfItem = questions.findIndex(
@@ -281,12 +282,12 @@ export const UnitQuestion: ParentComponent<{
 								}
 							});
 
-						localStorage.setItem(
+						pollStore.setItem(
 							props.LsName,
 							JSON.stringify(curQuestionsObject),
 						);
 						delete junctions[questionDB];
-						localStorage.setItem(
+						pollStore.setItem(
 							`junctions_${props.LsName}`,
 							JSON.stringify(junctions),
 						);
@@ -294,12 +295,12 @@ export const UnitQuestion: ParentComponent<{
 				}
 
 				if (skipAmount) {
-					localStorage.setItem(
+					pollStore.setItem(
 						`to_${skip}_${props.LsName}`,
 						JSON.stringify(skipAmount),
 					);
 				} else {
-					localStorage.removeItem(`to_${skip}_${props.LsName}`);
+					pollStore.removeItem(`to_${skip}_${props.LsName}`);
 				}
 			}
 
@@ -370,7 +371,7 @@ export const UnitQuestion: ParentComponent<{
 		const result = safeParse(numberSchema, Number(number()));
 
 		// Age of onset can't be after the current age (current age is asked first)
-		const saved: Record<string, unknown> = JSON.parse(localStorage.getItem(props.LsName) ?? "{}");
+		const saved: Record<string, unknown> = JSON.parse(pollStore.getItem(props.LsName) ?? "{}");
 		const ageConflict = !result.success
 			? null
 			: questionDB === "age_of_onset" && typeof saved.current_age === "number" && result.output > saved.current_age
@@ -591,7 +592,7 @@ export const UnitQuestion: ParentComponent<{
 								value={text()}
 								onInput={(e) => {
 									setText(e.target.value);
-									localStorage.setItem(
+									pollStore.setItem(
 										props.LsName,
 										JSON.stringify({ ...questionsLs, [questionDB]: text() }),
 									);

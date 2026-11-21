@@ -5,7 +5,7 @@
  *   trpc.x.createMutation(() => options)
  *   trpc.useContext().invalidate() / trpc.useContext().x.invalidate()
  */
-import { clearAllLocalProgress } from "~/utils/pollDraftLocal";
+import { pollStore, removeLegacyLocalProgress } from "~/utils/pollStore";
 import {
 	type CreateMutationResult,
 	type CreateQueryResult,
@@ -78,8 +78,9 @@ const procedure = (path: string) => ({
 				mutationFn: (value: unknown) =>
 					path === "logOut"
 						? authClient.signOut().then(() => {
-								// Don't leave this account's poll answers for the next person on this browser
-								clearAllLocalProgress();
+								// Don't keep this account's poll answers around for the next person on this browser
+								pollStore.clear();
+								removeLegacyLocalProgress();
 								return null;
 							})
 						: call(path, "mutate", value),

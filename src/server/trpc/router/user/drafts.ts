@@ -16,7 +16,7 @@ export const getDraft = userProcedure.input(z.object({ poll })).query(async ({ c
 	return row ? { data: row.data as Record<string, string>, updatedAt: new Date(row.updated_at).getTime() } : null;
 });
 
-/** Save (replace) the progress for one poll: the poll's localStorage entries as strings. */
+/** Save (replace) the progress for one poll: the poll store's entries as strings. */
 export const saveDraft = userProcedure
 	.input(z.object({ poll, data: z.record(z.string().max(100), z.string().max(MAX_DRAFT_SIZE)) }))
 	.mutation(async ({ ctx, input }) => {
