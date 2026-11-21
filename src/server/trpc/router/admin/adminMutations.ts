@@ -204,9 +204,9 @@ export const fakeForFake = adminProcedure
 
 				const fakeInsert = await ctx.db
 					.insertInto(input.pOrT)
-					.values({
-						...fakeDataPruned,
-					})
+					// The poll types allow null for "Prefer not to say" answers; the fake tables don't,
+					// and the generators never produce null there (they never decline).
+					.values(fakeDataPruned as never)
 					.executeTakeFirst();
 
 				if (!fakeInsert) {
