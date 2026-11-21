@@ -27,6 +27,14 @@ const PrivacyNotice = () => {
 						stored about your account.
 					</p>
 					<p class="text-lg">
+						The database is backed up to Backblaze. Backups are kept for 3 months,
+						so data you delete is gone from the backups too within 3 months.
+					</p>
+					<p class="text-lg">
+						This is a non-commercial project with no commercial interest. Your
+						data is not sold or used for advertising.
+					</p>
+					<p class="text-lg">
 						The site is served through Cloudflare, which processes visitors' IP
 						addresses for security and rate limiting. Anonymous visit statistics
 						are collected with Cloudflare Web Analytics, which uses no cookies and
