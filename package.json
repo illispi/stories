@@ -3,7 +3,8 @@
 	"scripts": {
 		"dev": "astro dev --host",
 		"build": "astro build",
-		"start": "node --env-file-if-exists=.env ./dist/server/entry.mjs",
+		"start": "node ./src/utils/migrate.ts && node --env-file-if-exists=.env ./dist/server/entry.mjs",
+		"serve": "node --env-file-if-exists=.env ./dist/server/entry.mjs",
 		"preview": "astro preview",
 		"check": "astro check",
 		"migrate:latest": "node ./src/utils/migrate.ts",

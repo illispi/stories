@@ -44,7 +44,8 @@ UPDATE auth_user SET role = 'admin' WHERE id = '<your user id>';
 |---|---|
 | `pnpm dev` | Dev server |
 | `pnpm check` | Type-check (`astro check`) |
-| `pnpm build` / `pnpm start` | Production build / run `dist/server/entry.mjs` |
+| `pnpm build` / `pnpm start` | Production build / apply pending migrations, then run `dist/server/entry.mjs` |
+| `pnpm serve` | Run the built server without migrating |
 | `pnpm migrate:latest` / `pnpm migrate:down` | Apply all / roll back one migration |
 | `pnpm new:migration <name>` | Create an empty migration file |
 | `pnpm sql-types` | Regenerate `src/types/db.ts` from the database (uses `DATABASE_URL`) |
@@ -77,6 +78,11 @@ git push origin v1.0.0
 That runs the checks again, then builds and pushes `illispi/stories:1.0.0`, `:1.0` and
 `:latest` to Docker Hub. The container runs pending migrations on start, then serves on
 port 3000.
+
+Without Docker, `pnpm build` and then `pnpm start` do the same: pending migrations are
+applied first (with the `PSQL_*` values from the environment or `.env`), and the server only
+starts if they succeed. Kysely locks the migration table, so several instances starting at
+once is safe.
 
 Runtime environment variables (set on the server, never in the image):
 `PSQL_HOST`, `PSQL_PORT`, `PSQL_DATABASE`, `PSQL_USERNAME`, `PSQL_PASSWORD`,
