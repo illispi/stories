@@ -111,13 +111,9 @@ The `.map` files are deleted after the upload and are never served. Each upload 
 with the version tag (e.g. `v1.0.0`) as the Sentry release. Without the token, builds skip the
 upload and generate no source maps.
 
-The workflow's actions are referenced by version tag. To pin them to commit SHAs (so a moved
-or compromised tag can't change what runs), run this once in the repository and commit the
-result; Dependabot (`.github/dependabot.yml`) then keeps the SHAs up to date:
-
-```sh
-npx pin-github-action .github/workflows/deploy.yml
-```
+The workflow's actions are pinned to commit SHAs (with the version in a comment), so a moved
+or compromised tag can't change what runs. Dependabot (`.github/dependabot.yml`) opens pull
+requests that update the SHAs.
 
 The `DOCKERHUB_TOKEN` secret should be a Docker Hub access token with read & write access to
 the `illispi/stories` repository only.
