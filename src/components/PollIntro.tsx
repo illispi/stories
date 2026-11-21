@@ -1,7 +1,37 @@
-import { For, Show } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
+import { isSensitive, LS_POLL, PREFER_NOT_LABEL } from "~/data/sensitiveQuestions";
 import CustomButton from "~/components/CustomButton";
 
-type Q = { questionType: string };
+type Q = {
+	question?: string;
+	questionType: string;
+	questionDB?: string;
+	selections?: string[];
+	multiSelect?: [string, string][];
+};
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** How a question is answered, for the read-only preview. */
+const answerKinds = (poll: "personalQuestions" | "theirQuestions", q: Q): string[] => {
+	const extra = q.questionDB && isSensitive(LS_POLL[poll], q.questionDB) ? [PREFER_NOT_LABEL] : [];
+	switch (q.questionType) {
+		case "yesOrNo":
+			return ["Yes", "No", ...extra];
+		case "unknown":
+			return ["Yes", "No", "Unknown", ...extra];
+		case "selection":
+			return (q.selections ?? []).map(capitalize);
+		case "multiSelect":
+			return [...(q.multiSelect ?? []).map(([, label]) => label), "(pick any)"];
+		case "integer":
+			return [q.questionDB === "weight_amount" ? "Number (kg or lb)" : "Number"];
+		case "text":
+			return ["Written answer"];
+		default:
+			return [];
+	}
+};
 
 /** Rough time: a minute per written answer, ten seconds for the rest, rounded up to 5 minutes. */
 export const estimateMinutes = (questions: Q[]) => {
@@ -18,6 +48,7 @@ export default function PollIntro(props: {
 	onStart: () => void;
 }) {
 	const count = () => props.questions.filter((q) => q.questionType !== "submit").length;
+	const [showPreview, setShowPreview] = createSignal(false);
 	const personal = () => props.poll === "personalQuestions";
 	const points = () => [
 		"Anonymous: no name, email or username is stored. Only your Discord account ID is kept, so you can edit or delete your answers later.",
@@ -25,7 +56,7 @@ export default function PollIntro(props: {
 		'Sensitive questions have a "Prefer not to say" option, and many questions are skipped based on earlier answers.',
 		props.signedIn
 			? "Your progress is saved to your account as you go, so you can continue on another device."
-			: "Your progress is saved in this browser. Sign in to save it to your account and continue on another device.",
+			: "You sign in with Discord before starting, so your progress is saved to your account as you go.",
 		"You can see, edit or delete everything you've submitted at any time in Your data.",
 		...(personal() ? [] : ["Know more than one person with schizophrenia? You can answer once for each of them."]),
 	];
@@ -64,9 +95,49 @@ export default function PollIntro(props: {
 						If you're struggling right now, please reach out to someone you trust or your local crisis line.
 					</p>
 				</Show>
-				<CustomButton class="mx-auto w-56 text-lg" onClick={() => props.onStart()}>
-					Start
-				</CustomButton>
+				<Show
+					when={props.signedIn}
+					fallback={
+						<a
+							href={`/login?redir=${encodeURIComponent(`/questionares/${props.poll}`)}`}
+							class="mx-auto rounded-full bg-blue-500 px-8 py-3 text-center font-semibold text-lg text-white transition-all duration-200 ease-in hover:scale-110 hover:bg-blue-600 focus:bg-blue-600 active:scale-125"
+						>
+							Sign in to start
+						</a>
+					}
+				>
+					<CustomButton class="mx-auto w-56 text-lg" onClick={() => props.onStart()}>
+						Start
+					</CustomButton>
+				</Show>
+				<details
+					class="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200"
+					open={showPreview()}
+					onToggle={(e) => setShowPreview(e.currentTarget.open)}
+				>
+					<summary class="cursor-pointer text-center font-semibold">Preview the questions</summary>
+					<ol class="mt-4 flex list-decimal flex-col gap-4 pl-6">
+						<For each={props.questions.filter((q) => q.questionType !== "submit")}>
+							{(q) => (
+								<li>
+									<p class="font-semibold">{q.question}</p>
+									<div class="mt-1 flex flex-wrap gap-1.5">
+										<For each={answerKinds(props.poll, q)}>
+											{(kind) => (
+												<span class="rounded-full bg-white px-2.5 py-0.5 text-slate-700 text-xs ring-1 ring-slate-200">
+													{kind}
+												</span>
+											)}
+										</For>
+									</div>
+								</li>
+							)}
+						</For>
+					</ol>
+					<p class="mt-4 text-center text-slate-600 text-sm">
+						Some questions are only asked depending on earlier answers.
+					</p>
+				</details>
 			</section>
 		</div>
 	);

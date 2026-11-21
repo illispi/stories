@@ -227,7 +227,10 @@ const PersonalQuestions: ParentComponent<{ userState: UserState }> = (props) => 
 	);
 
 	// Not for someone who has already submitted the personal poll (they see a notice instead)
-	const introVisible = () => showIntro() && !(user()?.data && LsName === "personalQuestions");
+	// Signed-out visitors only get the intro (with a preview of the questions): answering starts
+	// after signing in.
+	const introVisible = () =>
+		!signedIn || (showIntro() && !(user()?.data && LsName === "personalQuestions"));
 
 	const useDraft = (draft: { data: Record<string, string>; updatedAt: number }) => {
 		setShowIntro(false);
