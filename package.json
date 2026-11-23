@@ -16,8 +16,8 @@
 	"devDependencies": {
 		"@types/node": "^26.0.0",
 		"@types/pg": "^8.11.10",
-		"autoprefixer": "^10.4.20",
-		"kysely-codegen": "^0.17.0",
+		"autoprefixer": "^10.7.0",
+		"kysely-codegen": "^0.20.0",
 		"postcss": "^8.5.23",
 		"tailwindcss": "^3.4.14",
 		"typescript": "^5.6.3"
@@ -31,7 +31,7 @@
 		"@sentry/astro": "^10.6.0",
 		"@solid-primitives/refs": "^1.0.8",
 		"@solid-primitives/transition-group": "^1.0.5",
-		"@tanstack/solid-query": "^5.59.13",
+		"@tanstack/solid-query": "^5.108.1",
 		"@trpc/client": "^11.8.0",
 		"@trpc/server": "^11.8.0",
 		"astro": "^7.0.0",
@@ -39,11 +39,11 @@
 		"clsx": "^2.1.1",
 		"dotenv": "^16.4.5",
 		"echarts": "^6.0.0",
-		"kysely": "^0.28.17",
+		"kysely": "^0.29.9",
 		"pg": "^8.13.0",
 		"sharp": "^0.35.3",
 		"solid-js": "^1.9.4",
-		"solid-transition-group": "^0.2.3",
+		"solid-transition-group": "^0.3.0",
 		"tailwind-merge": "^2.5.4",
 		"valibot": "^1.4.2",
 		"zod": "^4.6.6"
